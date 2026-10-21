@@ -45,7 +45,7 @@
     "copyright": "山河城邑",
     "category": "Education",
     "shortDescription": "3D 旅行记录",
-    "longDescription": "山河城邑：以 3D 地形板块浏览省 / 市 / 区县，沉淀游记、时间线、照片墙与收藏足迹的个人知识库。所有数据留在本机。",
+    "longDescription": "山河城邑：以 3D 地形板块浏览省 / 市 / 区县，随手记下游记、时间线、照片墙与收藏足迹的个人旅行记录本。所有数据留在本机。",
     "windows": {
       "nsis": {
         "installMode": "currentUser",
