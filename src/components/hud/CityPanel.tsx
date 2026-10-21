@@ -8,6 +8,7 @@ import { BgImage } from '../shared/BgImage';
 import { bgKey } from '../../stores/backgrounds';
 import { VisitedMark } from '../shared/VisitedMark';
 import { HeartMark } from '../shared/HeartMark';
+import { PanelFullscreenBtn } from '../shared/PanelFullscreenBtn';
 import type { City } from '../../data/types';
 
 function fmtDate(at: number): string {
@@ -20,6 +21,7 @@ export function CityPanel() {
   const level = useNavigation((s) => s.level);
   const city = useNavigation((s) => s.currentCity) as City | null;
   const drawerOpen = useUi((s) => s.drawerOpen);
+  const panelFullscreen = useUi((s) => s.panelFullscreen);
   const openPhotoWall = useUi((s) => s.openPhotoWall);
   const openTravelWithPlace = useUi((s) => s.openTravelWithPlace);
   const favorites = useUi((s) => s.favorites);
@@ -54,7 +56,7 @@ export function CityPanel() {
   };
 
   return (
-    <aside className="city-panel hud">
+    <aside className={`city-panel hud${panelFullscreen ? ' is-full' : ''}`}>
       <div className="city-panel-scroll" ref={scrollRef}>
         <div className="city-cover">
           <BgImage
@@ -70,6 +72,7 @@ export function CityPanel() {
             <span className="city-cover-prov">{city.province}</span>
             <h2 className="city-cover-name">{city.name}</h2>
           </div>
+          <PanelFullscreenBtn />
         </div>
 
         {city.poem && (

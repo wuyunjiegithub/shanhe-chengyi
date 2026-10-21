@@ -37,6 +37,13 @@ export async function setupBackButton(): Promise<void> {
     if (clickIfPresent('.pv-backdrop .pv-close')) return;
     if (clickIfPresent('.np-backdrop .np-head .icon-btn')) return;
 
+    // 1.5) 面板正处于全屏：先退出全屏露出地图，而不是把面板整个关掉
+    //      （手机上半屏看详情、半屏看地图是常态，返回键不该一步退到底）
+    if (ui.panelFullscreen) {
+      ui.togglePanelFullscreen(false);
+      return;
+    }
+
     // 2) 各面板：与 Shell 的 Escape 链路保持同序
     if (ui.photoWall) {
       ui.closePhotoWall();

@@ -6,7 +6,7 @@ import path from 'node:path';
 import { decodePng, pixel, lum } from './png.mjs';
 import { makePng } from './fixture-png.mjs';
 
-const URL = 'http://127.0.0.1:1421/';
+const URL = process.env.REG_URL || 'http://127.0.0.1:1421/';
 const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const OUT = path.resolve('regression-shots');
 fs.mkdirSync(OUT, { recursive: true });
@@ -304,12 +304,52 @@ const drawerM = await m.evaluate(() => {
   if (!d) return null;
   const r = d.getBoundingClientRect();
   const cs = getComputedStyle(d);
-  return { top: Math.round(r.top), bottom: Math.round(r.bottom), w: Math.round(r.width), vh: window.innerHeight, vw: window.innerWidth, radius: cs.borderTopLeftRadius };
+  const btn = d.querySelector('.panel-fs-btn');
+  return {
+    top: Math.round(r.top), bottom: Math.round(r.bottom), w: Math.round(r.width),
+    vh: window.innerHeight, vw: window.innerWidth, radius: cs.borderTopLeftRadius,
+    hasFsBtn: Boolean(btn) && getComputedStyle(btn).display !== 'none',
+  };
 });
 rec(
-  '⑤ 区县抽屉移动端全屏',
-  Boolean(drawerM) && drawerM.w > drawerM.vw * 0.9 && drawerM.top <= 1 && drawerM.bottom >= drawerM.vh - 2 && drawerM.radius === '0px',
+  '⑤ 区县抽屉移动端默认半屏（露出上半地图）',
+  Boolean(drawerM) && drawerM.w > drawerM.vw * 0.9 && drawerM.bottom >= drawerM.vh - 2 &&
+    drawerM.top >= drawerM.vh * 0.4 && drawerM.top <= drawerM.vh * 0.56,
   `抽屉=${drawerM ? `${drawerM.w}x(${drawerM.top}→${drawerM.bottom}) 圆角=${drawerM.radius}` : 'null'} 视口=${drawerM?.vw}x${drawerM?.vh}`,
+);
+rec(
+  '⑤ 抽屉有全屏切换钮',
+  Boolean(drawerM) && drawerM.hasFsBtn,
+  `全屏钮可见=${drawerM?.hasFsBtn}`,
+);
+
+/* 点「全屏」→ 应铺满；再点一次 → 回到半屏 */
+await m.click('.drawer .panel-fs-btn').catch(() => null);
+await m.waitForTimeout(800);
+const drawerFull = await m.evaluate(() => {
+  const d = document.querySelector('.drawer');
+  if (!d) return null;
+  const r = d.getBoundingClientRect();
+  return { top: Math.round(r.top), bottom: Math.round(r.bottom), vh: window.innerHeight, radius: getComputedStyle(d).borderTopLeftRadius };
+});
+rec(
+  '⑤ 点全屏钮后铺满',
+  Boolean(drawerFull) && drawerFull.top <= 1 && drawerFull.bottom >= drawerFull.vh - 2 && drawerFull.radius === '0px',
+  `全屏后=${drawerFull ? `${drawerFull.top}→${drawerFull.bottom}` : 'null'} 圆角=${drawerFull?.radius} 视口高=${drawerFull?.vh}`,
+);
+
+await m.click('.drawer .panel-fs-btn').catch(() => null);
+await m.waitForTimeout(800);
+const drawerHalf = await m.evaluate(() => {
+  const d = document.querySelector('.drawer');
+  if (!d) return null;
+  const r = d.getBoundingClientRect();
+  return { top: Math.round(r.top), vh: window.innerHeight };
+});
+rec(
+  '⑤ 退出全屏回到半屏',
+  Boolean(drawerHalf) && drawerHalf.top >= drawerHalf.vh * 0.4 && drawerHalf.top <= drawerHalf.vh * 0.56,
+  `退出后顶=${drawerHalf?.top} 视口高=${drawerHalf?.vh}`,
 );
 
 await m.evaluate(() => window.__sandboxApp.focusCityById('310000'));
@@ -320,20 +360,29 @@ const panel = await m.evaluate(() => {
   if (!p) return null;
   const r = p.getBoundingClientRect();
   const br = bar ? bar.getBoundingClientRect() : null;
+  const fs = p.querySelector('.panel-fs-btn');
   return {
     w: Math.round(r.width),
+    top: Math.round(r.top),
     bottom: Math.round(r.bottom),
     vw: window.innerWidth,
     vh: window.innerHeight,
+    hasFsBtn: Boolean(fs) && getComputedStyle(fs).display !== 'none',
     barTop: br ? Math.round(br.top) : null,
     barH: br ? Math.round(br.height) : null,
     barRows: bar ? bar.querySelector('.bottom-right').getBoundingClientRect().height : null,
   };
 });
 rec(
-  '⑤ 城市面板移动端全屏',
-  Boolean(panel) && panel.w > panel.vw * 0.9 && panel.bottom >= panel.vh - 2,
-  `面板=${panel ? `${panel.w}宽 底=${panel.bottom}` : 'null'} 视口=${panel?.vw}x${panel?.vh}`,
+  '⑤ 城市面板移动端默认半屏（露出上半地图）',
+  Boolean(panel) && panel.w > panel.vw * 0.9 && panel.bottom >= panel.vh - 2 &&
+    panel.top >= panel.vh * 0.4 && panel.top <= panel.vh * 0.56,
+  `面板=${panel ? `${panel.w}宽 (${panel.top}→${panel.bottom})` : 'null'} 视口=${panel?.vw}x${panel?.vh}`,
+);
+rec(
+  '⑤ 城市面板有全屏切换钮',
+  Boolean(panel) && panel.hasFsBtn,
+  `全屏钮可见=${panel?.hasFsBtn}`,
 );
 rec(
   '⑤ 底栏单行不折行',

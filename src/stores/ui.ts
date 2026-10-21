@@ -38,6 +38,12 @@ interface UiState {
   travelPrefill: TravelPrefill | null;
   /** 移动端「选择城市 / 区县」全屏面板（桌面有左侧索引，看不到这个按钮） */
   districtPickerOpen: boolean;
+  /**
+   * 移动端城市概览 / 区县详情是否全屏。
+   * 默认 false = 半屏贴底，上半屏留给地图，好继续点选别的区县；
+   * 点面板上的「全屏」按钮才铺满，看完再点「退出全屏」回到半屏。
+   */
+  panelFullscreen: boolean;
 
   openDrawer: () => void;
   closeDrawer: () => void;
@@ -56,6 +62,7 @@ interface UiState {
   toggleDataPanel: (open?: boolean) => void;
   toggleSettings: (open?: boolean) => void;
   setDistrictPickerOpen: (open: boolean) => void;
+  togglePanelFullscreen: (open?: boolean) => void;
   openPhotoWall: (state: PhotoWallState) => void;
   closePhotoWall: () => void;
   showToast: (msg: string) => void;
@@ -87,6 +94,7 @@ export const useUi = create<UiState>((set, get) => ({
   photoWall: null,
   travelPrefill: null,
   districtPickerOpen: false,
+  panelFullscreen: false,
 
   openDrawer: () => set({ drawerOpen: true, favoritesOpen: false }),
   closeDrawer: () => set({ drawerOpen: false, leafCard: null }),
@@ -207,6 +215,9 @@ export const useUi = create<UiState>((set, get) => ({
     })),
 
   setDistrictPickerOpen: (districtPickerOpen) => set({ districtPickerOpen }),
+
+  togglePanelFullscreen: (open) =>
+    set((s) => ({ panelFullscreen: open ?? !s.panelFullscreen })),
 
   showToast: (msg) => {
     set({ toast: msg });

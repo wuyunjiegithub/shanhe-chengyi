@@ -2894,6 +2894,12 @@
   text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
 }
 
+/* 面板「全屏 / 退出全屏」切换钮：桌面端是右侧栏，不遮挡地图，用不到，直接隐藏；
+   移动端（≤820px）才显示，见文件末尾的断点块。 */
+.panel-fs-btn {
+  display: none;
+}
+
 .city-poem {
   position: relative;
   margin: 6px 0 16px;
@@ -5334,16 +5340,24 @@ button.wall-stage-img {
     flex: none;
   }
 
-  /* ---- 城市概览：右侧栏 → 贴底抽屉 ---- */
+  /* ---- 城市概览：右侧栏 → 贴底半屏 ----
+   * 手机上一全屏就把地图盖死了，选完市没法接着点区县。
+   * 所以默认只占下半屏，上半屏留地图继续点；想沉浸式看再点「全屏」钮。 */
   .city-panel {
     position: fixed;
-    top: 0;
+    top: auto;
     left: 0;
     right: 0;
     bottom: 0;
     width: auto;
-    height: 100vh;
+    height: 52vh;
     border: none;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .city-panel.is-full {
+    top: 0;
+    height: 100vh;
     border-radius: 0;
   }
 
@@ -5355,22 +5369,50 @@ button.wall-stage-img {
     padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   }
 
-  /* ---- 区县详情：右侧栏 → 全屏（手机上一屏一件事） ---- */
+  /* ---- 区县详情：右侧栏 → 贴底半屏（同上，留出地图选别的区县） ---- */
   .drawer {
     position: fixed;
-    top: 0;
+    top: auto;
     left: 0;
     right: 0;
     bottom: 0;
     width: auto;
-    height: 100vh;
+    height: 52vh;
     border: none;
-    border-radius: 0;
+    border-radius: 16px 16px 0 0;
     transform: translateY(100%);
+  }
+
+  .drawer.is-full {
+    top: 0;
+    height: 100vh;
+    border-radius: 0;
   }
 
   .drawer.is-open {
     transform: translateY(0);
+  }
+
+  /* ---- 面板「全屏 / 退出全屏」切换钮 ---- */
+  .panel-fs-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  /* 城市概览没有标题栏按钮组，把这个钮浮在封面右上角 */
+  .city-panel .panel-fs-btn {
+    position: absolute;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    right: 12px;
+    z-index: 4;
+    background: rgba(10, 14, 23, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
   }
 
   .drawer-head {

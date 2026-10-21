@@ -11,6 +11,7 @@ import { BgImage } from '../shared/BgImage';
 import { bgKey } from '../../stores/backgrounds';
 import { VisitedMark } from '../shared/VisitedMark';
 import { HeartMark } from '../shared/HeartMark';
+import { PanelFullscreenBtn } from '../shared/PanelFullscreenBtn';
 import { WeatherCard } from './WeatherCard';
 
 function fmtDate(at: number): string {
@@ -21,6 +22,8 @@ function fmtDate(at: number): string {
 
 export function DistrictDrawer() {
   const open = useUi((s) => s.drawerOpen);
+  const panelFullscreen = useUi((s) => s.panelFullscreen);
+  const togglePanelFullscreen = useUi((s) => s.togglePanelFullscreen);
   const favorites = useUi((s) => s.favorites);
   const toggleFavorite = useUi((s) => s.toggleFavorite);
   const openTravelWithPlace = useUi((s) => s.openTravelWithPlace);
@@ -55,7 +58,10 @@ export function DistrictDrawer() {
     : [];
 
   return (
-    <aside className={`drawer${open && district ? ' is-open' : ''}`} aria-hidden={!open}>
+    <aside
+      className={`drawer${open && district ? ' is-open' : ''}${panelFullscreen ? ' is-full' : ''}`}
+      aria-hidden={!open}
+    >
       {district && (
         <div className="drawer-inner">
           <header className="drawer-head">
@@ -66,6 +72,7 @@ export function DistrictDrawer() {
               <h2 className="drawer-title">{district.name}</h2>
             </div>
             <div className="drawer-head-actions">
+              <PanelFullscreenBtn />
               <button
                 className={`icon-btn icon-btn--fav${favored ? ' is-on' : ''}`}
                 title={favored ? '取消收藏该区县' : '收藏该区县'}
@@ -80,7 +87,14 @@ export function DistrictDrawer() {
               >
                 <VisitedMark on={visitedDistrict} />
               </button>
-              <button className="icon-btn" title="关闭" onClick={clearDistrictSelection}>
+              <button
+                className="icon-btn"
+                title="关闭"
+                onClick={() => {
+                  clearDistrictSelection();
+                  togglePanelFullscreen(false);
+                }}
+              >
                 ×
               </button>
             </div>
