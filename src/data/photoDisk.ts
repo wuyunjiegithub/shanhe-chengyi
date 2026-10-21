@@ -26,6 +26,7 @@ import {
 } from '@tauri-apps/plugin-fs';
 import { open as tauriOpenDialog } from '@tauri-apps/plugin-dialog';
 import { convertFileSrc } from '@tauri-apps/api/core';
+import { pictureDir } from '@tauri-apps/api/path';
 import { getStoredHandle, putHandle } from './photoLibrary';
 
 export type DiskKind = 'fsa' | 'tauri' | 'none';
@@ -263,6 +264,11 @@ async function ensureWritePermission(handle: FileSystemDirectoryHandle): Promise
 
 const TAURI_ROOT_KEY = 'ds.photoLib.tauriRoot.v1';
 
+/** 是否跑在 Android 套壳里（WebView UA 含 Android） */
+function isAndroidShell(): boolean {
+  return /android/i.test(navigator.userAgent);
+}
+
 function joinTauri(root: string, rel: string): string {
   const sep = root.includes('\\') && !root.includes('/') ? '\\' : '/';
   const clean = rel.replace(/[\\/]+/g, sep);
@@ -303,6 +309,21 @@ class TauriDisk implements PhotoDisk {
 
   async ensureRoot(): Promise<boolean> {
     if (await this.hasRoot()) return true;
+    // 移动端（Android 套壳）：没绑过根目录时，直接落到系统相册目录
+    // Pictures/山河城邑，省掉「选目录」这一步——相册选图即上传，所见即所得
+    if (isAndroidShell()) {
+      try {
+        const base = await pictureDir();
+        if (base) {
+          const root = `${base.replace(/[\\/]+$/, '')}/山河城邑`;
+          await tauriMkdir(root, { recursive: true });
+          this.persist(root);
+          return true;
+        }
+      } catch {
+        /* 落相册目录失败则退回手动选择 */
+      }
+    }
     return this.repickRoot();
   }
 
@@ -323,8 +344,18 @@ class TauriDisk implements PhotoDisk {
     await tauriMkdir(dir, { recursive: true });
     const written: string[] = [];
     for (const file of files) {
-      await tauriWriteFile(joinTauri(dir, file.name), new Uint8Array(await file.arrayBuffer()));
-      written.push(`${relDir}/${file.name}`);
+      // 相册导出常有同名文件（IMG_0001.jpg），逐个避让：001.jpg → 001 (1).jpg
+      let name = file.name;
+      let n = 1;
+      while (await tauriExists(joinTauri(dir, name))) {
+        const dot = file.name.lastIndexOf('.');
+        const stem = dot > 0 ? file.name.slice(0, dot) : file.name;
+        const ext = dot > 0 ? file.name.slice(dot) : '';
+        name = `${stem} (${n})${ext}`;
+        n += 1;
+      }
+      await tauriWriteFile(joinTauri(dir, name), new Uint8Array(await file.arrayBuffer()));
+      written.push(`${relDir}/${name}`);
     }
     return written;
   }

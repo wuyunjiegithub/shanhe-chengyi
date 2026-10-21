@@ -1,7 +1,7 @@
 [package]
 name = "shanhe-chengyi"
 version = "0.9.0"
-description = "山河城邑 · 3D 区县知识库"
+description = "山河城邑 · 3D 旅行记录"
 authors = ["ankon"]
 edition = "2021"
 rust-version = "1.77.2"

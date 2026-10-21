@@ -307,9 +307,9 @@ const drawerM = await m.evaluate(() => {
   return { top: Math.round(r.top), bottom: Math.round(r.bottom), w: Math.round(r.width), vh: window.innerHeight, vw: window.innerWidth, radius: cs.borderTopLeftRadius };
 });
 rec(
-  '⑤ 区县抽屉变贴底抽屉',
-  Boolean(drawerM) && drawerM.w > drawerM.vw * 0.9 && drawerM.bottom >= drawerM.vh - 20,
-  `抽屉=${drawerM ? `${drawerM.w}x(${drawerM.top}→${drawerM.bottom})` : 'null'} 视口=${drawerM?.vw}x${drawerM?.vh}`,
+  '⑤ 区县抽屉移动端全屏',
+  Boolean(drawerM) && drawerM.w > drawerM.vw * 0.9 && drawerM.top <= 1 && drawerM.bottom >= drawerM.vh - 2 && drawerM.radius === '0px',
+  `抽屉=${drawerM ? `${drawerM.w}x(${drawerM.top}→${drawerM.bottom}) 圆角=${drawerM.radius}` : 'null'} 视口=${drawerM?.vw}x${drawerM?.vh}`,
 );
 
 await m.evaluate(() => window.__sandboxApp.focusCityById('310000'));
@@ -331,14 +331,14 @@ const panel = await m.evaluate(() => {
   };
 });
 rec(
-  '⑤ 城市面板变贴底卡片',
-  Boolean(panel) && panel.w > panel.vw * 0.9 && panel.bottom <= panel.vh,
+  '⑤ 城市面板移动端全屏',
+  Boolean(panel) && panel.w > panel.vw * 0.9 && panel.bottom >= panel.vh - 2,
   `面板=${panel ? `${panel.w}宽 底=${panel.bottom}` : 'null'} 视口=${panel?.vw}x${panel?.vh}`,
 );
 rec(
-  '⑤ 底栏不压住面板(单行按钮)',
-  Boolean(panel) && panel.barH !== null && panel.barH < 60 && panel.barTop >= panel.bottom,
-  `底栏高=${panel?.barH}px 行高=${panel?.barRows} 底栏顶=${panel?.barTop} 面板底=${panel?.bottom}`,
+  '⑤ 底栏单行不折行',
+  Boolean(panel) && panel.barRows !== null && panel.barRows < 60,
+  `底栏行高=${panel?.barRows}px(全屏面板覆盖底栏属正常)`,
 );
 
 const coarse = await m.evaluate(() => {

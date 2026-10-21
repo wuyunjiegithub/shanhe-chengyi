@@ -5,6 +5,9 @@ dist-ssr
 *.local
 .DS_Store
 
+# 出包产物（APK / EXE 等，体积大，本地留档即可）
+out/
+
 # Tauri
 src-tauri/target
 src-tauri/gen/android/app/build

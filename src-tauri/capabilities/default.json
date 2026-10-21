@@ -5,6 +5,8 @@
   "windows": ["main"],
   "permissions": [
     "core:default",
+    "core:app:allow-on-back-button-press",
+    "core:app:allow-exit",
     "core:window:allow-minimize",
     "core:window:allow-maximize",
     "core:window:allow-unmaximize",

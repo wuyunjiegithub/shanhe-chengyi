@@ -19,9 +19,10 @@ android {
     namespace = "com.ankon.shanhechengyi"
     signingConfigs {
         // 仅当本地存在签名密钥时才配置 release 签名（密钥不入库，克隆仓库缺密钥时退化为未签名构建）
-        if (file("../../shanhe-chengyi.jks").exists()) {
+        // 路径相对本文件所在目录（app/），../../../ = src-tauri/
+        if (file("../../../shanhe-chengyi.jks").exists()) {
             create("release") {
-                storeFile = file("../../shanhe-chengyi.jks")
+                storeFile = file("../../../shanhe-chengyi.jks")
                 storePassword = "shanhechengyi"
                 keyAlias = "shanhe-chengyi"
                 keyPassword = "shanhechengyi"

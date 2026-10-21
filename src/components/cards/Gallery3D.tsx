@@ -20,6 +20,10 @@ export interface HallItem {
 const PHOTO_H = 2.9;
 const MAX_PHOTOS = 220;
 
+/** 触屏设备：星点更密更亮、机位更广、照片略大——小屏也要有星海的冲击力 */
+const IS_MOBILE =
+  typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+
 const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
 /** 画幅极端时把宽高比夹一下，避免超长全景 / 竖图把画面拉爆 */
@@ -142,23 +146,28 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     // 移动端 GPU 带宽有限，像素比封顶 1.5，避免大屏手机掉帧
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, IS_MOBILE ? 2 : 1.5));
     renderer.setSize(mount.clientWidth || 640, mount.clientHeight || 420);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    // ACES 色调映射：纯色 MeshBasic 的画面加一层电影感对比——
+    // 发光更亮、暗部不死黑，PC 与手机端的「惊艳感」主要靠它
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = IS_MOBILE ? 1.3 : 1.12;
     mount.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#05070d');
+    scene.background = new THREE.Color('#04060c');
 
     const camera = new THREE.PerspectiveCamera(
-      52,
+      IS_MOBILE ? 58 : 52,
       (mount.clientWidth || 640) / (mount.clientHeight || 420),
       0.1,
       600,
     );
 
     // 照片云的半径随照片数量增长，保证间距不挤；照片少时收紧，别让画面空荡
-    const R = Math.min(32, Math.max(7.5, 6.5 + 1.45 * Math.sqrt(n)));
+    // 手机竖屏水平视野窄，半径下限放大一点，别让旋臂挤成一团
+    const R = Math.min(32, Math.max(IS_MOBILE ? 9 : 7.5, 6.5 + 1.45 * Math.sqrt(n)));
     // 星系是扁盘：默认机位放到盘上方斜俯，一眼能看出旋臂结构
     camera.position.set(R * 0.1, R * 1.02, R * 1.6);
 
@@ -181,6 +190,8 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     scene.add(galaxy);
 
     // 核心光晕（取代原来的实体小球）：一小一大两层 sprite，呼吸脉动
+    // 核心光晕（取代原来的实体小球）：一小一大两层 sprite，呼吸脉动。
+    // AdditiveBlending 叠加发光：光晕交叠处自然变亮，是「亮」而不是「灰」
     const coreTex = glowTexture([
       [0, 'rgba(255,255,255,0.95)'],
       [0.16, 'rgba(186,244,255,0.72)'],
@@ -190,8 +201,9 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     const coreGlowMat = new THREE.SpriteMaterial({
       map: coreTex,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.7,
       depthWrite: false,
+      blending: THREE.AdditiveBlending,
     });
     const coreGlow = new THREE.Sprite(coreGlowMat);
     coreGlow.scale.setScalar(R * 0.16);
@@ -199,8 +211,9 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     const coreHaloMat = new THREE.SpriteMaterial({
       map: coreTex,
       transparent: true,
-      opacity: 0.28,
+      opacity: 0.22,
       depthWrite: false,
+      blending: THREE.AdditiveBlending,
     });
     const coreHalo = new THREE.Sprite(coreHaloMat);
     coreHalo.scale.setScalar(R * 0.5);
@@ -209,12 +222,14 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
 
     // 旋臂引导线：照片沿同一条螺旋排布，淡淡的线作为「星系结构」的暗示
     const armOffsets = n >= 40 ? [0, Math.PI + 0.38] : [0];
+    const armOpacity = IS_MOBILE ? 0.3 : 0.22;
     for (const off of armOffsets) {
       const geo = new THREE.BufferGeometry().setFromPoints(armPoints(R, n, off));
       const mat = new THREE.LineBasicMaterial({
         color: off === 0 ? 0x22d3ee : 0x8b7bf0,
         transparent: true,
-        opacity: 0.22,
+        opacity: armOpacity,
+        blending: THREE.AdditiveBlending,
       });
       galaxy.add(new THREE.Line(geo, mat));
       disposables.push(geo, mat);
@@ -231,6 +246,8 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       [0.4, 'rgba(28,120,150,0.12)'],
       [1, 'rgba(10,50,70,0)'],
     ]);
+    // 小屏更浓一点：星云是手机上最省的「氛围面积」
+    const nebulaBoost = IS_MOBILE ? 1.5 : 1;
     const nebulaPlacements: { tex: THREE.CanvasTexture; pos: [number, number, number]; scale: number; op: number }[] = [
       { tex: nebulaTexA, pos: [-R * 1.5, R * 0.45, -R * 0.9], scale: R * 1.5, op: 0.5 },
       { tex: nebulaTexB, pos: [R * 1.7, -R * 0.3, R * 1.1], scale: R * 1.2, op: 0.42 },
@@ -238,23 +255,25 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     ];
     const nebulas: { mat: THREE.SpriteMaterial; phase: number; baseOp: number }[] = [];
     for (const p of nebulaPlacements) {
+      const baseOp = p.op * nebulaBoost;
       const mat = new THREE.SpriteMaterial({
         map: p.tex,
         transparent: true,
-        opacity: p.op,
+        opacity: baseOp,
         depthWrite: false,
+        blending: THREE.AdditiveBlending,
       });
       const s = new THREE.Sprite(mat);
       s.position.set(p.pos[0], p.pos[1], p.pos[2]);
       s.scale.setScalar(p.scale);
       scene.add(s);
-      nebulas.push({ mat, phase: Math.random() * Math.PI * 2, baseOp: p.op });
+      nebulas.push({ mat, phase: Math.random() * Math.PI * 2, baseOp });
       disposables.push(mat);
     }
     disposables.push(nebulaTexA, nebulaTexB);
 
-    // 远景星幕：球壳上撒一层细小静止星点，提供深空纵深
-    const starCount = 900;
+    // 远景星幕：球壳上撒一层细小星点，提供深空纵深；小屏更密更亮
+    const starCount = IS_MOBILE ? 1400 : 900;
     const starPos = new Float32Array(starCount * 3);
     for (let i = 0; i < starCount; i++) {
       const v = fibonacciSphere(starCount, i).multiplyScalar(R * (2.0 + Math.random() * 2.6));
@@ -266,17 +285,17 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
     const starMat = new THREE.PointsMaterial({
       color: 0xcfe0ff,
-      size: 0.11,
+      size: IS_MOBILE ? 0.13 : 0.11,
       sizeAttenuation: true,
       transparent: true,
-      opacity: 0.55,
+      opacity: IS_MOBILE ? 0.75 : 0.55,
     });
     const stars = new THREE.Points(starGeo, starMat);
     scene.add(stars);
     disposables.push(starGeo, starMat);
 
     // 盘内微尘：稀薄的星际物质，跟着星系一起转
-    const diskDustCount = 380;
+    const diskDustCount = IS_MOBILE ? 520 : 380;
     const ddPos = new Float32Array(diskDustCount * 3);
     for (let i = 0; i < diskDustCount; i++) {
       const a = Math.random() * Math.PI * 2;
@@ -292,7 +311,7 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       size: 0.07,
       sizeAttenuation: true,
       transparent: true,
-      opacity: 0.4,
+      opacity: IS_MOBILE ? 0.55 : 0.4,
     });
     const diskDust = new THREE.Points(ddGeo, ddMat);
     galaxy.add(diskDust);
@@ -557,14 +576,14 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
         node.group.position.y = y;
         node.group.lookAt(camera.position);
         const mat = node.halo.material as THREE.MeshBasicMaterial;
-        const target = on ? 0.55 : 0.12;
+        const target = on ? 0.55 : IS_MOBILE ? 0.2 : 0.12;
         mat.opacity += (target - mat.opacity) * Math.min(1, dt * 6);
       }
       // 星系动画：整盘极慢自转，核心呼吸，星云明暗浮动
       galaxy.rotation.y += dt * 0.02;
       coreGlow.scale.setScalar(R * 0.16 * (1 + Math.sin(elapsed * 0.9) * 0.07));
-      coreGlowMat.opacity = 0.72 + Math.sin(elapsed * 0.9 + 0.6) * 0.16;
-      coreHaloMat.opacity = 0.22 + Math.sin(elapsed * 0.55) * 0.07;
+      coreGlowMat.opacity = 0.58 + Math.sin(elapsed * 0.9 + 0.6) * 0.16;
+      coreHaloMat.opacity = 0.17 + Math.sin(elapsed * 0.55) * 0.07;
       for (const nb of nebulas) {
         nb.mat.opacity = nb.baseOp * (0.82 + Math.sin(elapsed * 0.3 + nb.phase) * 0.18);
       }

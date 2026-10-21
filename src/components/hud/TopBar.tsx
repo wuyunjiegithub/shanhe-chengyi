@@ -12,6 +12,7 @@ export function TopBar({ ready }: { ready: boolean }) {
   const editedCount = useData((s) => s.editedDistrictIds.length);
   const toggleDataPanel = useUi((s) => s.toggleDataPanel);
   const toggleSettings = useUi((s) => s.toggleSettings);
+  const setDistrictPickerOpen = useUi((s) => s.setDistrictPickerOpen);
   const photoTotal = usePhotoLib((s) => s.index?.total ?? 0);
   const photoLive = usePhotoLib((s) => s.live);
 
@@ -34,6 +35,16 @@ export function TopBar({ ready }: { ready: boolean }) {
       <SearchConsole />
 
       <div className="top-right">
+        {/* 移动端入口：桌面左侧常驻索引，这条按钮只在 ≤1080px 显示 */}
+        <button
+          type="button"
+          className="data-pill idx-pick-btn"
+          onClick={() => setDistrictPickerOpen(true)}
+          title="选择城市 / 区县"
+        >
+          <span className="data-pill-icon">⌖</span>
+          区县
+        </button>
         <button
           className="data-pill data-pill--photo"
           onClick={() => toggleSettings(true)}

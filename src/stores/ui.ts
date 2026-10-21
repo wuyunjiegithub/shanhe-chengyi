@@ -36,6 +36,8 @@ interface UiState {
   toast: string | null;
   photoWall: PhotoWallState | null;
   travelPrefill: TravelPrefill | null;
+  /** 移动端「选择城市 / 区县」全屏面板（桌面有左侧索引，看不到这个按钮） */
+  districtPickerOpen: boolean;
 
   openDrawer: () => void;
   closeDrawer: () => void;
@@ -53,6 +55,7 @@ interface UiState {
   setTravelPrefill: (prefill: TravelPrefill | null) => void;
   toggleDataPanel: (open?: boolean) => void;
   toggleSettings: (open?: boolean) => void;
+  setDistrictPickerOpen: (open: boolean) => void;
   openPhotoWall: (state: PhotoWallState) => void;
   closePhotoWall: () => void;
   showToast: (msg: string) => void;
@@ -83,6 +86,7 @@ export const useUi = create<UiState>((set, get) => ({
   toast: null,
   photoWall: null,
   travelPrefill: null,
+  districtPickerOpen: false,
 
   openDrawer: () => set({ drawerOpen: true, favoritesOpen: false }),
   closeDrawer: () => set({ drawerOpen: false, leafCard: null }),
@@ -201,6 +205,8 @@ export const useUi = create<UiState>((set, get) => ({
       dataPanelOpen: false,
       leafCard: null,
     })),
+
+  setDistrictPickerOpen: (districtPickerOpen) => set({ districtPickerOpen }),
 
   showToast: (msg) => {
     set({ toast: msg });

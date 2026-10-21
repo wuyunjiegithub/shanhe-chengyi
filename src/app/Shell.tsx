@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import { TopBar } from '../components/hud/TopBar';
 import { LeftIndex } from '../components/hud/LeftIndex';
+import { DistrictPicker } from '../components/hud/DistrictPicker';
 import { CityPanel } from '../components/hud/CityPanel';
 import { BottomBar } from '../components/hud/BottomBar';
 import { DistrictDrawer } from '../components/drawer/DistrictDrawer';
@@ -24,6 +25,7 @@ import {
   teardownSandbox,
   updateMarkers,
 } from './sandbox';
+import { setupBackButton } from './backButton';
 
 const HOVER_KIND: Record<string, string> = {
   city: '城市',
@@ -75,6 +77,11 @@ export function Shell() {
   // 自定义背景图：把 localStorage 里的「地点 → 图片 id」解析成可用的 object URL
   useEffect(() => {
     void useBackgrounds.getState().hydrate();
+  }, []);
+
+  // Android 物理返回键：关当前弹框，连按两次才退出（桌面 / 浏览器自动跳过）
+  useEffect(() => {
+    void setupBackButton();
   }, []);
 
   useEffect(() => {
@@ -139,6 +146,7 @@ export function Shell() {
 
       <TopBar ready={ready} />
       <LeftIndex />
+      <DistrictPicker />
       <CityPanel />
       <BottomBar />
       <DistrictDrawer />
