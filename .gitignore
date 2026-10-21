@@ -1,0 +1,23 @@
+# 依赖与构建产物
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+
+# Tauri
+src-tauri/target
+src-tauri/gen/android/app/build
+src-tauri/gen/android/.gradle
+src-tauri/gen/android/app/.cxx
+
+# 工具链缓存 / 临时目录
+.cache/
+.chrome-tmp/
+.trae-html-share-packages/
+
+# 本地工作数据（记忆、测试截图、日志）
+.workbuddy/
+regression-shots/
+shots/
+*.log

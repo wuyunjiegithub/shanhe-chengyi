@@ -1,0 +1,3447 @@
+[
+  {
+    "id": "320100",
+    "name": "南京市",
+    "province": "江苏省",
+    "districts": [
+      "320102",
+      "320104",
+      "320105",
+      "320106",
+      "320111",
+      "320113",
+      "320114",
+      "320115",
+      "320116",
+      "320117",
+      "320118"
+    ],
+    "indexed": true,
+    "intro": "六朝烟水与民国风云，长江边最厚重的江城。",
+    "featuredDistricts": [
+      "320102",
+      "320104",
+      "320105"
+    ],
+    "foods": [
+      {
+        "name": "南京盐水鸭",
+        "category": "金陵菜",
+        "recommend": "老字号",
+        "note": "皮白肉嫩、咸香入骨，金陵菜的头块招牌。",
+        "image": "/assets/cities/320100/food-南京盐水鸭.jpg"
+      },
+      {
+        "name": "鸭血粉丝汤",
+        "category": "小吃",
+        "recommend": "街头",
+        "note": "鸭血鸭杂粉丝一锅滚，南京人的日瘾。",
+        "image": "/assets/cities/320100/food-鸭血粉丝汤.jpg"
+      },
+      {
+        "name": "牛肉锅贴",
+        "category": "小吃",
+        "recommend": "李记",
+        "note": "月牙形煎饺，底脆汁多，蘸醋一碟。",
+        "image": "/assets/cities/320100/food-牛肉锅贴.jpg"
+      },
+      {
+        "name": "秦淮八绝",
+        "category": "小吃",
+        "recommend": "夫子庙",
+        "note": "八家老字号的点心组合，一席吃遍秦淮。",
+        "image": "/assets/cities/320100/food-秦淮八绝.jpg"
+      },
+      {
+        "name": "梅花糕",
+        "category": "糕点",
+        "recommend": "老门东",
+        "note": "红豆馅上顶小元宵，出炉时形如梅花。",
+        "image": "/assets/cities/320100/food-梅花糕.jpg"
+      },
+      {
+        "name": "活珠子",
+        "category": "小吃",
+        "recommend": "六合",
+        "note": "孵化十二天的鸡胚蛋，南京一绝，配椒盐。",
+        "image": "/assets/cities/320100/food-活珠子.jpg"
+      }
+    ],
+    "poem": "江南佳丽地，金陵帝王州。",
+    "poemFrom": "谢朓《入朝曲》",
+    "urbanDistricts": [
+      {
+        "id": "320102",
+        "name": "玄武区"
+      },
+      {
+        "id": "320104",
+        "name": "秦淮区"
+      },
+      {
+        "id": "320105",
+        "name": "建邺区"
+      },
+      {
+        "id": "320106",
+        "name": "鼓楼区"
+      },
+      {
+        "id": "320113",
+        "name": "栖霞区"
+      },
+      {
+        "id": "320114",
+        "name": "雨花台区"
+      },
+      {
+        "id": "320115",
+        "name": "江宁区"
+      }
+    ],
+    "urbanNote": "主城六区沿秦淮河与长江两岸铺开，紫金山在东、莫愁湖在西，城墙圈住老城，河西是新城中轴。",
+    "banner": "/assets/cities/320100/banner.jpg"
+  },
+  {
+    "id": "320200",
+    "name": "无锡市",
+    "province": "江苏省",
+    "districts": [
+      "320205",
+      "320206",
+      "320211",
+      "320213",
+      "320214",
+      "320281",
+      "320282"
+    ],
+    "indexed": true,
+    "intro": "太湖岸边的甜味之城，二泉映月与鼋头渚。",
+    "featuredDistricts": [
+      "320205",
+      "320206",
+      "320211"
+    ],
+    "foods": [
+      {
+        "name": "无锡酱排骨",
+        "category": "锡帮菜",
+        "recommend": "王兴记",
+        "note": "冰糖收汁、骨酥肉烂，甜口是无锡的底色。",
+        "image": "/assets/cities/320200/food-无锡酱排骨.jpg"
+      },
+      {
+        "name": "无锡小笼",
+        "category": "小吃",
+        "recommend": "熙盛源",
+        "note": "皮薄汁足、甜口馅心，一笼四只先吸汤。",
+        "image": "/assets/cities/320200/food-无锡小笼.jpg"
+      },
+      {
+        "name": "银丝面",
+        "category": "面食",
+        "recommend": "老城中",
+        "note": "细如发丝的爽面，白汤红汤两宜。",
+        "image": "/assets/cities/320200/food-银丝面.jpg"
+      },
+      {
+        "name": "太湖三白",
+        "category": "江鲜",
+        "recommend": "鼋头渚",
+        "note": "白鱼、白虾、银鱼，清水湖鲜最见本味。",
+        "image": "/assets/cities/320200/food-太湖三白.jpg"
+      },
+      {
+        "name": "玉兰饼",
+        "category": "糕点",
+        "recommend": "崇安寺",
+        "note": "糯米皮包肉馅油炸，外糯内香。",
+        "image": "/assets/cities/320200/food-玉兰饼.jpg"
+      },
+      {
+        "name": "清水油面筋",
+        "category": "土菜",
+        "recommend": "各处",
+        "note": "油面筋塞肉，无锡人家的家常菜。",
+        "image": "/assets/cities/320200/food-清水油面筋.jpg"
+      }
+    ],
+    "poem": "太湖美，太湖美，美就美在太湖水。",
+    "poemFrom": "《太湖美》· 任红举",
+    "urbanDistricts": [
+      {
+        "id": "320205",
+        "name": "锡山区"
+      },
+      {
+        "id": "320206",
+        "name": "惠山区"
+      },
+      {
+        "id": "320211",
+        "name": "滨湖区"
+      },
+      {
+        "id": "320213",
+        "name": "梁溪区"
+      },
+      {
+        "id": "320214",
+        "name": "新吴区"
+      }
+    ],
+    "urbanNote": "梁溪与滨湖守着老城和太湖岸线，锡山、惠山分列东西，新吴在东南接苏州。",
+    "banner": "/assets/cities/320200/banner.jpg"
+  },
+  {
+    "id": "320300",
+    "name": "徐州市",
+    "province": "江苏省",
+    "districts": [
+      "320302",
+      "320303",
+      "320305",
+      "320311",
+      "320312",
+      "320321",
+      "320322",
+      "320324",
+      "320381",
+      "320382"
+    ],
+    "indexed": true,
+    "intro": "彭祖故国与帝王之乡，黄淮之间的五省通衢。",
+    "featuredDistricts": [
+      "320302",
+      "320303",
+      "320305"
+    ],
+    "foods": [
+      {
+        "name": "徐州羊肉汤",
+        "category": "小吃",
+        "recommend": "街头",
+        "note": "伏天羊汤配壮馍，伏羊节一碗接一碗。",
+        "image": "/assets/cities/320300/food-徐州羊肉汤.jpg"
+      },
+      {
+        "name": "饣它汤",
+        "category": "小吃",
+        "recommend": "马市街",
+        "note": "老母鸡汤冲麦仁，彭祖的养生方。",
+        "image": "/assets/cities/320300/food-饣它汤.jpg"
+      },
+      {
+        "name": "地锅鸡",
+        "category": "土菜",
+        "recommend": "市区",
+        "note": "铁锅贴饼、柴火慢焖，苏北待客菜。",
+        "image": "/assets/cities/320300/food-地锅鸡.jpg"
+      },
+      {
+        "name": "把子肉",
+        "category": "小吃",
+        "recommend": "老街",
+        "note": "五花肉长炖，浇汁下饭三碗。",
+        "image": "/assets/cities/320300/food-把子肉.jpg"
+      },
+      {
+        "name": "烙馍卷馓子",
+        "category": "小吃",
+        "recommend": "巷口",
+        "note": "薄烙馍裹馓子与咸菜，越嚼越香。",
+        "image": "/assets/cities/320300/food-烙馍卷馓子.jpg"
+      },
+      {
+        "name": "小孩酥糖",
+        "category": "糕点",
+        "recommend": "老城",
+        "note": "酥糖一咬掉渣，徐州人的童年味。",
+        "image": "/assets/cities/320300/food-小孩酥糖.jpg"
+      }
+    ],
+    "poem": "大风起兮云飞扬，威加海内兮归故乡。",
+    "poemFrom": "刘邦《大风歌》",
+    "urbanDistricts": [
+      {
+        "id": "320302",
+        "name": "鼓楼区"
+      },
+      {
+        "id": "320303",
+        "name": "云龙区"
+      },
+      {
+        "id": "320305",
+        "name": "贾汪区"
+      },
+      {
+        "id": "320311",
+        "name": "泉山区"
+      },
+      {
+        "id": "320312",
+        "name": "铜山区"
+      }
+    ],
+    "urbanNote": "城区跨黄河故道展开，鼓楼、云龙、泉山是老三城，铜山向南，贾汪在东北接枣庄。",
+    "banner": "/assets/cities/320300/banner.jpg"
+  },
+  {
+    "id": "320400",
+    "name": "常州市",
+    "province": "江苏省",
+    "districts": [
+      "320402",
+      "320404",
+      "320411",
+      "320412",
+      "320413",
+      "320481"
+    ],
+    "indexed": true,
+    "intro": "运河边的龙城，天宁寺钟声与恐龙的故乡。",
+    "featuredDistricts": [
+      "320402",
+      "320404",
+      "320411"
+    ],
+    "foods": [
+      {
+        "name": "常州银丝面",
+        "category": "面食",
+        "recommend": "百年老店",
+        "note": "细面爽滑，白汤鳝丝、红汤焖肉都妙。",
+        "image": "/assets/cities/320400/food-常州银丝面.jpg"
+      },
+      {
+        "name": "加蟹小笼包",
+        "category": "小吃",
+        "recommend": "迎桂",
+        "note": "皮薄兜住一包蟹油，先吸汤再蘸姜醋。",
+        "image": "/assets/cities/320400/food-加蟹小笼包.jpg"
+      },
+      {
+        "name": "大麻糕",
+        "category": "糕点",
+        "recommend": "西瀛里",
+        "note": "酥层如纸，咸甜两味，常州早茶C位。",
+        "image": "/assets/cities/320400/food-大麻糕.jpg"
+      },
+      {
+        "name": "萝卜干",
+        "category": "酱菜",
+        "recommend": "新闸",
+        "note": "黄土地上晒出的脆甜，配粥一绝。",
+        "image": "/assets/cities/320400/food-萝卜干.jpg"
+      },
+      {
+        "name": "天目湖鱼头",
+        "category": "江鲜",
+        "recommend": "溧阳",
+        "note": "沙河鱼头炖出奶白汤，无椒自鲜。",
+        "image": "/assets/cities/320400/food-天目湖鱼头.jpg"
+      },
+      {
+        "name": "湟里牛肉",
+        "category": "土菜",
+        "recommend": "湟里镇",
+        "note": "黄牛慢卤，切片冷食最香。",
+        "image": "/assets/cities/320400/food-湟里牛肉.jpg"
+      }
+    ],
+    "poem": "江山代有才人出，各领风骚数百年。",
+    "poemFrom": "赵翼《论诗》",
+    "urbanDistricts": [
+      {
+        "id": "320402",
+        "name": "天宁区"
+      },
+      {
+        "id": "320404",
+        "name": "钟楼区"
+      },
+      {
+        "id": "320411",
+        "name": "新北区"
+      },
+      {
+        "id": "320412",
+        "name": "武进区"
+      },
+      {
+        "id": "320413",
+        "name": "金坛区"
+      }
+    ],
+    "urbanNote": "天宁、钟楼沿运河与关河抱团，武进在南，新北跨长江向北，金坛在西南接茅山。",
+    "banner": "/assets/cities/320400/banner.jpg"
+  },
+  {
+    "id": "320500",
+    "name": "苏州市",
+    "province": "江苏省",
+    "districts": [
+      "320505",
+      "320506",
+      "320507",
+      "320508",
+      "320509",
+      "320581",
+      "320582",
+      "320583",
+      "320585"
+    ],
+    "indexed": true,
+    "intro": "园林与水乡是骨架，太湖与运河之间藏着最细的江南。",
+    "featuredDistricts": [
+      "320505",
+      "320506",
+      "320507"
+    ],
+    "foods": [
+      {
+        "name": "松鼠桂鱼",
+        "category": "苏帮菜",
+        "recommend": "松鹤楼",
+        "note": "改刀油炸、浇糖醋汁，上桌时吱吱作响，苏帮菜的门面。",
+        "image": "/assets/cities/320500/food-松鼠桂鱼.jpg"
+      },
+      {
+        "name": "苏州糕团",
+        "category": "糕点",
+        "recommend": "黄天源",
+        "note": "猪油年糕、薄荷糕、海棠糕，老字号一屉屉蒸出来。",
+        "image": "/assets/cities/320500/food-苏州糕团.jpg"
+      },
+      {
+        "name": "奥灶面",
+        "category": "面食",
+        "recommend": "昆山奥灶馆",
+        "note": "红油爆鱼面与白汤卤鸭面，汤头浓鲜，昆山第一面。",
+        "image": "/assets/cities/320500/food-奥灶面.jpg"
+      },
+      {
+        "name": "阳澄湖大闸蟹",
+        "category": "江鲜",
+        "recommend": "阳澄湖",
+        "note": "金爪黄毛、膏满黄肥，九月后最当令。",
+        "image": "/assets/cities/320500/food-阳澄湖大闸蟹.jpg"
+      },
+      {
+        "name": "响油鳝糊",
+        "category": "苏帮菜",
+        "recommend": "得月楼",
+        "note": "鳝丝热油现泼，蒜香扑鼻，镬气十足。",
+        "image": "/assets/cities/320500/food-响油鳝糊.jpg"
+      },
+      {
+        "name": "糖粥",
+        "category": "小吃",
+        "recommend": "桃花源记",
+        "note": "赤豆圆子甜粥，老苏州记忆里的一口甜。",
+        "image": "/assets/cities/320500/food-糖粥.jpg"
+      }
+    ],
+    "poem": "君到姑苏见，人家尽枕河。",
+    "poemFrom": "杜荀鹤《送人游吴》",
+    "urbanDistricts": [
+      {
+        "id": "320508",
+        "name": "姑苏区"
+      },
+      {
+        "id": "320505",
+        "name": "虎丘区"
+      },
+      {
+        "id": "320506",
+        "name": "吴中区"
+      },
+      {
+        "id": "320507",
+        "name": "相城区"
+      },
+      {
+        "id": "320509",
+        "name": "吴江区"
+      },
+      {
+        "id": "320571",
+        "name": "苏州工业园区"
+      }
+    ],
+    "urbanNote": "古城在姑苏、虎丘一带，护城河与平江路保留水陆并行格局；工业园区向东拓出新的城市天际线。",
+    "banner": "/assets/cities/320500/banner.jpg"
+  },
+  {
+    "id": "320600",
+    "name": "南通市",
+    "province": "江苏省",
+    "districts": [
+      "320602",
+      "320612",
+      "320623",
+      "320681",
+      "320682",
+      "320684",
+      "320685"
+    ],
+    "indexed": true,
+    "intro": "江海门户，濠河边的近代第一城。",
+    "featuredDistricts": [
+      "320602",
+      "320612",
+      "320623"
+    ],
+    "foods": [
+      {
+        "name": "曹顶跳面",
+        "category": "面食",
+        "recommend": "老城",
+        "note": "擀面杖跳出来的韧面，抗倭英雄的家乡面。",
+        "image": "/assets/cities/320600/food-曹顶跳面.jpg"
+      },
+      {
+        "name": "西亭脆饼",
+        "category": "糕点",
+        "recommend": "西亭",
+        "note": "十八层酥脆，芝麻香透，百年老炉。",
+        "image": "/assets/cities/320600/food-西亭脆饼.jpg"
+      },
+      {
+        "name": "如东文蛤",
+        "category": "江鲜",
+        "recommend": "如东滩涂",
+        "note": "「天下第一鲜」，清水一煮就鲜甜。",
+        "image": "/assets/cities/320600/food-如东文蛤.jpg"
+      },
+      {
+        "name": "白切狼山鸡",
+        "category": "土菜",
+        "recommend": "狼山",
+        "note": "狼山鸡皮薄肉嫩，白切蘸酱。",
+        "image": "/assets/cities/320600/food-白切狼山鸡.jpg"
+      },
+      {
+        "name": "林梓潮糕",
+        "category": "糕点",
+        "recommend": "林梓镇",
+        "note": "糯米潮糕，松甜不粘牙。",
+        "image": "/assets/cities/320600/food-林梓潮糕.jpg"
+      }
+    ],
+    "poem": "",
+    "poemFrom": "",
+    "urbanDistricts": [
+      {
+        "id": "320602",
+        "name": "崇川区"
+      },
+      {
+        "id": "320612",
+        "name": "通州区"
+      },
+      {
+        "id": "320684",
+        "name": "海门区"
+      }
+    ],
+    "urbanNote": "崇川守着濠河老城与长江口，通州、海门向东铺开，苏通大桥过江即到苏南。",
+    "banner": "/assets/cities/320600/banner.jpg"
+  },
+  {
+    "id": "320700",
+    "name": "连云港市",
+    "province": "江苏省",
+    "districts": [
+      "320703",
+      "320706",
+      "320707",
+      "320722",
+      "320723",
+      "320724"
+    ],
+    "indexed": true,
+    "intro": "欧亚大陆桥头堡，花果山下的港城。",
+    "featuredDistricts": [
+      "320703",
+      "320706",
+      "320707"
+    ],
+    "foods": [
+      {
+        "name": "沙光鱼",
+        "category": "江鲜",
+        "recommend": "海边",
+        "note": "淮北盐场的「时髦鱼」，肉质细嫩只此一季。",
+        "image": "/assets/cities/320700/food-沙光鱼.jpg"
+      },
+      {
+        "name": "东方对虾",
+        "category": "海鲜",
+        "recommend": "赣榆",
+        "note": "黄海对虾，白灼蘸姜醋最鲜。",
+        "image": "/assets/cities/320700/food-东方对虾.jpg"
+      },
+      {
+        "name": "板浦凉粉",
+        "category": "小吃",
+        "recommend": "板浦镇",
+        "note": "豌豆凉粉，香醋辣椒油一拌，夏天救命。",
+        "image": "/assets/cities/320700/food-板浦凉粉.jpg"
+      },
+      {
+        "name": "赣榆煎饼",
+        "category": "小吃",
+        "recommend": "赣榆",
+        "note": "杂粮煎饼卷大葱，耐放顶饿。",
+        "image": "/assets/cities/320700/food-赣榆煎饼.jpg"
+      },
+      {
+        "name": "灌云豆丹",
+        "category": "土菜",
+        "recommend": "灌云",
+        "note": "大豆天蛾幼虫烹制，高蛋白的连云奇味。",
+        "image": "/assets/cities/320700/food-灌云豆丹.jpg"
+      }
+    ],
+    "poem": "花果山福地，水帘洞洞天。",
+    "poemFrom": "吴承恩《西游记》",
+    "urbanDistricts": [
+      {
+        "id": "320703",
+        "name": "连云区"
+      },
+      {
+        "id": "320706",
+        "name": "海州区"
+      },
+      {
+        "id": "320707",
+        "name": "赣榆区"
+      }
+    ],
+    "urbanNote": "海州与连云在陇海铁路尽头汇合，赣榆在北部，港口、老街与连岛串成海岸线。",
+    "banner": "/assets/cities/320700/banner.jpg"
+  },
+  {
+    "id": "320800",
+    "name": "淮安市",
+    "province": "江苏省",
+    "districts": [
+      "320803",
+      "320804",
+      "320812",
+      "320813",
+      "320826",
+      "320830",
+      "320831"
+    ],
+    "indexed": true,
+    "intro": "运河之都，淮扬菜的另一半故乡。",
+    "featuredDistricts": [
+      "320803",
+      "320804",
+      "320812"
+    ],
+    "foods": [
+      {
+        "name": "盱眙龙虾",
+        "category": "江鲜",
+        "recommend": "盱眙",
+        "note": "十三香与清水两派，夏天万人剥虾。",
+        "image": "/assets/cities/320800/food-盱眙龙虾.jpg"
+      },
+      {
+        "name": "淮安软兜",
+        "category": "淮扬菜",
+        "recommend": "老城",
+        "note": "鳝背烫炒、乌黑透亮，长鱼席的头牌。",
+        "image": "/assets/cities/320800/food-淮安软兜.jpg"
+      },
+      {
+        "name": "平桥豆腐",
+        "category": "淮扬菜",
+        "recommend": "平桥",
+        "note": "豆腐切成菱形，鸡汤海参吊鲜。",
+        "image": "/assets/cities/320800/food-平桥豆腐.jpg"
+      },
+      {
+        "name": "茶馓",
+        "category": "小吃",
+        "recommend": "老城",
+        "note": "细如线绳的馓子，泡汤或干嚼两宜。",
+        "image": "/assets/cities/320800/food-茶馓.jpg"
+      },
+      {
+        "name": "洪泽湖大闸蟹",
+        "category": "江鲜",
+        "recommend": "洪泽湖",
+        "note": "与阳澄湖同水系，秋令蟹肥。",
+        "image": "/assets/cities/320800/food-洪泽湖大闸蟹.jpg"
+      },
+      {
+        "name": "淮饺",
+        "category": "小吃",
+        "recommend": "街头",
+        "note": "皮薄馅嫩的馄饨，淮安人念它一辈子。",
+        "image": "/assets/cities/320800/food-淮饺.jpg"
+      }
+    ],
+    "poem": "皇帝轮流做，明年到我家。",
+    "poemFrom": "吴承恩《西游记》",
+    "urbanDistricts": [
+      {
+        "id": "320803",
+        "name": "淮安区"
+      },
+      {
+        "id": "320804",
+        "name": "淮阴区"
+      },
+      {
+        "id": "320812",
+        "name": "清江浦区"
+      },
+      {
+        "id": "320813",
+        "name": "洪泽区"
+      }
+    ],
+    "urbanNote": "清江浦是运河之都的市中心，淮安区守着东南古城与周恩来故居，洪泽湖在西。",
+    "banner": "/assets/cities/320800/banner.jpg"
+  },
+  {
+    "id": "320900",
+    "name": "盐城市",
+    "province": "江苏省",
+    "districts": [
+      "320902",
+      "320903",
+      "320904",
+      "320921",
+      "320922",
+      "320923",
+      "320924",
+      "320925",
+      "320981"
+    ],
+    "indexed": true,
+    "intro": "湿地之都，麋鹿与丹顶鹤的滩涂之城。",
+    "featuredDistricts": [
+      "320902",
+      "320903",
+      "320904"
+    ],
+    "foods": [
+      {
+        "name": "盐城鸡蛋饼",
+        "category": "小吃",
+        "recommend": "街头",
+        "note": "面糊摊皮裹油条，盐城人的晨间仪式。",
+        "image": "/assets/cities/320900/food-盐城鸡蛋饼.jpg"
+      },
+      {
+        "name": "东台鱼汤面",
+        "category": "面食",
+        "recommend": "东台",
+        "note": "鲫鱼吊汤煮细面，汤白如乳。",
+        "image": "/assets/cities/320900/food-东台鱼汤面.jpg"
+      },
+      {
+        "name": "建湖藕粉圆",
+        "category": "糕点",
+        "recommend": "建湖",
+        "note": "藕粉做皮、五仁为馅，滑糯不腻。",
+        "image": "/assets/cities/320900/food-建湖藕粉圆.jpg"
+      },
+      {
+        "name": "阜宁大糕",
+        "category": "糕点",
+        "recommend": "阜宁",
+        "note": "糯米糕片，春节家家切片待客。",
+        "image": "/assets/cities/320900/food-阜宁大糕.jpg"
+      },
+      {
+        "name": "大纵湖醉蟹",
+        "category": "江鲜",
+        "recommend": "大纵湖",
+        "note": "甜酒醉制，蟹黄凝膏、酒香回甘。",
+        "image": "/assets/cities/320900/food-大纵湖醉蟹.jpg"
+      },
+      {
+        "name": "伍佑醉螺",
+        "category": "海鲜",
+        "recommend": "伍佑",
+        "note": "泥螺酒醉，配白粥的清晨小菜。",
+        "image": "/assets/cities/320900/food-伍佑醉螺.jpg"
+      }
+    ],
+    "poem": "",
+    "poemFrom": "",
+    "urbanDistricts": [
+      {
+        "id": "320902",
+        "name": "亭湖区"
+      },
+      {
+        "id": "320903",
+        "name": "盐都区"
+      },
+      {
+        "id": "320904",
+        "name": "大丰区"
+      }
+    ],
+    "urbanNote": "亭湖与盐都是双城心，大丰在东南，滩涂湿地一路铺到黄海边的保护区。",
+    "banner": "/assets/cities/320900/banner.jpg"
+  },
+  {
+    "id": "321000",
+    "name": "扬州市",
+    "province": "江苏省",
+    "districts": [
+      "321002",
+      "321003",
+      "321012",
+      "321023",
+      "321081",
+      "321084"
+    ],
+    "indexed": true,
+    "intro": "淮左名都，运河与瘦西湖之间的慢城。",
+    "featuredDistricts": [
+      "321002",
+      "321003",
+      "321012"
+    ],
+    "foods": [
+      {
+        "name": "扬州炒饭",
+        "category": "淮扬菜",
+        "recommend": "各处",
+        "note": "火腿虾仁青豆一样不能少，粒粒分明的招牌。",
+        "image": "/assets/cities/321000/food-扬州炒饭.jpg"
+      },
+      {
+        "name": "蟹粉狮子头",
+        "category": "淮扬菜",
+        "recommend": "趣园",
+        "note": "清炖狮子头，蟹粉点睛，入口即化。",
+        "image": "/assets/cities/321000/food-蟹粉狮子头.jpg"
+      },
+      {
+        "name": "大煮干丝",
+        "category": "淮扬菜",
+        "recommend": "花园茶楼",
+        "note": "干丝鸡汤慢煮，刀工见淮扬功底。",
+        "image": "/assets/cities/321000/food-大煮干丝.jpg"
+      },
+      {
+        "name": "富春茶点",
+        "category": "糕点",
+        "recommend": "富春",
+        "note": "三丁包、翡翠烧卖，皮包水早茶的代表。",
+        "image": "/assets/cities/321000/food-富春茶点.jpg"
+      },
+      {
+        "name": "高邮咸鸭蛋",
+        "category": "江鲜",
+        "recommend": "高邮",
+        "note": "双黄流油，汪曾祺写过的那一枚。",
+        "image": "/assets/cities/321000/food-高邮咸鸭蛋.jpg"
+      },
+      {
+        "name": "牛皮糖",
+        "category": "糕点",
+        "recommend": "东关街",
+        "note": "芝麻糖叠如牛皮，韧甜不粘牙。",
+        "image": "/assets/cities/321000/food-牛皮糖.jpg"
+      }
+    ],
+    "poem": "二十四桥明月夜，玉人何处教吹箫。",
+    "poemFrom": "杜牧《寄扬州韩绰判官》",
+    "urbanDistricts": [
+      {
+        "id": "321002",
+        "name": "广陵区"
+      },
+      {
+        "id": "321003",
+        "name": "邗江区"
+      },
+      {
+        "id": "321012",
+        "name": "江都区"
+      }
+    ],
+    "urbanNote": "广陵与邗江隔古运河对望，江都在江东，瘦西湖到长江一路都是扬州。",
+    "banner": "/assets/cities/321000/banner.jpg"
+  },
+  {
+    "id": "321100",
+    "name": "镇江市",
+    "province": "江苏省",
+    "districts": [
+      "321102",
+      "321111",
+      "321112",
+      "321181",
+      "321182",
+      "321183"
+    ],
+    "indexed": true,
+    "intro": "三山一渡的江城，香醋与锅盖面的故乡。",
+    "featuredDistricts": [
+      "321102",
+      "321111",
+      "321112"
+    ],
+    "foods": [
+      {
+        "name": "镇江肴肉",
+        "category": "镇扬菜",
+        "recommend": "宴春",
+        "note": "水晶肴肉，蘸姜丝香醋，下酒头牌。",
+        "image": "/assets/cities/321100/food-镇江肴肉.jpg"
+      },
+      {
+        "name": "镇江香醋",
+        "category": "调味",
+        "recommend": "各处",
+        "note": "酸而不涩、香而微甜，镇江的液态名片。",
+        "image": "/assets/cities/321100/food-镇江香醋.jpg"
+      },
+      {
+        "name": "锅盖面",
+        "category": "面食",
+        "recommend": "街头",
+        "note": "大锅小锅盖同煮，跳煮出面劲道，配肴肉正好。",
+        "image": "/assets/cities/321100/food-锅盖面.jpg"
+      },
+      {
+        "name": "蟹黄汤包",
+        "category": "小吃",
+        "recommend": "宴春",
+        "note": "皮薄兜住蟹黄汤，先开窗后喝汤。",
+        "image": "/assets/cities/321100/food-蟹黄汤包.jpg"
+      },
+      {
+        "name": "茅山老鹅",
+        "category": "土菜",
+        "recommend": "茅山",
+        "note": "卤老鹅咸香透骨，斩件下酒。",
+        "image": "/assets/cities/321100/food-茅山老鹅.jpg"
+      },
+      {
+        "name": "东乡羊肉",
+        "category": "土菜",
+        "recommend": "大港",
+        "note": "秋冬羊肉锅，汤浓肉酥。",
+        "image": "/assets/cities/321100/food-东乡羊肉.jpg"
+      }
+    ],
+    "poem": "洛阳亲友如相问，一片冰心在玉壶。",
+    "poemFrom": "王昌龄《芙蓉楼送辛渐》",
+    "urbanDistricts": [
+      {
+        "id": "321102",
+        "name": "京口区"
+      },
+      {
+        "id": "321111",
+        "name": "润州区"
+      },
+      {
+        "id": "321112",
+        "name": "丹徒区"
+      }
+    ],
+    "urbanNote": "京口、润州夹长江而立，丹徒在南，金山、焦山、北固山圈出江城格局。",
+    "banner": "/assets/cities/321100/banner.jpg"
+  },
+  {
+    "id": "321200",
+    "name": "泰州市",
+    "province": "江苏省",
+    "districts": [
+      "321202",
+      "321203",
+      "321204",
+      "321281",
+      "321282",
+      "321283"
+    ],
+    "indexed": true,
+    "intro": "凤城河畔的水城，溱潼会船与早茶名城。",
+    "featuredDistricts": [
+      "321202",
+      "321203",
+      "321204"
+    ],
+    "foods": [
+      {
+        "name": "泰州干丝",
+        "category": "淮扬菜",
+        "recommend": "老街",
+        "note": "烫干丝浇酱油香醋，早茶的头道。",
+        "image": "/assets/cities/321200/food-泰州干丝.jpg"
+      },
+      {
+        "name": "靖江蟹黄汤包",
+        "category": "小吃",
+        "recommend": "靖江",
+        "note": "汤包皮薄如纸，蟹黄饱满，先吸汤。",
+        "image": "/assets/cities/321200/food-靖江蟹黄汤包.jpg"
+      },
+      {
+        "name": "黄桥烧饼",
+        "category": "糕点",
+        "recommend": "黄桥",
+        "note": "酥层分明，肉松、萝卜丝两味。",
+        "image": "/assets/cities/321200/food-黄桥烧饼.jpg"
+      },
+      {
+        "name": "溱湖簖蟹",
+        "category": "江鲜",
+        "recommend": "溱潼",
+        "note": "簖上捕的蟹，青背白肚、膏黄饱满。",
+        "image": "/assets/cities/321200/food-溱湖簖蟹.jpg"
+      },
+      {
+        "name": "宣堡小馄饨",
+        "category": "小吃",
+        "recommend": "宣堡",
+        "note": "皮薄到透光，一碗漂浮如金鱼。",
+        "image": "/assets/cities/321200/food-宣堡小馄饨.jpg"
+      },
+      {
+        "name": "泰兴粯子粥",
+        "category": "主食",
+        "recommend": "各处",
+        "note": "大麦粯子熬粥，泰兴人的解暑恩物。",
+        "image": "/assets/cities/321200/food-泰兴粯子粥.jpg"
+      }
+    ],
+    "poem": "先天下之忧而忧，后天下之乐而乐。",
+    "poemFrom": "范仲淹《岳阳楼记》",
+    "urbanDistricts": [
+      {
+        "id": "321202",
+        "name": "海陵区"
+      },
+      {
+        "id": "321203",
+        "name": "高港区"
+      },
+      {
+        "id": "321204",
+        "name": "姜堰区"
+      }
+    ],
+    "urbanNote": "海陵是凤城河怀抱的古城，高港临江，姜堰在南，溱湖湿地接姜堰。",
+    "banner": "/assets/cities/321200/banner.jpg"
+  },
+  {
+    "id": "321300",
+    "name": "宿迁市",
+    "province": "江苏省",
+    "districts": [
+      "321302",
+      "321311",
+      "321322",
+      "321323",
+      "321324"
+    ],
+    "indexed": true,
+    "intro": "项王故里，两河之间的年轻水城。",
+    "featuredDistricts": [
+      "321302",
+      "321311",
+      "321322"
+    ],
+    "foods": [
+      {
+        "name": "水晶山楂糕",
+        "category": "糕点",
+        "recommend": "老城",
+        "note": "山楂糕晶莹，酸甜醒酒。",
+        "image": "/assets/cities/321300/food-水晶山楂糕.jpg"
+      },
+      {
+        "name": "骆马湖鱼头",
+        "category": "江鲜",
+        "recommend": "骆马湖",
+        "note": "花鲢头炖汤，汤色乳白。",
+        "image": "/assets/cities/321300/food-骆马湖鱼头.jpg"
+      },
+      {
+        "name": "车轮饼",
+        "category": "糕点",
+        "recommend": "街头",
+        "note": "圆形酥饼，冰糖猪油馅。",
+        "image": "/assets/cities/321300/food-车轮饼.jpg"
+      },
+      {
+        "name": "泗阳膘鸡",
+        "category": "土菜",
+        "recommend": "泗阳",
+        "note": "鸡蛋皮卷肉泥蒸制，切如白玉。",
+        "image": "/assets/cities/321300/food-泗阳膘鸡.jpg"
+      },
+      {
+        "name": "新袁羊肉",
+        "category": "土菜",
+        "recommend": "新袁",
+        "note": "羊肉汤锅，冬令进补。",
+        "image": "/assets/cities/321300/food-新袁羊肉.jpg"
+      }
+    ],
+    "poem": "力拔山兮气盖世，时不利兮骓不逝。",
+    "poemFrom": "项羽《垓下歌》",
+    "urbanDistricts": [
+      {
+        "id": "321302",
+        "name": "宿城区"
+      },
+      {
+        "id": "321311",
+        "name": "宿豫区"
+      }
+    ],
+    "urbanNote": "宿城与宿豫夹中运河而设，骆马湖在西，古城与新区分列运河两岸。",
+    "banner": "/assets/cities/321300/banner.jpg"
+  },
+  {
+    "id": "330100",
+    "name": "杭州市",
+    "province": "浙江省",
+    "districts": [
+      "330102",
+      "330105",
+      "330106",
+      "330108",
+      "330109",
+      "330110",
+      "330111",
+      "330112",
+      "330114",
+      "330113",
+      "330122",
+      "330127",
+      "330182"
+    ],
+    "indexed": true,
+    "intro": "西湖、运河、良渚与千岛湖，一座城市装下四种山水。",
+    "featuredDistricts": [
+      "330102",
+      "330105",
+      "330106"
+    ],
+    "foods": [
+      {
+        "name": "西湖醋鱼",
+        "category": "杭帮菜",
+        "recommend": "楼外楼",
+        "note": "草鱼饿养后烹，糖醋芡汁酸甜带蟹味，杭州第一块招牌。",
+        "image": "/assets/cities/330100/food-西湖醋鱼.jpg"
+      },
+      {
+        "name": "龙井虾仁",
+        "category": "杭帮菜",
+        "recommend": "山外山",
+        "note": "明前龙井配河虾仁，清鲜回甘，茶香不抢鲜。",
+        "image": "/assets/cities/330100/food-龙井虾仁.jpg"
+      },
+      {
+        "name": "片儿川",
+        "category": "面食",
+        "recommend": "奎元馆",
+        "note": "雪菜、笋片、肉片同煮，杭州人日常的一碗面。",
+        "image": "/assets/cities/330100/food-片儿川.jpg"
+      },
+      {
+        "name": "东坡肉",
+        "category": "杭帮菜",
+        "recommend": "知味观",
+        "note": "慢火焖足时辰，肥而不腻、入口即化，名字来自苏东坡。",
+        "image": "/assets/cities/330100/food-东坡肉.jpg"
+      },
+      {
+        "name": "定胜糕",
+        "category": "糕点",
+        "recommend": "河坊街",
+        "note": "糯米粉蒸制、豆沙为馅，南宋时即为送考点心。",
+        "image": "/assets/cities/330100/food-定胜糕.jpg"
+      },
+      {
+        "name": "葱包桧",
+        "category": "小吃",
+        "recommend": "后市街",
+        "note": "薄饼裹油条与葱压烤至脆，名字里带着对秦桧的调侃。",
+        "image": "/assets/cities/330100/food-葱包桧.jpg"
+      }
+    ],
+    "poem": "欲把西湖比西子，淡妆浓抹总相宜。",
+    "poemFrom": "苏轼《饮湖上初晴后雨》",
+    "urbanDistricts": [
+      {
+        "id": "330102",
+        "name": "上城区"
+      },
+      {
+        "id": "330105",
+        "name": "拱墅区"
+      },
+      {
+        "id": "330106",
+        "name": "西湖区"
+      },
+      {
+        "id": "330108",
+        "name": "滨江区"
+      },
+      {
+        "id": "330109",
+        "name": "萧山区"
+      },
+      {
+        "id": "330110",
+        "name": "余杭区"
+      },
+      {
+        "id": "330113",
+        "name": "临平区"
+      },
+      {
+        "id": "330114",
+        "name": "钱塘区"
+      }
+    ],
+    "urbanNote": "主城八区沿西湖、运河与钱塘江铺开，西湖区与滨江区之间是城市的山水与天际线中轴。",
+    "banner": "/assets/cities/330100/banner.jpg"
+  },
+  {
+    "id": "330200",
+    "name": "宁波市",
+    "province": "浙江省",
+    "districts": [
+      "330203",
+      "330205",
+      "330206",
+      "330211",
+      "330212",
+      "330213",
+      "330225",
+      "330226",
+      "330281",
+      "330282"
+    ],
+    "indexed": true,
+    "intro": "书藏古今、港通天下，东海边的港城与书城。",
+    "featuredDistricts": [
+      "330203",
+      "330205",
+      "330206"
+    ],
+    "foods": [
+      {
+        "name": "宁波汤圆",
+        "category": "糕点",
+        "recommend": "缸鸭狗",
+        "note": "猪油芝麻馅，糯米皮一咬流浆。",
+        "image": "/assets/cities/330200/food-宁波汤圆.jpg"
+      },
+      {
+        "name": "红膏炝蟹",
+        "category": "海鲜",
+        "recommend": "石浦",
+        "note": "梭子蟹盐炝，生腌带膏，宁波人的下饭神器。",
+        "image": "/assets/cities/330200/food-红膏炝蟹.jpg"
+      },
+      {
+        "name": "雪菜大黄鱼",
+        "category": "海鲜",
+        "recommend": "老城",
+        "note": "雪里蕻咸鲜吊出黄鱼本味，宁波名菜。",
+        "image": "/assets/cities/330200/food-雪菜大黄鱼.jpg"
+      },
+      {
+        "name": "宁波年糕",
+        "category": "糕点",
+        "recommend": "慈城",
+        "note": "水磨年糕，煨汤油煎两宜。",
+        "image": "/assets/cities/330200/food-宁波年糕.jpg"
+      },
+      {
+        "name": "苔菜拖黄鱼",
+        "category": "海鲜",
+        "recommend": "老城",
+        "note": "拖面糊裹苔菜炸，酥香透海味。",
+        "image": "/assets/cities/330200/food-苔菜拖黄鱼.jpg"
+      },
+      {
+        "name": "宁波烤菜",
+        "category": "小吃",
+        "recommend": "老城",
+        "note": "天菜心烤到酱色，咸甜下饭。",
+        "image": "/assets/cities/330200/food-宁波烤菜.jpg"
+      }
+    ],
+    "poem": "人之初，性本善。",
+    "poemFrom": "王应麟《三字经》",
+    "urbanDistricts": [
+      {
+        "id": "330203",
+        "name": "海曙区"
+      },
+      {
+        "id": "330205",
+        "name": "江北区"
+      },
+      {
+        "id": "330211",
+        "name": "镇海区"
+      },
+      {
+        "id": "330212",
+        "name": "鄞州区"
+      },
+      {
+        "id": "330213",
+        "name": "奉化区"
+      }
+    ],
+    "urbanNote": "海曙与鄞州隔三江口对望，江北在北，镇海守甬江口，奉化在南入山。",
+    "banner": "/assets/cities/330200/banner.jpg"
+  },
+  {
+    "id": "330300",
+    "name": "温州市",
+    "province": "浙江省",
+    "districts": [
+      "330302",
+      "330303",
+      "330304",
+      "330305",
+      "330324",
+      "330326",
+      "330327",
+      "330328",
+      "330329",
+      "330381",
+      "330382",
+      "330383"
+    ],
+    "indexed": true,
+    "intro": "东南山水窟，瓯越江海与创业之都。",
+    "featuredDistricts": [
+      "330302",
+      "330303",
+      "330304"
+    ],
+    "foods": [
+      {
+        "name": "温州鱼丸",
+        "category": "小吃",
+        "recommend": "老城",
+        "note": "鮸鱼肉打制，弹牙鲜甜，汤里漂着葱花。",
+        "image": "/assets/cities/330300/food-温州鱼丸.jpg"
+      },
+      {
+        "name": "糯米饭",
+        "category": "小吃",
+        "recommend": "街头",
+        "note": "油条碎肉汤浇糯米，温州人的晨间仪式。",
+        "image": "/assets/cities/330300/food-糯米饭.jpg"
+      },
+      {
+        "name": "灯盏糕",
+        "category": "小吃",
+        "recommend": "老街",
+        "note": "萝卜丝面糊炸成灯盏形，外脆内软。",
+        "image": "/assets/cities/330300/food-灯盏糕.jpg"
+      },
+      {
+        "name": "永嘉麦饼",
+        "category": "小吃",
+        "recommend": "永嘉",
+        "note": "梅干菜肉馅，烙到两面起壳。",
+        "image": "/assets/cities/330300/food-永嘉麦饼.jpg"
+      },
+      {
+        "name": "温州鸭舌",
+        "category": "卤味",
+        "recommend": "老城",
+        "note": "酱鸭舌细嚼慢咽，酒桌常客。",
+        "image": "/assets/cities/330300/food-温州鸭舌.jpg"
+      },
+      {
+        "name": "清汤鱼圆",
+        "category": "小吃",
+        "recommend": "南塘",
+        "note": "清汤里的白玉，配米醋是地道吃法。",
+        "image": "/assets/cities/330300/food-清汤鱼圆.jpg"
+      }
+    ],
+    "poem": "池塘生春草，园柳变鸣禽。",
+    "poemFrom": "谢灵运《登池上楼》",
+    "urbanDistricts": [
+      {
+        "id": "330302",
+        "name": "鹿城区"
+      },
+      {
+        "id": "330303",
+        "name": "龙湾区"
+      },
+      {
+        "id": "330304",
+        "name": "瓯海区"
+      },
+      {
+        "id": "330305",
+        "name": "洞头区"
+      }
+    ],
+    "urbanNote": "鹿城是老城核心，瓯海在西、龙湾在东，瓯江穿城入海，洞头是海岛区。",
+    "banner": "/assets/cities/330300/banner.jpg"
+  },
+  {
+    "id": "330400",
+    "name": "嘉兴市",
+    "province": "浙江省",
+    "districts": [
+      "330402",
+      "330411",
+      "330421",
+      "330424",
+      "330481",
+      "330482",
+      "330483"
+    ],
+    "indexed": true,
+    "intro": "红船旁的运河城，南湖菱与粽子之乡。",
+    "featuredDistricts": [
+      "330402",
+      "330411",
+      "330421"
+    ],
+    "foods": [
+      {
+        "name": "嘉兴粽子",
+        "category": "糕点",
+        "recommend": "五芳斋",
+        "note": "肉粽糯而不烂，一口咬到火腿丁。",
+        "image": "/assets/cities/330400/food-嘉兴粽子.jpg"
+      },
+      {
+        "name": "南湖菱",
+        "category": "水果",
+        "recommend": "南湖",
+        "note": "无角圆菱，水煮剥皮即食，清甜嫩脆。",
+        "image": "/assets/cities/330400/food-南湖菱.jpg"
+      },
+      {
+        "name": "文虎酱鸭",
+        "category": "卤味",
+        "recommend": "梧桐",
+        "note": "酱鸭红亮，甜咸入味。",
+        "image": "/assets/cities/330400/food-文虎酱鸭.jpg"
+      },
+      {
+        "name": "长安宴球",
+        "category": "土菜",
+        "recommend": "海宁长安",
+        "note": "鱼肉毛豆制球蒸鲜，鲜到掉眉。",
+        "image": "/assets/cities/330400/food-长安宴球.jpg"
+      },
+      {
+        "name": "嘉兴鲜肉月饼",
+        "category": "糕点",
+        "recommend": "老城",
+        "note": "酥皮裹肉汁，现烤现卖。",
+        "image": "/assets/cities/330400/food-嘉兴鲜肉月饼.jpg"
+      },
+      {
+        "name": "姑嫂饼",
+        "category": "糕点",
+        "recommend": "乌镇",
+        "note": "酥糖小饼，甜而不腻，水乡手信。",
+        "image": "/assets/cities/330400/food-姑嫂饼.jpg"
+      }
+    ],
+    "poem": "最是人间留不住，朱颜辞镜花辞树。",
+    "poemFrom": "王国维《蝶恋花》",
+    "urbanDistricts": [
+      {
+        "id": "330402",
+        "name": "南湖区"
+      },
+      {
+        "id": "330411",
+        "name": "秀洲区"
+      }
+    ],
+    "urbanNote": "南湖与秀洲隔运河相望，红船与烟雨楼在南湖，沪杭线穿城而过。",
+    "banner": "/assets/cities/330400/banner.jpg"
+  },
+  {
+    "id": "330500",
+    "name": "湖州市",
+    "province": "浙江省",
+    "districts": [
+      "330502",
+      "330503",
+      "330521",
+      "330522",
+      "330523"
+    ],
+    "indexed": true,
+    "intro": "太湖边的丝绸之府，笔墨与竹海的故乡。",
+    "featuredDistricts": [
+      "330502",
+      "330503",
+      "330521"
+    ],
+    "foods": [
+      {
+        "name": "湖州千张包",
+        "category": "小吃",
+        "recommend": "老城",
+        "note": "千张裹鲜肉，高汤煨透，一咬爆汁。",
+        "image": "/assets/cities/330500/food-湖州千张包.jpg"
+      },
+      {
+        "name": "诸老大粽子",
+        "category": "糕点",
+        "recommend": "老城",
+        "note": "细沙甜粽与肉粽两绝，湖州老字号。",
+        "image": "/assets/cities/330500/food-诸老大粽子.jpg"
+      },
+      {
+        "name": "周生记馄饨",
+        "category": "小吃",
+        "recommend": "吴兴",
+        "note": "皮薄如绉、肉馅鲜嫩，配蛋丝汤。",
+        "image": "/assets/cities/330500/food-周生记馄饨.jpg"
+      },
+      {
+        "name": "太湖醉蟹",
+        "category": "江鲜",
+        "recommend": "太湖沿岸",
+        "note": "甜酒醉制，蟹膏如封，秋令时鲜。",
+        "image": "/assets/cities/330500/food-太湖醉蟹.jpg"
+      },
+      {
+        "name": "丁莲芳千张包子丝粉头",
+        "category": "小吃",
+        "recommend": "吴兴",
+        "note": "千张包与粉丝同煮，一碗双鲜。",
+        "image": "/assets/cities/330500/food-丁莲芳千张包子丝粉头.jpg"
+      },
+      {
+        "name": "桔红糕",
+        "category": "糕点",
+        "recommend": "老城",
+        "note": "糯米粉糖糕，橘红一点，软糯清甜。",
+        "image": "/assets/cities/330500/food-桔红糕.jpg"
+      }
+    ],
+    "poem": "西塞山前白鹭飞，桃花流水鳜鱼肥。",
+    "poemFrom": "张志和《渔歌子》",
+    "urbanDistricts": [
+      {
+        "id": "330502",
+        "name": "吴兴区"
+      },
+      {
+        "id": "330503",
+        "name": "南浔区"
+      }
+    ],
+    "urbanNote": "吴兴是行政与商业中心，南浔守着太湖岸与古镇，德清、长兴、安吉在郊县。",
+    "banner": "/assets/cities/330500/banner.jpg"
+  },
+  {
+    "id": "330600",
+    "name": "绍兴市",
+    "province": "浙江省",
+    "districts": [
+      "330602",
+      "330603",
+      "330604",
+      "330624",
+      "330681",
+      "330683"
+    ],
+    "indexed": true,
+    "intro": "鉴湖越台名士乡，黄酒与桥的故里。",
+    "featuredDistricts": [
+      "330602",
+      "330603",
+      "330604"
+    ],
+    "foods": [
+      {
+        "name": "绍兴黄酒",
+        "category": "酒饮",
+        "recommend": "东浦",
+        "note": "元红酒、加饭、香雪，温一壶配菜。",
+        "image": "/assets/cities/330600/food-绍兴黄酒.jpg"
+      },
+      {
+        "name": "绍兴臭豆腐",
+        "category": "小吃",
+        "recommend": "仓桥直街",
+        "note": "霉苋菜梗卤里炸出来的臭味。",
+        "image": "/assets/cities/330600/food-绍兴臭豆腐.jpg"
+      },
+      {
+        "name": "醉鸡",
+        "category": "卤味",
+        "recommend": "老城",
+        "note": "黄酒浸鸡，皮脆肉香。",
+        "image": "/assets/cities/330600/food-醉鸡.jpg"
+      },
+      {
+        "name": "梅干菜扣肉",
+        "category": "土菜",
+        "recommend": "各处",
+        "note": "绍式霉干菜吸透五花肉油，下饭一绝。",
+        "image": "/assets/cities/330600/food-梅干菜扣肉.jpg"
+      },
+      {
+        "name": "茴香豆",
+        "category": "小吃",
+        "recommend": "咸亨酒店",
+        "note": "孔乙己的茴香豆，韧香回甜。",
+        "image": "/assets/cities/330600/food-茴香豆.jpg"
+      },
+      {
+        "name": "绍兴香糕",
+        "category": "糕点",
+        "recommend": "老城",
+        "note": "八字形糕点，清朝贡品，粉质细腻。",
+        "image": "/assets/cities/330600/food-绍兴香糕.jpg"
+      }
+    ],
+    "poem": "山重水复疑无路，柳暗花明又一村。",
+    "poemFrom": "陆游《游山西村》",
+    "urbanDistricts": [
+      {
+        "id": "330602",
+        "name": "越城区"
+      },
+      {
+        "id": "330603",
+        "name": "柯桥区"
+      },
+      {
+        "id": "330604",
+        "name": "上虞区"
+      }
+    ],
+    "urbanNote": "越城是古城与府山所在，柯桥在西，上虞在东南，一河一桥串起三区。",
+    "banner": "/assets/cities/330600/banner.jpg"
+  },
+  {
+    "id": "330700",
+    "name": "金华市",
+    "province": "浙江省",
+    "districts": [
+      "330702",
+      "330703",
+      "330723",
+      "330726",
+      "330727",
+      "330781",
+      "330782",
+      "330783",
+      "330784"
+    ],
+    "indexed": true,
+    "intro": "火腿与商贸之都，浙中丘陵里的活力城。",
+    "featuredDistricts": [
+      "330702",
+      "330703",
+      "330723"
+    ],
+    "foods": [
+      {
+        "name": "金华火腿",
+        "category": "腊味",
+        "recommend": "各处",
+        "note": "皮色黄亮、肉色嫣红，炖汤吊鲜提味。",
+        "image": "/assets/cities/330700/food-金华火腿.jpg"
+      },
+      {
+        "name": "金华酥饼",
+        "category": "糕点",
+        "recommend": "梅干菜馅",
+        "note": "炭火炉烤，酥皮裹霉干菜肉，一咬掉渣。",
+        "image": "/assets/cities/330700/food-金华酥饼.jpg"
+      },
+      {
+        "name": "兰溪鸡子粿",
+        "category": "小吃",
+        "recommend": "兰溪",
+        "note": "薄皮裹肉葱灌蛋，油煎到鼓起。",
+        "image": "/assets/cities/330700/food-兰溪鸡子粿.jpg"
+      },
+      {
+        "name": "浦江葡萄",
+        "category": "水果",
+        "recommend": "浦江",
+        "note": "巨峰一串压弯枝，夏日水果。",
+        "image": "/assets/cities/330700/food-浦江葡萄.jpg"
+      },
+      {
+        "name": "东阳沃面",
+        "category": "面食",
+        "recommend": "东阳",
+        "note": "面糊糊煮的糊面，家常暖胃。",
+        "image": "/assets/cities/330700/food-东阳沃面.jpg"
+      },
+      {
+        "name": "金华汤包",
+        "category": "小吃",
+        "recommend": "老城",
+        "note": "皮薄汤多，蘸姜丝醋，金华人的晨间瘾。",
+        "image": "/assets/cities/330700/food-金华汤包.jpg"
+      }
+    ],
+    "poem": "只恐双溪舴艋舟，载不动许多愁。",
+    "poemFrom": "李清照《武陵春》",
+    "urbanDistricts": [
+      {
+        "id": "330702",
+        "name": "婺城区"
+      },
+      {
+        "id": "330703",
+        "name": "金东区"
+      }
+    ],
+    "urbanNote": "婺城与金东夹义乌江对望，江北是老城与商圈，江南拓新城。",
+    "banner": "/assets/cities/330700/banner.jpg"
+  },
+  {
+    "id": "330800",
+    "name": "衢州市",
+    "province": "浙江省",
+    "districts": [
+      "330802",
+      "330803",
+      "330822",
+      "330824",
+      "330825",
+      "330881"
+    ],
+    "indexed": true,
+    "intro": "南孔圣地四省通衢，围棋与山水的烂柯之乡。",
+    "featuredDistricts": [
+      "330802",
+      "330803",
+      "330822"
+    ],
+    "foods": [
+      {
+        "name": "三头一掌",
+        "category": "小吃",
+        "recommend": "老城",
+        "note": "兔头、鸭头、鱼头、鸭掌，辣卤一绝。",
+        "image": "/assets/cities/330800/food-三头一掌.jpg"
+      },
+      {
+        "name": "衢州烤饼",
+        "category": "小吃",
+        "recommend": "街头",
+        "note": "小炭炉现烤，葱肉馅，皮薄带脆底。",
+        "image": "/assets/cities/330800/food-衢州烤饼.jpg"
+      },
+      {
+        "name": "龙游发糕",
+        "category": "糕点",
+        "recommend": "龙游",
+        "note": "白糖米糕发得蓬松，节庆切片待客。",
+        "image": "/assets/cities/330800/food-龙游发糕.jpg"
+      },
+      {
+        "name": "开化青蛳",
+        "category": "江鲜",
+        "recommend": "开化",
+        "note": "清水溪蛳，紫苏同炒，吮得出山泉味。",
+        "image": "/assets/cities/330800/food-开化青蛳.jpg"
+      },
+      {
+        "name": "常山胡柚",
+        "category": "水果",
+        "recommend": "常山",
+        "note": "柚橘杂交，酸甜多汁，秋冬水果。",
+        "image": "/assets/cities/330800/food-常山胡柚.jpg"
+      },
+      {
+        "name": "衢州鸭头",
+        "category": "小吃",
+        "recommend": "老城",
+        "note": "先卤后焖，辣得跳脚也停不下。",
+        "image": "/assets/cities/330800/food-衢州鸭头.jpg"
+      }
+    ],
+    "poem": "梅子黄时日日晴，小溪泛尽却山行。",
+    "poemFrom": "曾几《三衢道中》",
+    "urbanDistricts": [
+      {
+        "id": "330802",
+        "name": "柯城区"
+      },
+      {
+        "id": "330803",
+        "name": "衢江区"
+      }
+    ],
+    "urbanNote": "柯城是衢江与乌溪江之间的老城，衢江在东，古城与新城沿江展开。",
+    "banner": "/assets/cities/330800/banner.jpg"
+  },
+  {
+    "id": "330900",
+    "name": "舟山市",
+    "province": "浙江省",
+    "districts": [
+      "330902",
+      "330903",
+      "330921",
+      "330922"
+    ],
+    "indexed": true,
+    "intro": "海天佛国普陀山，千岛之城。",
+    "featuredDistricts": [
+      "330902",
+      "330903",
+      "330921"
+    ],
+    "foods": [
+      {
+        "name": "舟山带鱼",
+        "category": "海鲜",
+        "recommend": "沈家门",
+        "note": "东海带鱼，油带丰腴，清蒸最见鲜。",
+        "image": "/assets/cities/330900/food-舟山带鱼.jpg"
+      },
+      {
+        "name": "红膏呛蟹",
+        "category": "海鲜",
+        "recommend": "各处",
+        "note": "梭子蟹生腌，膏红肉嫩，酒桌头盘。",
+        "image": "/assets/cities/330900/food-红膏呛蟹.jpg"
+      },
+      {
+        "name": "风鳗",
+        "category": "腊味",
+        "recommend": "各处",
+        "note": "鳗鲡风干，清蒸出香，渔家冬味。",
+        "image": "/assets/cities/330900/food-风鳗.jpg"
+      },
+      {
+        "name": "舟山黄鱼鲞",
+        "category": "腊味",
+        "recommend": "渔港",
+        "note": "黄鱼剖晒成鲞，烤肉下饭两宜。",
+        "image": "/assets/cities/330900/food-舟山黄鱼鲞.jpg"
+      },
+      {
+        "name": "普陀山素斋",
+        "category": "素食",
+        "recommend": "普陀山",
+        "note": "寺院素斋，素鸡素鸭形味兼备。",
+        "image": "/assets/cities/330900/food-普陀山素斋.jpg"
+      },
+      {
+        "name": "岱山海鲜面",
+        "category": "面食",
+        "recommend": "岱山",
+        "note": "小杂鱼吊汤，一勺海鲜浇头。",
+        "image": "/assets/cities/330900/food-岱山海鲜面.jpg"
+      }
+    ],
+    "poem": "",
+    "poemFrom": "",
+    "urbanDistricts": [
+      {
+        "id": "330902",
+        "name": "定海区"
+      },
+      {
+        "id": "330903",
+        "name": "普陀区"
+      }
+    ],
+    "urbanNote": "定海是本岛老城，普陀区在东南本岛与普陀山，沈家门渔港日夜热闹。",
+    "banner": "/assets/cities/330900/banner.jpg"
+  },
+  {
+    "id": "331000",
+    "name": "台州市",
+    "province": "浙江省",
+    "districts": [
+      "331002",
+      "331003",
+      "331004",
+      "331022",
+      "331023",
+      "331024",
+      "331081",
+      "331082",
+      "331083"
+    ],
+    "indexed": true,
+    "intro": "山大港深的海滨城，台州式硬气与和合文化。",
+    "featuredDistricts": [
+      "331002",
+      "331003",
+      "331004"
+    ],
+    "foods": [
+      {
+        "name": "姜汤面",
+        "category": "面食",
+        "recommend": "老城",
+        "note": "姜汁熬汤煮面，冬早一碗暖到脚底。",
+        "image": "/assets/cities/331000/food-姜汤面.jpg"
+      },
+      {
+        "name": "食饼筒",
+        "category": "小吃",
+        "recommend": "各处",
+        "note": "面皮卷各色菜，台州人的端午与家常。",
+        "image": "/assets/cities/331000/food-食饼筒.jpg"
+      },
+      {
+        "name": "嵌糕",
+        "category": "小吃",
+        "recommend": "温岭",
+        "note": "年糕包油条菜，台州人的乡愁。",
+        "image": "/assets/cities/331000/food-嵌糕.jpg"
+      },
+      {
+        "name": "三门青蟹",
+        "category": "海鲜",
+        "recommend": "三门湾",
+        "note": "壳薄肉甜，清蒸或腌炝。",
+        "image": "/assets/cities/331000/food-三门青蟹.jpg"
+      },
+      {
+        "name": "大陈黄鱼",
+        "category": "海鲜",
+        "recommend": "大陈",
+        "note": "东海大黄鱼，清蒸如蒜瓣。",
+        "image": "/assets/cities/331000/food-大陈黄鱼.jpg"
+      },
+      {
+        "name": "麦油脂",
+        "category": "小吃",
+        "recommend": "临海",
+        "note": "薄如纸的春卷皮裹十锦馅，临海一绝。",
+        "image": "/assets/cities/331000/food-麦油脂.jpg"
+      }
+    ],
+    "poem": "",
+    "poemFrom": "",
+    "urbanDistricts": [
+      {
+        "id": "331002",
+        "name": "椒江区"
+      },
+      {
+        "id": "331003",
+        "name": "黄岩区"
+      },
+      {
+        "id": "331004",
+        "name": "路桥区"
+      }
+    ],
+    "urbanNote": "椒江在入海口，黄岩在西、路桥在南，三区沿椒江与永宁江铺开。",
+    "banner": "/assets/cities/331000/banner.jpg"
+  },
+  {
+    "id": "331100",
+    "name": "丽水市",
+    "province": "浙江省",
+    "districts": [
+      "331102",
+      "331121",
+      "331122",
+      "331123",
+      "331124",
+      "331125",
+      "331126",
+      "331127",
+      "331181"
+    ],
+    "indexed": true,
+    "intro": "浙南林海与青田石，处州大地的山水城。",
+    "featuredDistricts": [
+      "331102",
+      "331121",
+      "331122"
+    ],
+    "foods": [
+      {
+        "name": "处州稀卤螟蜅",
+        "category": "小吃",
+        "recommend": "莲都",
+        "note": "米糊糊海鲜羹，稠稠一碗暖胃。",
+        "image": "/assets/cities/331100/food-处州稀卤螟蜅.jpg"
+      },
+      {
+        "name": "缙云烧饼",
+        "category": "糕点",
+        "recommend": "缙云",
+        "note": "菜干肉馅，桶炉烤出脆壳，桶边香气逼人。",
+        "image": "/assets/cities/331100/food-缙云烧饼.jpg"
+      },
+      {
+        "name": "青田田鱼",
+        "category": "江鲜",
+        "recommend": "青田",
+        "note": "稻田养鱼，田螺同烧，侨乡味。",
+        "image": "/assets/cities/331100/food-青田田鱼.jpg"
+      },
+      {
+        "name": "遂昌烤薯",
+        "category": "小吃",
+        "recommend": "遂昌",
+        "note": "高山红薯炭烤，甜糯流蜜。",
+        "image": "/assets/cities/331100/food-遂昌烤薯.jpg"
+      },
+      {
+        "name": "庆元香菇",
+        "category": "干货",
+        "recommend": "庆元",
+        "note": "世界香菇之源，花菇厚肉香。",
+        "image": "/assets/cities/331100/food-庆元香菇.jpg"
+      },
+      {
+        "name": "松阳薄饼",
+        "category": "小吃",
+        "recommend": "松阳",
+        "note": "薄饼卷豆芽肉丝，端午与清明必备。",
+        "image": "/assets/cities/331100/food-松阳薄饼.jpg"
+      }
+    ],
+    "poem": "原来姹紫嫣红开遍，似这般都付与断井颓垣。",
+    "poemFrom": "汤显祖《牡丹亭》",
+    "urbanDistricts": [
+      {
+        "id": "331102",
+        "name": "莲都区"
+      }
+    ],
+    "urbanNote": "莲都是瓯江中游的市区，好溪绕城，郊县散落在群山与溪谷之间。",
+    "banner": "/assets/cities/331100/banner.jpg"
+  },
+  {
+    "id": "340100",
+    "name": "合肥市",
+    "province": "安徽省",
+    "districts": [
+      "340102",
+      "340103",
+      "340104",
+      "340111",
+      "340121",
+      "340122",
+      "340123",
+      "340124",
+      "340181"
+    ],
+    "indexed": true,
+    "intro": "三国故地、包拯家乡，大湖之城的科技新篇。",
+    "featuredDistricts": [
+      "340102",
+      "340103",
+      "340104"
+    ],
+    "foods": [
+      {
+        "name": "李鸿章大杂烩",
+        "category": "合肥菜",
+        "recommend": "庐江路",
+        "note": "鸡腿海参皮肚同烩，乡野馆子里的合肥名菜。",
+        "image": "/assets/cities/340100/food-李鸿章大杂烩.jpg"
+      },
+      {
+        "name": "三河米饺",
+        "category": "小吃",
+        "recommend": "肥西三河",
+        "note": "米粉做皮、虾米豆腐馅，油炸至金黄。",
+        "image": "/assets/cities/340100/food-三河米饺.jpg"
+      },
+      {
+        "name": "合肥烘糕",
+        "category": "糕点",
+        "recommend": "四大名点",
+        "note": "白芝麻薄片，酥松绵甜。",
+        "image": "/assets/cities/340100/food-合肥烘糕.jpg"
+      },
+      {
+        "name": "鸭油烧饼",
+        "category": "小吃",
+        "recommend": "四牌楼",
+        "note": "鸭油起酥、芝麻盖面，配鸭血汤正好。",
+        "image": "/assets/cities/340100/food-鸭油烧饼.jpg"
+      },
+      {
+        "name": "桂花赤豆糊",
+        "category": "小吃",
+        "recommend": "城隍庙",
+        "note": "赤豆沙熬到起沙，撒干桂花，冬日暖食。",
+        "image": "/assets/cities/340100/food-桂花赤豆糊.jpg"
+      },
+      {
+        "name": "庐州汤包",
+        "category": "小吃",
+        "recommend": "城东",
+        "note": "皮薄汁足的小笼汤包，一屉八只配姜丝醋。",
+        "image": "/assets/cities/340100/food-庐州汤包.jpg"
+      }
+    ],
+    "poem": "清心为治本，直道是身谋。",
+    "poemFrom": "包拯《书端州郡斋壁》",
+    "urbanDistricts": [
+      {
+        "id": "340102",
+        "name": "瑶海区"
+      },
+      {
+        "id": "340103",
+        "name": "庐阳区"
+      },
+      {
+        "id": "340104",
+        "name": "蜀山区"
+      },
+      {
+        "id": "340111",
+        "name": "包河区"
+      }
+    ],
+    "urbanNote": "老城在庐阳与瑶海，蜀山与包河在西，巢湖在东南，科创沿长江西岸展开。",
+    "banner": "/assets/cities/340100/banner.jpg"
+  },
+  {
+    "id": "340200",
+    "name": "芜湖市",
+    "province": "安徽省",
+    "districts": [
+      "340202",
+      "340207",
+      "340209",
+      "340210",
+      "340211",
+      "340223",
+      "340281"
+    ],
+    "indexed": true,
+    "intro": "天门中断楚江开，长江边的欢乐江城。",
+    "featuredDistricts": [
+      "340202",
+      "340207",
+      "340209"
+    ],
+    "foods": [
+      {
+        "name": "芜湖煮干丝",
+        "category": "徽菜",
+        "recommend": "老城",
+        "note": "干丝鸡丝火腿同煮，徽派早茶。",
+        "image": "/assets/cities/340200/food-芜湖煮干丝.jpg"
+      },
+      {
+        "name": "虾子面",
+        "category": "面食",
+        "recommend": "耿福兴",
+        "note": "虾籽酱油打底，面细汤鲜。",
+        "image": "/assets/cities/340200/food-虾子面.jpg"
+      },
+      {
+        "name": "芜湖蟹黄汤包",
+        "category": "小吃",
+        "recommend": "老城",
+        "note": "汤包皮薄兜住蟹黄，先吸汤。",
+        "image": "/assets/cities/340200/food-芜湖蟹黄汤包.jpg"
+      },
+      {
+        "name": "酥烧饼",
+        "category": "糕点",
+        "recommend": "老城",
+        "note": "鸭油酥烧饼，层多如书页。",
+        "image": "/assets/cities/340200/food-酥烧饼.jpg"
+      },
+      {
+        "name": "红皮鸭子",
+        "category": "卤味",
+        "recommend": "老城",
+        "note": "皮红肉嫩，卤香带甜。",
+        "image": "/assets/cities/340200/food-红皮鸭子.jpg"
+      },
+      {
+        "name": "渣肉蒸饭",
+        "category": "小吃",
+        "recommend": "老城",
+        "note": "渣肉盖糯米饭，芜湖人的碳水快乐。",
+        "image": "/assets/cities/340200/food-渣肉蒸饭.jpg"
+      }
+    ],
+    "poem": "天门中断楚江开，碧水东流至此回。",
+    "poemFrom": "李白《望天门山》",
+    "urbanDistricts": [
+      {
+        "id": "340202",
+        "name": "镜湖区"
+      },
+      {
+        "id": "340207",
+        "name": "鸠江区"
+      },
+      {
+        "id": "340209",
+        "name": "弋江区"
+      }
+    ],
+    "urbanNote": "镜湖是青弋江与长江交汇的老城，鸠江在北、弋在南，方特在江北拓出欢乐城。",
+    "banner": "/assets/cities/340200/banner.jpg"
+  },
+  {
+    "id": "340300",
+    "name": "蚌埠市",
+    "province": "安徽省",
+    "districts": [
+      "340302",
+      "340303",
+      "340304",
+      "340311",
+      "340321",
+      "340322",
+      "340323"
+    ],
+    "indexed": true,
+    "intro": "淮河之滨的珠城，大禹会诸侯的涂山脚下。",
+    "featuredDistricts": [
+      "340302",
+      "340303",
+      "340304"
+    ],
+    "foods": [
+      {
+        "name": "烧饼夹里脊",
+        "category": "小吃",
+        "recommend": "街头",
+        "note": "烧饼夹炸里脊，蚌埠人从小吃到大的味道。",
+        "image": "/assets/cities/340300/food-烧饼夹里脊.jpg"
+      },
+      {
+        "name": "雪园汤圆",
+        "category": "糕点",
+        "recommend": "老城",
+        "note": "四色汤圆，山楂与豆沙。",
+        "image": "/assets/cities/340300/food-雪园汤圆.jpg"
+      },
+      {
+        "name": "蚌埠麻辣烫",
+        "category": "小吃",
+        "recommend": "老城",
+        "note": "甜辣麻酱烫，蚌埠夜宵一霸。",
+        "image": "/assets/cities/340300/food-蚌埠麻辣烫.jpg"
+      },
+      {
+        "name": "沱湖螃蟹",
+        "category": "江鲜",
+        "recommend": "五河沱湖",
+        "note": "青壳白肚金爪，秋令最肥。",
+        "image": "/assets/cities/340300/food-沱湖螃蟹.jpg"
+      },
+      {
+        "name": "怀远石榴",
+        "category": "水果",
+        "recommend": "怀远",
+        "note": "白花玉石籽，籽大核小。",
+        "image": "/assets/cities/340300/food-怀远石榴.jpg"
+      },
+      {
+        "name": "固镇老任桥牛肉",
+        "category": "土菜",
+        "recommend": "固镇",
+        "note": "黄牛肉卤制，切片冷食。",
+        "image": "/assets/cities/340300/food-固镇老任桥牛肉.jpg"
+      }
+    ],
+    "poem": "走千走万，不如淮河两岸。",
+    "poemFrom": "淮河民谚",
+    "urbanDistricts": [
+      {
+        "id": "340302",
+        "name": "龙子湖区"
+      },
+      {
+        "id": "340303",
+        "name": "蚌山区"
+      },
+      {
+        "id": "340304",
+        "name": "禹会区"
+      },
+      {
+        "id": "340311",
+        "name": "淮上区"
+      }
+    ],
+    "urbanNote": "蚌山是市中心，龙子湖在东、禹会在西南、淮上在淮河北岸，城区跨河铺开。",
+    "banner": "/assets/cities/340300/banner.jpg"
+  },
+  {
+    "id": "340400",
+    "name": "淮南市",
+    "province": "安徽省",
+    "districts": [
+      "340402",
+      "340403",
+      "340404",
+      "340405",
+      "340406",
+      "340421",
+      "340422"
+    ],
+    "indexed": true,
+    "intro": "淝水之战与淮南子，豆腐发源地。",
+    "featuredDistricts": [
+      "340402",
+      "340403",
+      "340404"
+    ],
+    "foods": [
+      {
+        "name": "淮南牛肉汤",
+        "category": "小吃",
+        "recommend": "城北",
+        "note": "牛骨老汤配粉丝千张，秋冬一碗暖全身。",
+        "image": "/assets/cities/340400/food-淮南牛肉汤.jpg"
+      },
+      {
+        "name": "八公山豆腐",
+        "category": "土菜",
+        "recommend": "八公山",
+        "note": "豆腐发源地，豆腐宴一桌全是豆腐。",
+        "image": "/assets/cities/340400/food-八公山豆腐.jpg"
+      },
+      {
+        "name": "上窑馓子",
+        "category": "小吃",
+        "recommend": "上窑",
+        "note": "细馓子酥脆，泡汤或干嚼。",
+        "image": "/assets/cities/340400/food-上窑馓子.jpg"
+      },
+      {
+        "name": "淮南土豆片",
+        "category": "小吃",
+        "recommend": "街头",
+        "note": "炸土豆片刷酱，淮南学生的零嘴。",
+        "image": "/assets/cities/340400/food-淮南土豆片.jpg"
+      },
+      {
+        "name": "淮王鱼",
+        "category": "江鲜",
+        "recommend": "峡山口",
+        "note": "淮河独有的软骨鱼，清蒸奶白汤。",
+        "image": "/assets/cities/340400/food-淮王鱼.jpg"
+      },
+      {
+        "name": "潘集酥瓜",
+        "category": "水果",
+        "recommend": "潘集",
+        "note": "酥瓜甜脆，夏日水果。",
+        "image": "/assets/cities/340400/food-潘集酥瓜.jpg"
+      }
+    ],
+    "poem": "风声鹤唳，草木皆兵。",
+    "poemFrom": "淝水之战典故",
+    "urbanDistricts": [
+      {
+        "id": "340402",
+        "name": "大通区"
+      },
+      {
+        "id": "340403",
+        "name": "田家庵区"
+      },
+      {
+        "id": "340404",
+        "name": "谢家集区"
+      },
+      {
+        "id": "340405",
+        "name": "八公山区"
+      },
+      {
+        "id": "340406",
+        "name": "潘集区"
+      }
+    ],
+    "urbanNote": "田家庵是跨淮河的市中心，谢家集与八公山在西，大通在东，潘集在远郊矿区。",
+    "banner": "/assets/cities/340400/banner.jpg"
+  },
+  {
+    "id": "340500",
+    "name": "马鞍山市",
+    "province": "安徽省",
+    "districts": [
+      "340503",
+      "340504",
+      "340506",
+      "340521",
+      "340522",
+      "340523"
+    ],
+    "indexed": true,
+    "intro": "采石矶畔的钢城，李白终老之地。",
+    "featuredDistricts": [
+      "340503",
+      "340504",
+      "340506"
+    ],
+    "foods": [
+      {
+        "name": "采石矶茶干",
+        "category": "小吃",
+        "recommend": "采石",
+        "note": "五香茶干，佐茶下酒两宜。",
+        "image": "/assets/cities/340500/food-采石矶茶干.jpg"
+      },
+      {
+        "name": "马鞍山口袋鸭",
+        "category": "土菜",
+        "recommend": "老城",
+        "note": "鸭汤冬食，口袋形鸭包馅。",
+        "image": "/assets/cities/340500/food-马鞍山口袋鸭.jpg"
+      },
+      {
+        "name": "当涂大肉面",
+        "category": "面食",
+        "recommend": "当涂",
+        "note": "大肉盖碗面，重油重酱。",
+        "image": "/assets/cities/340500/food-当涂大肉面.jpg"
+      },
+      {
+        "name": "口袋鸭汤",
+        "category": "土菜",
+        "recommend": "市区",
+        "note": "鸭汤冬食，配现扯面皮。",
+        "image": "/assets/cities/340500/food-口袋鸭汤.jpg"
+      },
+      {
+        "name": "黄池酱菜",
+        "category": "酱菜",
+        "recommend": "当涂黄池",
+        "note": "小菜腌制，酱香脆爽。",
+        "image": "/assets/cities/340500/food-黄池酱菜.jpg"
+      },
+      {
+        "name": "石臼湖大闸蟹",
+        "category": "江鲜",
+        "recommend": "石臼湖",
+        "note": "与阳澄湖同水系，秋令蟹肥。",
+        "image": "/assets/cities/340500/food-石臼湖大闸蟹.jpg"
+      }
+    ],
+    "poem": "牛渚西江夜，青天无片云。",
+    "poemFrom": "李白《夜泊牛渚怀古》",
+    "urbanDistricts": [
+      {
+        "id": "340503",
+        "name": "花山区"
+      },
+      {
+        "id": "340504",
+        "name": "雨山区"
+      },
+      {
+        "id": "340506",
+        "name": "博望区"
+      }
+    ],
+    "urbanNote": "雨山与花山夹雨山湖对望是老城，采石矶在南，博望在东部接江宁。",
+    "banner": "/assets/cities/340500/banner.jpg"
+  },
+  {
+    "id": "340600",
+    "name": "淮北市",
+    "province": "安徽省",
+    "districts": [
+      "340602",
+      "340603",
+      "340604",
+      "340621"
+    ],
+    "indexed": true,
+    "intro": "运河故道边的煤城，濉溪古城的酒香。",
+    "featuredDistricts": [
+      "340602",
+      "340603",
+      "340604"
+    ],
+    "foods": [
+      {
+        "name": "淮北面皮",
+        "category": "小吃",
+        "recommend": "相山",
+        "note": "米面皮配辣油，夏日三件套之一。",
+        "image": "/assets/cities/340600/food-淮北面皮.jpg"
+      },
+      {
+        "name": "临涣棒棒茶",
+        "category": "茶饮",
+        "recommend": "临涣",
+        "note": "茶馆棒棒茶，配临涣包瓜。",
+        "image": "/assets/cities/340600/food-临涣棒棒茶.jpg"
+      },
+      {
+        "name": "临涣包瓜",
+        "category": "酱菜",
+        "recommend": "临涣",
+        "note": "酱瓜脆嫩，百年酱园出品。",
+        "image": "/assets/cities/340600/food-临涣包瓜.jpg"
+      },
+      {
+        "name": "口子酒",
+        "category": "酒饮",
+        "recommend": "濉溪",
+        "note": "兼香型白酒，濉溪老城出品。",
+        "image": "/assets/cities/340600/food-口子酒.jpg"
+      },
+      {
+        "name": "南坪响肚",
+        "category": "土菜",
+        "recommend": "南坪",
+        "note": "猪肚脆弹，酸辣下锅。",
+        "image": "/assets/cities/340600/food-南坪响肚.jpg"
+      },
+      {
+        "name": "双堆面鱼",
+        "category": "小吃",
+        "recommend": "双堆",
+        "note": "面糊拨成鱼形煮汤，宿州一带有。",
+        "image": "/assets/cities/340600/food-双堆面鱼.jpg"
+      }
+    ],
+    "poem": "",
+    "poemFrom": "",
+    "urbanDistricts": [
+      {
+        "id": "340602",
+        "name": "杜集区"
+      },
+      {
+        "id": "340603",
+        "name": "相山区"
+      },
+      {
+        "id": "340604",
+        "name": "烈山区"
+      }
+    ],
+    "urbanNote": "相山是市中心，烈山在东、杜集在北，濉河老城与南湖新城并立。",
+    "banner": "/assets/cities/340600/banner.jpg"
+  },
+  {
+    "id": "340700",
+    "name": "铜陵市",
+    "province": "安徽省",
+    "districts": [
+      "340705",
+      "340706",
+      "340711",
+      "340722"
+    ],
+    "indexed": true,
+    "intro": "中国古铜都，滨江的精致小城。",
+    "featuredDistricts": [
+      "340705",
+      "340706",
+      "340711"
+    ],
+    "foods": [
+      {
+        "name": "铜陵白姜",
+        "category": "酱菜",
+        "recommend": "郊区",
+        "note": "糖醋白姜，国家地理标志。",
+        "image": "/assets/cities/340700/food-铜陵白姜.jpg"
+      },
+      {
+        "name": "大通茶干",
+        "category": "小吃",
+        "recommend": "大通",
+        "note": "五香茶干，老街卤味。",
+        "image": "/assets/cities/340700/food-大通茶干.jpg"
+      },
+      {
+        "name": "顺安酥糖",
+        "category": "糕点",
+        "recommend": "顺安",
+        "note": "酥糖层层，芝麻香透。",
+        "image": "/assets/cities/340700/food-顺安酥糖.jpg"
+      },
+      {
+        "name": "枞阳粉蒸肉",
+        "category": "土菜",
+        "recommend": "枞阳",
+        "note": "米粉蒸肉，枞阳家常。",
+        "image": "/assets/cities/340700/food-枞阳粉蒸肉.jpg"
+      },
+      {
+        "name": "江鲜鱼",
+        "category": "江鲜",
+        "recommend": "江边",
+        "note": "长江小鱼干烧，配米饭。",
+        "image": "/assets/cities/340700/food-江鲜鱼.jpg"
+      },
+      {
+        "name": "铜陵大肠面",
+        "category": "面食",
+        "recommend": "铜官",
+        "note": "大肠浇头红油面，市井味。",
+        "image": "/assets/cities/340700/food-铜陵大肠面.jpg"
+      }
+    ],
+    "poem": "",
+    "poemFrom": "",
+    "urbanDistricts": [
+      {
+        "id": "340705",
+        "name": "铜官区"
+      },
+      {
+        "id": "340706",
+        "name": "义安区"
+      },
+      {
+        "id": "340711",
+        "name": "郊区"
+      }
+    ],
+    "urbanNote": "铜官是长江边的老城核心，义安在东、郊区在西，天井湖在城市中央。",
+    "banner": "/assets/cities/340700/banner.jpg"
+  },
+  {
+    "id": "340800",
+    "name": "安庆市",
+    "province": "安徽省",
+    "districts": [
+      "340802",
+      "340803",
+      "340811",
+      "340822",
+      "340825",
+      "340826",
+      "340827",
+      "340828",
+      "340881",
+      "340882"
+    ],
+    "indexed": true,
+    "intro": "黄梅戏乡与桐城文派，长江北岸的宜城。",
+    "featuredDistricts": [
+      "340802",
+      "340803",
+      "340811"
+    ],
+    "foods": [
+      {
+        "name": "安庆炒面",
+        "category": "小吃",
+        "recommend": "老街",
+        "note": "重油重酱的炒面，配鸭血汤。",
+        "image": "/assets/cities/340800/food-安庆炒面.jpg"
+      },
+      {
+        "name": "江毛水饺",
+        "category": "小吃",
+        "recommend": "江万平",
+        "note": "水饺皮薄馅嫩，老字号。",
+        "image": "/assets/cities/340800/food-江毛水饺.jpg"
+      },
+      {
+        "name": "麦陇香糕点",
+        "category": "糕点",
+        "recommend": "老街",
+        "note": "芝麻饼与麦陇香，百年糕点铺。",
+        "image": "/assets/cities/340800/food-麦陇香糕点.jpg"
+      },
+      {
+        "name": "胡玉美蚕豆酱",
+        "category": "酱菜",
+        "recommend": "老街",
+        "note": "蚕豆辣酱，安庆人的调味底。",
+        "image": "/assets/cities/340800/food-胡玉美蚕豆酱.jpg"
+      },
+      {
+        "name": "桐城水碗",
+        "category": "土菜",
+        "recommend": "桐城",
+        "note": "山粉圆子肉片水碗，桐城头道菜。",
+        "image": "/assets/cities/340800/food-桐城水碗.jpg"
+      },
+      {
+        "name": "岳西桑枝木耳",
+        "category": "干货",
+        "recommend": "岳西",
+        "note": "大别山木耳，厚肉脆嫩。",
+        "image": "/assets/cities/340800/food-岳西桑枝木耳.jpg"
+      }
+    ],
+    "poem": "孔雀东南飞，五里一徘徊。",
+    "poemFrom": "汉乐府《孔雀东南飞》",
+    "urbanDistricts": [
+      {
+        "id": "340802",
+        "name": "迎江区"
+      },
+      {
+        "id": "340803",
+        "name": "大观区"
+      },
+      {
+        "id": "340811",
+        "name": "宜秀区"
+      }
+    ],
+    "urbanNote": "迎江与大观夹长江对望是港口老城，宜秀在北，桐城、潜山在郊县。",
+    "banner": "/assets/cities/340800/banner.jpg"
+  },
+  {
+    "id": "341000",
+    "name": "黄山市",
+    "province": "安徽省",
+    "districts": [
+      "341002",
+      "341003",
+      "341004",
+      "341021",
+      "341022",
+      "341023",
+      "341024"
+    ],
+    "indexed": true,
+    "intro": "黄山脚下五城横市，徽派故里的国际口岸。",
+    "featuredDistricts": [
+      "341002",
+      "341003",
+      "341004"
+    ],
+    "foods": [
+      {
+        "name": "黄山臭鳜鱼",
+        "category": "徽菜",
+        "recommend": "老街",
+        "note": "徽菜代表，臭香入味。",
+        "image": "/assets/cities/341000/food-黄山臭鳜鱼.jpg"
+      },
+      {
+        "name": "毛豆腐",
+        "category": "小吃",
+        "recommend": "老街",
+        "note": "长毛豆腐油煎，辣椒酱一蘸。",
+        "image": "/assets/cities/341000/food-毛豆腐.jpg"
+      },
+      {
+        "name": "问政山笋",
+        "category": "土菜",
+        "recommend": "歙县问政",
+        "note": "问政山笋炖腊肉，徽州春鲜。",
+        "image": "/assets/cities/341000/food-问政山笋.jpg"
+      },
+      {
+        "name": "徽州饼",
+        "category": "糕点",
+        "recommend": "老街",
+        "note": "梅干菜馅酥饼，徽州手信。",
+        "image": "/assets/cities/341000/food-徽州饼.jpg"
+      },
+      {
+        "name": "石头馃",
+        "category": "小吃",
+        "recommend": "老街",
+        "note": "石阶压烤的馃，菜馅香。",
+        "image": "/assets/cities/341000/food-石头馃.jpg"
+      },
+      {
+        "name": "太平猴魁",
+        "category": "茶饮",
+        "recommend": "黄山区",
+        "note": "绿茶之王，兰香高长。",
+        "image": "/assets/cities/341000/food-太平猴魁.jpg"
+      }
+    ],
+    "poem": "五岳归来不看山，黄山归来不看岳。",
+    "poemFrom": "徐霞客",
+    "urbanDistricts": [
+      {
+        "id": "341002",
+        "name": "屯溪区"
+      },
+      {
+        "id": "341003",
+        "name": "黄山区"
+      },
+      {
+        "id": "341004",
+        "name": "徽州区"
+      }
+    ],
+    "urbanNote": "屯溪是市区与新安江核心，徽州区在西，黄山区守着黄山南门，歙县在旁。",
+    "banner": "/assets/cities/341000/banner.jpg"
+  },
+  {
+    "id": "341100",
+    "name": "滁州市",
+    "province": "安徽省",
+    "districts": [
+      "341102",
+      "341103",
+      "341122",
+      "341124",
+      "341125",
+      "341126",
+      "341181",
+      "341182"
+    ],
+    "indexed": true,
+    "intro": "醉翁亭与明皇陵，皖东门户的江淮之城。",
+    "featuredDistricts": [
+      "341102",
+      "341103",
+      "341122"
+    ],
+    "foods": [
+      {
+        "name": "滁州烤鸭",
+        "category": "卤味",
+        "recommend": "老城",
+        "note": "卤鸭皮红肉嫩，甜咸入味。",
+        "image": "/assets/cities/341100/food-滁州烤鸭.jpg"
+      },
+      {
+        "name": "管坝牛肉",
+        "category": "土菜",
+        "recommend": "全椒管坝",
+        "note": "黄牛肉卤制，切片冷食。",
+        "image": "/assets/cities/341100/food-管坝牛肉.jpg"
+      },
+      {
+        "name": "琅琊酥糖",
+        "category": "糕点",
+        "recommend": "老城",
+        "note": "酥糖一咬掉渣，滁州手信。",
+        "image": "/assets/cities/341100/food-琅琊酥糖.jpg"
+      },
+      {
+        "name": "女山湖大闸蟹",
+        "category": "江鲜",
+        "recommend": "明光女山湖",
+        "note": "活水养蟹，青背白肚。",
+        "image": "/assets/cities/341100/food-女山湖大闸蟹.jpg"
+      },
+      {
+        "name": "秦栏卤鹅",
+        "category": "卤味",
+        "recommend": "天长秦栏",
+        "note": "老卤慢煨，孝子卤鹅的传说入味。",
+        "image": "/assets/cities/341100/food-秦栏卤鹅.jpg"
+      }
+    ],
+    "poem": "醉翁之意不在酒，在乎山水之间也。",
+    "poemFrom": "欧阳修《醉翁亭记》",
+    "urbanDistricts": [
+      {
+        "id": "341102",
+        "name": "琅琊区"
+      },
+      {
+        "id": "341103",
+        "name": "南谯区"
+      }
+    ],
+    "urbanNote": "琅琊是老城与醉翁亭所在，南谯在西南，滁州从老城跨向南京都市圈。",
+    "banner": "/assets/cities/341100/banner.jpg"
+  },
+  {
+    "id": "341200",
+    "name": "阜阳市",
+    "province": "安徽省",
+    "districts": [
+      "341202",
+      "341203",
+      "341204",
+      "341221",
+      "341222",
+      "341225",
+      "341226",
+      "341282"
+    ],
+    "indexed": true,
+    "intro": "颍州西湖与管仲故里，皖北的商贸粮仓。",
+    "featuredDistricts": [
+      "341202",
+      "341203",
+      "341204"
+    ],
+    "foods": [
+      {
+        "name": "阜阳格拉条",
+        "category": "面食",
+        "recommend": "老城",
+        "note": "芝麻酱拌的粗面，阜阳人戒不掉的乡味。",
+        "image": "/assets/cities/341200/food-阜阳格拉条.jpg"
+      },
+      {
+        "name": "田三卷馍",
+        "category": "小吃",
+        "recommend": "夜市",
+        "note": "面皮卷上卤菜，阜阳夜市的流量之王。",
+        "image": "/assets/cities/341200/food-田三卷馍.jpg"
+      },
+      {
+        "name": "撒汤",
+        "category": "小吃",
+        "recommend": "街巷",
+        "note": "老母鸡汤冲蛋花，配生煎包是标准早餐。",
+        "image": "/assets/cities/341200/food-撒汤.jpg"
+      },
+      {
+        "name": "枕头馍",
+        "category": "糕点",
+        "recommend": "老城",
+        "note": "大如枕头的方馍，一块数斤，撕着吃最香。",
+        "image": "/assets/cities/341200/food-枕头馍.jpg"
+      },
+      {
+        "name": "太和板面",
+        "category": "面食",
+        "recommend": "太和",
+        "note": "摔打成板的面配羊肉汤、辣椒油。",
+        "image": "/assets/cities/341200/food-太和板面.jpg"
+      },
+      {
+        "name": "插花牛肉汤",
+        "category": "小吃",
+        "recommend": "颍东插花",
+        "note": "黄牛肉熬汤配油酥烧饼，清晨排队。",
+        "image": "/assets/cities/341200/food-插花牛肉汤.jpg"
+      }
+    ],
+    "poem": "",
+    "poemFrom": "",
+    "urbanDistricts": [
+      {
+        "id": "341202",
+        "name": "颍州区"
+      },
+      {
+        "id": "341203",
+        "name": "颍东区"
+      },
+      {
+        "id": "341204",
+        "name": "颍泉区"
+      }
+    ],
+    "urbanNote": "颍州是市中心，颍泉在北、颍东在东，泉河与颍河夹出老城格局。",
+    "banner": "/assets/cities/341200/banner.jpg"
+  },
+  {
+    "id": "341300",
+    "name": "宿州市",
+    "province": "安徽省",
+    "districts": [
+      "341302",
+      "341321",
+      "341322",
+      "341323",
+      "341324"
+    ],
+    "indexed": true,
+    "intro": "符离集烧鸡与皇藏峪，运河边的老宿县。",
+    "featuredDistricts": [
+      "341302",
+      "341321",
+      "341322"
+    ],
+    "foods": [
+      {
+        "name": "符离集烧鸡",
+        "category": "卤味",
+        "recommend": "符离",
+        "note": "四大名鸡之一，手提鸡骨肉即离。",
+        "image": "/assets/cities/341300/food-符离集烧鸡.jpg"
+      },
+      {
+        "name": "栏杆牛肉",
+        "category": "卤味",
+        "recommend": "栏杆",
+        "note": "五香黄牛肉，切薄夹烧饼。",
+        "image": "/assets/cities/341300/food-栏杆牛肉.jpg"
+      },
+      {
+        "name": "sa汤",
+        "category": "小吃",
+        "recommend": "老城",
+        "note": "宿县 sa 汤配煎包，老早餐三件套之一。",
+        "image": "/assets/cities/341300/food-sa汤.jpg"
+      },
+      {
+        "name": "灵璧地锅鸡",
+        "category": "土菜",
+        "recommend": "灵璧渔沟",
+        "note": "贴饼地锅，柴火慢焖。",
+        "image": "/assets/cities/341300/food-灵璧地锅鸡.jpg"
+      },
+      {
+        "name": "萧县羊肉汤",
+        "category": "小吃",
+        "recommend": "萧县",
+        "note": "配壮馍，伏天羊汤是皖北规矩。",
+        "image": "/assets/cities/341300/food-萧县羊肉汤.jpg"
+      },
+      {
+        "name": "砀山酥梨",
+        "category": "水果",
+        "recommend": "砀山",
+        "note": "皮薄多汁、酥脆无渣。",
+        "image": "/assets/cities/341300/food-砀山酥梨.jpg"
+      }
+    ],
+    "poem": "野火烧不尽，春风吹又生。",
+    "poemFrom": "白居易《赋得古原草送别》",
+    "urbanDistricts": [
+      {
+        "id": "341302",
+        "name": "埇桥区"
+      }
+    ],
+    "urbanNote": "埇桥是唯一的市区，运河穿城，符离与夹沟的物产围着它排开。",
+    "banner": "/assets/cities/341300/banner.jpg"
+  },
+  {
+    "id": "341500",
+    "name": "六安市",
+    "province": "安徽省",
+    "districts": [
+      "341502",
+      "341503",
+      "341504",
+      "341522",
+      "341523",
+      "341524",
+      "341525"
+    ],
+    "indexed": true,
+    "intro": "大别山下的皋城，淠史杭灌渠的起点。",
+    "featuredDistricts": [
+      "341502",
+      "341503",
+      "341504"
+    ],
+    "foods": [
+      {
+        "name": "六安瓜片",
+        "category": "茶饮",
+        "recommend": "蝙蝠洞周边",
+        "note": "中国十大名茶中唯一的片茶，无芽无梗。",
+        "image": "/assets/cities/341500/food-六安瓜片.jpg"
+      },
+      {
+        "name": "六安蒿子粑粑",
+        "category": "小吃",
+        "recommend": "毛坦厂",
+        "note": "清明蒿草和米粉，馅藏腊肉笋丁。",
+        "image": "/assets/cities/341500/food-六安蒿子粑粑.jpg"
+      },
+      {
+        "name": "徐集花生糖",
+        "category": "糕点",
+        "recommend": "金安徐集",
+        "note": "老手艺花生糖，脆而不粘牙。",
+        "image": "/assets/cities/341500/food-徐集花生糖.jpg"
+      },
+      {
+        "name": "霍邱大米",
+        "category": "主食",
+        "recommend": "孟集",
+        "note": "淮河湾稻米，长粒香软。",
+        "image": "/assets/cities/341500/food-霍邱大米.jpg"
+      },
+      {
+        "name": "万佛湖鱼头汤",
+        "category": "土菜",
+        "recommend": "舒城万佛湖",
+        "note": "鱼头炖出奶白汤，配豆腐。",
+        "image": "/assets/cities/341500/food-万佛湖鱼头汤.jpg"
+      },
+      {
+        "name": "金寨红烧肉",
+        "category": "土菜",
+        "recommend": "金寨梅山",
+        "note": "黑毛猪肉慢炖，甜口酱香。",
+        "image": "/assets/cities/341500/food-金寨红烧肉.jpg"
+      }
+    ],
+    "poem": "",
+    "poemFrom": "",
+    "urbanDistricts": [
+      {
+        "id": "341502",
+        "name": "金安区"
+      },
+      {
+        "id": "341503",
+        "name": "裕安区"
+      },
+      {
+        "id": "341504",
+        "name": "叶集区"
+      }
+    ],
+    "urbanNote": "金安与裕安夹淠河对望，叶集在西部接河南，大别山在西南。",
+    "banner": "/assets/cities/341500/banner.jpg"
+  },
+  {
+    "id": "341600",
+    "name": "亳州市",
+    "province": "安徽省",
+    "districts": [
+      "341602",
+      "341621",
+      "341622",
+      "341623"
+    ],
+    "indexed": true,
+    "intro": "中华药都，曹操与老子的故乡。",
+    "featuredDistricts": [
+      "341602",
+      "341621",
+      "341622"
+    ],
+    "foods": [
+      {
+        "name": "曹操鸡",
+        "category": "徽菜",
+        "recommend": "老城",
+        "note": "药膳焖鸡，传说曹孟德的养生方。",
+        "image": "/assets/cities/341600/food-曹操鸡.jpg"
+      },
+      {
+        "name": "亳州牛肉馍",
+        "category": "小吃",
+        "recommend": "老街",
+        "note": "超大油酥肉馍，一块管饱。",
+        "image": "/assets/cities/341600/food-亳州牛肉馍.jpg"
+      },
+      {
+        "name": "涡阳干扣面",
+        "category": "面食",
+        "recommend": "涡阳",
+        "note": "绿豆芽蒜汁拌匀，面劲道。",
+        "image": "/assets/cities/341600/food-涡阳干扣面.jpg"
+      },
+      {
+        "name": "撒汤",
+        "category": "小吃",
+        "recommend": "早市",
+        "note": "老母鸡汤冲蛋，配牛肉馍。",
+        "image": "/assets/cities/341600/food-撒汤.jpg"
+      },
+      {
+        "name": "义门苔干",
+        "category": "土菜",
+        "recommend": "涡阳义门",
+        "note": "苔干烧肉，脆嫩吸味。",
+        "image": "/assets/cities/341600/food-义门苔干.jpg"
+      },
+      {
+        "name": "铜关粉皮",
+        "category": "小吃",
+        "recommend": "涡阳铜关",
+        "note": "红薯粉皮，凉拌炖肉两宜。",
+        "image": "/assets/cities/341600/food-铜关粉皮.jpg"
+      }
+    ],
+    "poem": "谁知盘中餐，粒粒皆辛苦。",
+    "poemFrom": "李绅《悯农》",
+    "urbanDistricts": [
+      {
+        "id": "341602",
+        "name": "谯城区"
+      }
+    ],
+    "urbanNote": "谯城是唯一的市区，花戏楼与运兵道在老城，药市在城西。",
+    "banner": "/assets/cities/341600/banner.jpg"
+  },
+  {
+    "id": "341700",
+    "name": "池州市",
+    "province": "安徽省",
+    "districts": [
+      "341702",
+      "341721",
+      "341722",
+      "341723"
+    ],
+    "indexed": true,
+    "intro": "莲花佛国山门，杜牧笔下的秋浦之城。",
+    "featuredDistricts": [
+      "341702",
+      "341721",
+      "341722"
+    ],
+    "foods": [
+      {
+        "name": "池州小粑",
+        "category": "小吃",
+        "recommend": "老城",
+        "note": "米粉做皮、粉丝腌菜馅，池州早餐。",
+        "image": "/assets/cities/341700/food-池州小粑.jpg"
+      },
+      {
+        "name": "西山焦枣",
+        "category": "糕点",
+        "recommend": "贵池棠溪",
+        "note": "大红枣炭火烘焙，池州手信。",
+        "image": "/assets/cities/341700/food-西山焦枣.jpg"
+      },
+      {
+        "name": "九华素斋",
+        "category": "素食",
+        "recommend": "青阳九华街",
+        "note": "寺院素斋，素鸡素鸭形味兼备。",
+        "image": "/assets/cities/341700/food-九华素斋.jpg"
+      },
+      {
+        "name": "陵阳豆腐干",
+        "category": "小吃",
+        "recommend": "青阳陵阳",
+        "note": "五香豆腐干，古镇卤味。",
+        "image": "/assets/cities/341700/food-陵阳豆腐干.jpg"
+      },
+      {
+        "name": "升金湖鱼干",
+        "category": "腊味",
+        "recommend": "东至大渡口",
+        "note": "湖鱼腌制晒干，红烧一绝。",
+        "image": "/assets/cities/341700/food-升金湖鱼干.jpg"
+      },
+      {
+        "name": "石台一品锅",
+        "category": "土菜",
+        "recommend": "石台",
+        "note": "山笋干与腊肉同炖，徽味农家。",
+        "image": "/assets/cities/341700/food-石台一品锅.jpg"
+      }
+    ],
+    "poem": "清明时节雨纷纷，路上行人欲断魂。",
+    "poemFrom": "杜牧《清明》",
+    "urbanDistricts": [
+      {
+        "id": "341702",
+        "name": "贵池区"
+      }
+    ],
+    "urbanNote": "贵池是唯一市区，杏花村与平天湖在城边，九华山在南。",
+    "banner": "/assets/cities/341700/banner.jpg"
+  },
+  {
+    "id": "341800",
+    "name": "宣城市",
+    "province": "安徽省",
+    "districts": [
+      "341802",
+      "341821",
+      "341823",
+      "341824",
+      "341825",
+      "341881",
+      "341882"
+    ],
+    "indexed": true,
+    "intro": "宣纸宣笔之乡，江南诗山的江城。",
+    "featuredDistricts": [
+      "341802",
+      "341821",
+      "341823"
+    ],
+    "foods": [
+      {
+        "name": "宣城炒面",
+        "category": "小吃",
+        "recommend": "老城",
+        "note": "重油重酱的炒面，配鸭血汤。",
+        "image": "/assets/cities/341800/food-宣城炒面.jpg"
+      },
+      {
+        "name": "水阳三宝",
+        "category": "土菜",
+        "recommend": "宣州水阳",
+        "note": "鸭脚包、干子、香肠，水阳江味。",
+        "image": "/assets/cities/341800/food-水阳三宝.jpg"
+      },
+      {
+        "name": "泾县焖面",
+        "category": "小吃",
+        "recommend": "泾县",
+        "note": "手工面条油焖，配鸭血汤。",
+        "image": "/assets/cities/341800/food-泾县焖面.jpg"
+      },
+      {
+        "name": "绩溪臭鳜鱼",
+        "category": "徽菜",
+        "recommend": "绩溪",
+        "note": "徽菜代表，臭香入味。",
+        "image": "/assets/cities/341800/food-绩溪臭鳜鱼.jpg"
+      },
+      {
+        "name": "胡适一品锅",
+        "category": "徽菜",
+        "recommend": "绩溪上庄",
+        "note": "蛋饺、油豆腐、肉圆层层码。",
+        "image": "/assets/cities/341800/food-胡适一品锅.jpg"
+      },
+      {
+        "name": "广德蒿子馍馍",
+        "category": "小吃",
+        "recommend": "广德",
+        "note": "春令蒿草米粉馍，咸口为多。",
+        "image": "/assets/cities/341800/food-广德蒿子馍馍.jpg"
+      }
+    ],
+    "poem": "相看两不厌，只有敬亭山。",
+    "poemFrom": "李白《独坐敬亭山》",
+    "urbanDistricts": [
+      {
+        "id": "341802",
+        "name": "宣州区"
+      }
+    ],
+    "urbanNote": "宣州是唯一市区，敬亭山在北，水阳江绕城，郊县散在皖南山区。",
+    "banner": "/assets/cities/341800/banner.jpg"
+  },
+  {
+    "id": "310000",
+    "name": "上海市",
+    "province": "上海市",
+    "districts": [
+      "310101",
+      "310104",
+      "310105",
+      "310106",
+      "310107",
+      "310109",
+      "310110",
+      "310112",
+      "310113",
+      "310114",
+      "310115",
+      "310116",
+      "310117",
+      "310118",
+      "310120",
+      "310151"
+    ],
+    "indexed": true,
+    "intro": "外滩、梧桐区与江南水乡，都市与旧时光叠在一城。",
+    "featuredDistricts": [
+      "310101",
+      "310104",
+      "310105"
+    ],
+    "foods": [
+      {
+        "name": "南翔小笼",
+        "category": "小吃",
+        "recommend": "南翔古镇",
+        "note": "皮薄汁多、蟹粉鲜甜，一笼一笼现蒸，上海点心的代表。",
+        "image": "/assets/cities/310000/food-南翔小笼.jpg"
+      },
+      {
+        "name": "生煎馒头",
+        "category": "小吃",
+        "recommend": "小杨生煎",
+        "note": "底脆汁浓、芝麻葱花点缀，咬开先吸汤。",
+        "image": "/assets/cities/310000/food-生煎馒头.jpg"
+      },
+      {
+        "name": "红烧肉",
+        "category": "本帮菜",
+        "recommend": "老正兴",
+        "note": "浓油赤酱、冰糖收汁，本帮菜的灵魂一道。",
+        "image": "/assets/cities/310000/food-红烧肉.jpg"
+      },
+      {
+        "name": "蟹粉小笼",
+        "category": "小吃",
+        "recommend": "王家沙",
+        "note": "蟹粉蟹黄裹进薄皮，鲜得挑眉。",
+        "image": "/assets/cities/310000/food-蟹粉小笼.jpg"
+      },
+      {
+        "name": "葱油拌面",
+        "category": "面食",
+        "recommend": "街头面馆",
+        "note": "熬香的葱油拌开，简单却让人惦记。",
+        "image": "/assets/cities/310000/food-葱油拌面.jpg"
+      },
+      {
+        "name": "排骨年糕",
+        "category": "小吃",
+        "recommend": "鲜得来",
+        "note": "炸排骨配软糯年糕，甜咸交织的本帮小食。",
+        "image": "/assets/cities/310000/food-排骨年糕.jpg"
+      }
+    ],
+    "poem": "黄浦波平收万籁，外滩灯影浸重楼。",
+    "poemFrom": "沪上夜望",
+    "urbanDistricts": [
+      {
+        "id": "310101",
+        "name": "黄浦区"
+      },
+      {
+        "id": "310104",
+        "name": "徐汇区"
+      },
+      {
+        "id": "310106",
+        "name": "静安区"
+      },
+      {
+        "id": "310105",
+        "name": "长宁区"
+      },
+      {
+        "id": "310107",
+        "name": "普陀区"
+      },
+      {
+        "id": "310109",
+        "name": "虹口区"
+      },
+      {
+        "id": "310110",
+        "name": "杨浦区"
+      }
+    ],
+    "urbanNote": "内环内的七个中心城区沿黄浦江两岸铺开；浦东新区在江之东，是城市向外拓展的崭新 frontier。",
+    "banner": "/assets/cities/310000/banner.jpg"
+  }
+]

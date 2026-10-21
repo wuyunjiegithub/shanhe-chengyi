@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d2028" />
+      <stop offset="1" stop-color="#050b0f" />
+    </linearGradient>
+    <linearGradient id="far" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b6f68" />
+      <stop offset="1" stop-color="#163c39" />
+    </linearGradient>
+    <linearGradient id="near" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#35e0c4" />
+      <stop offset="1" stop-color="#1b8479" />
+    </linearGradient>
+    <clipPath id="round">
+      <rect width="1024" height="1024" rx="224" />
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#round)">
+    <rect width="1024" height="1024" fill="url(#sky)" />
+
+    <!-- 罗盘：与站点 favicon 同一语汇（同心圆 + 十字刻度 + 金色圆心） -->
+    <circle cx="512" cy="330" r="228" fill="none" stroke="#35e0c4" stroke-width="14" opacity="0.55" />
+    <circle cx="512" cy="330" r="152" fill="none" stroke="#35e0c4" stroke-width="9" opacity="0.32" />
+    <path
+      d="M512 74v38M512 550v38M206 330h38M780 330h38"
+      stroke="#35e0c4"
+      stroke-width="17"
+      stroke-linecap="round"
+      opacity="0.6"
+    />
+    <circle cx="512" cy="330" r="48" fill="#ffd479" />
+
+    <!-- 远山 -->
+    <path d="M96 700 L330 452 L472 566 L648 404 L928 700 Z" fill="url(#far)" opacity="0.9" />
+    <!-- 近山 -->
+    <path d="M40 764 L296 548 L452 682 L628 520 L984 764 Z" fill="url(#near)" />
+
+    <!-- 城邑：城墙 + 三塔 + 城门，落在山脚 -->
+    <rect y="742" width="1024" height="282" fill="#040f12" />
+    <g fill="#08262a">
+      <rect x="150" y="700" width="724" height="46" rx="10" />
+      <rect x="196" y="648" width="86" height="98" />
+      <rect x="452" y="596" width="120" height="150" />
+      <rect x="742" y="648" width="86" height="98" />
+    </g>
+    <g fill="#35e0c4" opacity="0.75">
+      <rect x="216" y="676" width="46" height="20" rx="5" />
+      <rect x="256" y="716" width="46" height="20" rx="5" />
+      <rect x="482" y="624" width="60" height="24" rx="6" />
+      <rect x="482" y="676" width="60" height="24" rx="6" />
+      <rect x="762" y="676" width="46" height="20" rx="5" />
+      <rect x="802" y="716" width="46" height="20" rx="5" />
+    </g>
+    <!-- 城门与暖光 -->
+    <path d="M476 746 h72 v-44 a36 36 0 0 0 -72 0 Z" fill="#ffd479" opacity="0.9" />
+    <rect x="150" y="742" width="724" height="8" fill="#35e0c4" opacity="0.5" />
+  </g>
+</svg>

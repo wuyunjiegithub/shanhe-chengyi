@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;overflow:hidden;background-color:#06080e;}body{overscroll-behavior:none;user-select:none;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-fixed-variant": "#004e5a", "on-tertiary-fixed": "#2a1700", "on-surface-variant": "#bbc9cd", "surface": "#121318", "inverse-primary": "#006877", "on-secondary-container": "#00311f", "tertiary-fixed-dim": "#ffb95f", "secondary": "#4edea3", "error-container": "#93000a", "surface-container-lowest": "#0d0e13", "surface-variant": "#34343a", "primary": "#8aebff", "inverse-surface": "#e3e1e9", "primary-fixed-dim": "#2fd9f4", "on-background": "#e3e1e9", "secondary-fixed": "#6ffbbe", "tertiary-container": "#ffb147", "on-tertiary": "#472a00", "surface-container": "#1e1f25", "on-secondary-fixed": "#002113", "on-primary-fixed": "#001f25", "tertiary": "#ffd6a7", "secondary-fixed-dim": "#4edea3", "surface-bright": "#38393f", "tertiary-fixed": "#ffddb8", "outline": "#859397", "primary-container": "#22d3ee", "on-error-container": "#ffdad6", "secondary-container": "#00a572", "error": "#ffb4ab", "surface-container-low": "#1a1b21", "on-primary-container": "#005763", "primary-fixed": "#a2eeff", "background": "#06080e", "on-tertiary-container": "#704500", "on-secondary-fixed-variant": "#005236", "on-secondary": "#003824", "on-tertiary-fixed-variant": "#653e00", "surface-dim": "#121318", "surface-container-high": "#292a2f", "outline-variant": "#3c494c", "on-error": "#690005", "on-primary": "#00363e", "on-surface": "#e3e1e9", "surface-tint": "#2fd9f4", "inverse-on-surface": "#2f3036", "surface-container-highest": "#34343a" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-sm": "0.5rem", "space-xs": "0.25rem", "gutter-lg": "1.5rem", "gutter-sm": "0.5rem", "margin": "1.5rem", "gutter": "1rem", "margin-hud": "1.25rem", "space-lg": "1rem", "space-md": "0.75rem", "space-xl": "1.5rem" }, "fontFamily": { "body-lg": [ "Inter" ], "stat-counter": [ "JetBrains Mono" ], "headline-sm": [ "Inter" ], "label-mono": [ "JetBrains Mono" ], "body-md": [ "Inter" ], "headline-lg": [ "Space Grotesk" ], "caption": [ "Inter" ], "body-sm": [ "Inter" ], "display": [ "Space Grotesk" ], "headline-md": [ "Space Grotesk" ] } } } };</script></head><body class="bg-[#06080e] font-body-md text-on-surface antialiased w-screen h-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- FULLSCREEN IMMERSIVE 3D DIGITAL GEO-SANDTABLE -->
+<div class="relative w-full h-full overflow-hidden bg-[#06080e]">
+<!-- THREE.JS SCENE LAYER (Full Canvas) -->
+<div class="absolute inset-0 z-0">
+<!-- STITCH_THREEJS_START:ANIMATION_5 class="absolute inset-0 w-full h-full bg-transparent" -->
+<div class="absolute inset-0 w-full h-full bg-transparent" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_5" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_5');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  // Three.js interactive 3D Geo Sandtable for 江浙沪皖 (Shanghai, Jiangsu, Zhejiang, Anhui)
+// Pure cinematic geospatial visual view: 45-55 deg tilted perspective, tectonic plates, glowing boundaries, dynamic radar scan & glowing points
+
+const containerEl = typeof container !== 'undefined' ? container : document.body;
+const width = containerEl.clientWidth || window.innerWidth || 1440;
+const height = containerEl.clientHeight || window.innerHeight || 900;
+
+// Scene setup
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x06080e, 0.0028);
+
+// Camera: 48 deg oblique bird-eye perspective
+const camera = new THREE.PerspectiveCamera(46, width / height, 1, 3500);
+camera.position.set(0, 560, 620);
+camera.lookAt(0, 0, -20);
+
+// Renderer
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(width, height);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+containerEl.appendChild(renderer.domElement);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0x1e2738, 1.8);
+scene.add(ambientLight);
+
+const mainDirLight = new THREE.DirectionalLight(0xcfd8dc, 2.2);
+mainDirLight.position.set(240, 700, 360);
+mainDirLight.castShadow = true;
+scene.add(mainDirLight);
+
+const cyanRimLight = new THREE.DirectionalLight(0x00f2fe, 1.6);
+cyanRimLight.position.set(-350, 300, -200);
+scene.add(cyanRimLight);
+
+const emeraldLight = new THREE.DirectionalLight(0x10b981, 0.8);
+emeraldLight.position.set(300, 200, 300);
+scene.add(emeraldLight);
+
+// Group
+const mapGroup = new THREE.Group();
+scene.add(mapGroup);
+
+// Matrix Digital Topo Floor
+const gridHelper = new THREE.GridHelper(1600, 48, 0x1a2638, 0x0c131f);
+gridHelper.position.y = -8;
+scene.add(gridHelper);
+
+// Deep radar range rings
+const ring1 = new THREE.Mesh(
+  new THREE.RingGeometry(420, 422, 96),
+  new THREE.MeshBasicMaterial({ color: 0x1e3a5f, side: THREE.DoubleSide, transparent: true, opacity: 0.3 })
+);
+ring1.rotation.x = Math.PI / 2;
+ring1.position.y = -7;
+scene.add(ring1);
+
+const ring2 = new THREE.Mesh(
+  new THREE.RingGeometry(240, 241.5, 72),
+  new THREE.MeshBasicMaterial({ color: 0x0e7490, side: THREE.DoubleSide, transparent: true, opacity: 0.25 })
+);
+ring2.rotation.x = Math.PI / 2;
+ring2.position.y = -7;
+scene.add(ring2);
+
+// Regional city data (~40 cities across 江浙沪皖)
+const cities = [
+  // 上海 (Shanghai)
+  { name: '上海', prov: '上海', x: 230, z: -15, h: 26, color: 0x00f2fe, active: false, districts: 16, spots: 342 },
+  
+  // 江苏 (Jiangsu) - 13市
+  { name: '南京', prov: '江苏', x: 40, z: -75, h: 20, color: 0x38bdf8, active: false, districts: 11, spots: 245 },
+  { name: '苏州', prov: '江苏', x: 175, z: -20, h: 24, color: 0x22d3ee, active: true, districts: 10, spots: 310 }, // 处于悬停激活态
+  { name: '无锡', prov: '江苏', x: 130, z: -35, h: 18, color: 0x38bdf8, active: false, districts: 8, spots: 188 },
+  { name: '常州', prov: '江苏', x: 90, z: -45, h: 16, color: 0x38bdf8, active: false, districts: 6, spots: 142 },
+  { name: '南通', prov: '江苏', x: 205, z: -85, h: 17, color: 0x38bdf8, active: false, districts: 7, spots: 156 },
+  { name: '扬州', prov: '江苏', x: 60, z: -110, h: 16, color: 0x38bdf8, active: false, districts: 6, spots: 174 },
+  { name: '镇江', prov: '江苏', x: 75, z: -70, h: 15, color: 0x38bdf8, active: false, districts: 6, spots: 118 },
+  { name: '泰州', prov: '江苏', x: 120, z: -105, h: 14, color: 0x38bdf8, active: false, districts: 6, spots: 105 },
+  { name: '盐城', prov: '江苏', x: 135, z: -170, h: 14, color: 0x38bdf8, active: false, districts: 9, spots: 132 },
+  { name: '淮安', prov: '江苏', x: 50, z: -175, h: 13, color: 0x38bdf8, active: false, districts: 7, spots: 98 },
+  { name: '宿迁', prov: '江苏', x: 0, z: -205, h: 12, color: 0x38bdf8, active: false, districts: 5, spots: 82 },
+  { name: '徐州', prov: '江苏', x: -35, z: -255, h: 15, color: 0x38bdf8, active: false, districts: 10, spots: 164 },
+  { name: '连云港', prov: '江苏', x: 75, z: -240, h: 14, color: 0x38bdf8, active: false, districts: 6, spots: 120 },
+
+  // 浙江 (Zhejiang) - 11市
+  { name: '杭州', prov: '浙江', x: 105, z: 50, h: 22, color: 0x34d399, active: false, districts: 13, spots: 290 },
+  { name: '宁波', prov: '浙江', x: 205, z: 70, h: 19, color: 0x34d399, active: false, districts: 10, spots: 215 },
+  { name: '嘉兴', prov: '浙江', x: 170, z: 15, h: 16, color: 0x34d399, active: false, districts: 7, spots: 148 },
+  { name: '湖州', prov: '浙江', x: 100, z: 5, h: 15, color: 0x34d399, active: false, districts: 5, spots: 136 },
+  { name: '绍兴', prov: '浙江', x: 145, z: 75, h: 17, color: 0x34d399, active: false, districts: 6, spots: 162 },
+  { name: '金华', prov: '浙江', x: 90, z: 125, h: 16, color: 0x34d399, active: false, districts: 9, spots: 170 },
+  { name: '衢州', prov: '浙江', x: 25, z: 145, h: 14, color: 0x34d399, active: false, districts: 6, spots: 112 },
+  { name: '舟山', prov: '浙江', x: 260, z: 45, h: 12, color: 0x34d399, active: false, districts: 4, spots: 96 },
+  { name: '台州', prov: '浙江', x: 185, z: 135, h: 15, color: 0x34d399, active: false, districts: 9, spots: 144 },
+  { name: '丽水', prov: '浙江', x: 80, z: 190, h: 13, color: 0x34d399, active: false, districts: 9, spots: 128 },
+  { name: '温州', prov: '浙江', x: 155, z: 210, h: 17, color: 0x34d399, active: false, districts: 12, spots: 185 },
+
+  // 安徽 (Anhui) - 16市
+  { name: '合肥', prov: '安徽', x: -75, z: -40, h: 19, color: 0xfbbf24, active: false, districts: 9, spots: 220 },
+  { name: '芜湖', prov: '安徽', x: -5, z: -5, h: 15, color: 0xfbbf24, active: false, districts: 8, spots: 135 },
+  { name: '马鞍山', prov: '安徽', x: 18, z: -40, h: 13, color: 0xfbbf24, active: false, districts: 6, spots: 94 },
+  { name: '安庆', prov: '安徽', x: -105, z: 55, h: 14, color: 0xfbbf24, active: false, districts: 10, spots: 142 },
+  { name: '黄山', prov: '安徽', x: -20, z: 100, h: 18, color: 0xfbbf24, active: false, districts: 7, spots: 210 },
+  { name: '滁州', prov: '安徽', x: -15, z: -95, h: 13, color: 0xfbbf24, active: false, districts: 8, spots: 110 },
+  { name: '阜阳', prov: '安徽', x: -165, z: -125, h: 12, color: 0xfbbf24, active: false, districts: 8, spots: 92 },
+  { name: '蚌埠', prov: '安徽', x: -85, z: -120, h: 13, color: 0xfbbf24, active: false, districts: 7, spots: 96 },
+  { name: '宿州', prov: '安徽', x: -90, z: -195, h: 11, color: 0xfbbf24, active: false, districts: 5, spots: 78 },
+  { name: '六安', prov: '安徽', x: -145, z: -25, h: 13, color: 0xfbbf24, active: false, districts: 7, spots: 115 },
+  { name: '亳州', prov: '安徽', x: -155, z: -185, h: 11, color: 0xfbbf24, active: false, districts: 5, spots: 86 },
+  { name: '池州', prov: '安徽', x: -60, z: 50, h: 13, color: 0xfbbf24, active: false, districts: 5, spots: 98 },
+  { name: '宣城', prov: '安徽', x: 30, z: 30, h: 14, color: 0xfbbf24, active: false, districts: 7, spots: 126 },
+  { name: '铜陵', prov: '安徽', x: -40, z: 20, h: 11, color: 0xfbbf24, active: false, districts: 4, spots: 64 },
+  { name: '淮南', prov: '安徽', x: -115, z: -85, h: 10, color: 0x64748b, active: false, indexed: false, districts: 7, spots: 54 },
+  { name: '淮北', prov: '安徽', x: -110, z: -225, h: 9, color: 0x64748b, active: false, indexed: false, districts: 4, spots: 45 }
+];
+
+// Helper: Tectonic City Plate Geometry
+function createCityPlate(city) {
+  const shape = new THREE.Shape();
+  const radius = 26 + (city.h * 0.4);
+  const segments = 8;
+  const step = (Math.PI * 2) / segments;
+  
+  let hash = 0;
+  for (let i = 0; i < city.name.length; i++) hash += city.name.charCodeAt(i);
+
+  for (let i = 0; i < segments; i++) {
+    const angle = i * step;
+    const rVar = radius * (0.84 + Math.sin(hash + i * 2.1) * 0.2);
+    const px = Math.cos(angle) * rVar;
+    const py = Math.sin(angle) * rVar;
+    if (i === 0) shape.moveTo(px, py);
+    else shape.lineTo(px, py);
+  }
+  shape.closePath();
+
+  const extrudeSettings = {
+    steps: 1,
+    depth: city.h,
+    bevelEnabled: true,
+    bevelThickness: 2,
+    bevelSize: 1.5,
+    bevelOffset: 0,
+    bevelSegments: 2
+  };
+
+  const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+  geo.rotateX(Math.PI / 2);
+
+  // Material setup: dark stone tectonic block
+  let baseColor = 0x111622;
+  let emissive = 0x050912;
+  let emissiveIntensity = 0.25;
+  let metalness = 0.35;
+  let roughness = 0.55;
+
+  if (city.active) {
+    baseColor = 0x162c42;
+    emissive = 0x00f2fe;
+    emissiveIntensity = 0.65;
+    metalness = 0.45;
+    roughness = 0.35;
+  } else if (city.indexed === false) {
+    baseColor = 0x0c0f17;
+    emissive = 0x000000;
+    emissiveIntensity = 0.05;
+    roughness = 0.9;
+  }
+
+  const mat = new THREE.MeshStandardMaterial({
+    color: baseColor,
+    emissive: emissive,
+    emissiveIntensity: emissiveIntensity,
+    roughness: roughness,
+    metalness: metalness
+  });
+
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(city.x, city.active ? 10 : 0, city.z);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+
+  // Luminous Edge Highlights
+  const edgesGeo = new THREE.EdgesGeometry(geo, 26);
+  let edgeColor = 0x1e2e46;
+  let edgeOpacity = 0.4;
+
+  if (city.active) {
+    edgeColor = 0x22d3ee;
+    edgeOpacity = 1.0;
+  } else if (city.prov === '上海') {
+    edgeColor = 0x00f2fe;
+    edgeOpacity = 0.55;
+  } else if (city.prov === '江苏') {
+    edgeColor = 0x38bdf8;
+    edgeOpacity = 0.45;
+  } else if (city.prov === '浙江') {
+    edgeColor = 0x34d399;
+    edgeOpacity = 0.45;
+  } else if (city.prov === '安徽') {
+    edgeColor = 0xfbbf24;
+    edgeOpacity = 0.4;
+  }
+
+  const edgeMat = new THREE.LineBasicMaterial({
+    color: edgeColor,
+    transparent: true,
+    opacity: edgeOpacity
+  });
+  const edgeLine = new THREE.LineSegments(edgesGeo, edgeMat);
+  mesh.add(edgeLine);
+
+  // If hovered / active (Suzhou), add tactical beacon & glowing radar pulse
+  if (city.active) {
+    // Pulse Ring
+    const pulseRing = new THREE.Mesh(
+      new THREE.RingGeometry(22, 25, 40),
+      new THREE.MeshBasicMaterial({ color: 0x22d3ee, side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
+    );
+    pulseRing.rotation.x = Math.PI / 2;
+    pulseRing.position.y = 0.4;
+    mesh.add(pulseRing);
+
+    // Core Beacon Pillar
+    const beaconGeo = new THREE.CylinderGeometry(0.8, 1.6, 26, 12);
+    const beaconMat = new THREE.MeshBasicMaterial({ color: 0x22d3ee, transparent: true, opacity: 0.9 });
+    const beacon = new THREE.Mesh(beaconGeo, beaconMat);
+    beacon.position.y = 13;
+    mesh.add(beacon);
+
+    // Glowing tip
+    const tipGeo = new THREE.SphereGeometry(2.4, 16, 16);
+    const tipMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const tip = new THREE.Mesh(tipGeo, tipMat);
+    tip.position.y = 26;
+    mesh.add(tip);
+  }
+
+  mesh.userData = { city: city };
+  return mesh;
+}
+
+const cityMeshes = [];
+cities.forEach(c => {
+  const mesh = createCityPlate(c);
+  mapGroup.add(mesh);
+  cityMeshes.push(mesh);
+});
+
+// Interactive dynamic particles floating over tectonic landscape (Geo-vectors)
+const particleCount = 180;
+const pGeo = new THREE.BufferGeometry();
+const pPos = new Float32Array(particleCount * 3);
+for (let i = 0; i < particleCount; i++) {
+  pPos[i * 3] = (Math.random() - 0.5) * 600;
+  pPos[i * 3 + 1] = Math.random() * 80 + 10;
+  pPos[i * 3 + 2] = (Math.random() - 0.5) * 600;
+}
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+const pMat = new THREE.PointsMaterial({
+  color: 0x38bdf8,
+  size: 3,
+  transparent: true,
+  opacity: 0.45,
+  blending: THREE.AdditiveBlending
+});
+const particles = new THREE.Points(pGeo, pMat);
+mapGroup.add(particles);
+
+// Animation Loop
+let clock = new THREE.Clock();
+function animate() {
+  requestAnimationFrame(animate);
+  const time = clock.getElapsedTime();
+
+  // Floating breathing on hovered Suzhou plate
+  cityMeshes.forEach(m => {
+    if (m.userData.city.active) {
+      m.position.y = 10 + Math.sin(time * 2.8) * 2;
+    }
+  });
+
+  // Slow geospatial camera/world pan
+  mapGroup.rotation.y = Math.sin(time * 0.06) * 0.04;
+
+  // Slowly drift particles
+  const posArr = pGeo.attributes.position.array;
+  for (let i = 1; i < particleCount * 3; i += 3) {
+    posArr[i] += Math.sin(time + i) * 0.04;
+  }
+  pGeo.attributes.position.needsUpdate = true;
+
+  renderer.render(scene, camera);
+}
+animate();
+
+// Resize
+window.addEventListener('resize', () => {
+  const newW = containerEl.clientWidth || window.innerWidth;
+  const newH = containerEl.clientHeight || window.innerHeight;
+  camera.aspect = newW / newH;
+  camera.updateProjectionMatrix();
+  renderer.setSize(newW, newH);
+});
+
+})();
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_5 -->
+<!-- Soft Vignette & Subtle Geo-Grid Overlay -->
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_35%,rgba(6,8,14,0.85)_100%)] pointer-events-none"></div>
+<div class="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:64px_64px] pointer-events-none"></div>
+</div>
+<!-- FLOATING HUD PIN CARD (Map-as-Button: Suzhou Active Anchor) -->
+<div class="absolute left-[54%] top-[46%] -translate-x-1/2 -translate-y-full pointer-events-auto z-20 group cursor-pointer transition-all duration-300" id="suzhou-map-pin">
+<div class="relative flex flex-col items-center">
+<!-- High-tech HUD Plate -->
+<div class="px-4 py-2 rounded-xl bg-surface-container-lowest/85 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.8)] border border-primary/40 hover:border-primary flex items-center gap-3 transition-all hover:shadow-[0_0_24px_rgba(34,211,238,0.35)] group-hover:-translate-y-1">
+<div class="relative flex items-center justify-center">
+<div class="w-2.5 h-2.5 rounded-full bg-primary animate-ping absolute"></div>
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-[16px] text-on-surface font-semibold tracking-wide">苏州市</span>
+<span class="px-1.5 py-0.5 rounded bg-primary/15 text-primary font-label-mono text-[10px] font-semibold border border-primary/25">10区县</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high/80 text-on-surface-variant font-label-mono text-[10px]">310 认知触点</span>
+</div>
+<div class="flex items-center gap-1 font-label-mono text-[11px] text-primary/80 pt-0.5">
+<span class="material-symbols-outlined text-[12px]">ads_click</span>
+<span>点击下钻区县级沙盘 · Camera Tilt 48°</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+<!-- Vertical Glowing Lead Line to 3D Coordinates -->
+<div class="w-[1.5px] h-8 bg-gradient-to-b from-primary via-primary/70 to-transparent"></div>
+<div class="w-3 h-3 rounded-full bg-primary/20 ring-1 ring-primary flex items-center justify-center -mt-1 shadow-[0_0_14px_rgba(34,211,238,1)]">
+<div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+</div>
+</div>
+</div>
+<!-- FLOATING HUD OVERLAY SYSTEM (Zero Admin Sidebar, purely floating UI) -->
+<div class="absolute inset-0 z-30 p-margin-hud flex flex-col justify-between pointer-events-none">
+<!-- TOP BAR: Left Badge + Central 520px Search Console + Right Telemetry -->
+<div class="w-full flex items-start justify-between">
+<!-- Top Left: Minimalist Sandtable Branding Pill -->
+<div class="pointer-events-auto flex items-center gap-2">
+<div class="px-3.5 py-1.5 rounded-full bg-surface-container-lowest/80 backdrop-blur-xl border border-outline-variant/30 flex items-center gap-2.5 shadow-xl">
+<div class="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_10px_rgba(34,211,238,0.9)] animate-pulse"></div>
+<span class="font-headline-sm text-body-lg text-on-surface font-semibold tracking-wide">认知沙盘</span>
+<span class="text-outline-variant/60 font-label-mono text-caption">/</span>
+<span class="font-body-md text-primary font-medium tracking-tight">江浙沪皖</span>
+</div>
+<div class="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-lowest/60 backdrop-blur-md border border-outline-variant/20 font-label-mono text-[11px] text-on-surface-variant">
+<span class="text-secondary">●</span>
+<span>EPSG:3857 // 31°18'N 120°37'E</span>
+<span class="text-outline-variant/50">|</span>
+<span class="text-primary font-medium">48° TILT</span>
+</div>
+</div>
+<!-- Top Center: 520px Compact Search Bar + Expandable HUD Search Panel -->
+<div class="w-[520px] pointer-events-auto relative flex flex-col items-center">
+<!-- Search Input Capsule -->
+<div class="w-full h-11 px-4 rounded-full bg-surface-container-lowest/80 backdrop-blur-xl border border-outline-variant/35 hover:border-outline-variant focus-within:border-primary-container focus-within:shadow-[0_0_24px_rgba(34,211,238,0.25)] flex items-center justify-between transition-all duration-200" id="search-bar-shell">
+<div class="flex items-center gap-2.5 w-full mr-2">
+<span class="material-symbols-outlined text-primary text-[19px]">search</span>
+<input autocomplete="off" class="w-full bg-transparent text-on-surface font-body-md text-[13px] placeholder:text-on-surface-variant/50 focus:outline-none" id="geo-search-input" placeholder="搜索城市、区县或景点…" type="text" value=""/>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<button class="hidden text-on-surface-variant hover:text-on-surface p-0.5" id="clear-search-btn">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+<kbd class="px-2 py-0.5 rounded bg-surface-container-high/70 text-on-surface-variant font-label-mono text-[10px] border border-outline-variant/30">⌘K</kbd>
+<button class="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary font-label-mono text-[11px] transition-colors" id="toggle-search-dropdown-btn" title="切换展开面板">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+<span id="preview-mode-tag">搜索面板</span>
+</button>
+</div>
+</div>
+<!-- 520px HUD Glass Dropdown Panel -->
+<div class="hidden w-[520px] mt-2 rounded-2xl bg-[#0a0d16]/95 backdrop-blur-2xl border border-outline-variant/40 shadow-[0_20px_50px_rgba(0,0,0,0.9)] flex flex-col overflow-hidden transition-all duration-200" id="search-active-panel">
+<!-- Recent Searches Section (苏州、莫干山、千岛湖) -->
+<div class="px-4 pt-3.5 pb-2.5 bg-surface-container-low/30 border-b border-outline-variant/15">
+<div class="flex items-center justify-between pb-2">
+<span class="font-label-mono text-[11px] text-on-surface-variant/70 uppercase tracking-widest flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[13px] text-primary">history</span> 最近搜索
+              </span>
+<button class="font-label-mono text-[11px] text-on-surface-variant/50 hover:text-on-surface">清除历史</button>
+</div>
+<div class="flex items-center gap-2">
+<button class="search-tag-chip px-3 py-1 rounded-full bg-surface-container-high/50 hover:bg-surface-container-high border border-outline-variant/25 text-on-surface font-body-sm text-[12px] flex items-center gap-1.5 transition-colors" data-val="苏州市">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span> 苏州市
+              </button>
+<button class="search-tag-chip px-3 py-1 rounded-full bg-surface-container-high/50 hover:bg-surface-container-high border border-outline-variant/25 text-on-surface font-body-sm text-[12px] flex items-center gap-1.5 transition-colors" data-val="莫干山">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span> 莫干山
+              </button>
+<button class="search-tag-chip px-3 py-1 rounded-full bg-surface-container-high/50 hover:bg-surface-container-high border border-outline-variant/25 text-on-surface font-body-sm text-[12px] flex items-center gap-1.5 transition-colors" data-val="千岛湖">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 千岛湖
+              </button>
+</div>
+</div>
+<!-- Matched Results List (Categorized: City / District / Spot with badges) -->
+<div class="flex flex-col py-1 px-2 max-h-[360px] overflow-y-auto divide-y divide-outline-variant/10">
+<!-- Item 1: City (杭州市) -->
+<div class="search-result-row p-2.5 rounded-xl hover:bg-surface-container-high/60 cursor-pointer flex items-center justify-between group transition-all" data-target="杭州市" data-type="city">
+<div class="flex items-center gap-2.5">
+<span class="px-2 py-0.5 rounded bg-primary/10 text-primary font-label-mono text-[10px] font-semibold border border-primary/20">城市</span>
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-md text-on-surface font-medium group-hover:text-primary transition-colors">杭州市</span>
+<span class="font-caption text-[11px] text-on-surface-variant">浙江省 · 13个区县 · 290个触点</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-mono text-[11px] text-on-surface-variant/50 hidden group-hover:inline">飞越并展开沙盘</span>
+<span class="material-symbols-outlined text-[16px] text-outline group-hover:text-primary transition-colors">flight_takeoff</span>
+</div>
+</div>
+<!-- Item 2: District (姑苏区) -->
+<div class="search-result-row p-2.5 rounded-xl hover:bg-surface-container-high/60 cursor-pointer flex items-center justify-between group transition-all" data-target="姑苏区" data-type="district">
+<div class="flex items-center gap-2.5">
+<span class="px-2 py-0.5 rounded bg-secondary/15 text-secondary font-label-mono text-[10px] font-semibold border border-secondary/25">区县</span>
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-md text-on-surface font-medium group-hover:text-secondary transition-colors">姑苏区</span>
+<span class="font-caption text-[11px] text-on-surface-variant">江苏省苏州市 · 国家级历史文化核心区</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-mono text-[11px] text-on-surface-variant/50 hidden group-hover:inline">打开区县详情</span>
+<span class="material-symbols-outlined text-[16px] text-outline group-hover:text-secondary transition-colors">open_in_new</span>
+</div>
+</div>
+<!-- Item 3: District (淳安县 / 千岛湖) -->
+<div class="search-result-row p-2.5 rounded-xl hover:bg-surface-container-high/60 cursor-pointer flex items-center justify-between group transition-all" data-target="淳安县" data-type="district">
+<div class="flex items-center gap-2.5">
+<span class="px-2 py-0.5 rounded bg-secondary/15 text-secondary font-label-mono text-[10px] font-semibold border border-secondary/25">区县</span>
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-md text-on-surface font-medium group-hover:text-secondary transition-colors">淳安县</span>
+<span class="font-caption text-[11px] text-on-surface-variant">浙江省杭州市 · 千岛湖特别生态区</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-mono text-[11px] text-on-surface-variant/50 hidden group-hover:inline">打开区县详情</span>
+<span class="material-symbols-outlined text-[16px] text-outline group-hover:text-secondary transition-colors">open_in_new</span>
+</div>
+</div>
+<!-- Item 4: Spot (拙政园) -->
+<div class="search-result-row p-2.5 rounded-xl hover:bg-surface-container-high/60 cursor-pointer flex items-center justify-between group transition-all" data-target="拙政园" data-type="spot">
+<div class="flex items-center gap-2.5">
+<span class="px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary-fixed font-label-mono text-[10px] font-semibold border border-tertiary-container/30">景点</span>
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-md text-on-surface font-medium group-hover:text-tertiary-fixed transition-colors">拙政园</span>
+<span class="font-caption text-[11px] text-on-surface-variant">苏州市姑苏区 · 世界文化遗产 · 中国四大名园</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-mono text-[11px] text-on-surface-variant/50 hidden group-hover:inline">聚焦脉冲光环</span>
+<span class="material-symbols-outlined text-[16px] text-outline group-hover:text-tertiary-fixed transition-colors">trip_origin</span>
+</div>
+</div>
+<!-- Item 5: Spot (莫干山风景区) -->
+<div class="search-result-row p-2.5 rounded-xl hover:bg-surface-container-high/60 cursor-pointer flex items-center justify-between group transition-all" data-target="莫干山" data-type="spot">
+<div class="flex items-center gap-2.5">
+<span class="px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary-fixed font-label-mono text-[10px] font-semibold border border-tertiary-container/30">景点</span>
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-md text-on-surface font-medium group-hover:text-tertiary-fixed transition-colors">莫干山风景名胜区</span>
+<span class="font-caption text-[11px] text-on-surface-variant">浙江省湖州市德清县 · 国家级度假名山</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-mono text-[11px] text-on-surface-variant/50 hidden group-hover:inline">聚焦脉冲光环</span>
+<span class="material-symbols-outlined text-[16px] text-outline group-hover:text-tertiary-fixed transition-colors">trip_origin</span>
+</div>
+</div>
+</div>
+<!-- Bottom Micro Explainer -->
+<div class="px-4 py-2 bg-surface-container-high/30 border-t border-outline-variant/15 flex items-center justify-between text-[11px] font-label-mono text-on-surface-variant/70">
+<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span>城市: 下钻</span>
+<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>区县: 抽屉</span>
+<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>景点: 光环</span>
+</div>
+</div>
+</div>
+<!-- Top Right: Telemetry & Region Counts -->
+<div class="pointer-events-auto flex items-center gap-2">
+<div class="px-3.5 py-1.5 rounded-full bg-surface-container-lowest/80 backdrop-blur-xl border border-outline-variant/30 flex items-center gap-3 shadow-xl font-label-mono text-[11px] text-on-surface-variant">
+<div class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-primary text-[15px]">public</span>
+<span>41座地级市 / 162区县已同步</span>
+</div>
+<span class="text-outline-variant/50">|</span>
+<span class="text-secondary font-medium flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>沙盘渲染就绪
+          </span>
+</div>
+</div>
+</div>
+<!-- CENTER FLANK: Pure Floating Text Stream (Vertical City Index, NO background box/sidebar) -->
+<div class="flex-1 flex items-center my-auto">
+<div class="pointer-events-auto w-48 max-h-[580px] p-2 flex flex-col gap-2 overflow-hidden select-none">
+<div class="px-2 py-0.5 flex items-center justify-between text-[11px] font-label-mono text-on-surface-variant/60 tracking-wider">
+<span>区域索引 // 41市</span>
+<span class="text-primary font-medium">江浙沪皖</span>
+</div>
+<div class="flex-1 overflow-y-auto pr-1 flex flex-col gap-3 scrollbar-none">
+<!-- 上海 -->
+<div class="flex flex-col gap-1">
+<div class="px-2 font-label-mono text-[11px] text-primary-fixed font-semibold tracking-wide flex items-center justify-between">
+<span>上海市</span>
+<span class="text-[10px] text-on-surface-variant/40">直辖</span>
+</div>
+<div class="city-nav-item px-2.5 py-1 rounded-md text-on-surface-variant/80 hover:text-on-surface hover:bg-white/5 cursor-pointer flex items-center justify-between transition-all">
+<span class="text-[13px]">上海市</span>
+<span class="font-label-mono text-[10px] text-on-surface-variant/40">16区</span>
+</div>
+</div>
+<!-- 江苏 (Active on 苏州) -->
+<div class="flex flex-col gap-1 pt-1.5 border-t border-white/5">
+<div class="px-2 font-label-mono text-[11px] text-primary font-semibold tracking-wide flex items-center justify-between">
+<span>江苏省</span>
+<span class="text-[10px] text-on-surface-variant/40">13市</span>
+</div>
+<!-- 苏州市 (Active glowing indicator) -->
+<div class="city-nav-item group relative px-2.5 py-1.5 rounded-lg bg-primary/10 text-primary cursor-pointer flex items-center justify-between border border-primary/30 shadow-[0_0_12px_rgba(34,211,238,0.2)]">
+<div class="absolute left-0 top-1 bottom-1 w-1 bg-primary rounded-r"></div>
+<span class="text-[13px] font-semibold pl-1.5 text-on-surface">苏州市</span>
+<span class="px-1.5 py-0.2 rounded bg-primary/20 text-primary font-label-mono text-[10px] font-bold">当前</span>
+</div>
+<div class="city-nav-item px-2.5 py-1 rounded-md text-on-surface-variant/80 hover:text-on-surface hover:bg-white/5 cursor-pointer flex items-center justify-between transition-all">
+<span class="text-[13px]">南京市</span>
+<span class="font-label-mono text-[10px] text-on-surface-variant/40">11区</span>
+</div>
+<div class="city-nav-item px-2.5 py-1 rounded-md text-on-surface-variant/80 hover:text-on-surface hover:bg-white/5 cursor-pointer flex items-center justify-between transition-all">
+<span class="text-[13px]">无锡市</span>
+<span class="font-label-mono text-[10px] text-on-surface-variant/40">8区县</span>
+</div>
+<div class="city-nav-item px-2.5 py-1 rounded-md text-on-surface-variant/80 hover:text-on-surface hover:bg-white/5 cursor-pointer flex items-center justify-between transition-all">
+<span class="text-[13px]">常州市</span>
+<span class="font-label-mono text-[10px] text-on-surface-variant/40">6区</span>
+</div>
+</div>
+<!-- 浙江 -->
+<div class="flex flex-col gap-1 pt-1.5 border-t border-white/5">
+<div class="px-2 font-label-mono text-[11px] text-secondary font-semibold tracking-wide flex items-center justify-between">
+<span>浙江省</span>
+<span class="text-[10px] text-on-surface-variant/40">11市</span>
+</div>
+<div class="city-nav-item px-2.5 py-1 rounded-md text-on-surface-variant/80 hover:text-on-surface hover:bg-white/5 cursor-pointer flex items-center justify-between transition-all">
+<span class="text-[13px]">杭州市</span>
+<span class="font-label-mono text-[10px] text-on-surface-variant/40">13区县</span>
+</div>
+<div class="city-nav-item px-2.5 py-1 rounded-md text-on-surface-variant/80 hover:text-on-surface hover:bg-white/5 cursor-pointer flex items-center justify-between transition-all">
+<span class="text-[13px]">宁波市</span>
+<span class="font-label-mono text-[10px] text-on-surface-variant/40">10区县</span>
+</div>
+<div class="city-nav-item px-2.5 py-1 rounded-md text-on-surface-variant/80 hover:text-on-surface hover:bg-white/5 cursor-pointer flex items-center justify-between transition-all">
+<span class="text-[13px]">绍兴市</span>
+<span class="font-label-mono text-[10px] text-on-surface-variant/40">6区县</span>
+</div>
+</div>
+<!-- 安徽 -->
+<div class="flex flex-col gap-1 pt-1.5 border-t border-white/5">
+<div class="px-2 font-label-mono text-[11px] text-tertiary-fixed font-semibold tracking-wide flex items-center justify-between">
+<span>安徽省</span>
+<span class="text-[10px] text-on-surface-variant/40">16市</span>
+</div>
+<div class="city-nav-item px-2.5 py-1 rounded-md text-on-surface-variant/80 hover:text-on-surface hover:bg-white/5 cursor-pointer flex items-center justify-between transition-all">
+<span class="text-[13px]">合肥市</span>
+<span class="font-label-mono text-[10px] text-on-surface-variant/40">9区县</span>
+</div>
+<div class="city-nav-item px-2.5 py-1 rounded-md text-on-surface-variant/80 hover:text-on-surface hover:bg-white/5 cursor-pointer flex items-center justify-between transition-all">
+<span class="text-[13px]">黄山市</span>
+<span class="font-label-mono text-[10px] text-on-surface-variant/40">7区县</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- BOTTOM BAR: Reset View Control + 8 Capsule Filters + Collection & Esc + Compass -->
+<div class="w-full flex items-end justify-between">
+<!-- Bottom Left: Recenter / Tilt Control Pill -->
+<div class="pointer-events-auto flex items-center gap-2">
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container-lowest/80 backdrop-blur-xl border border-outline-variant/30 text-on-surface-variant hover:text-on-surface flex items-center gap-1.5 shadow-xl transition-all text-caption font-label-mono hover:border-primary/40 group" id="reset-cam-btn">
+<span class="material-symbols-outlined text-[16px] text-primary group-hover:rotate-180 transition-transform duration-500">recenter</span>
+<span>重置俯视 52°</span>
+</button>
+</div>
+<!-- Bottom Center: 8 Minimalist Capsule Category Filters (古镇 active highlighted) -->
+<div class="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container-lowest/80 backdrop-blur-2xl border border-outline-variant/30 shadow-2xl">
+<!-- 1. 古镇 (ACTIVE: Cyan fill + glow) -->
+<button class="filter-pill px-4 py-1 rounded-full bg-primary-container text-on-primary-container font-headline-sm text-body-sm font-semibold shadow-[0_0_16px_rgba(34,211,238,0.4)] flex items-center gap-1.5 transition-all" data-filter="古镇">
+<span class="w-1.5 h-1.5 rounded-full bg-on-primary-container"></span>
+<span>古镇</span>
+</button>
+<!-- 2. 山水 -->
+<button class="filter-pill px-3.5 py-1 rounded-full bg-surface-container-high/40 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border border-outline-variant/20 font-body-sm text-body-sm transition-all" data-filter="山水">
+<span>山水</span>
+</button>
+<!-- 3. 博物馆 -->
+<button class="filter-pill px-3.5 py-1 rounded-full bg-surface-container-high/40 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border border-outline-variant/20 font-body-sm text-body-sm transition-all" data-filter="博物馆">
+<span>博物馆</span>
+</button>
+<!-- 4. 寺庙 -->
+<button class="filter-pill px-3.5 py-1 rounded-full bg-surface-container-high/40 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border border-outline-variant/20 font-body-sm text-body-sm transition-all" data-filter="寺庙">
+<span>寺庙</span>
+</button>
+<!-- 5. 亲子 -->
+<button class="filter-pill px-3.5 py-1 rounded-full bg-surface-container-high/40 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border border-outline-variant/20 font-body-sm text-body-sm transition-all" data-filter="亲子">
+<span>亲子</span>
+</button>
+<!-- 6. 拍照 -->
+<button class="filter-pill px-3.5 py-1 rounded-full bg-surface-container-high/40 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border border-outline-variant/20 font-body-sm text-body-sm transition-all" data-filter="拍照">
+<span>拍照</span>
+</button>
+<!-- 7. 徒步 -->
+<button class="filter-pill px-3.5 py-1 rounded-full bg-surface-container-high/40 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border border-outline-variant/20 font-body-sm text-body-sm transition-all" data-filter="徒步">
+<span>徒步</span>
+</button>
+<!-- 8. 历史文化 -->
+<button class="filter-pill px-3.5 py-1 rounded-full bg-surface-container-high/40 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border border-outline-variant/20 font-body-sm text-body-sm transition-all" data-filter="历史文化">
+<span>历史文化</span>
+</button>
+</div>
+<!-- Bottom Right: Collection Indicator, Esc Hint, HUD Compass Control -->
+<div class="pointer-events-auto flex items-center gap-2.5">
+<!-- Collection Pill -->
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container-lowest/80 backdrop-blur-xl border border-outline-variant/30 hover:border-tertiary-container/50 text-on-surface flex items-center gap-2 shadow-xl transition-all group" id="collection-btn">
+<span class="material-symbols-outlined text-[17px] text-tertiary-container group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-headline-sm text-body-sm font-semibold">28</span>
+<span class="text-caption font-label-mono text-on-surface-variant">认知触点</span>
+</button>
+<!-- Esc Return Hint -->
+<div class="px-3 py-1.5 rounded-full bg-surface-container-lowest/60 backdrop-blur-md border border-outline-variant/20 text-on-surface-variant font-label-mono text-caption flex items-center gap-1.5">
+<kbd class="px-1.5 py-0.5 rounded bg-surface-container-high/80 text-[10px] text-on-surface">Esc</kbd>
+<span>返回</span>
+</div>
+<!-- Compass & 3D Tilt HUD Wheel -->
+<div class="w-9 h-9 rounded-full bg-surface-container-lowest/80 backdrop-blur-xl border border-outline-variant/30 flex items-center justify-center text-primary shadow-xl hover:border-primary cursor-pointer transition-all" title="罗盘视角 (N 360°)">
+<span class="material-symbols-outlined text-[18px]">explore</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- INTERACTION LOGIC SCRIPT -->
+<script>
+  (function initSandtableHUD() {
+    const searchInput = document.getElementById('geo-search-input');
+    const searchActivePanel = document.getElementById('search-active-panel');
+    const toggleSearchBtn = document.getElementById('toggle-search-dropdown-btn');
+    const clearSearchBtn = document.getElementById('clear-search-btn');
+    const previewTag = document.getElementById('preview-mode-tag');
+    const suzhouPin = document.getElementById('suzhou-map-pin');
+    const filterPills = document.querySelectorAll('.filter-pill');
+    const recentTags = document.querySelectorAll('.search-tag-chip');
+    const searchRows = document.querySelectorAll('.search-result-row');
+
+    function openSearchDropdown() {
+      if (!searchActivePanel) return;
+      searchActivePanel.classList.remove('hidden');
+      if (previewTag) previewTag.textContent = '收起面板';
+      if (clearSearchBtn) clearSearchBtn.classList.remove('hidden');
+    }
+
+    function closeSearchDropdown() {
+      if (!searchActivePanel) return;
+      searchActivePanel.classList.add('hidden');
+      if (previewTag) previewTag.textContent = '搜索面板';
+      if (!searchInput.value && clearSearchBtn) clearSearchBtn.classList.add('hidden');
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('focus', openSearchDropdown);
+      searchInput.addEventListener('input', (e) => {
+        if (e.target.value.length > 0) {
+          openSearchDropdown();
+          clearSearchBtn.classList.remove('hidden');
+        }
+      });
+    }
+
+    if (toggleSearchBtn) {
+      toggleSearchBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (searchActivePanel.classList.contains('hidden')) {
+          openSearchDropdown();
+          searchInput.focus();
+        } else {
+          closeSearchDropdown();
+        }
+      });
+    }
+
+    if (clearSearchBtn) {
+      clearSearchBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        searchInput.value = '';
+        closeSearchDropdown();
+        searchInput.focus();
+      });
+    }
+
+    // Recent search chip interaction
+    recentTags.forEach(chip => {
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const val = chip.getAttribute('data-val');
+        if (searchInput) searchInput.value = val;
+        closeSearchDropdown();
+        if (suzhouPin) {
+          suzhouPin.classList.add('scale-110');
+          setTimeout(() => suzhouPin.classList.remove('scale-110'), 350);
+        }
+      });
+    });
+
+    // Filter pills toggling
+    filterPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        filterPills.forEach(p => {
+          p.classList.remove('bg-primary-container', 'text-on-primary-container', 'font-semibold', 'shadow-[0_0_16px_rgba(34,211,238,0.4)]');
+          p.classList.add('bg-surface-container-high/40', 'text-on-surface-variant', 'border', 'border-outline-variant/20');
+        });
+        pill.classList.remove('bg-surface-container-high/40', 'text-on-surface-variant', 'border', 'border-outline-variant/20');
+        pill.classList.add('bg-primary-container', 'text-on-primary-container', 'font-semibold', 'shadow-[0_0_16px_rgba(34,211,238,0.4)]');
+      });
+    });
+
+    // Handle Search Results Interaction Feedback
+    searchRows.forEach(row => {
+      row.addEventListener('click', () => {
+        const target = row.getAttribute('data-target');
+        if (searchInput) searchInput.value = target;
+        closeSearchDropdown();
+
+        if (suzhouPin) {
+          suzhouPin.classList.add('scale-110');
+          setTimeout(() => suzhouPin.classList.remove('scale-110'), 400);
+        }
+      });
+    });
+
+    // Keyboard Shortcuts (⌘K / Ctrl+K and Esc)
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        searchInput.focus();
+        openSearchDropdown();
+      }
+      if (e.key === 'Escape') {
+        closeSearchDropdown();
+        if (searchInput) searchInput.blur();
+      }
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      const container = document.getElementById('search-bar-shell');
+      if (container && !container.contains(e.target) && searchActivePanel && !searchActivePanel.contains(e.target)) {
+        closeSearchDropdown();
+      }
+    });
+  })();
+</script>
+</body></html>

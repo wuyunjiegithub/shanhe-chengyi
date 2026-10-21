@@ -1,0 +1,1328 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { Line2 } from 'three/examples/jsm/lines/Line2.js';
+import type { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
+import { createPlateMesh, CAP_MATERIAL_INDEX } from './plates';
+import type { PlateStyle } from './plates';
+import { createPin, disposePin, disposePinGeometries } from './pins';
+import type { PinInput, PinRecord } from './pins';
+import type { ProjectedShape, Province } from '../data/types';
+
+const PROVINCE_COLOR: Record<Province, number> = {
+  上海市: 0x00f2fe,
+  江苏省: 0x38bdf8,
+  浙江省: 0x34d399,
+  安徽省: 0xfbbf24,
+};
+
+const ACTIVE_EMISSIVE = 0x22d3ee;
+const SELECTED_FACE = 0x2b3e59;
+/** 去过标记：小红旗 */
+const FLAG_RED = 0xff4d5e;
+/** 收藏标记：爱心（玫红，比原来的浅粉更饱和、在暗场里不发白，与「去过」红旗明确区分） */
+const HEART_PINK = 0xf43f7e;
+/** 标记语义：去过 = 红旗；收藏 = 粉心 */
+type MarkerKind = 'visited' | 'favorite';
+const FACE_INDEXED = 0x1c2839;
+const FACE_MUTED = 0x151d29;
+const SIDE_INDEXED = 0x0c1420;
+const SIDE_MUTED = 0x0a1018;
+const CITY_HEIGHT = 2.6;
+/**
+ * 城市视图里「区县层」的基准高度：必须整体抬到城市板块顶面之上。
+ * 区县板只有 1.0 高，若和城市板（2.6 高）同在 y=0 起算，从 50° 俯角看下去
+ * 城市板的顶面在区县顶面之上，会整层把区县盖住——这正是「区县分割线怎么都看不见」的真因
+ * （描边线本身是渲染出来的，只是被压在城市板下面）。
+ */
+const DISTRICT_BASE_Y = CITY_HEIGHT + 0.03;
+/** 区县板块基础高度：城市视图里区县是细节层。压得很低，让群岛（如舟山 200+ 离岛）
+ *  读作「铺开在海面上的低地块」而不是一根根柱子；同时远低于城市板块，层次分明。 */
+const DISTRICT_HEIGHT = 1.0;
+const ELEV_DEG = 50;
+/** 景点 pin 的目标屏幕直径（px），由相机距离反算世界缩放 */
+const PIN_SCREEN_PX = 12.5;
+/**
+ * 收藏/去过标记的目标屏幕高度（px）：保持恒定大小，缩放到哪都看得见。
+ * 两类标记的形状密度差很大——红旗是「细杆 + 小旗面」，同高度下只占很窄一条；
+ * 爱心是实心团块，同高度下视觉面积约是红旗的两倍多，看起来会明显更大。
+ * 因此这里不共用同一个数值：旗子按整体高度算，爱心按「视觉等重」压低一档。
+ */
+const MARKER_SCREEN_PX: Record<MarkerKind, number> = { visited: 42, favorite: 28 };
+
+
+interface PlateRecord {
+  /** 一个要素可能有多块网格（海岛 / 飞地各一块），全部参与拾取与样式 */
+  meshes: THREE.Mesh[];
+  capMaterials: THREE.MeshStandardMaterial[];
+  edgeMaterials: LineMaterial[];
+  /** 默认边界色（高对比的浅色，保证相邻区县之间有清晰分界线） */
+  baseEdgeColor: number;
+  baseCapColor: number;
+  /** 聚焦态下其余城市的暗化色（保留省份色相，压暗而非抹黑） */
+  mutedCapColor: number;
+  mutedEdgeColor: number;
+  baseEmissive: number;
+  baseIntensity: number;
+  baseEdgeOpacity: number;
+  centroid: [number, number];
+  height: number;
+  /** 悬停抬起量（按板块厚度自适应，避免薄片浮空） */
+  lift: number;
+  /** 抬升基座：板块被抬起时从地面连到板底，避免薄板悬空露出难看截面 */
+  pedestals: THREE.Mesh[];
+  /** 目标高度（position.y 由 tick 平滑趋近） */
+  targetY: number;
+}
+
+export interface PickInfo {
+  kind: 'city' | 'district' | 'pin';
+  id: string;
+  name: string;
+  province?: string;
+  districtId?: string;
+  districtName?: string;
+}
+
+export interface AnchorInfo {
+  id: string;
+  name: string;
+  city: string;
+  spotCount: number;
+}
+
+export class SceneManager {
+  private renderer: THREE.WebGLRenderer;
+  private composer: EffectComposer;
+  private bloomPass: UnrealBloomPass;
+  private scene = new THREE.Scene();
+  private camera: THREE.PerspectiveCamera;
+  private controls: OrbitControls;
+  private cityGroup = new THREE.Group();
+  private districtGroup = new THREE.Group();
+  private pinGroup = new THREE.Group();
+  private cityMarkerGroup = new THREE.Group();
+  private districtMarkerGroup = new THREE.Group();
+  private cities = new Map<string, PlateRecord>();
+  private districts = new Map<string, PlateRecord>();
+  private pins = new Map<string, PinRecord>();
+  /** 区县 id → 该区县的光点：板块抬升时同步顶起光点，避免被埋进板里 */
+  private pinsByDistrict = new Map<string, PinRecord[]>();
+  private regionBox = new THREE.Box3();
+  private stars: THREE.Points | null = null;
+  private ground: THREE.Mesh | null = null;
+  private grid: THREE.GridHelper | null = null;
+  private labelRenderer: CSS2DRenderer;
+  private provinceLabelGroup = new THREE.Group();
+  private districtLabelGroup = new THREE.Group();
+  private provinceLabels: CSS2DObject[] = [];
+  private districtLabels: CSS2DObject[] = [];
+  private districtLabelById = new Map<string, CSS2DObject>();
+  private anchorGroup = new THREE.Group();
+  private anchor: CSS2DObject | null = null;
+  private anchorNdc = new THREE.Vector3();
+  private layer: 'city' | 'district' = 'city';
+  /** 城市视图聚焦：进入城市后其余城市板块压暗为背景 */
+  private focusedCityId: string | null = null;
+  private hoveredKey: string | null = null;
+  private selectedDistrictId: string | null = null;
+  private focusedSpotId: string | null = null;
+  private fly: {
+    fromPos: THREE.Vector3;
+    toPos: THREE.Vector3;
+    fromTarget: THREE.Vector3;
+    toTarget: THREE.Vector3;
+    t: number;
+    duration: number;
+  } | null = null;
+  private raycaster = new THREE.Raycaster();
+  private pointer = new THREE.Vector2();
+  private container: HTMLElement | null = null;
+  private raf = 0;
+  private lastT = 0;
+  private paused = false;
+  /** 最近一次 frameTo 的诊断信息（回归脚本用） */
+  lastFrame: { sx: number; sz: number; dist: number } | null = null;
+  private downXY: [number, number] | null = null;
+
+  onPick?: (info: PickInfo) => void;
+  onHover?: (info: { id: string; name: string; province?: string; kind: string } | null) => void;
+  onAnchorClick?: (districtId: string) => void;
+
+  constructor() {
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    // 移动端 GPU 填充率有限，像素比封顶 1.5（桌面 2），避免大屏手机掉帧
+    const coarse =
+      typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, coarse ? 1.5 : 2));
+    // 触屏上让 OrbitControls 独占手势，避免页面滚动抢走拖动
+    this.renderer.domElement.style.touchAction = 'none';
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.15;
+
+    // 上下文丢失（如打开 3D 照片墙时 GPU 资源紧张）时阻止默认行为，
+    // 让浏览器在资源释放后主动恢复；three 内部会在 restored 时重建 GL 状态。
+    const glCanvas = this.renderer.domElement;
+    glCanvas.addEventListener(
+      'webglcontextlost',
+      (e) => {
+        e.preventDefault();
+      },
+      false,
+    );
+    glCanvas.addEventListener('webglcontextrestored', () => this.resize(), false);
+
+    this.scene.background = new THREE.Color('#05070d');
+    this.scene.fog = new THREE.FogExp2('#05070d', 0.0018);
+
+    this.camera = new THREE.PerspectiveCamera(48, 1, 0.1, 4000);
+
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = 0.08;
+    this.controls.minPolarAngle = (20 * Math.PI) / 180;
+    this.controls.maxPolarAngle = (78 * Math.PI) / 180;
+    this.controls.rotateSpeed = 0.7;
+    this.controls.panSpeed = 0.7;
+
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.addPass(new RenderPass(this.scene, this.camera));
+    this.bloomPass = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.2, 0.5, 0.9);
+    this.composer.addPass(this.bloomPass);
+    this.composer.addPass(new OutputPass());
+
+    this.labelRenderer = new CSS2DRenderer();
+    const labelEl = this.labelRenderer.domElement;
+    labelEl.style.position = 'absolute';
+    labelEl.style.top = '0';
+    labelEl.style.left = '0';
+    labelEl.style.pointerEvents = 'none';
+
+    this.setupLights();
+    this.setupGround();
+    this.setupStars();
+    this.scene.add(
+      this.cityGroup,
+      this.districtGroup,
+      this.pinGroup,
+      this.cityMarkerGroup,
+      this.districtMarkerGroup,
+      this.provinceLabelGroup,
+      this.districtLabelGroup,
+      this.anchorGroup,
+    );
+    this.districtLabelGroup.visible = false;
+    this.districtMarkerGroup.visible = false;
+  }
+
+  mount(container: HTMLElement): void {
+    this.container = container;
+    (window as unknown as Record<string, unknown>).__sandboxScene = this;
+    const canvas = this.renderer.domElement;
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.display = 'block';
+    container.appendChild(canvas);
+    container.appendChild(this.labelRenderer.domElement);
+
+    this.resize();
+    container.addEventListener('pointermove', this.onPointerMove);
+    container.addEventListener('pointerdown', this.onPointerDown);
+    container.addEventListener('click', this.onClick);
+    window.addEventListener('resize', this.resize);
+    this.raf = requestAnimationFrame(this.tick);
+  }
+
+  /** 暂停 / 恢复主渲染循环。
+   *  打开照片墙（尤其 3D 展厅）时暂停主场景渲染，避免主场景与展厅双 WebGL 上下文
+   *  同时高负载渲染导致主上下文被浏览器回收而回退白屏；关闭后恢复。 */
+  setPaused(paused: boolean): void {
+    if (this.paused === paused) return;
+    this.paused = paused;
+    if (paused) {
+      cancelAnimationFrame(this.raf);
+      this.raf = 0;
+    } else {
+      this.lastT = performance.now();
+      this.raf = requestAnimationFrame(this.tick);
+    }
+  }
+
+  dispose(): void {
+    cancelAnimationFrame(this.raf);
+    if (this.container) {
+      this.container.removeEventListener('pointermove', this.onPointerMove);
+      this.container.removeEventListener('pointerdown', this.onPointerDown);
+      this.container.removeEventListener('click', this.onClick);
+    }
+    window.removeEventListener('resize', this.resize);
+    const canvas = this.renderer.domElement;
+    if (canvas.parentElement === this.container) canvas.remove();
+    this.clearLayer(this.cityGroup, this.cities);
+    this.clearLayer(this.districtGroup, this.districts);
+    this.clearPins();
+    this.clearMarkers(this.cityMarkerGroup);
+    this.clearMarkers(this.districtMarkerGroup);
+    this.disposeObject(this.stars);
+    this.disposeObject(this.ground);
+    this.disposeObject(this.grid);
+    this.grid = null;
+    this.controls.dispose();
+    this.clearLabels(this.provinceLabels, this.provinceLabelGroup);
+    this.clearLabels(this.districtLabels, this.districtLabelGroup);
+    this.setAnchor(null);
+    disposePinGeometries();
+    this.labelRenderer.domElement.remove();
+    this.renderer.dispose();
+  }
+
+  setCityPlates(shapes: ProjectedShape[]): void {
+    this.clearLayer(this.cityGroup, this.cities);
+    for (const s of shapes) this.addPlate(this.cityGroup, this.cities, s, 'city', CITY_HEIGHT);
+    this.regionBox = new THREE.Box3().setFromObject(this.cityGroup);
+    const size = this.regionBox.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.z);
+    this.controls.minDistance = maxDim * 0.05;
+    this.controls.maxDistance = maxDim * 4;
+    this.fitGroundToRegion(this.regionBox);
+    this.updateProvinceLabels(shapes);
+    this.frameTo(this.regionBox, 0, 1.08);
+    this.updateLineResolutions();
+  }
+
+  setDistrictPlates(shapes: ProjectedShape[]): void {
+    this.clearLayer(this.districtGroup, this.districts);
+    this.clearPins();
+    // 区县层整体抬到城市板顶面之上：板块 / 光点 / 标记 / 标签 / 卡锚同组一起抬，
+    // 拾取与相机构图都用世界坐标，不受影响。
+    this.setDistrictLayerY(DISTRICT_BASE_Y);
+    for (const s of shapes) this.addPlate(this.districtGroup, this.districts, s, 'district', DISTRICT_HEIGHT);
+    this.updateDistrictLabels(shapes);
+    this.layer = 'district';
+    this.provinceLabelGroup.visible = false;
+    this.districtLabelGroup.visible = true;
+    this.fitGroundToRegion(new THREE.Box3().setFromObject(this.districtGroup));
+    // 按「可用视区」取景：城市整座带余量落在面板之间的空档里，而不是怼满整屏
+    this.frameTo(new THREE.Box3().setFromObject(this.districtGroup), 0.7, 1.06, 0, this.usableView());
+    this.hoveredKey = null;
+    this.setHover(null);
+    this.refreshStyles();
+    this.updateLineResolutions();
+  }
+
+  /** 区县层（板块 / 光点 / 标记 / 标签 / 卡锚）统一抬升，避免被城市板块压住 */
+  private setDistrictLayerY(y: number): void {
+    this.districtGroup.position.y = y;
+    this.pinGroup.position.y = y;
+    this.districtMarkerGroup.position.y = y;
+    this.districtLabelGroup.position.y = y;
+    this.anchorGroup.position.y = y;
+  }
+
+  /**
+   * 让地面网格与光晕跟随当前区域尺寸：
+   * 网格原本是 400×400 的固定大小，而江浙沪皖只有约 120 单位，
+   * 溢出的网格线会在地图边缘（尤其南侧的安徽/上海下方）露出「多余的线」。
+   * 这里按区域包围盒缩放到 1.5 倍，线条恰好收在地图外围一圈。
+   */
+  private fitGroundToRegion(box: THREE.Box3): void {
+    if (box.isEmpty() || !this.grid || !this.ground) return;
+    const size = box.getSize(new THREE.Vector3());
+    // 网格按地图包围盒的长宽「分别」缩放，只留 3% 余量：
+    // 用统一的 1.5 倍会在方块地图的长边方向伸出 30 个单位，
+    // 在安徽/上海下方（海域）露出一圈多余网格线——正是用户反复提到的「多余的线」。
+    const kx = (Math.max(size.x, 1) * 1.03) / 400;
+    const kz = (Math.max(size.z, 1) * 1.03) / 400;
+    this.grid.scale.set(kx, 1, kz);
+    this.ground.scale.set(kx, 1, kz);
+    const center = box.getCenter(new THREE.Vector3());
+    this.grid.position.x = center.x;
+    this.grid.position.z = center.z;
+    this.ground.position.x = center.x;
+    this.ground.position.z = center.z;
+  }
+
+  clearDistrictPlates(): void {
+    this.clearLayer(this.districtGroup, this.districts);
+    this.setDistrictLayerY(0);
+    this.clearLabels(this.districtLabels, this.districtLabelGroup);
+    this.clearPins();
+    this.clearMarkers(this.districtMarkerGroup);
+    this.setAnchor(null);
+    this.districtLabelGroup.visible = false;
+    this.provinceLabelGroup.visible = true;
+    this.layer = 'city';
+    this.selectedDistrictId = null;
+    this.focusedSpotId = null;
+    this.focusedCityId = null;
+    this.setHover(null);
+    this.refreshStyles();
+    // 回退到省视角：把网格/地面缩放回「城市包围盒」，而不是残留的区县小盒，
+    // 否则地图会缩成极小一块、四周发黑（用户反馈的 ESC 回退黑屏）。
+    this.fitGroundToRegion(this.regionBox);
+  }
+
+  /** 城市视图聚焦：仅当前城市保持亮部，其余城市退为暗色背景；标记随层级切换 */
+  setCityFocus(cityId: string | null): void {
+    if (this.focusedCityId === cityId) return;
+    this.focusedCityId = cityId;
+    // 省视角：城市级标记（去过=红旗 / 收藏=粉心）
+    // 城市视角：切到区县级标记，城市标记整体退场，避免浮在暗掉的背景城市上方
+    this.cityMarkerGroup.visible = cityId === null;
+    this.districtMarkerGroup.visible = cityId !== null;
+    this.refreshStyles();
+  }
+
+  /** 重建景点 pin（筛选变化时整体重建，量级很小） */
+  setPins(inputs: PinInput[]): void {
+    this.clearPins();
+    for (const input of inputs) {
+      const rec = this.districts.get(input.districtId);
+      const pin = createPin(input, (rec?.height ?? DISTRICT_HEIGHT) + 0.02);
+      this.pinGroup.add(pin.group);
+      this.pins.set(pin.id, pin);
+      const list = this.pinsByDistrict.get(input.districtId);
+      if (list) list.push(pin);
+      else this.pinsByDistrict.set(input.districtId, [pin]);
+    }
+    this.refreshPinStyles();
+  }
+
+  selectDistrict(id: string | null): void {
+    if (this.selectedDistrictId === id) return;
+    this.selectedDistrictId = id;
+    for (const [labelId, label] of this.districtLabelById) {
+      label.visible = labelId !== id;
+    }
+    this.refreshStyles();
+    this.refreshPinStyles();
+  }
+
+  focusSpot(id: string | null): void {
+    this.focusedSpotId = id;
+    this.refreshPinStyles();
+  }
+
+  focusDistrict(id: string): void {
+    const rec = this.districts.get(id);
+    if (!rec) return;
+    // 多环区县（如淳安）要取所有碎岛的合集，否则只会框住其中一块
+    const box = new THREE.Box3();
+    for (const mesh of rec.meshes) box.expandByObject(mesh);
+    if (!box.isEmpty()) this.frameTo(box, 0.6, 1.75, 16);
+  }
+
+  resetView(): void {
+    this.frameTo(this.regionBox, 0.7, 1.08);
+  }
+
+  /** 省视角城市标记：去过 = 小红旗，收藏 = 粉心 */
+  setCityMarkers(items: { id: string; kind: MarkerKind }[]): void {
+    this.fillMarkers(this.cityMarkerGroup, this.cities, items);
+  }
+
+  /** 城市视角区县标记：去过 = 小红旗，收藏 = 粉心 */
+  setDistrictMarkers(items: { id: string; kind: MarkerKind }[]): void {
+    this.fillMarkers(this.districtMarkerGroup, this.districts, items);
+  }
+
+  private fillMarkers(
+    group: THREE.Group,
+    records: Map<string, PlateRecord>,
+    items: { id: string; kind: MarkerKind }[],
+  ): void {
+    for (const marker of [...group.children]) {
+      group.remove(marker);
+      this.disposeObject(marker);
+    }
+    // 同一地点可能同时有多个标记（收藏 + 去过）。若都放在质心，
+    // 既会互相重叠，又会被质心处的区县名标签（DOM 药丸）整个挡住——
+    // 这正是用户反馈「收藏/去过标记看不见」的根因。这里按槽位错开摆位。
+    const seen = new Map<string, number>();
+    for (const item of items) {
+      const rec = records.get(item.id);
+      if (!rec) continue;
+      const obj =
+        item.kind === 'visited' ? this.createFlag(FLAG_RED, 1) : this.createHeartMarker(1);
+      // 记录标记本征高度与语义：运行时按相机距离反算缩放，保证屏幕高度恒定
+      obj.userData.intrinsicH = item.kind === 'visited' ? 1.55 : 0.9;
+      obj.userData.kind = item.kind;
+      const slot = seen.get(item.id) ?? 0;
+      seen.set(item.id, slot + 1);
+      const ang = -Math.PI / 2 + slot * (Math.PI * 0.66);
+      const ox = Math.cos(ang);
+      const oz = Math.sin(ang);
+      const baseY = rec.height + 0.32;
+      obj.position.set(rec.centroid[0] + ox, baseY, -rec.centroid[1] + oz);
+      obj.userData.baseY = baseY;
+      obj.userData.plateId = item.id;
+      // 锚点与单位方向：错开距离随标记自身缩放走，
+      // 否则远距离时标记变大（恒定屏幕尺寸）而间距不变，两个标记会叠在一起。
+      obj.userData.anchorX = rec.centroid[0];
+      obj.userData.anchorZ = -rec.centroid[1];
+      obj.userData.offX = ox;
+      obj.userData.offZ = oz;
+      group.add(obj);
+    }
+  }
+
+  /**
+   * 标记始终画在场景之上。
+   * 标记是「语义指示物」，若参与深度测试，会被所在区县板块或相邻板块挡住——
+   * 这正是用户反馈「收藏 / 去过标记看不见」的根因。
+   */
+  private makeMarkerAlwaysOnTop(g: THREE.Group): void {
+    g.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (mesh.material) {
+        const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+        for (const m of mats) {
+          m.depthTest = false;
+          m.depthWrite = false;
+        }
+      }
+      o.renderOrder = 20;
+    });
+  }
+
+  /** 去过：小红旗（细旗杆 + 方旗 + 金色杆头），插在板块上 */
+  private createFlag(color: number, scale: number): THREE.Group {
+    const g = new THREE.Group();
+    const poleH = 1.5;
+    const pole = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.038, 0.038, poleH, 8),
+      new THREE.MeshStandardMaterial({ color: 0xe8eef5, roughness: 0.35, metalness: 0.65 }),
+    );
+    pole.position.y = poleH / 2;
+    const finial = new THREE.Mesh(
+      new THREE.SphereGeometry(0.07, 10, 10),
+      new THREE.MeshStandardMaterial({ color: 0xffd479, roughness: 0.25, metalness: 0.8 }),
+    );
+    finial.position.y = poleH + 0.045;
+    const flag = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.78, 0.48),
+      new THREE.MeshStandardMaterial({
+        color,
+        emissive: color,
+        emissiveIntensity: 0.45,
+        side: THREE.DoubleSide,
+        roughness: 0.55,
+      }),
+    );
+    flag.position.set(0.41, poleH - 0.3, 0);
+    g.add(pole, finial, flag);
+    g.scale.setScalar(scale);
+    this.makeMarkerAlwaysOnTop(g);
+    return g;
+  }
+
+  /**
+   * 收藏标记：爱心，竖插在板块上（与「去过」红旗明确区分）。
+   * 用经典心形参数方程生成轮廓，而不是手搓贝塞尔：
+   * 旧轮廓的两个圆弧落在下方、尖端朝上，渲染出来是「倒过来的爱心」——
+   * 参数方程天然保证「上方两个圆瓣 + 下方一个尖」，不会画反。
+   */
+  private createHeartMarker(scale: number): THREE.Group {
+    const g = new THREE.Group();
+    const pts: THREE.Vector2[] = [];
+    const N = 84;
+    for (let i = 0; i <= N; i++) {
+      const t = (i / N) * Math.PI * 2;
+      // x = 16sin³t，y = 13cos t − 5cos2t − 2cos3t − cos4t
+      const x = (16 * Math.pow(Math.sin(t), 3)) / 16;
+      const y =
+        (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) / 16;
+      pts.push(new THREE.Vector2(x, y));
+    }
+    const geo = new THREE.ExtrudeGeometry(new THREE.Shape(pts), {
+      depth: 0.09,
+      bevelEnabled: false,
+    });
+    // 居中：心形 y∈[-1.06, 0.31]，居中后尖端自然落在下方
+    geo.computeBoundingBox();
+    const bb = geo.boundingBox!;
+    geo.translate(
+      -(bb.min.x + bb.max.x) / 2,
+      -(bb.min.y + bb.max.y) / 2,
+      -(bb.min.z + bb.max.z) / 2,
+    );
+    const mesh = new THREE.Mesh(
+      geo,
+      new THREE.MeshStandardMaterial({
+        color: HEART_PINK,
+        emissive: HEART_PINK,
+        emissiveIntensity: 0.55,
+        roughness: 0.32,
+        metalness: 0.18,
+      }),
+    );
+    mesh.scale.setScalar(0.62);
+    // 立在板面上：半个高度 + 一点离地间隙
+    mesh.position.y = ((bb.max.y - bb.min.y) / 2) * 0.62 + 0.12;
+    g.add(mesh);
+    g.scale.setScalar(scale);
+    this.makeMarkerAlwaysOnTop(g);
+    return g;
+  }
+
+  setAnchor(info: AnchorInfo | null): void {
+    if (this.anchor) {
+      this.anchor.removeFromParent();
+      this.anchor.element.remove();
+      this.anchor = null;
+    }
+    if (!info) return;
+    const rec = this.districts.get(info.id);
+    if (!rec) return;
+
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'map-anchor';
+    el.innerHTML = `
+      <span class="map-anchor__head">
+        <span class="map-anchor__dot"></span>
+        <span class="map-anchor__name">${info.name}</span>
+        <span class="map-anchor__count">${info.spotCount} 处景点</span>
+      </span>
+      <span class="map-anchor__hint">${info.city} · 点击查看详情</span>
+      <span class="map-anchor__stem"></span>
+    `;
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.onAnchorClick?.(info.id);
+    });
+    const obj = new CSS2DObject(el);
+    obj.position.set(rec.centroid[0], rec.height + 0.15, -rec.centroid[1]);
+    this.anchorGroup.add(obj);
+    this.anchor = obj;
+  }
+
+  private clearMarkers(group: THREE.Group): void {
+    for (const marker of [...group.children]) {
+      group.remove(marker);
+      this.disposeObject(marker);
+    }
+  }
+
+  private clearPins(): void {
+    for (const pin of this.pins.values()) {
+      this.pinGroup.remove(pin.group);
+      disposePin(pin);
+    }
+    this.pins.clear();
+    this.pinsByDistrict.clear();
+  }
+
+  private clearLabels(list: CSS2DObject[], group: THREE.Group): void {
+    for (const l of list) {
+      l.removeFromParent();
+      l.element.remove();
+    }
+    list.length = 0;
+    group.clear();
+  }
+
+  private updateProvinceLabels(shapes: ProjectedShape[]): void {
+    this.clearLabels(this.provinceLabels, this.provinceLabelGroup);
+    const sums = new Map<string, { x: number; z: number; n: number }>();
+    for (const s of shapes) {
+      if (!s.province) continue;
+      const acc = sums.get(s.province) ?? { x: 0, z: 0, n: 0 };
+      acc.x += s.centroid[0];
+      acc.z -= s.centroid[1];
+      acc.n += 1;
+      sums.set(s.province, acc);
+    }
+    for (const [name, acc] of sums) {
+      if (acc.n === 0) continue;
+      const el = document.createElement('div');
+      el.className = 'geo-label';
+      el.textContent = name;
+      const obj = new CSS2DObject(el);
+      obj.position.set(acc.x / acc.n, 10, acc.z / acc.n);
+      this.provinceLabelGroup.add(obj);
+      this.provinceLabels.push(obj);
+    }
+  }
+
+  private updateDistrictLabels(shapes: ProjectedShape[]): void {
+    this.clearLabels(this.districtLabels, this.districtLabelGroup);
+    this.districtLabelById.clear();
+    for (const s of shapes) {
+      const el = document.createElement('div');
+      el.className = `geo-label geo-label--district${s.indexed === false ? ' is-empty' : ''}`;
+      el.textContent = s.name;
+      const obj = new CSS2DObject(el);
+      obj.position.set(s.centroid[0], (this.districts.get(s.id)?.height ?? DISTRICT_HEIGHT) + 0.05, -s.centroid[1]);
+      this.districtLabelGroup.add(obj);
+      this.districtLabels.push(obj);
+      this.districtLabelById.set(s.id, obj);
+    }
+  }
+
+  private addPlate(
+    group: THREE.Group,
+    map: Map<string, PlateRecord>,
+    s: ProjectedShape,
+    kind: 'city' | 'district',
+    height: number,
+  ): void {
+    const province = s.province as Province | undefined;
+    const provColor = province ? PROVINCE_COLOR[province] : 0x34d399;
+    const indexed = s.indexed !== false;
+    // 区域总览：已录入城市明显亮于待录入城市，形成「可下钻」的视觉引导
+    const glowIntensity =
+      kind === 'city' ? (indexed ? 0.24 : 0.035) : indexed ? 0.14 : 0.05;
+    const sideGlow = kind === 'city' ? (indexed ? 0.08 : 0.015) : indexed ? 0.06 : 0.02;
+    const edgeOpacity = kind === 'city' ? (indexed ? 0.95 : 0.2) : indexed ? 0.95 : 0.5;
+    // 区县边界用「省份色提亮」的高对比浅色：同色描边在同色填充上几乎不可见，
+    // 提亮到接近白后，相邻区县之间才有清晰的分界线（用户反复反馈的「没有线条区分」）。
+    const edgeColor =
+      kind === 'district'
+        ? new THREE.Color(provColor).lerp(new THREE.Color(0xffffff), 0.5).getHex()
+        : provColor;
+    const style: PlateStyle = {
+      height,
+      capColor: indexed ? FACE_INDEXED : FACE_MUTED,
+      sideColor: indexed ? SIDE_INDEXED : SIDE_MUTED,
+      glowColor: provColor,
+      edgeColor,
+      glowIntensity,
+      sideGlow,
+      edgeOpacity,
+    };
+    // 同一层级内所有板块统一厚度：不再按轮廓大小自适应。
+    // 自适应深度会让大板块高、小板块薄，3D 视角下读作「地势」，
+    // 靠前的厚板块还会挡住后面的薄板块，导致低地势的区县点不到。
+    const rings = s.outlines && s.outlines.length > 0 ? s.outlines : [s.outline];
+    const meshes: THREE.Mesh[] = [];
+    const capMaterials: THREE.MeshStandardMaterial[] = [];
+    const edgeMaterials: LineMaterial[] = [];
+    const pedestals: THREE.Mesh[] = [];
+    const depth = height;
+    for (const ring of rings) {
+      const mesh = createPlateMesh(ring, { ...style, height: depth }, {
+        kind,
+        id: s.id,
+        name: s.name,
+        province: s.province,
+      });
+      const materials = mesh.material as THREE.MeshStandardMaterial[];
+      capMaterials.push(materials[CAP_MATERIAL_INDEX]);
+      const edges = mesh.children[0] as Line2;
+      edgeMaterials.push(edges.material as LineMaterial);
+      meshes.push(mesh);
+      group.add(mesh);
+      // 基座柱：与板块同形内缩，从地面连到板底。
+      // 板块落下时高度趋近 0（完全藏进板内），抬起时恰好填满悬空，
+      // 让「抬升」读作展台而不是一块漂浮的平板。
+      const pedestal = this.createPedestal(ring, s.centroid, provColor);
+      pedestals.push(pedestal);
+      group.add(pedestal);
+    }
+    const baseCapColor = capMaterials[0].color.getHex();
+    // 聚焦时其余城市保留省份色相压暗（而不是抹成近黑剪影），
+    // 轮廓线同步压暗，整体读作「退后」而不是「消失」。
+    const mutedCapColor = new THREE.Color(baseCapColor).multiplyScalar(0.62).getHex();
+    const mutedEdgeColor = new THREE.Color(provColor).multiplyScalar(0.5).getHex();
+    map.set(s.id, {
+      meshes,
+      capMaterials,
+      edgeMaterials,
+      baseEdgeColor: edgeColor,
+      baseCapColor,
+      mutedCapColor,
+      mutedEdgeColor,
+      baseEmissive: provColor,
+      baseIntensity: glowIntensity,
+      baseEdgeOpacity: edgeOpacity,
+      centroid: s.centroid,
+      height: depth,
+      lift: Math.min(1.2, depth * 0.45 + 0.25),
+      pedestals,
+      targetY: 0,
+    });
+  }
+
+  /** 板块的抬升基座：同形内缩 + 单位高度，运行时按抬升量缩放 */
+  private createPedestal(outline: [number, number][], centroid: [number, number], glow: number): THREE.Mesh {
+    const inset = 0.84;
+    const pts = outline.map(
+      ([x, y]) => new THREE.Vector2(centroid[0] + (x - centroid[0]) * inset, centroid[1] + (y - centroid[1]) * inset),
+    );
+    const geo = new THREE.ExtrudeGeometry(new THREE.Shape(pts), { depth: 1, bevelEnabled: false });
+    // 明显亮于板块侧壁与背景：单独看是一座暗色台子，托起板块后读作展台
+    const mat = new THREE.MeshStandardMaterial({
+      color: 0x22304a,
+      roughness: 0.7,
+      metalness: 0.2,
+      emissive: glow,
+      emissiveIntensity: 0.3,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.rotation.x = -Math.PI / 2;
+    // 注意：rotation.x = -90° 后，「高度」是局部 Z 轴（挤出方向），局部 Y 变成世界 Z（南北）。
+    // 早期写成 scale.y = 0.001 会把基座的南北向压扁 50 倍 → 变成一片贴在地图中央纬线上的薄墙，
+    // 露出板块外就成了用户反复看到的那两段「横穿细线」。必须压 scale.z。
+    mesh.scale.z = 0.001;
+    // 轮廓线让基座在暗场里读得出「这是一座台子」，而不是一块浮空平板
+    const edges = new THREE.LineSegments(
+      new THREE.EdgesGeometry(geo, 24),
+      new THREE.LineBasicMaterial({ color: glow, transparent: true, opacity: 0.6 }),
+    );
+    mesh.add(edges);
+    return mesh;
+  }
+
+  private clearLayer(group: THREE.Group, map: Map<string, PlateRecord>): void {
+    for (const rec of map.values()) {
+      for (const pedestal of rec.pedestals) {
+        group.remove(pedestal);
+        this.disposeObject(pedestal);
+      }
+      for (const mesh of rec.meshes) {
+        group.remove(mesh);
+        this.disposeObject(mesh);
+      }
+    }
+    map.clear();
+    group.clear();
+  }
+
+  private disposeObject(obj: THREE.Object3D | null): void {
+    if (!obj) return;
+    obj.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (mesh.geometry) mesh.geometry.dispose();
+      const mat = mesh.material as THREE.Material | THREE.Material[] | undefined;
+      if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
+      else if (mat) mat.dispose();
+    });
+  }
+
+  /**
+   * 把包围盒框进相机视野。
+   * `view` 是「可用视区」（像素，已排除左侧索引、右侧城市面板与上下 HUD）：
+   * 默认取景只按整屏算，城市会被推到面板底下、看着「放得太大」；
+   * 传入可用视区后，会按可用宽高反算距离，并把内容平移到可用区中心。
+   */
+  private frameTo(
+    box: THREE.Box3,
+    duration: number,
+    factor = 1.3,
+    minDist = 0,
+    view?: { x: number; y: number; w: number; h: number },
+  ): void {
+    if (box.isEmpty()) return;
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.z);
+    const fov = (this.camera.fov * Math.PI) / 180;
+    const t = Math.tan(fov / 2);
+    let dist = Math.max((maxDim / (2 * t)) * factor, minDist);
+
+    let offset: THREE.Vector3 | null = null;
+    if (view && this.renderer.domElement) {
+      const W = this.renderer.domElement.clientWidth || 1;
+      const H = this.renderer.domElement.clientHeight || 1;
+      const aspect = W / H;
+      const fw = Math.max(view.w / W, 0.25);
+      const fh = Math.max(view.h / H, 0.25);
+      dist = Math.max(dist, (size.x / (2 * t * aspect * fw)) * factor, (size.z / (2 * t * fh)) * factor);
+
+      // 透视修正：上式按「包围盒在目标平面上的投影」估算，但俯视（50°）时
+      // 地块近端离相机更近、投影被放大，实际会怼出可用区、被左右面板压住。
+      // 这里用一台探针相机真实投影一次包围盒 8 个角，按超出比例回退距离。
+      const elev = (ELEV_DEG * Math.PI) / 180;
+      const probe = this.camera.clone() as THREE.PerspectiveCamera;
+      probe.aspect = aspect;
+      const corners: THREE.Vector3[] = [];
+      for (const cx of [box.min.x, box.max.x])
+        for (const cy of [box.min.y, box.max.y])
+          for (const cz of [box.min.z, box.max.z]) corners.push(new THREE.Vector3(cx, cy, cz));
+      for (let i = 0; i < 4; i++) {
+        probe.position.set(center.x, center.y + Math.sin(elev) * dist, center.z + Math.cos(elev) * dist);
+        probe.lookAt(center);
+        probe.updateMatrixWorld(true);
+        probe.updateProjectionMatrix();
+        let minX = Infinity;
+        let maxX = -Infinity;
+        let minY = Infinity;
+        let maxY = -Infinity;
+        for (const c of corners) {
+          const q = c.clone().project(probe);
+          const px = (q.x * 0.5 + 0.5) * W;
+          const py = (-q.y * 0.5 + 0.5) * H;
+          minX = Math.min(minX, px);
+          maxX = Math.max(maxX, px);
+          minY = Math.min(minY, py);
+          maxY = Math.max(maxY, py);
+        }
+        const pw = Math.max(maxX - minX, 1);
+        const ph = Math.max(maxY - minY, 1);
+        // 只后退、不前进：宁可小一点，也不能让内容溢出到面板底下
+        const k = Math.max((pw * factor) / view.w, (ph * factor) / view.h, 1);
+        if (!Number.isFinite(k) || k < 1.005) break;
+        dist *= k;
+      }
+
+      // 内容需要平移的像素（可用区中心 − 屏幕中心）
+      const worldPerPx = (2 * dist * t) / H;
+      const dxPx = view.x + view.w / 2 - W / 2;
+      const dyPx = view.y + view.h / 2 - H / 2;
+      const right = new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld, 0);
+      const up = new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld, 1);
+      offset = right.multiplyScalar(-dxPx * worldPerPx).add(up.multiplyScalar(dyPx * worldPerPx));
+    }
+
+    // 调试用：记录最近一次取景的尺寸与距离，便于回归脚本定位取景问题
+    this.lastFrame = { sx: +size.x.toFixed(2), sz: +size.z.toFixed(2), dist: +dist.toFixed(2) };
+
+    const elev = (ELEV_DEG * Math.PI) / 180;
+    const target = center.clone();
+    const pos = new THREE.Vector3(center.x, center.y + Math.sin(elev) * dist, center.z + Math.cos(elev) * dist);
+    if (offset) {
+      pos.add(offset);
+      target.add(offset);
+    }
+    this.flyTo(pos, target, duration);
+  }
+
+  /** 当前「可用视区」：左右面板与上下 HUD 会盖住画面，取景时要避开 */
+  private usableView(): { x: number; y: number; w: number; h: number } {
+    const el = this.renderer.domElement;
+    const W = el.clientWidth || 1440;
+    const H = el.clientHeight || 900;
+    const left = 240; // 左侧索引
+    const right = 372; // 右侧城市面板 + 边距
+    const top = 88; // 顶栏
+    const bottom = 76; // 底栏
+    return {
+      x: left,
+      y: top,
+      w: Math.max(W - left - right, 260),
+      h: Math.max(H - top - bottom, 260),
+    };
+  }
+
+  private flyTo(pos: THREE.Vector3, target: THREE.Vector3, duration: number): void {
+    if (duration <= 0) {
+      this.controls.target.copy(target);
+      this.camera.position.copy(pos);
+      this.camera.lookAt(target);
+      this.controls.update();
+      return;
+    }
+    this.controls.enabled = false;
+    this.fly = {
+      fromPos: this.camera.position.clone(),
+      toPos: pos,
+      fromTarget: this.controls.target.clone(),
+      toTarget: target,
+      t: 0,
+      duration,
+    };
+  }
+
+  private refreshStyles(): void {
+    const hasSelection = Boolean(this.selectedDistrictId);
+    for (const [id, rec] of this.districts) {
+      const hovered = this.hoveredKey === `district:${id}`;
+      const selected = this.selectedDistrictId === id;
+      const dimmed = hasSelection && !selected;
+      this.applyPlateStyle(rec, { hovered, selected, dimmed });
+    }
+    for (const [id, rec] of this.cities) {
+      const hovered = this.hoveredKey === `city:${id}`;
+      const muted = Boolean(this.focusedCityId) && this.focusedCityId !== id;
+      this.applyPlateStyle(rec, { hovered, selected: false, dimmed: false, muted });
+    }
+  }
+
+  private applyPlateStyle(
+    rec: PlateRecord,
+    state: { hovered: boolean; selected: boolean; dimmed: boolean; muted?: boolean },
+  ): void {
+    const caps = rec.capMaterials;
+    const edges = rec.edgeMaterials;
+    if (state.muted) {
+      // 城市视图外的背景城市：保留省份色相压暗 + 轮廓变暗，读作「退后」而非消失。
+      // 只压暗、不下沉：下沉过的板块低于周围平面，既读作「地势」又难以点选。
+      for (const cap of caps) {
+        cap.emissive.setHex(rec.baseEmissive);
+        cap.emissiveIntensity = rec.baseIntensity * 0.34;
+        cap.color.setHex(rec.mutedCapColor);
+      }
+      for (const e of edges) {
+        e.color.setHex(rec.mutedEdgeColor);
+        e.opacity = 0.34;
+      }
+      rec.targetY = 0;
+      return;
+    }
+    if (state.selected) {
+      // 选中态优先于悬浮：点击后鼠标往往还停在板块上，
+      // 若让悬浮样式覆盖选中，已选中的区县会掉回原地
+      for (const cap of caps) {
+        cap.emissive.setHex(ACTIVE_EMISSIVE);
+        cap.emissiveIntensity = 0.16;
+        cap.color.setHex(SELECTED_FACE);
+      }
+      for (const e of edges) {
+        e.color.setHex(ACTIVE_EMISSIVE);
+        e.opacity = 1;
+      }
+      rec.targetY = rec.lift * 0.78;
+      return;
+    }
+    if (state.hovered) {
+      // 悬浮只做提亮，不抬升板块：抬升会在板下升起同形状基座柱，
+      // 在暗场里读作一块「残影」，尤其是地图底部的城市最明显
+      for (const cap of caps) {
+        cap.emissive.setHex(ACTIVE_EMISSIVE);
+        cap.emissiveIntensity = 0.24;
+        cap.color.setHex(SELECTED_FACE);
+      }
+      for (const e of edges) {
+        e.color.setHex(ACTIVE_EMISSIVE);
+        e.opacity = 1;
+      }
+      rec.targetY = 0;
+      return;
+    }
+    for (const cap of caps) {
+      cap.emissive.setHex(rec.baseEmissive);
+      cap.emissiveIntensity = state.dimmed ? rec.baseIntensity * 0.5 : rec.baseIntensity;
+      cap.color.setHex(state.dimmed ? rec.mutedCapColor : rec.baseCapColor);
+    }
+    for (const e of edges) {
+      e.color.setHex(rec.baseEdgeColor);
+      e.opacity = state.dimmed ? 0.35 : rec.baseEdgeOpacity;
+    }
+    // 未选中统一保持原位：无下沉、无地势差，所有板块都在同一平面可点选
+    rec.targetY = 0;
+  }
+
+  /** 板块抬升/落下的平滑过渡；基座高度跟随，填满悬空又不与板底共面 */
+  private updatePlateLift(dt: number): void {
+    const k = 1 - Math.pow(0.0001, dt); // 帧率无关：约 0.3s 到位 94%，观感干脆不弹跳
+    for (const rec of this.cities.values()) this.stepPlateLift(rec, k);
+    for (const rec of this.districts.values()) this.stepPlateLift(rec, k);
+  }
+
+  private stepPlateLift(rec: PlateRecord, k: number): void {
+    // 略微高过板底，避免顶面与板底共面导致 z-fighting
+    const target = Math.max(0.001, rec.targetY + 0.02);
+    for (const mesh of rec.meshes) {
+      const y = mesh.position.y;
+      const next = y + (rec.targetY - y) * k;
+      mesh.position.y = Math.abs(rec.targetY - next) < 0.001 ? rec.targetY : next;
+    }
+    for (const pedestal of rec.pedestals) {
+      // 高度轴 = 局部 Z（见 createPedestal），不能用 scale.y
+      const h = pedestal.scale.z + (target - pedestal.scale.z) * k;
+      pedestal.scale.z = Math.abs(target - h) < 0.001 ? target : h;
+    }
+  }
+
+  /**
+   * 光点与标记跟随所属板块的抬升/落下：
+   * 选中区县时板块抬起，若光点/标记停在原高度会被埋进板里（点不到、看不见），
+   * 这里按板块当前高度同步顶起，落选则随板块落回。
+   */
+  private syncPinLift(): void {
+    for (const [districtId, list] of this.pinsByDistrict) {
+      const rec = this.districts.get(districtId);
+      const lift = rec ? rec.meshes[0].position.y : 0;
+      for (const pin of list) {
+        pin.group.position.y = pin.baseY + lift;
+      }
+    }
+    for (const marker of this.districtMarkerGroup.children) {
+      const rec = this.districts.get(marker.userData.plateId as string);
+      marker.position.y =
+        (marker.userData.baseY as number) + (rec ? rec.meshes[0].position.y : 0);
+    }
+    for (const marker of this.cityMarkerGroup.children) {
+      const rec = this.cities.get(marker.userData.plateId as string);
+      marker.position.y =
+        (marker.userData.baseY as number) + (rec ? rec.meshes[0].position.y : 0);
+    }
+  }
+
+  private refreshPinStyles(): void {
+    for (const pin of this.pins.values()) {
+      const focused = pin.id === this.focusedSpotId;
+      const hovered = this.hoveredKey === `pin:${pin.id}`;
+      const inActiveDistrict = !this.selectedDistrictId || pin.districtId === this.selectedDistrictId;
+      const dim = Boolean(this.selectedDistrictId) && !inActiveDistrict;
+      pin.stateScale = (focused ? 1.8 : hovered ? 1.35 : 1) * (dim ? 0.7 : 1);
+      pin.dotMaterial.opacity = dim ? 0.3 : 1;
+      pin.ringMaterial.opacity = focused ? 0.95 : dim ? 0.1 : 0.5;
+      pin.ringMaterial.color.setHex(focused ? 0x22d3ee : pin.dotMaterial.color.getHex());
+      pin.dotMaterial.emissiveIntensity = focused ? 2.2 : pin.hot ? 1.6 : 1.1;
+    }
+  }
+
+  private pick(nx: number, ny: number): THREE.Intersection | null {
+    this.pointer.set(nx, ny);
+    this.raycaster.setFromCamera(this.pointer, this.camera);
+    const objects: THREE.Object3D[] = [];
+    if (this.layer === 'city') {
+      for (const rec of this.cities.values()) objects.push(...rec.meshes);
+    } else {
+      for (const rec of this.districts.values()) objects.push(...rec.meshes);
+      for (const pin of this.pins.values()) objects.push(pin.hit);
+    }
+    return this.raycaster.intersectObjects(objects, false)[0] ?? null;
+  }
+
+  private toNdc(e: { clientX: number; clientY: number }): [number, number] {
+    if (!this.container) return [0, 0];
+    const rect = this.container.getBoundingClientRect();
+    return [((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1];
+  }
+
+  private onPointerDown = (e: PointerEvent): void => {
+    this.downXY = [e.clientX, e.clientY];
+  };
+
+  private onPointerMove = (e: PointerEvent): void => {
+    const [nx, ny] = this.toNdc(e);
+    const hit = this.pick(nx, ny);
+    const data = hit ? ((hit.object as THREE.Mesh).userData as PickInfo) : null;
+    const key = data ? `${data.kind}:${data.id}` : null;
+
+    if (key !== this.hoveredKey) {
+      const prev = this.hoveredKey;
+      this.hoveredKey = key;
+      if (prev || key) this.refreshStyles();
+      this.refreshPinStyles();
+      this.onHover?.(data ? { id: data.id, name: data.name, province: data.province, kind: data.kind } : null);
+    }
+  };
+
+  private onClick = (e: MouseEvent): void => {
+    if (this.downXY && Math.hypot(e.clientX - this.downXY[0], e.clientY - this.downXY[1]) > 4) return;
+    const [nx, ny] = this.toNdc(e);
+    const hit = this.pick(nx, ny);
+    const info = hit ? ((hit.object as THREE.Mesh).userData as PickInfo) : null;
+    if (info) this.onPick?.(info);
+  };
+
+  private setHover(key: string | null): void {
+    this.hoveredKey = key;
+    this.refreshStyles();
+    this.refreshPinStyles();
+    if (this.container) this.container.style.cursor = key ? 'pointer' : 'default';
+  }
+
+  /** Line2 的线宽以像素计，需把画布 CSS 尺寸同步给每条边界线材质，否则线宽会被当成 NDC 变得极粗 */
+  private updateLineResolutions(): void {
+    if (!this.container) return;
+    const w = this.container.clientWidth;
+    const h = this.container.clientHeight;
+    if (w <= 0 || h <= 0) return;
+    for (const map of [this.cities, this.districts]) {
+      for (const rec of map.values()) {
+        for (const m of rec.edgeMaterials) m.resolution.set(w, h);
+      }
+    }
+  }
+
+  private resize = (): void => {
+    if (!this.container) return;
+    const w = this.container.clientWidth;
+    const h = this.container.clientHeight;
+    this.renderer.setSize(w, h, false);
+    this.composer.setSize(w, h);
+    this.labelRenderer.setSize(w, h);
+    this.camera.aspect = w / h;
+    this.camera.updateProjectionMatrix();
+    this.updateLineResolutions();
+  };
+
+  private tick = (t: number): void => {
+    if (this.paused) return;
+    this.raf = requestAnimationFrame(this.tick);
+    const dt = Math.min((t - this.lastT) / 1000, 0.05);
+    this.lastT = t;
+
+    if (this.stars) this.stars.rotation.y += dt * 0.015;
+
+    this.updatePlateLift(dt);
+
+    // 光点保持静态：持续的脉冲缩放与上下浮动在城市视图下读作
+    // 「各区县起起伏伏」，焦点态用静态放大 + 提亮来表达
+    this.syncPinLift();
+
+    if (this.fly) {
+      const f = this.fly;
+      f.t += dt;
+      const k = Math.min(f.t / f.duration, 1);
+      const ease = 1 - Math.pow(1 - k, 3);
+      this.camera.position.lerpVectors(f.fromPos, f.toPos, ease);
+      this.controls.target.lerpVectors(f.fromTarget, f.toTarget, ease);
+      this.camera.lookAt(this.controls.target);
+      if (k >= 1) {
+        this.fly = null;
+        this.controls.enabled = true;
+      }
+    } else {
+      this.controls.update();
+    }
+
+    this.updatePinScales();
+    this.updateMarkerScales();
+
+    // 锚点卡靠近视口边缘时隐藏，避免被顶部/侧边裁切
+    if (this.anchor) {
+      const v = this.anchorNdc.copy(this.anchor.position).project(this.camera);
+      this.anchor.visible =
+        v.z < 1 && v.z > -1 && v.y < 0.82 && v.y > -0.9 && v.x > -0.9 && v.x < 0.9;
+    }
+
+    this.composer.render();
+    this.labelRenderer.render(this.scene, this.camera);
+  };
+
+  /** 收藏/去过标记保持屏幕恒定大小（与 pin 同理），缩放到哪都清晰可辨 */
+  private updateMarkerScales(): void {
+    if (!this.cityMarkerGroup.children.length && !this.districtMarkerGroup.children.length) return;
+    const h = this.container?.clientHeight ?? 0;
+    if (!h) return;
+    const dist = Math.max(this.camera.position.distanceTo(this.controls.target), 0.001);
+    const fov = (this.camera.fov * Math.PI) / 180;
+    const pxPerUnit = h / (2 * Math.tan(fov / 2) * dist);
+    for (const group of [this.cityMarkerGroup, this.districtMarkerGroup]) {
+      for (const marker of group.children) {
+        const ih = (marker.userData.intrinsicH as number) || 1;
+        const kind = (marker.userData.kind as MarkerKind) ?? 'favorite';
+        const targetWorld = MARKER_SCREEN_PX[kind] / pxPerUnit;
+        const s = Math.min(Math.max(targetWorld / ih, 0.25), 3.5);
+        marker.scale.setScalar(s);
+        // 同一地点的多个标记按自身尺寸错开，远看不会叠成一团
+        const ax = marker.userData.anchorX as number | undefined;
+        const az = marker.userData.anchorZ as number | undefined;
+        if (ax !== undefined && az !== undefined) {
+          marker.position.x = ax + (marker.userData.offX as number) * s;
+          marker.position.z = az + (marker.userData.offZ as number) * s;
+        }
+      }
+    }
+  }
+
+  /** pin 保持屏幕恒定大小：世界尺寸随相机距离反算，避免下钻后变成巨球 */
+  private updatePinScales(): void {
+    if (this.pins.size === 0) return;
+    const h = this.container?.clientHeight ?? 0;
+    if (!h) return;
+    const dist = Math.max(this.camera.position.distanceTo(this.controls.target), 0.001);
+    const fov = (this.camera.fov * Math.PI) / 180;
+    const pxPerUnit = h / (2 * Math.tan(fov / 2) * dist);
+    const base = Math.min(Math.max(PIN_SCREEN_PX / (0.6 * pxPerUnit), 0.04), 1.4);
+    for (const pin of this.pins.values()) {
+      pin.group.scale.setScalar(base * pin.stateScale * (pin.hot ? 1.12 : 1));
+    }
+  }
+
+  private setupLights(): void {
+    this.scene.add(new THREE.HemisphereLight(0x8899cc, 0x0a0d14, 1.3));
+    this.scene.add(new THREE.AmbientLight(0x1b2637, 0.35));
+
+    const dir = new THREE.DirectionalLight(0xffffff, 2.4);
+    dir.position.set(80, 160, 40);
+    dir.castShadow = true;
+    dir.shadow.mapSize.set(2048, 2048);
+    const s = 160;
+    dir.shadow.camera.left = -s;
+    dir.shadow.camera.right = s;
+    dir.shadow.camera.top = s;
+    dir.shadow.camera.bottom = -s;
+    dir.shadow.camera.far = 600;
+    this.scene.add(dir);
+  }
+
+  private setupGround(): void {
+    // 中心线颜色与网格线统一：否则 THREE.GridHelper 的 centerLine 会比网格线更亮，
+    // 在地图中部（安徽左侧 / 上海右侧）露出一根横穿的亮线。
+    const grid = new THREE.GridHelper(400, 40, 0x0d1626, 0x0d1626);
+    const gm = grid.material as THREE.LineBasicMaterial;
+    gm.transparent = true;
+    gm.opacity = 0.4;
+    grid.position.y = -0.5;
+    this.grid = grid;
+    this.scene.add(grid);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 512;
+    const ctx = canvas.getContext('2d')!;
+    const grad = ctx.createRadialGradient(256, 256, 0, 256, 256, 256);
+    grad.addColorStop(0, 'rgba(42,62,98,0.5)');
+    grad.addColorStop(0.45, 'rgba(20,30,50,0.25)');
+    grad.addColorStop(1, 'rgba(5,7,13,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 512, 512);
+
+    const tex = new THREE.CanvasTexture(canvas);
+    this.ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(400, 400),
+      new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false }),
+    );
+    this.ground.rotation.x = -Math.PI / 2;
+    this.ground.position.y = -1;
+    this.scene.add(this.ground);
+  }
+
+  private setupStars(): void {
+    const count = 700;
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 360;
+      positions[i * 3 + 1] = 10 + Math.random() * 90;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 360;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    // 用一张圆形 sprite 贴图把方点变成圆点，营造「星空」而非「马赛克格」的漂浮感。
+    const sprite = this.makeStarSprite();
+    const mat = new THREE.PointsMaterial({
+      color: 0x9cc3d9,
+      size: 0.9,
+      map: sprite,
+      alphaMap: sprite,
+      transparent: true,
+      opacity: 0.85,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      alphaTest: 0.05,
+    });
+    this.stars = new THREE.Points(geo, mat);
+    this.scene.add(this.stars);
+  }
+
+  /** 生成柔边圆形点精灵（中心亮、边缘透明），供星空 PointsMaterial 复用 */
+  private makeStarSprite(): THREE.Texture {
+    const size = 64;
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = size;
+    const ctx = canvas.getContext('2d')!;
+    const r = size / 2;
+    const grad = ctx.createRadialGradient(r, r, 0, r, r, r);
+    grad.addColorStop(0, 'rgba(255,255,255,1)');
+    grad.addColorStop(0.35, 'rgba(220,240,255,0.95)');
+    grad.addColorStop(0.7, 'rgba(150,200,235,0.35)');
+    grad.addColorStop(1, 'rgba(150,200,235,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(r, r, r, 0, Math.PI * 2);
+    ctx.fill();
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }
+}
