@@ -30,7 +30,7 @@ const STYLES: { id: WallStyle; name: string; hint: string }[] = [
   { id: 'gallery', name: '展厅', hint: '展墙网格：均匀挂画 + 展签' },
   { id: 'corridor', name: '长廊', hint: '长廊移步：单幅大字 + 两侧窥视' },
   { id: 'lightbox', name: '灯箱', hint: '灯箱独照：暗场聚光 + 展签' },
-  { id: 'hall3d', name: '照片空间 · 3D', hint: '所有照片悬浮在空中：拖动环绕、滚轮缩放、点击飞抵近看' },
+  { id: 'hall3d', name: '照片空间 · 3D', hint: '所有照片汇成一条旋臂星河：拖动环绕、滚轮缩放、点击飞抵近看' },
 ];
 
 const SHAPE_FILTERS: { id: ShapeFilter; name: string }[] = [

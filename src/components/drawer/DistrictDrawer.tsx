@@ -207,7 +207,7 @@ export function DistrictDrawer() {
 
             <section className="content-block">
               <h3 className="block-title">
-                <i />在地美食
+                <i />当地美食
                 <span className="block-count">{districtFoods.length}</span>
               </h3>
               {districtFoods.length === 0 ? (
