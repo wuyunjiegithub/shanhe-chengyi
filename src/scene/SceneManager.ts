@@ -116,6 +116,8 @@ export class SceneManager {
   private stars: THREE.Points | null = null;
   private ground: THREE.Mesh | null = null;
   private grid: THREE.GridHelper | null = null;
+  /** 环境贴图由 PMREM 渲染到一张 RenderTarget 上，只取 texture 引用会漏掉这张 RT */
+  private envRT: THREE.WebGLRenderTarget | null = null;
   private labelRenderer: CSS2DRenderer;
   private provinceLabelGroup = new THREE.Group();
   private districtLabelGroup = new THREE.Group();
@@ -275,6 +277,18 @@ export class SceneManager {
     this.disposeObject(this.ground);
     this.disposeObject(this.grid);
     this.grid = null;
+    // 后处理管线持有 7 张以上全屏 RenderTarget，不释放的话每次重建（HMR / StrictMode
+    // 双挂载 / 反复开关）都会漏一整套，显存单调增长最终触发 WebGL 上下文丢失而白屏。
+    this.bloomPass.dispose();
+    this.composer.dispose();
+    if (this.envRT) {
+      this.envRT.dispose();
+      this.envRT = null;
+    }
+    if (this.scene.environment) {
+      this.scene.environment.dispose();
+      this.scene.environment = null;
+    }
     this.controls.dispose();
     this.clearLabels(this.provinceLabels, this.provinceLabelGroup);
     this.clearLabels(this.districtLabels, this.districtLabelGroup);
@@ -808,9 +822,19 @@ export class SceneManager {
       const mesh = o as THREE.Mesh;
       if (mesh.geometry) mesh.geometry.dispose();
       const mat = mesh.material as THREE.Material | THREE.Material[] | undefined;
-      if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
-      else if (mat) mat.dispose();
+      if (Array.isArray(mat)) mat.forEach((m) => this.disposeMaterial(m));
+      else if (mat) this.disposeMaterial(mat);
     });
+  }
+
+  /** 材质上的贴图（地面/星空等 CanvasTexture）不会随 material.dispose 释放，必须显式回收 */
+  private disposeMaterial(mat: THREE.Material): void {
+    const slots = ['map', 'alphaMap', 'emissiveMap', 'normalMap'] as const;
+    for (const slot of slots) {
+      const tex = (mat as unknown as Record<string, THREE.Texture | null>)[slot];
+      if (tex && typeof tex.dispose === 'function') tex.dispose();
+    }
+    mat.dispose();
   }
 
   /**
@@ -1172,6 +1196,9 @@ export class SceneManager {
     if (!this.container) return;
     const w = this.container.clientWidth;
     const h = this.container.clientHeight;
+    // 容器尺寸为 0（初始化时序 / 移动端地址栏收放）时 w/h 会变成 Infinity 或 NaN，
+    // 一旦写进 camera.aspect 就会把投影矩阵整体污染成 NaN，画面全黑且不自愈。
+    if (w <= 0 || h <= 0) return;
     this.renderer.setSize(w, h, false);
     this.composer.setSize(w, h);
     this.labelRenderer.setSize(w, h);
@@ -1322,6 +1349,7 @@ export class SceneManager {
     const pmrem = new THREE.PMREMGenerator(this.renderer);
     const rt = pmrem.fromEquirectangular(tex);
     this.scene.environment = rt.texture;
+    this.envRT = rt;
     tex.dispose();
     pmrem.dispose();
   }

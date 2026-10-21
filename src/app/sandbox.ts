@@ -12,6 +12,8 @@ import { useCityStatus } from '../stores/cityStatus';
 import { usePhotoLib } from '../stores/photoLib';
 
 let manager: SceneManager | null = null;
+/** 各 store 的订阅句柄，teardownSandbox 时统一解绑（否则重复 initSandbox 会叠加订阅） */
+const unsubscribers: Array<() => void> = [];
 let projection: Projection | null = null;
 const districtGeoCache = new Map<string, GeoFeature[]>();
 let loadingCityId: string | null = null;
@@ -32,19 +34,27 @@ export async function initSandbox(container: HTMLElement): Promise<void> {
   void usePhotoLib.getState().restore();
 
   // 标记（去过 / 收藏）变化时即时刷新场景中的旗子与光点
-  useUi.subscribe((s, prev) => {
-    if (s.favorites !== prev.favorites) updateMarkers();
-  });
-  useCityStatus.subscribe((s, prev) => {
-    if (s.visited !== prev.visited || s.visitedDistricts !== prev.visitedDistricts) {
-      updateMarkers();
-    }
-  });
+  // 订阅句柄必须存起来：StrictMode 双挂载 / HMR 会重复 initSandbox，
+  // 不解绑的话每轮多一组订阅，updateMarkers() 被重复调用（每次都销毁重建整组标记）。
+  unsubscribers.push(
+    useUi.subscribe((s, prev) => {
+      if (s.favorites !== prev.favorites) updateMarkers();
+    }),
+  );
+  unsubscribers.push(
+    useCityStatus.subscribe((s, prev) => {
+      if (s.visited !== prev.visited || s.visitedDistricts !== prev.visitedDistricts) {
+        updateMarkers();
+      }
+    }),
+  );
 
   // 打开照片墙时暂停主场景渲染：避免与 3D 展厅双 WebGL 上下文同时渲染导致主上下文被回收（回退白屏）
-  useUi.subscribe((s, prev) => {
-    if (s.photoWall !== prev.photoWall) manager?.setPaused(Boolean(s.photoWall));
-  });
+  unsubscribers.push(
+    useUi.subscribe((s, prev) => {
+      if (s.photoWall !== prev.photoWall) manager?.setPaused(Boolean(s.photoWall));
+    }),
+  );
 
   const scene = new SceneManager();
   manager = scene;
@@ -79,6 +89,8 @@ export async function initSandbox(container: HTMLElement): Promise<void> {
 }
 
 export function teardownSandbox(): void {
+  for (const un of unsubscribers) un();
+  unsubscribers.length = 0;
   manager?.dispose();
   manager = null;
   projection = null;
@@ -123,6 +135,8 @@ export async function drillIntoCity(cityId: string): Promise<void> {
 export function backToRegion(): void {
   const ui = useUi.getState();
   ui.closeDrawer();
+  // 返回总览时城市面板会重新出现，全屏态必须清掉，否则一回去就被铺满的面板挡住地图
+  ui.togglePanelFullscreen(false);
   ui.setSearchOpen(false);
   manager?.clearDistrictPlates();
   manager?.resetView();

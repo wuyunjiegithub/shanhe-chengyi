@@ -97,11 +97,18 @@ export const useData = create<DataState>((set, get) => ({
     const prevSpotIds = new Set(prev?.spots ?? []);
     const nextSpotIds = new Set(normalized.spots);
 
-    for (const id of prevSpotIds) {
-      if (!nextSpotIds.has(id)) await staticRepository.deleteSpotContent(id);
+    const removedIds = [...prevSpotIds].filter((id) => !nextSpotIds.has(id));
+    try {
+      // 刻意「先写后删」：配额不足时写入会抛，若先删旧景点就会留下
+      // 「景点已删、区县没写成」的半截状态。反过来最多残留无用字节，数据安全。
+      for (const spot of spots) await staticRepository.saveSpotContent(spot);
+      await staticRepository.saveDistrictContent(normalized);
+      for (const id of removedIds) await staticRepository.deleteSpotContent(id);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : '未知错误';
+      set({ error: `保存失败：${msg}（内容未改动）` });
+      throw e;
     }
-    for (const spot of spots) await staticRepository.saveSpotContent(spot);
-    await staticRepository.saveDistrictContent(normalized);
 
     set((state) => {
       const spotMap = { ...state.spots };

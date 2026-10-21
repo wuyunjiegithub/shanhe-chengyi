@@ -18,7 +18,8 @@ export interface SandboxRepository {
   listDistrictGeo(cityId: string): Promise<GeoFeature[]>;
 
   loadFavorites(): Promise<Favorites>;
-  saveFavorites(f: Favorites): Promise<void>;
+  /** 返回是否落盘成功：localStorage 可能因配额不足抛错，调用方需要如实提示 */
+  saveFavorites(f: Favorites): Promise<boolean>;
 
   fetchWeather(districtId: string, lat: number, lng: number): Promise<WeatherCache>;
   getCachedWeather(districtId: string): Promise<WeatherCache | null>;

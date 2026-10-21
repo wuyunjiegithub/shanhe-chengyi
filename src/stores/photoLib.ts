@@ -186,7 +186,67 @@ async function scanAndApply(
   set({ index: result.index, status: 'bound', error: null, lastLiveAdded: 0 });
 }
 
-export const usePhotoLib = create<PhotoLibState>((set, get) => ({
+/** 索引里所有照片路径拼成的指纹：只有它变了才说明磁盘上真有增删 */
+function indexSignature(index: PhotoIndex | null): string {
+  if (!index) return '';
+  const paths: string[] = [];
+  for (const list of Object.values(index.byDistrict)) for (const e of list) paths.push(e.path);
+  for (const list of Object.values(index.byCity)) for (const e of list) paths.push(e.path);
+  paths.sort();
+  return `${index.total}::${paths.join('|')}`;
+}
+
+export const usePhotoLib = create<PhotoLibState>((set, get) => {
+  /** 正在进行的扫描（rescan 串行化用） */
+  let scanInflight: Promise<void> | null = null;
+  /** 上一轮扫描的指纹，用于判断是否需要失效 blob URL 缓存 */
+  let lastSignature = '';
+
+  const doRescan = async (): Promise<void> => {
+    const disk = getDisk();
+    set({ diskKind: disk.kind });
+    if (disk.kind === 'none') {
+      set({ status: 'unbound', error: '当前环境不支持访问本地目录' });
+      return;
+    }
+    if (!(await disk.hasRoot())) {
+      set({
+        status: 'unbound',
+        error: disk.kind === 'fsa' ? '目录句柄已失效，请重新绑定' : '尚未选择照片目录',
+      });
+      return;
+    }
+    try {
+      const next = await scanDisk(disk, mapsFromContent());
+      // 只有磁盘上真有增删才失效缓存。无条件清的话，实时模式每 20s 就会 revoke 掉
+      // 正在使用的 blob URL：列表重新「加载中」闪烁、正在播放的视频直接断流。
+      const sig = indexSignature(next.index);
+      if (sig !== lastSignature) {
+        clearPhotoUrlCache();
+        lastSignature = sig;
+      }
+      void cachePhotoFiles(next.files);
+      // 实时模式 / 上传后刷新都走增量合并：保留旧顺序，只把新照片标出来，剔除已删除的
+      const prev = get().index;
+      const merged = prev && prev.persistent ? mergeIndexes(prev, next.index) : next.index;
+      applyIndex(merged);
+      const added = merged.total - (prev?.total ?? 0);
+      set({
+        index: merged,
+        status: 'bound',
+        error: null,
+        lastLiveAdded: added > 0 ? added : 0,
+      });
+    } catch (err) {
+      const msg = message(err);
+      set({
+        status: 'error',
+        error: /permission|authoriz|not allowed|security/i.test(msg) ? '目录授权已失效，请重新绑定' : msg,
+      });
+    }
+  };
+
+  return {
   status: 'unbound',
   index: null,
   error: null,
@@ -296,40 +356,15 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => ({
   },
 
   rescan: async () => {
-    const disk = getDisk();
-    set({ diskKind: disk.kind });
-    if (disk.kind === 'none') {
-      set({ status: 'unbound', error: '当前环境不支持访问本地目录' });
-      return;
-    }
-    if (!(await disk.hasRoot())) {
-      set({
-        status: 'unbound',
-        error: disk.kind === 'fsa' ? '目录句柄已失效，请重新绑定' : '尚未选择照片目录',
-      });
-      return;
-    }
+    // 触发源有 5 处（20s 实时定时、开启实时、上传后、删除后、手动重扫）。
+    // 不串行化的话两轮会重叠：先开始却晚完成的那一轮，会用「写盘/删盘之前」的快照
+    // 覆盖新索引 —— 刚上传的照片凭空消失、刚删除的照片复活。
+    if (scanInflight) return scanInflight;
+    scanInflight = doRescan();
     try {
-      const next = await scanDisk(disk, mapsFromContent());
-      clearPhotoUrlCache();
-      void cachePhotoFiles(next.files);
-      // 实时模式 / 上传后刷新都走增量合并：保留旧顺序，只把新照片标出来，剔除已删除的
-      const prev = get().index;
-      const merged = prev && prev.persistent ? mergeIndexes(prev, next.index) : next.index;
-      applyIndex(merged);
-      const added = merged.total - (prev?.total ?? 0);
-      set({
-        index: merged,
-        status: 'bound',
-        error: null,
-        lastLiveAdded: added > 0 ? added : 0,
-      });
-    } catch (err) {
-      const msg = message(err);
-      set({
-        status: 'error',
-        error: /permission|authoriz|not allowed|security/i.test(msg) ? '目录授权已失效，请重新绑定' : msg,
-      });
+      await scanInflight;
+    } finally {
+      scanInflight = null;
     }
   },
 
@@ -424,4 +459,5 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => ({
     }
     return resolvePhotoUrl(entry);
   },
-}));
+  };
+});

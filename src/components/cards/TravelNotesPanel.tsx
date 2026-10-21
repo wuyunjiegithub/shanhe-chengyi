@@ -74,6 +74,14 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
   });
   const [images, setImages] = useState<string[]>(initial?.images ?? []);
   const [urls, setUrls] = useState<Record<string, string>>({});
+  /**
+   * 编辑器是「保存才生效」的语义，所以图片的增删都必须延到保存那一刻才落盘：
+   * - pendingRemoval：本次编辑里被移除的图，取消时不能删（store 里的游记还引用着它们，
+   *   删了字节就等于给游记造出永久裂图）；
+   * - pendingAdded：本次编辑里新写入的图，取消时没有归属，应当回收字节。
+   */
+  const pendingRemoval = useRef<Set<string>>(new Set());
+  const pendingAdded = useRef<Set<string>>(new Set());
   const [placeQuery, setPlaceQuery] = useState('');
   const [placeOpen, setPlaceOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -225,7 +233,28 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
       delete next[id];
       return next;
     });
-    void deleteImage(id).catch(() => undefined);
+    // 本次编辑里新加的图：还没进 store，直接回收字节即可
+    if (pendingAdded.current.delete(id)) {
+      void deleteImage(id).catch(() => undefined);
+      return;
+    }
+    // 老图只登记，等保存时才删——否则用户放弃编辑，游记里这张图就永久裂了
+    pendingRemoval.current.add(id);
+  };
+
+  const flushImages = (committed: boolean) => {
+    if (committed) {
+      for (const id of pendingRemoval.current) void deleteImage(id).catch(() => undefined);
+    } else {
+      for (const id of pendingAdded.current) void deleteImage(id).catch(() => undefined);
+    }
+    pendingRemoval.current.clear();
+    pendingAdded.current.clear();
+  };
+
+  const onCancelEdit = () => {
+    flushImages(false);
+    onCancel();
   };
 
   /** 照片库挑选器确认：把勾选的本地照片复制进本篇游记 */
@@ -240,7 +269,10 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
           showToast(`${it.name} 保存失败`);
         }
       }
-      if (ids.length > 0) setImages((prev) => [...prev, ...ids]);
+      if (ids.length > 0) {
+        setImages((prev) => [...prev, ...ids]);
+        for (const id of ids) pendingAdded.current.add(id);
+      }
       showToast(ids.length > 0 ? `已从照片库添加 ${ids.length} 张` : '没有可添加的照片');
     } finally {
       setBusy(false);
@@ -261,12 +293,13 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
       placeName: place?.name ?? '',
       images,
     });
+    flushImages(true);
   };
 
   return (
     <div className="note-editor">
       <header className="note-editor-head">
-        <button className="ghost-btn" onClick={onCancel}>
+        <button className="ghost-btn" onClick={onCancelEdit}>
           ‹ 返回列表
         </button>
         <span className="note-editor-date">
@@ -493,6 +526,24 @@ export function TravelNotesPanel() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, notes]);
+
+  // 这块组件始终挂载、靠 open 控制显隐，所以关闭面板时要主动回收封面 blob：
+  // 否则每开关一次游记面板就新攒一批 object URL，整张原图字节都无法被 GC。
+  const coverUrlsRef = useRef<Record<string, string>>({});
+  coverUrlsRef.current = coverUrls;
+  useEffect(() => {
+    if (open) return;
+    setCoverUrls((prev) => {
+      for (const u of Object.values(prev)) URL.revokeObjectURL(u);
+      return {};
+    });
+  }, [open]);
+  useEffect(
+    () => () => {
+      for (const u of Object.values(coverUrlsRef.current)) URL.revokeObjectURL(u);
+    },
+    [],
+  );
 
   // 从区县抽屉/城市面板跳来：带预置地点开一篇新游记
   useEffect(() => {

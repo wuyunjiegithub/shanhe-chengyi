@@ -97,7 +97,9 @@ export const useUi = create<UiState>((set, get) => ({
   panelFullscreen: false,
 
   openDrawer: () => set({ drawerOpen: true, favoritesOpen: false }),
-  closeDrawer: () => set({ drawerOpen: false, leafCard: null }),
+  // 关抽屉时顺手复位全屏态：否则抽屉里点过「全屏」再用 ESC / 返回关掉，
+  // 城市面板会顶着同一个 panelFullscreen 直接铺满，把地图盖死。
+  closeDrawer: () => set({ drawerOpen: false, leafCard: null, panelFullscreen: false }),
 
   hydrateFavorites: (favorites) => set({ favorites }),
 
@@ -115,10 +117,18 @@ export const useUi = create<UiState>((set, get) => ({
       [key]: list.includes(id) ? list.filter((x) => x !== id) : [...list, id],
     };
     set({ favorites: next });
-    void staticRepository.saveFavorites(next);
     const added = next[key].length > list.length;
     const label = kind === 'district' ? '区县' : kind === 'city' ? '城市' : '景点';
-    get().showToast(added ? `已加入收藏 · ${label}` : '已取消收藏');
+    // 落盘失败要如实提示：否则用户以为收藏成功，刷新后才发现丢了
+    void staticRepository.saveFavorites(next).then((ok) => {
+      get().showToast(
+        ok
+          ? added
+            ? `已加入收藏 · ${label}`
+            : '已取消收藏'
+          : '收藏未能保存到本机（存储空间不足？）',
+      );
+    });
   },
 
   pushRecent: (q) => {

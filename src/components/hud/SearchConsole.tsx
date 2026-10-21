@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import Fuse from 'fuse.js';
 import { useData } from '../../stores/data';
+import { useNavigation } from '../../stores/navigation';
 import { useUi } from '../../stores/ui';
 import { cityIdOfDistrict, focusCityById, focusFood, focusSpotById, selectDistrictById } from '../../app/sandbox';
 
@@ -34,7 +35,9 @@ export function SearchConsole() {
   const pushRecent = useUi((s) => s.pushRecent);
 
   const [query, setQuery] = useState('');
-  const [open, setOpen] = useState(false);
+  // 开合状态放在 ui store：返回键 / ESC / 下钻都要能收起它，局部 state 会变成死开关
+  const open = useUi((s) => s.searchOpen);
+  const setSearchOpen = useUi((s) => s.setSearchOpen);
   const [activeIndex, setActiveIndex] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -111,22 +114,29 @@ export function SearchConsole() {
     setActiveIndex(0);
   }, [query]);
 
+  // 点地图板块下钻 / 返回总览时自动收起下拉：否则它一直挂在顶栏挡住画面
+  const level = useNavigation((s) => s.level);
+  const cityId = useNavigation((s) => s.currentCity?.id ?? null);
+  useEffect(() => {
+    setSearchOpen(false);
+  }, [level, cityId, setSearchOpen]);
+
   useEffect(() => {
     const onDocDown = (e: MouseEvent) => {
-      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+      if (!rootRef.current?.contains(e.target as Node)) setSearchOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
       const isCmdK = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k';
       if (isCmdK) {
         e.preventDefault();
-        setOpen(true);
+        setSearchOpen(true);
         inputRef.current?.focus();
         inputRef.current?.select();
         return;
       }
       if (e.key === 'Escape' && open) {
         e.stopPropagation();
-        setOpen(false);
+        setSearchOpen(false);
         inputRef.current?.blur();
       }
     };
@@ -139,7 +149,7 @@ export function SearchConsole() {
   }, [open]);
 
   const commit = (item: SearchItem) => {
-    setOpen(false);
+    setSearchOpen(false);
     setQuery(item.name);
     pushRecent(item.name);
     if (item.kind === 'city' && item.cityId) {
@@ -177,9 +187,9 @@ export function SearchConsole() {
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
-            setOpen(true);
+            setSearchOpen(true);
           }}
-          onFocus={() => setOpen(true)}
+          onFocus={() => setSearchOpen(true)}
           onKeyDown={onKeyDown}
           placeholder="搜索城市、区县、景点或美食…"
           aria-label="搜索城市、区县、景点或美食"

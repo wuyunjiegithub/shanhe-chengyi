@@ -48,7 +48,9 @@ export function DistrictDrawer() {
   const allSpots = district ? (spotsByDistrict[district.id] ?? []) : [];
   const districtFoods = district?.foods ?? [];
   const specialties = district?.specialties ?? [];
-  const spots = allSpots.sort((a, b) => Number(Boolean(b.hot)) - Number(Boolean(a.hot)));
+  // 必须浅拷贝后再排：allSpots 就是 store 里的数组本身，就地 sort 会绕开 set() 改写状态，
+  // DataPanel 的 dirty 比较会把「只是排了个序」误判成有未保存改动。
+  const spots = [...allSpots].sort((a, b) => Number(Boolean(b.hot)) - Number(Boolean(a.hot)));
   const favored = district ? favorites.districts.includes(district.id) : false;
   const visitedDistrict = district ? visitedDistricts.includes(district.id) : false;
   const districtVisits = district

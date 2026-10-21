@@ -141,12 +141,18 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     const mount = mountRef.current;
     if (!mount) return;
 
+    // 上画是异步的（VideoTexture / TextureLoader）：若在卸载之后才回调，
+    // 创建出的 video 与 texture 就再也进不了清理列表，变成常驻的孤儿资源。
+    let alive = true;
+
     const shown = Math.min(items.length, MAX_PHOTOS);
     const n = Math.max(shown, 1);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    // 移动端 GPU 带宽有限，像素比封顶 1.5，避免大屏手机掉帧
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, IS_MOBILE ? 2 : 1.5));
+    // 移动端 GPU 带宽有限，像素比封顶 1.5（与主场景 SceneManager 的 coarse ? 1.5 : 2 一致）。
+    // 这里曾经写反成移动端 2、桌面 1.5：手机上按 2×DPR 渲染，像素量比主场景还高，
+    // 双 WebGL 上下文并存时最先触发上下文回收；桌面画质反而被无谓压低。
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, IS_MOBILE ? 1.5 : 2));
     renderer.setSize(mount.clientWidth || 640, mount.clientHeight || 420);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     // ACES 色调映射：纯色 MeshBasic 的画面加一层电影感对比——
@@ -401,6 +407,7 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       if (mediaKind === 'video' && item.photo) {
         void usePhotoLib.getState().photoUrl(item.photo).then((url) => {
             if (!url) return;
+            if (!alive) return; // 已卸载：别再建解码中的 video
             const video = document.createElement('video');
             video.src = url;
             video.muted = true;
@@ -426,6 +433,11 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
           loader.load(
             url,
             (tex) => {
+              if (!alive) {
+                // 已卸载：这张纹理永远不会进清理列表，就地释放
+                tex.dispose();
+                return;
+              }
               tex.colorSpace = THREE.SRGBColorSpace;
               tex.anisotropy = 4;
               planeMat.map = tex;
@@ -596,6 +608,7 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     raf = requestAnimationFrame(tick);
 
     return () => {
+      alive = false;
       cancelAnimationFrame(raf);
       ro.disconnect();
       delete (window as unknown as Record<string, unknown>).__hall3d;
@@ -613,6 +626,9 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       scene.traverse((o) => {
         const mesh = o as THREE.Mesh;
         if (mesh.geometry) mesh.geometry.dispose();
+        const mat = mesh.material as THREE.Material | THREE.Material[] | undefined;
+        if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
+        else if (mat) mat.dispose();
       });
       // 显式释放 WebGL 上下文，避免与主场景争用导致回退后主上下文丢失而白屏
       renderer.dispose();

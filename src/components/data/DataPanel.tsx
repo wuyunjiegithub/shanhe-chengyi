@@ -206,7 +206,13 @@ export function DataPanel() {
       updatedAt: today(),
     }));
     const cleaned = { ...normalizeDistrict(draft, cleanedSpots), updatedAt: today() };
-    await useData.getState().applyDistrictEdits(cleaned, cleanedSpots);
+    try {
+      await useData.getState().applyDistrictEdits(cleaned, cleanedSpots);
+    } catch (e) {
+      // 写入失败（localStorage 配额不足等）必须让界面停下来报告，不能假装保存成功
+      toast(e instanceof Error ? `保存失败：${e.message}` : '保存失败，内容未改动');
+      return false;
+    }
     setDraft(clone(cleaned));
     setDraftSpots(clone(cleanedSpots));
     setSavedAt(new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }));

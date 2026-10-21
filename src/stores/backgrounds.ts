@@ -82,6 +82,10 @@ export const useBackgrounds = create<BgState>((set, get) => ({
     const prev = get().ids[key];
     const ids = { ...get().ids, [key]: id };
     writeMap(ids);
+    // imageUrl() 返回的 object URL 由调用方负责回收：换图时必须先 revoke 掉旧的那条，
+    // 否则每换一次背景就泄漏一个 URL，它指向的整张原图字节（上限 12MB）都无法被 GC。
+    const prevUrl = get().urls[key];
+    if (prevUrl) URL.revokeObjectURL(prevUrl);
     set({ ids, urls: { ...get().urls, [key]: url } });
     if (prev) void deleteImage(prev).catch(() => undefined);
   },
@@ -92,6 +96,7 @@ export const useBackgrounds = create<BgState>((set, get) => ({
     const ids = { ...get().ids };
     delete ids[key];
     const urls = { ...get().urls };
+    if (urls[key]) URL.revokeObjectURL(urls[key]);
     delete urls[key];
     writeMap(ids);
     set({ ids, urls });

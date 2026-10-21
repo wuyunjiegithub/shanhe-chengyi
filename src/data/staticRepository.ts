@@ -135,8 +135,17 @@ export const staticRepository: SandboxRepository = {
     return { districts: [], spots: [], cities: [] };
   },
 
-  async saveFavorites(f: Favorites): Promise<void> {
-    localStorage.setItem(FAV_KEY, JSON.stringify(f));
+  /**
+   * 返回是否落盘成功。localStorage 会因配额不足抛异常（其余 write 都做了 try/catch，
+   * 唯独这里没有），静默吞掉的话用户会看到「已收藏」但刷新后收藏消失。
+   */
+  async saveFavorites(f: Favorites): Promise<boolean> {
+    try {
+      localStorage.setItem(FAV_KEY, JSON.stringify(f));
+      return true;
+    } catch {
+      return false;
+    }
   },
 
   async fetchWeather(districtId: string, lat: number, lng: number): Promise<WeatherCache> {
