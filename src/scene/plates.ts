@@ -43,6 +43,33 @@ export const CAP_MATERIAL_INDEX = 0;
  */
 const EDGE_LIFT = 0.02;
 
+/**
+ * 顶盖「磨砂」法线噪声。
+ * 板块顶面是纯平面，PBR 高光没有起伏可依附，看起来就是一块平涂色卡。
+ * 叠一张极细的随机法线后，表面会浮起细密的光泽变化（像磨砂金属/拉丝玻璃）；
+ * normalScale 压得很小，只求质感，不破坏区县色块的辨识度。
+ */
+const MIST_NORMAL_TEXTURE = (() => {
+  const size = 96;
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d')!;
+  const img = ctx.createImageData(size, size);
+  for (let i = 0; i < size * size; i++) {
+    // 中性法线基准 (128,128,255)，xy 各加小幅扰动
+    img.data[i * 4] = 112 + Math.random() * 32;
+    img.data[i * 4 + 1] = 112 + Math.random() * 32;
+    img.data[i * 4 + 2] = 255;
+    img.data[i * 4 + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(0.35, 0.35);
+  return tex;
+})();
+
 /** 边界线像素宽度（Line2 支持真实像素宽度，普通 LineBasicMaterial 的 linewidth 在多数 GPU 上恒为 1px） */
 const BORDER_PX = 2.0;
 
@@ -55,13 +82,64 @@ export function createPlateMesh(
   const shape = new THREE.Shape(points.map(([x, y]) => new THREE.Vector2(x, y)));
   const geo = new THREE.ExtrudeGeometry(shape, { depth: style.height, bevelEnabled: false });
 
-  const capMaterial = new THREE.MeshStandardMaterial({
+  // 顶盖：抛光清漆面。
+  // 用 Physical 而非 Standard，是为了 clearcoat —— 底色金属负责漫反射与语义色，
+  // 上面再罩一层低粗糙度的清漆，配合 SceneManager 的环境贴图，
+  // 板块表面就会随视角流动出一道冷白高光（「有光泽」的来源）。
+  const capMaterial = new THREE.MeshPhysicalMaterial({
     color: style.capColor,
-    roughness: 0.38,
-    metalness: 0.42,
+    roughness: 0.13,
+    metalness: 0.62,
+    clearcoat: 1,
+    clearcoatRoughness: 0.06,
+    reflectivity: 0.6,
+    envMapIntensity: 1.6,
+    normalMap: MIST_NORMAL_TEXTURE,
+    normalScale: new THREE.Vector2(0.16, 0.16),
     emissive: style.glowColor,
     emissiveIntensity: style.glowIntensity,
   });
+
+  // 边缘 fresnel 冷光：板块顶盖是平面，俯视角下几乎不产生明暗渐变，
+  // 只靠环境反射很难看出「光泽」。这里让轮廓附近亮起一圈青蓝辉光，
+  // 再交给 bloom 溢出 —— 表面就有了「抛光玻璃边缘」的质感。
+  capMaterial.onBeforeCompile = (shader) => {
+    // 光带要跨板块连续，单块的 UV 做不出来，得拿世界坐标
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vWPos;')
+      .replace(
+        '#include <worldpos_vertex>',
+        `#include <worldpos_vertex>
+        vWPos = (modelMatrix * vec4(transformed, 1.0)).xyz;`,
+      );
+
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vWPos;')
+      .replace(
+        '#include <opaque_fragment>',
+        `
+        {
+          vec3 nrm = normalize(normal);
+          vec3 vdir = normalize(vViewPosition);
+
+          // ① 边缘 fresnel：轮廓亮起一圈青蓝冷光（抛光玻璃的边）
+          float rim = pow(1.0 - clamp(dot(nrm, vdir), 0.0, 1.0), 2.6);
+          outgoingLight += vec3(0.30, 0.68, 1.00) * rim * 0.45;
+
+          // ② 正对相机的高光核心：顶面朝向观察者的一半更亮，像被顶灯照着的弧面
+          float core = pow(clamp(dot(nrm, vdir), 0.0, 1.0), 3.0);
+          outgoingLight += vec3(0.55, 0.72, 0.95) * core * 0.07;
+
+          // ③ 跨板块的斜向柔光带：模拟抛光表面掠过一条灯带
+          //    强度刻意压低——手机相机更近，叠太亮会把区县色块冲成白色。
+          float band = sin(vWPos.x * 0.065 + vWPos.z * 0.02);
+          band = smoothstep(0.62, 1.0, band);
+          outgoingLight += vec3(0.50, 0.78, 1.00) * band * 0.11;
+        }
+        #include <opaque_fragment>
+        `,
+      );
+  };
   const sideMaterial = new THREE.MeshStandardMaterial({
     color: style.sideColor,
     roughness: 0.9,

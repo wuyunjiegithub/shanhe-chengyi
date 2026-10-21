@@ -191,7 +191,10 @@ export class SceneManager {
 
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(new RenderPass(this.scene, this.camera));
-    this.bloomPass = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.2, 0.5, 0.9);
+    // 泛光：原来 strength 0.2 / threshold 0.9 几乎不触发（只有接近纯白才发光），
+    // 板块顶面有了清漆高光后需要让高光溢出来才有「炫」的感觉，
+    // 但 threshold 不能太低，否则区县边界描边会糊成一团、可读性下降。
+    this.bloomPass = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.45, 0.7, 0.62);
     this.composer.addPass(this.bloomPass);
     this.composer.addPass(new OutputPass());
 
@@ -203,6 +206,7 @@ export class SceneManager {
     labelEl.style.pointerEvents = 'none';
 
     this.setupLights();
+    this.setupEnvironment();
     this.setupGround();
     this.setupStars();
     this.scene.add(
@@ -1245,6 +1249,51 @@ export class SceneManager {
     dir.shadow.camera.bottom = -s;
     dir.shadow.camera.far = 600;
     this.scene.add(dir);
+  }
+
+  /**
+   * 程序化「摄影棚」环境贴图：给板块提供可以反射的东西。
+   *
+   * 这是地图有没有光泽的关键 —— 之前只靠两盏灯，metalness 没有环境可反射，
+   * 金属度再高也只会发闷发黑，看着就是一块哑光塑料。
+   * 这里用一个暗色盒子 + 顶部冷光 + 两条斜置灯带烘成 envMap，
+   * 反射到板块的清漆面上就是随视角流动的冷白高光带。
+   */
+  private setupEnvironment(): void {
+    const envScene = new THREE.Scene();
+
+    const room = new THREE.Mesh(
+      new THREE.BoxGeometry(24, 24, 24),
+      new THREE.MeshBasicMaterial({ color: 0x0d1522, side: THREE.BackSide }),
+    );
+    envScene.add(room);
+
+    // 顶部大面积冷光：决定整体基调（偏冷暗蓝，不与深色底图打架）
+    const top = new THREE.Mesh(
+      new THREE.PlaneGeometry(20, 20),
+      new THREE.MeshBasicMaterial({ color: 0x6f9fd8 }),
+    );
+    top.position.set(0, 11.9, 0);
+    top.rotation.x = Math.PI / 2;
+    envScene.add(top);
+
+    // 两条斜置灯带：反射到清漆面上就是流动高光（「抛光感」的主要来源）
+    const stripGeo = new THREE.PlaneGeometry(22, 2.4);
+    const stripMat = new THREE.MeshBasicMaterial({ color: 0xe6f1ff });
+    const stripA = new THREE.Mesh(stripGeo, stripMat);
+    stripA.position.set(-7, 5, 7);
+    stripA.rotation.set(-Math.PI / 3, 0, Math.PI / 5);
+    envScene.add(stripA);
+
+    const stripB = new THREE.Mesh(stripGeo, stripMat);
+    stripB.position.set(8, 3.5, -7);
+    stripB.rotation.set(-Math.PI / 2.6, 0, -Math.PI / 4);
+    envScene.add(stripB);
+
+    const pmrem = new THREE.PMREMGenerator(this.renderer);
+    const rt = pmrem.fromScene(envScene, 0.03);
+    this.scene.environment = rt.texture;
+    pmrem.dispose();
   }
 
   private setupGround(): void {
