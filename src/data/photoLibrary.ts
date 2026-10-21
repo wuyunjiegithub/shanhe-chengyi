@@ -10,7 +10,11 @@
  *   照片仅在当次会话内存中可用。
  * - 支持视频（mp4 / webm / mov）与动图（gif）；「实时模式」下定时重扫目录，
  *   新放入的照片会自动出现在照片墙里。
+ *
+ * 目录的实际读写删由 photoDisk 的后端适配（浏览器 FSA / Tauri 原生文件系统）。
  */
+
+import type { PhotoDisk } from './photoDisk';
 
 const DB_NAME = 'ds-photolib';
 const DB_STORE = 'handles';
@@ -408,44 +412,19 @@ function placeHit(segs: string[], maps: NameMaps): { districtId: string | null; 
   return { districtId: null, cityId: null };
 }
 
-async function scanHandle(
-  root: FileSystemDirectoryHandle,
-  maps: NameMaps,
-  maxDepth = 4,
-): Promise<{ index: PhotoIndex; files: Map<string, File> | null }> {
-  const hits: RawHit[] = [];
-  const seen = new Set<string>();
-
-  const walk = async (dir: FileSystemDirectoryHandle, prefix: string, depth: number): Promise<void> => {
-    if (depth > maxDepth) return;
-    for await (const [name, handle] of (dir as any).entries()) {
-      if (name.startsWith('.')) continue;
-      if (handle.kind === 'file') {
-        if (!isMedia(name)) continue;
-        const path = prefix ? `${prefix}/${name}` : name;
-        if (seen.has(path)) continue;
-        seen.add(path);
-        const file = await (handle as FileSystemFileHandle).getFile();
-        hits.push({
-          path,
-          name,
-          file,
-          mtime: file.lastModified || 0,
-          ...placeHit(path.split('/'), maps),
-        });
-      } else if (handle.kind === 'directory') {
-        await walk(handle as FileSystemDirectoryHandle, prefix ? `${prefix}/${name}` : name, depth + 1);
-      }
-    }
-  };
-
-  await walk(root, '', 1);
-  const probed = await probeAll(hits);
-  // 扫描期已经拿到 File 本体，一并返回：既能当场显示，也能落进 IndexedDB，
-  // 这样刷新页面 / 目录授权失效后照片依然显示（否则只剩文件名，照片墙一片空白）。
+/**
+ * 经磁盘后端扫描整棵照片目录（FSA 句柄或 Tauri 路径，由 photoDisk 适配），
+ * 按「省 / 市 / 区县」文件夹名归属到行政区，产出索引与字节缓存。
+ */
+export async function scanDisk(disk: PhotoDisk, maps: NameMaps): Promise<ScanResult> {
+  const hits = await disk.scan();
+  const raw: RawHit[] = hits.map((h) => ({ ...h, ...placeHit(h.path.split('/'), maps) }));
+  const probed = await probeAll(raw);
+  const label = await disk.rootLabel();
+  memoryFiles.clear();
   const files = new Map<string, File>();
-  for (const h of hits) if (h.file) files.set(h.path, h.file);
-  return { index: buildIndex(root.name, true, hits, probed), files };
+  for (const h of raw) if (h.file) files.set(h.path, h.file);
+  return { index: buildIndex(label, true, raw, probed), files };
 }
 
 /** 由 <input webkitdirectory> 的文件列表建索引（会话内有效） */
@@ -525,19 +504,26 @@ function writeIndex(index: PhotoIndex | null): void {
 }
 
 /**
- * 实时模式合并：旧条目保留原顺序，新条目标记 fresh 并追加到末尾，
- * 已消失的条目剔除；fresh 标记保留至重新绑定，方便用户留意新入库的照片。
+ * 实时模式合并：旧条目保留原顺序与已探测画幅，新条目标记 fresh 追加到末尾，
+ * 已消失的条目（删除 / 外部移除）剔除。
  */
 export function mergeIndexes(prev: PhotoIndex, next: PhotoIndex): PhotoIndex {
   const byDistrict: Record<string, PhotoEntry[]> = {};
   const byCity: Record<string, PhotoEntry[]> = {};
   let total = 0;
   const mergeBucket = (a: PhotoEntry[] = [], b: PhotoEntry[] = []): PhotoEntry[] => {
-    const out: PhotoEntry[] = [];
     const indexB = new Map(b.map((e) => [e.path, e]));
+    const out: PhotoEntry[] = [];
     for (const e of a) {
-      out.push(e); // 保留原顺序与已探测画幅（含 fresh 标记）
+      const cur = indexB.get(e.path);
+      if (!cur) continue; // 已消失：剔除（删除照片后不再残留）
       indexB.delete(e.path);
+      // 保留已探测的画幅与 fresh 标记，其余以最新扫描为准
+      out.push({
+        ...cur,
+        shape: e.shape !== 'unknown' ? e.shape : cur.shape,
+        ...(e.fresh ? { fresh: true } : {}),
+      });
     }
     // 新条目（本轮新增）：追加到末尾并标记 fresh
     for (const e of b) {
@@ -659,15 +645,6 @@ export interface ScanResult {
   files: Map<string, File> | null;
 }
 
-export async function scanDirectory(handle: FileSystemDirectoryHandle, maps: NameMaps): Promise<ScanResult> {
-  const ok = await ensurePermission(handle);
-  if (!ok) throw new Error('未获得目录读取授权');
-  const result = await scanHandle(handle, maps);
-  memoryFiles.clear();
-  for (const [path, file] of result.files ?? []) memoryFiles.set(path, file);
-  return result;
-}
-
 export function scanFiles(files: FileList, maps: NameMaps): ScanResult {
   const result = scanFileList(files, maps);
   memoryFiles.clear();
@@ -730,6 +707,25 @@ export async function clearPhotoBlobCache(): Promise<void> {
       };
       tx.oncomplete = () => resolve();
       tx.onerror = () => resolve();
+    });
+    db.close();
+  } catch {
+    /* 忽略 */
+  }
+}
+
+/** 删除照片后清理对应的字节缓存，避免 IndexedDB 旧 blob 让照片墙继续显示 */
+export async function removeCachedBlobs(paths: string[]): Promise<void> {
+  if (paths.length === 0) return;
+  try {
+    const db = await openDb();
+    await new Promise<void>((resolve) => {
+      const tx = db.transaction(DB_STORE, 'readwrite');
+      const store = tx.objectStore(DB_STORE);
+      for (const p of paths) store.delete(BLOB_PREFIX + p);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+      tx.onabort = () => resolve();
     });
     db.close();
   } catch {

@@ -14,6 +14,8 @@ export default defineConfig({
     sourcemap: false,
     // 单文件产物里资源是按相对路径索引的，关掉内联小资源可避免生成额外 data: URI
     assetsInlineLimit: 4096,
+    // 不自动清空 outDir：由外部脚本清理（vite 内置的递归 rm 在部分受控环境里会被拦截）
+    emptyOutDir: false,
   },
   envPrefix: ['VITE_', 'TAURI_'],
 });

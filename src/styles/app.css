@@ -3370,6 +3370,7 @@
 .wall-play,
 .wall-bind,
 .wall-upload,
+.wall-manage-toggle,
 .wall-close {
   height: 28px;
   min-width: 28px;
@@ -3385,6 +3386,7 @@
 .wall-play:hover,
 .wall-bind:hover,
 .wall-upload:hover,
+.wall-manage-toggle:hover,
 .wall-close:hover {
   color: var(--text-1);
   border-color: var(--border-active);
@@ -3393,6 +3395,17 @@
 .wall-upload {
   color: var(--accent);
   border-color: rgba(34, 211, 238, 0.35);
+}
+
+.wall-upload:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.wall-manage-toggle.is-on {
+  color: var(--accent);
+  border-color: var(--border-active);
+  background: var(--accent-soft);
 }
 
 .wall-play.is-on {
@@ -3460,6 +3473,7 @@
 }
 
 .wall-tile-img {
+  position: relative;
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background: #0b1220;
@@ -3476,7 +3490,7 @@
   transform: scale(1.06);
 }
 
-/* 瓦片内的点击热区（瓦片本身是 div：上传项要叠一个删除钮，按钮不能嵌套按钮） */
+/* 瓦片内的点击热区（瓦片本身是 div：勾选框要叠在上面，按钮不能嵌套按钮） */
 .wall-tile-hit {
   display: flex;
   flex-direction: column;
@@ -3489,11 +3503,63 @@
   cursor: pointer;
 }
 
-/* 上传项的删除钮：常驻右上角，比相册里的 hover 显示更好点 */
-.wall-tile-del {
+/* ---- 管理模式：多选 + 批量删除（二次确认） ---- */
+.wall-manage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 22px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(34, 211, 238, 0.05);
+}
+
+.wall-manage-count {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.wall-manage-count b {
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+.wall-manage-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wall-tile.is-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent), 0 14px 34px rgba(0, 0, 0, 0.5);
+}
+
+.wall-tile.is-selected .wall-tile-img::after {
+  content: '';
   position: absolute;
-  top: 6px;
-  right: 6px;
+  inset: 0;
+  background: rgba(34, 211, 238, 0.14);
+  pointer-events: none;
+}
+
+/* 内置占位图不可删除：管理模式里置灰 */
+.wall-tile.is-locked {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.wall-tile.is-locked .wall-tile-hit {
+  cursor: default;
+}
+
+/* 勾选框：左上角圆形，点选 / 取消 */
+.wall-tile-check {
+  position: absolute;
+  top: 8px;
+  left: 8px;
   z-index: 3;
   width: 22px;
   height: 22px;
@@ -3501,20 +3567,27 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  background: rgba(8, 12, 20, 0.78);
-  color: #fff;
-  font-size: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(8, 12, 20, 0.72);
+  color: transparent;
+  font-size: 12px;
   line-height: 1;
   cursor: pointer;
-  opacity: 0.72;
   transition: all 0.15s;
 }
 
-.wall-tile-del:hover {
-  opacity: 1;
-  border-color: #ffb4ab;
-  background: rgba(147, 0, 10, 0.55);
+.wall-tile-check.is-on {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #04222b;
+}
+
+/* 删除确认态：整钮变红，明确告知不可恢复 */
+.wall-manage-actions .ghost-btn.is-danger,
+.pv-del.is-armed {
+  color: #ffb4ab;
+  border-color: rgba(255, 180, 171, 0.55);
+  background: rgba(147, 0, 10, 0.28);
 }
 
 /* 展签：画框下方的小铭牌 */

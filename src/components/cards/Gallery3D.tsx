@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { usePhotoLib } from '../../stores/photoLib';
-import { useWallUploads } from '../../stores/wallUploads';
 import type { PhotoEntry } from '../../data/photoLibrary';
 
 export interface HallItem {
@@ -11,9 +10,7 @@ export interface HallItem {
   sub?: string;
   /** 本地照片库条目（视频 / 动图 / 静态图） */
   photo?: PhotoEntry;
-  /** 手动上传条目 id（字节在 wallUploads 的 IndexedDB 里） */
-  uploadId?: string;
-  /** 媒体类型（上传条目用；照片库条目的类型在 photo.kind 里） */
+  /** 媒体类型（照片库条目的类型在 photo.kind 里；内置占位图用这个） */
   kind?: 'image' | 'video' | 'animated';
   /** 内置占位资源地址 */
   src?: string;
@@ -230,12 +227,9 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       nodes.push(node);
 
       // ---------- 异步上画 ----------
-      const mediaKind = item.photo?.kind ?? (item.uploadId ? item.kind : undefined);
-      if (mediaKind === 'video') {
-        const resolveUrl = item.photo
-          ? usePhotoLib.getState().photoUrl(item.photo)
-          : useWallUploads.getState().url(item.uploadId!);
-        void resolveUrl.then((url) => {
+      const mediaKind = item.photo?.kind ?? (item.photo ? undefined : item.kind);
+      if (mediaKind === 'video' && item.photo) {
+        void usePhotoLib.getState().photoUrl(item.photo).then((url) => {
             if (!url) return;
             const video = document.createElement('video');
             video.src = url;
@@ -275,10 +269,8 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
             () => bump(),
           );
         };
-        if (item.src && !item.photo && !item.uploadId) {
+        if (item.src && !item.photo) {
           loadImage(item.src);
-        } else if (item.uploadId) {
-          void useWallUploads.getState().url(item.uploadId).then((u) => (u ? loadImage(u) : bump()));
         } else if (item.photo) {
           void usePhotoLib.getState().photoUrl(item.photo).then((u) => (u ? loadImage(u) : bump()));
         } else {

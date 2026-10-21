@@ -15,9 +15,12 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
+tauri = { version = "2", features = ["protocol-asset"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+# 照片读写：上传 / 删除落盘到「省/市/区县」文件夹（桌面与移动端）
+tauri-plugin-fs = "2"
+tauri-plugin-dialog = "2"
 
 [features]
 # 由 tauri-build 自动打开

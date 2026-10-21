@@ -2,8 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useData } from '../../stores/data';
 import { useUi } from '../../stores/ui';
 import { usePhotoLib } from '../../stores/photoLib';
-import { useWallUploads } from '../../stores/wallUploads';
-import { classifyShape, refineShape } from '../../data/photoLibrary';
+import { refineShape } from '../../data/photoLibrary';
 import type { PhotoEntry, PhotoShape } from '../../data/photoLibrary';
 import { SmartImage } from '../shared/SmartImage';
 import { Gallery3D } from './Gallery3D';
@@ -50,9 +49,9 @@ interface WallItem {
   title: string;
   sub?: string;
   tags?: Tag[];
+  /** 本地照片库条目（照片 / 视频都在磁盘的「省/市/区县」目录里） */
   photo?: PhotoEntry;
-  /** 手动上传条目 id（字节在 wallUploads 的 IndexedDB 里） */
-  uploadId?: string;
+  /** 内置占位资源地址（不可删除） */
   src?: string;
   kind: 'image' | 'video' | 'animated';
   shape: PhotoShape;
@@ -78,19 +77,6 @@ function buildItems(scope: 'city' | 'district', id: string): WallItem[] {
   const items: WallItem[] = [];
   const data = useData.getState();
   const lib = usePhotoLib.getState();
-
-  // 手动上传的媒体排最前（最新放的优先可见），带「本机上传」展签
-  for (const u of useWallUploads.getState().forPlace(scope, id)) {
-    items.push({
-      key: `u:${u.id}`,
-      title: u.name.replace(/\.[a-z0-9]+$/i, ''),
-      sub: '本机上传',
-      uploadId: u.id,
-      kind: u.kind,
-      shape: 'unknown',
-      ...(u.mtime ? { time: u.mtime } : {}),
-    });
-  }
 
   const pushLocal = (entries: PhotoEntry[], sub: string) => {
     for (const p of entries) {
@@ -171,10 +157,6 @@ function StaticPhoto({
         if (item.photo) {
           const shape = refineShape(item.photo, img.naturalWidth, img.naturalHeight);
           if (shape !== 'unknown') onShape(item.key, shape);
-        } else if (item.uploadId) {
-          // 上传项没有可回写的库条目，直接把画幅报给筛选状态
-          const shape = classifyShape(img.naturalWidth, img.naturalHeight);
-          if (shape !== 'unknown') onShape(item.key, shape);
         }
       }}
       onError={() => setFailed(true)}
@@ -206,28 +188,17 @@ function LocalVideo({ item, autoplay }: { item: WallItem; autoplay: boolean }) {
 }
 
 /**
- * 解析一个展品的可播放地址：手动上传走 wallUploads（IndexedDB blob），
- * 本地照片走照片库（内存 File → IndexedDB 缓存 → 目录句柄），
- * 内置占位图直接用静态 src。供网格 / 舞台 / 查看器共用。
+ * 解析一个展品的可播放地址：本地照片走照片库（内存 File → IndexedDB 缓存 →
+ * 目录句柄 / Tauri 文件流），内置占位图直接用静态 src。供网格 / 舞台 / 查看器共用。
  */
 function useItemSrc(item: WallItem | null): string | null {
   const photoUrl = usePhotoLib((s) => s.photoUrl);
-  const uploadUrl = useWallUploads((s) => s.url);
-  const [src, setSrc] = useState<string | null>(item?.photo || item?.uploadId ? null : (item?.src ?? null));
+  const [src, setSrc] = useState<string | null>(item?.photo ? null : (item?.src ?? null));
 
   useEffect(() => {
     if (!item) {
       setSrc(null);
       return;
-    }
-    if (item.uploadId) {
-      let alive = true;
-      void uploadUrl(item.uploadId).then((url) => {
-        if (alive) setSrc(url);
-      });
-      return () => {
-        alive = false;
-      };
     }
     if (!item.photo) {
       setSrc(item.src ?? null);
@@ -240,7 +211,7 @@ function useItemSrc(item: WallItem | null): string | null {
     return () => {
       alive = false;
     };
-  }, [item, photoUrl, uploadUrl]);
+  }, [item, photoUrl]);
 
   return src;
 }
@@ -254,7 +225,7 @@ function WallMedia({
   onShape: (key: string, shape: PhotoShape) => void;
   autoplay?: boolean;
 }) {
-  if (item.kind === 'video' && (item.photo || item.uploadId)) {
+  if (item.kind === 'video' && item.photo) {
     return (
       <div className="wall-media wall-media--video">
         <LocalVideo item={item} autoplay={autoplay} />
@@ -272,13 +243,8 @@ function WallMedia({
           GIF
         </span>
       )}
-      {item.uploadId && (
-        <span className="wall-media-badge wall-media-badge--upload" title="在照片墙里手动上传">
-          上传
-        </span>
-      )}
       {item.photo?.fresh && (
-        <span className="wall-media-badge wall-media-badge--live" title="实时扫描新发现">
+        <span className="wall-media-badge wall-media-badge--live" title="新上传 / 实时扫描新发现">
           LIVE
         </span>
       )}
@@ -291,9 +257,8 @@ export function PhotoWall() {
   const close = useUi((s) => s.closePhotoWall);
   const showToast = useUi((s) => s.showToast);
   const libTotal = usePhotoLib((s) => s.index?.total ?? 0);
-  const uploadVersion = useWallUploads((s) => s.version);
-  const uploadAdd = useWallUploads((s) => s.add);
-  const uploadRemove = useWallUploads((s) => s.remove);
+  const uploadTo = usePhotoLib((s) => s.uploadTo);
+  const removePhotos = usePhotoLib((s) => s.removePhotos);
   const fileRef = useRef<HTMLInputElement>(null);
   const [style, setStyle] = useState<WallStyle>('gallery');
   const [active, setActive] = useState(0);
@@ -306,11 +271,17 @@ export function PhotoWall() {
   const [sort, setSort] = useState<SortState>({ key: 'default', desc: false });
   /** 渲染时回填的画幅（key → shape），用于即时筛选 */
   const [shapes, setShapes] = useState<Record<string, PhotoShape>>({});
+  /** 管理模式：多选本地照片批量删除 */
+  const [manage, setManage] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  /** 删除二次确认：第一下进入待确认态（按钮变红），第二下才真删 */
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   const allItems = useMemo(
     () => (photoWall ? buildItems(photoWall.scope, photoWall.id) : []),
-    // 照片库数量 / 手动上传变化时重建（绑定/解绑/上传/删除）
-    [photoWall, libTotal, uploadVersion],
+    // 照片库数量变化时重建（绑定 / 解绑 / 上传 / 删除）
+    [photoWall, libTotal],
   );
 
   useEffect(() => {
@@ -323,6 +294,9 @@ export function PhotoWall() {
     setShapeFilter('all');
     setSort({ key: 'default', desc: false });
     setShapes({});
+    setManage(false);
+    setSelected(new Set());
+    setConfirmDelete(false);
   }, [photoWall]);
 
   const onShape = useCallback((key: string, shape: PhotoShape) => {
@@ -370,25 +344,66 @@ export function PhotoWall() {
 
   const closeViewer = useCallback(() => setViewer(false), []);
 
-  /** 批量上传：把选中的文件归入当前范围（城市 / 区县） */
+  /** 批量上传：把选中的文件写进「省/市/区县」文件夹并入库 */
   const onUploadFiles = useCallback(
     async (files: FileList | null) => {
       if (!files || files.length === 0 || !photoWall) return;
-      const r = await uploadAdd(photoWall.scope, photoWall.id, Array.from(files));
-      if (r.added > 0) showToast(`已上传 ${r.added} 个媒体到「${photoWall.title.replace(' · 照片墙', '')}」`);
-      if (r.skipped > 0) showToast(`${r.skipped} 个文件被跳过（格式不支持或超出大小上限）`);
+      setBusy(true);
+      try {
+        const r = await uploadTo(photoWall.scope, photoWall.id, Array.from(files));
+        if (r.added > 0) {
+          showToast(`已上传 ${r.added} 个到「${r.dir ?? photoWall.title}」`);
+        }
+        if (r.skipped > 0) showToast(`${r.skipped} 个文件被跳过（格式不支持或写入失败）`);
+        if (r.error && r.added === 0) showToast(r.error);
+      } finally {
+        setBusy(false);
+      }
     },
-    [photoWall, uploadAdd, showToast],
+    [photoWall, uploadTo, showToast],
   );
 
-  /** 删除一个手动上传（网格 × 与查看器内删除共用） */
-  const onDeleteUpload = useCallback(
-    async (id: string) => {
-      await uploadRemove(id);
-      showToast('已删除该上传');
-    },
-    [uploadRemove, showToast],
-  );
+  /** 管理模式：进入 / 退出 */
+  const toggleManage = useCallback(() => {
+    setManage((m) => {
+      if (m) {
+        setSelected(new Set());
+        setConfirmDelete(false);
+      }
+      return !m;
+    });
+  }, []);
+
+  /** 勾选 / 取消一个本地照片（内置占位图没有 photo，不可选） */
+  const toggleSelect = useCallback((key: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+    setConfirmDelete(false);
+  }, []);
+
+  /** 批量删除：第一下进入待确认，第二下（5 秒内）才执行；删的是磁盘真实文件 */
+  const onBatchDelete = useCallback(() => {
+    if (busy || selected.size === 0) return;
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      window.setTimeout(() => setConfirmDelete(false), 5000);
+      return;
+    }
+    const paths = items.filter((it) => selected.has(it.key) && it.photo).map((it) => it.photo!.path);
+    setBusy(true);
+    void (async () => {
+      const r = await removePhotos(paths);
+      setBusy(false);
+      setConfirmDelete(false);
+      setSelected(new Set());
+      if (r.error) showToast(r.error);
+      else showToast(`已删除 ${r.removed} 个文件（磁盘照片已移除，不可恢复）`);
+    })();
+  }, [busy, confirmDelete, selected, items, removePhotos, showToast]);
 
   /** 查看器内上 / 下一张（同时同步展厅高亮） */
   const step = useCallback(
@@ -468,7 +483,6 @@ export function PhotoWall() {
         kind: it.kind,
         ...(it.sub ? { sub: it.sub } : {}),
         ...(it.photo ? { photo: it.photo } : {}),
-        ...(it.uploadId ? { uploadId: it.uploadId } : {}),
         ...(it.src ? { src: it.src } : {}),
       })),
     [items],
@@ -516,9 +530,10 @@ export function PhotoWall() {
               type="button"
               className="wall-upload"
               onClick={() => fileRef.current?.click()}
-              title="批量上传图片 / 视频到这个范围（照片不在绑定目录里也能先传上来看）"
+              disabled={busy}
+              title="批量上传图片 / 视频：写入照片根目录下的「省/市/区县」文件夹（如 浙江省/杭州市/淳安县）"
             >
-              ＋ 上传
+              {busy ? '上传中…' : '＋ 上传'}
             </button>
             <input
               ref={fileRef}
@@ -531,6 +546,14 @@ export function PhotoWall() {
                 e.target.value = '';
               }}
             />
+            <button
+              type="button"
+              className={`wall-manage-toggle${manage ? ' is-on' : ''}`}
+              onClick={toggleManage}
+              title={manage ? '退出管理模式' : '管理模式：多选照片批量删除（删除的是磁盘文件）'}
+            >
+              {manage ? '完成' : '管理'}
+            </button>
             {autoOk && items.length > 1 && (
               <button
                 className={`wall-play${playing ? ' is-on' : ''}`}
@@ -604,7 +627,8 @@ export function PhotoWall() {
           <div className="wall-empty">
             <p>{allItems.length > 0 ? '这个筛选下暂时没有照片。' : '这个范围还没有照片。'}</p>
             <p className="wall-empty-hint">
-              可在「设置 → 照片库」绑定本地目录，或点右上角「＋ 上传」直接把照片 / 视频传进来。
+              点右上角「＋ 上传」会把照片 / 视频写进照片根目录下的「省 / 市 / 区县」文件夹
+              （如 浙江省/杭州市/淳安县），也可在「设置 → 照片库」绑定本地目录。
             </p>
           </div>
         ) : (
@@ -630,56 +654,108 @@ export function PhotoWall() {
             ) : (
               <>
                 {style === 'gallery' && (
-                  <div className="wall-gallery">
-                    {items.map((it, i) => (
-                      <div
-                        key={it.key}
-                        className={`wall-tile${i === active ? ' is-active' : ''}`}
-                        onClick={(e) => {
-                          // 删除钮自己处理点击，不冒泡到「打开查看器」
-                          if ((e.target as HTMLElement).closest('.wall-tile-del')) return;
-                          openViewer(i);
-                        }}
-                      >
-                        <button
-                          type="button"
-                          className="wall-tile-hit"
-                          title={`${it.title}${it.sub ? ` · ${it.sub}` : ''}（点击放大细看）`}
-                        >
-                          <div className="wall-tile-img">
-                            <WallMedia item={it} onShape={onShape} />
-                          </div>
-                          <span className="wall-tile-plaque">
-                            <b>{it.title}</b>
-                            {it.sub && <i>{it.sub}</i>}
-                            {sort.key === 'time' && it.time && (
-                              <i className="wall-tile-date">{fmtTime(it.time)}</i>
-                            )}
-                          </span>
-                        </button>
-                        {it.uploadId && (
-                          <span
-                            className="wall-tile-del"
-                            role="button"
-                            tabIndex={0}
-                            title="删除这个上传"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              void onDeleteUpload(it.uploadId!);
-                            }}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === ' ') {
-                                e.stopPropagation();
-                                void onDeleteUpload(it.uploadId!);
-                              }
+                  <>
+                    {manage && (
+                      <div className="wall-manage">
+                        <span className="wall-manage-count">
+                          已选 <b>{selected.size}</b> / {items.filter((it) => it.photo).length} 张本地照片
+                        </span>
+                        <div className="wall-manage-actions">
+                          <button
+                            type="button"
+                            className="ghost-btn"
+                            onClick={() => {
+                              const keys = items.filter((it) => it.photo).map((it) => it.key);
+                              setSelected((prev) =>
+                                prev.size >= keys.length ? new Set() : new Set(keys),
+                              );
+                              setConfirmDelete(false);
                             }}
                           >
-                            ×
-                          </span>
-                        )}
+                            {selected.size >= items.filter((it) => it.photo).length ? '取消全选' : '全选'}
+                          </button>
+                          <button
+                            type="button"
+                            className={`ghost-btn${confirmDelete ? ' is-danger' : ''}`}
+                            disabled={selected.size === 0 || busy}
+                            onClick={onBatchDelete}
+                            title="删除所选照片对应的磁盘文件，不可恢复"
+                          >
+                            {confirmDelete
+                              ? `再点一次确认删除 ${selected.size} 个文件（不可恢复）`
+                              : `删除所选${selected.size > 0 ? `（${selected.size}）` : ''}`}
+                          </button>
+                          <button type="button" className="ghost-btn" onClick={toggleManage}>
+                            退出管理
+                          </button>
+                        </div>
                       </div>
-                    ))}
-                  </div>
+                    )}
+                    <div className="wall-gallery">
+                      {items.map((it, i) => {
+                        const selectable = Boolean(it.photo);
+                        const checked = selected.has(it.key);
+                        return (
+                          <div
+                            key={it.key}
+                            className={`wall-tile${i === active ? ' is-active' : ''}${checked ? ' is-selected' : ''}${manage && !selectable ? ' is-locked' : ''}`}
+                            onClick={() => {
+                              if (manage) {
+                                if (!selectable) return;
+                                toggleSelect(it.key);
+                                return;
+                              }
+                              openViewer(i);
+                            }}
+                          >
+                            <button
+                              type="button"
+                              className="wall-tile-hit"
+                              title={
+                                manage
+                                  ? selectable
+                                    ? `${it.title}（点击${checked ? '取消勾选' : '勾选'}）`
+                                    : `${it.title} · 内置图片，不可删除`
+                                  : `${it.title}${it.sub ? ` · ${it.sub}` : ''}（点击放大细看）`
+                              }
+                            >
+                              <div className="wall-tile-img">
+                                <WallMedia item={it} onShape={onShape} />
+                              </div>
+                              <span className="wall-tile-plaque">
+                                <b>{it.title}</b>
+                                {it.sub && <i>{it.sub}</i>}
+                                {sort.key === 'time' && it.time && (
+                                  <i className="wall-tile-date">{fmtTime(it.time)}</i>
+                                )}
+                              </span>
+                            </button>
+                            {manage && selectable && (
+                              <span
+                                className={`wall-tile-check${checked ? ' is-on' : ''}`}
+                                role="checkbox"
+                                aria-checked={checked}
+                                tabIndex={0}
+                                title={checked ? '取消勾选' : '勾选删除'}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleSelect(it.key);
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                    e.stopPropagation();
+                                    toggleSelect(it.key);
+                                  }
+                                }}
+                              >
+                                ✓
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
                 )}
 
                 {(style === 'corridor' || style === 'lightbox') && current && (
@@ -758,10 +834,15 @@ export function PhotoWall() {
             onPrev={items.length > 1 ? () => step(-1) : undefined}
             onNext={items.length > 1 ? () => step(1) : undefined}
             onDelete={
-              viewerItem.uploadId
+              viewerItem.photo
                 ? () => {
-                    void onDeleteUpload(viewerItem.uploadId!);
-                    closeViewer();
+                    const path = viewerItem.photo!.path;
+                    void (async () => {
+                      const r = await removePhotos([path]);
+                      closeViewer();
+                      if (r.error) showToast(r.error);
+                      else showToast('已删除该文件（磁盘照片已移除，不可恢复）');
+                    })();
                   }
                 : undefined
             }

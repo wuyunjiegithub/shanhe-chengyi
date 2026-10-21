@@ -6,23 +6,34 @@ import {
   clearPhotoBlobCache,
   clearPhotoUrlCache,
   getStoredHandle,
-  isDirectoryPickerSupported,
   mergeIndexes,
   persistIndex,
   photoUrl as resolvePhotoUrl,
-  putHandle,
   readIndex,
+  removeCachedBlobs,
   removeStoredHandle,
-  scanDirectory,
+  scanDisk,
   scanFiles,
 } from '../data/photoLibrary';
 import type { PhotoEntry, PhotoIndex } from '../data/photoLibrary';
+import { getDisk, isMediaName } from '../data/photoDisk';
+import type { DiskKind } from '../data/photoDisk';
 
 export type PhotoLibStatus = 'unbound' | 'bound' | 'denied' | 'unsupported' | 'error';
 
 /** 实时模式：定时重扫绑定目录，新照片自动进照片墙 */
 const LIVE_KEY = 'ds.photoLib.live.v1';
 const LIVE_INTERVAL_MS = 20_000;
+
+/** 上传 / 删除结果 */
+export interface UploadResult {
+  added: number;
+  skipped: number;
+  /** 失败或取消时的原因（展示给用户） */
+  error?: string;
+  /** 实际写入的目录（相对根目录，如 浙江省/杭州市/淳安县） */
+  dir?: string;
+}
 
 function readLive(): boolean {
   try {
@@ -41,6 +52,36 @@ function writeLive(on: boolean): void {
   }
 }
 
+function message(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
+/** 路径片段清洗：去掉 Windows / Unix 不允许的字符，防空目录名 */
+function sanitizeSeg(s: string): string {
+  const cleaned = String(s)
+    .replace(/[\\/:*?"<>|\u0000-\u001f]/g, '')
+    .trim()
+    .replace(/^\.+/, '');
+  return cleaned || '未分类';
+}
+
+/**
+ * 地点 → 「省/市/区县」相对目录。
+ * 区县：浙江省/杭州市/淳安县；城市：浙江省/杭州市。
+ */
+export function placeDirFor(scope: 'city' | 'district', id: string): string | null {
+  const { districts, cities } = useData.getState();
+  if (scope === 'district') {
+    const d = districts[id];
+    if (!d) return null;
+    const city = cities.find((c) => c.id === d.city);
+    return [d.province, city?.name ?? d.city, d.name].map(sanitizeSeg).join('/');
+  }
+  const c = cities.find((x) => x.id === id);
+  if (!c) return null;
+  return [c.province, c.name].map(sanitizeSeg).join('/');
+}
+
 interface PhotoLibState {
   status: PhotoLibStatus;
   index: PhotoIndex | null;
@@ -49,14 +90,20 @@ interface PhotoLibState {
   live: boolean;
   /** 最近一次实时扫描是否带回了新照片 */
   lastLiveAdded: number;
+  /** 当前磁盘后端：fsa（浏览器）/ tauri（套壳）/ none */
+  diskKind: DiskKind;
   restore: () => Promise<void>;
-  /** 选择本地目录并扫描（File System Access API） */
+  /** 选择本地照片根目录并扫描（换绑也走这里） */
   bind: () => Promise<void>;
   /** 退化路径：由 <input webkitdirectory> 提供文件列表 */
   bindFiles: (files: FileList) => Promise<void>;
   unbind: () => Promise<void>;
   rescan: () => Promise<void>;
   toggleLive: () => Promise<void>;
+  /** 上传照片 / 视频到「省/市/区县」文件夹并入库 */
+  uploadTo: (scope: 'city' | 'district', id: string, files: File[]) => Promise<UploadResult>;
+  /** 删除本地照片（磁盘真实文件），返回删除数 */
+  removePhotos: (paths: string[]) => Promise<{ removed: number; error?: string }>;
   photosFor: (scope: 'city' | 'district', id: string) => PhotoEntry[];
   photoUrl: (entry: PhotoEntry) => Promise<string | null>;
 }
@@ -127,27 +174,54 @@ function startLiveTimer(get: () => PhotoLibState): void {
   }, LIVE_INTERVAL_MS);
 }
 
+/** 扫描磁盘后端并把结果落库（供 bind / rescan / 上传后刷新共用） */
+async function scanAndApply(
+  disk: ReturnType<typeof getDisk>,
+  set: (partial: Partial<PhotoLibState>) => void,
+): Promise<void> {
+  const result = await scanDisk(disk, mapsFromContent());
+  clearPhotoUrlCache();
+  void cachePhotoFiles(result.files);
+  applyIndex(result.index);
+  set({ index: result.index, status: 'bound', error: null, lastLiveAdded: 0 });
+}
+
 export const usePhotoLib = create<PhotoLibState>((set, get) => ({
   status: 'unbound',
   index: null,
   error: null,
   live: readLive(),
   lastLiveAdded: 0,
+  diskKind: 'none',
 
   restore: async () => {
-    if (!isDirectoryPickerSupported()) {
-      // 仍可用 input 退化路径；状态保持 unbound，直到用户选择目录
-      const idx = readIndex();
-      if (idx) set({ index: idx, status: 'bound' });
-      return;
-    }
+    const disk = getDisk();
+    set({ diskKind: disk.kind });
     const idx = readIndex();
     if (idx) set({ index: idx, status: 'bound' });
+
+    if (disk.kind === 'tauri') {
+      // 记住过根目录：静默重扫恢复现场；没记住则等用户在设置里选
+      if (await disk.hasRoot()) {
+        try {
+          await scanAndApply(disk, set);
+        } catch (err) {
+          set({ status: get().index ? 'bound' : 'unbound', error: message(err) });
+        }
+      }
+      if (get().live && get().status === 'bound') startLiveTimer(get);
+      return;
+    }
+
+    if (disk.kind === 'none') return; // 仍可用 input 退化路径；等用户主动导入
+
+    // FSA：有索引先秒开，再校验句柄权限（有句柄时静默校验，不打断启动）
     const handle = await getStoredHandle();
     if (!handle) return;
     try {
-      const ok = await (handle as unknown as { queryPermission: (o: { mode: string }) => Promise<PermissionState> })
-        .queryPermission({ mode: 'read' });
+      const ok = await (
+        handle as unknown as { queryPermission: (o: { mode: string }) => Promise<PermissionState> }
+      ).queryPermission({ mode: 'read' });
       // granted 之外（prompt / denied）都不打扰用户，点照片时再申请
       if (ok === 'granted') return;
       set({ status: 'bound' });
@@ -159,21 +233,25 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => ({
   },
 
   bind: async () => {
-    if (!isDirectoryPickerSupported()) {
-      set({ status: 'unsupported', error: '当前浏览器不支持选择目录，请改用下方「选择文件夹」按钮' });
+    const disk = getDisk();
+    set({ diskKind: disk.kind });
+
+    if (disk.kind === 'none') {
+      set({ status: 'unsupported', error: '当前环境不支持选择目录，请改用下方「选择文件夹」按钮' });
       return;
     }
+
     try {
-      const handle = await window.showDirectoryPicker!({ mode: 'read' });
-      const { index, files } = await scanDirectory(handle, mapsFromContent());
-      await putHandle(handle); // 句柄入 IndexedDB，刷新后免重新选择
-      clearPhotoUrlCache();
-      void cachePhotoFiles(files); // 图片字节入 IndexedDB，句柄失效后也能显示
-      applyIndex(index);
-      set({ index, status: 'bound', error: null, lastLiveAdded: 0 });
+      // 总是弹出选择框：首次绑定与「更换根目录」共用这一入口
+      const ok = await disk.repickRoot();
+      if (!ok) {
+        set({ status: get().index ? 'bound' : 'unbound' });
+        return;
+      }
+      await scanAndApply(disk, set);
       if (get().live) startLiveTimer(get);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
+      const msg = message(err);
       if (/abort/i.test(msg)) {
         set({ status: get().index ? 'bound' : 'unbound' });
         return;
@@ -203,26 +281,41 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => ({
 
   unbind: async () => {
     stopLiveTimer();
+    const disk = getDisk();
     await removeStoredHandle();
     clearPhotoUrlCache();
     await clearPhotoBlobCache();
     persistIndex(null);
-    set({ index: null, status: 'unbound', error: null, lastLiveAdded: 0 });
+    set({
+      index: null,
+      status: 'unbound',
+      error: null,
+      lastLiveAdded: 0,
+      diskKind: disk.kind,
+    });
   },
 
   rescan: async () => {
-    const handle = await getStoredHandle();
-    if (!handle) {
-      set({ status: 'unbound', error: '目录句柄已失效，请重新绑定' });
+    const disk = getDisk();
+    set({ diskKind: disk.kind });
+    if (disk.kind === 'none') {
+      set({ status: 'unbound', error: '当前环境不支持访问本地目录' });
+      return;
+    }
+    if (!(await disk.hasRoot())) {
+      set({
+        status: 'unbound',
+        error: disk.kind === 'fsa' ? '目录句柄已失效，请重新绑定' : '尚未选择照片目录',
+      });
       return;
     }
     try {
-      const { index: next, files: nextFiles } = await scanDirectory(handle, mapsFromContent());
+      const next = await scanDisk(disk, mapsFromContent());
       clearPhotoUrlCache();
-      void cachePhotoFiles(nextFiles);
-      // 实时模式下做增量合并：保留旧顺序，只把新照片标出来
+      void cachePhotoFiles(next.files);
+      // 实时模式 / 上传后刷新都走增量合并：保留旧顺序，只把新照片标出来，剔除已删除的
       const prev = get().index;
-      const merged = prev && prev.persistent ? mergeIndexes(prev, next) : next;
+      const merged = prev && prev.persistent ? mergeIndexes(prev, next.index) : next.index;
       applyIndex(merged);
       const added = merged.total - (prev?.total ?? 0);
       set({
@@ -232,7 +325,11 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => ({
         lastLiveAdded: added > 0 ? added : 0,
       });
     } catch (err) {
-      set({ status: 'error', error: err instanceof Error ? err.message : String(err) });
+      const msg = message(err);
+      set({
+        status: 'error',
+        error: /permission|authoriz|not allowed|security/i.test(msg) ? '目录授权已失效，请重新绑定' : msg,
+      });
     }
   },
 
@@ -248,6 +345,69 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => ({
     }
   },
 
+  uploadTo: async (scope, id, files) => {
+    const disk = getDisk();
+    set({ diskKind: disk.kind });
+    if (disk.kind === 'none') {
+      return {
+        added: 0,
+        skipped: files.length,
+        error: '当前环境不支持写入本地文件夹；可先用「设置 → 照片库 → 选择文件夹」一次性导入',
+      };
+    }
+    const relDir = placeDirFor(scope, id);
+    if (!relDir) return { added: 0, skipped: files.length, error: '找不到对应的城市 / 区县' };
+
+    const media = files.filter((f) => isMediaName(f.name));
+    const skipped = files.length - media.length;
+    if (media.length === 0) {
+      return {
+        added: 0,
+        skipped,
+        error: skipped > 0 ? '没有受支持的图片或视频（jpg / png / webp / gif / mp4 / webm / mov）' : undefined,
+      };
+    }
+
+    try {
+      const ready = await disk.ensureRoot();
+      if (!ready) return { added: 0, skipped: files.length, error: '未选择照片文件夹，已取消上传' };
+      const written = await disk.writeFiles(relDir, media);
+      // 写盘成功后增量重扫：新照片以「本地照片」身份入库（带 LIVE 标记）
+      await get().rescan();
+      return {
+        added: written.length,
+        skipped: skipped + (media.length - written.length),
+        dir: relDir,
+      };
+    } catch (err) {
+      const msg = message(err);
+      if (/write|permission|not allowed|security|NEED_WRITE/i.test(msg)) {
+        return {
+          added: 0,
+          skipped: files.length,
+          error: '没有照片目录的写入权限：请到「设置 → 照片库」重新选择根目录（允许修改）',
+        };
+      }
+      return { added: 0, skipped: files.length, error: msg };
+    }
+  },
+
+  removePhotos: async (paths) => {
+    const disk = getDisk();
+    if (disk.kind === 'none') {
+      return { removed: 0, error: '当前环境不支持删除本地文件' };
+    }
+    if (paths.length === 0) return { removed: 0 };
+    try {
+      const removed = await disk.deleteFiles(paths);
+      await removeCachedBlobs(paths);
+      await get().rescan(); // 重扫后已删条目即从索引消失
+      return { removed };
+    } catch (err) {
+      return { removed: 0, error: message(err) };
+    }
+  },
+
   photosFor: (scope, id) => {
     const idx = get().index;
     if (!idx) return [];
@@ -255,5 +415,13 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => ({
     return list ?? [];
   },
 
-  photoUrl: (entry) => resolvePhotoUrl(entry),
+  photoUrl: async (entry) => {
+    const disk = getDisk();
+    if (disk.kind === 'tauri') {
+      // 套壳内文件系统路径可直接转成媒体流，省去读字节
+      const direct = disk.directUrl(entry.path);
+      if (direct) return direct;
+    }
+    return resolvePhotoUrl(entry);
+  },
 }));

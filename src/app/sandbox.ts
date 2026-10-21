@@ -10,7 +10,6 @@ import { useUi } from '../stores/ui';
 import { useWeather } from '../stores/weather';
 import { useCityStatus } from '../stores/cityStatus';
 import { usePhotoLib } from '../stores/photoLib';
-import { useWallUploads } from '../stores/wallUploads';
 
 let manager: SceneManager | null = null;
 let projection: Projection | null = null;
@@ -29,11 +28,8 @@ export async function initSandbox(container: HTMLElement): Promise<void> {
   const favorites = await staticRepository.loadFavorites();
   useUi.getState().hydrateFavorites(favorites);
 
-  // 本地照片库：内容就绪后恢复索引（有句柄时静默校验权限，不打断启动）
+  // 本地照片库：内容就绪后恢复索引（Tauri 记住的根目录会直接重扫；FSA 有句柄时静默校验权限）
   void usePhotoLib.getState().restore();
-
-  // 照片墙手动上传的媒体：从 IndexedDB 恢复清单
-  void useWallUploads.getState().restore();
 
   // 标记（去过 / 收藏）变化时即时刷新场景中的旗子与光点
   useUi.subscribe((s, prev) => {

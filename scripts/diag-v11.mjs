@@ -151,59 +151,9 @@ check('2e 游记图片字节入库 IndexedDB', imgCount >= 2, `count=${imgCount}
 
 await page.click('.note-editor-head .icon-btn'); // 关闭游记面板
 
-/* ---------- 3. 照片墙批量上传 ---------- */
-await page.click('.photo-wall-trigger');
-await page.waitForSelector('.wall-backdrop', { timeout: 5000 });
-await page.waitForTimeout(600);
-
-const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'wallup-'));
-const files = [
-  { name: '上传-甲.jpg', mimeType: 'image/jpeg', buffer: makePng(300, 200, [30, 90, 200]) },
-  { name: '上传-乙.png', mimeType: 'image/png', buffer: makePng(200, 300, [200, 90, 30]) },
-];
-await page.setInputFiles('.wall-head-actions input[type=file]', files);
-await page.waitForTimeout(900);
-const badges = await page.locator('.wall-media-badge--upload').count();
-const tiles = await page.locator('.wall-tile').count();
-// 淳安县墙 = 2 个上传 + 3 张预置本地照片
-check('3a 批量上传 2 个媒体并上墙', badges === 2 && tiles === 5, `badges=${badges} tiles=${tiles}`);
-const upCount = await page.evaluate(
-  () =>
-    new Promise((resolve) => {
-      const req = indexedDB.open('ds-wall-uploads', 1);
-      req.onsuccess = () => {
-        const r = req.result.transaction('media', 'readonly').objectStore('media').count();
-        r.onsuccess = () => resolve(r.result);
-        r.onerror = () => resolve(-1);
-      };
-      req.onerror = () => resolve(-1);
-    }),
-);
-check('3b 上传字节入库 ds-wall-uploads', upCount === 2, `count=${upCount}`);
-await page.screenshot({ path: `${OUT}/diag-v11-wall-upload.png` });
-
-// 刷新后仍在上传列表里（restore）
-await page.reload({ waitUntil: 'networkidle' });
-await page.waitForTimeout(2600);
-await page.evaluate(() => window.__sandboxApp.selectDistrictById('330127'));
-await page.waitForTimeout(1200);
-await page.click('.photo-wall-trigger');
-await page.waitForSelector('.wall-backdrop', { timeout: 5000 });
-await page.waitForFunction(
-  () => document.querySelectorAll('.wall-media-badge--upload').length >= 2,
-  { timeout: 15000 },
-);
-const restored = await page.locator('.wall-media-badge--upload').count();
-const tilesAfter = await page.locator('.wall-tile').count();
-check('3c 刷新后上传项仍在照片墙（restore）', restored === 2, `badges=${restored} tiles=${tilesAfter}`);
-
-// 删除一个上传
-await page.locator('.wall-tile-del').first().click();
-await page.waitForTimeout(700);
-const afterDel = await page.locator('.wall-media-badge--upload').count();
-check('3d 网格内可删除上传项', afterDel === 1, `剩 ${afterDel}`);
-await page.click('.wall-close');
-await page.waitForTimeout(300);
+/* ---------- 3. 照片墙上传 / 删除 ---------- */
+/* v1.2 起上传改为直接写入磁盘「省/市/区县」文件夹（不再有 IndexedDB 隐藏存储），
+   删除也改为两段式确认 + 批量管理。这一整块由 scripts/diag-v12.mjs 覆盖。 */
 
 /* ---------- 4. 移动端弹框全屏 ---------- */
 const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
@@ -284,7 +234,6 @@ let fs6 = await fullscreenOf('.leaf-card');
 check('4f 景点卡片全屏', fs6 && fs6.w === 390 && fs6.h === 844 && fs6.radius === '0px', JSON.stringify(fs6));
 await mobile.screenshot({ path: `${OUT}/diag-v11-mobile-leaf.png` });
 
-fs.rmSync(tmp, { recursive: true, force: true });
 await browser.close();
 
 const failed = results.filter((r) => !r.ok);

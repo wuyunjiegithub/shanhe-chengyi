@@ -1,10 +1,10 @@
-import { useMemo, useRef, useState } from 'react';
-import { useData } from '../../stores/data';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useUi } from '../../stores/ui';
 import { usePhotoLib } from '../../stores/photoLib';
-import { useWallUploads } from '../../stores/wallUploads';
 import { isDirectoryPickerSupported } from '../../data/photoLibrary';
 import type { PhotoEntry } from '../../data/photoLibrary';
+import { clearLegacyUploads, readLegacyUploads } from '../../data/legacyUploads';
+import type { LegacyUpload } from '../../data/legacyUploads';
 
 const TREE = `照片根目录/
 ├─ 浙江省/
@@ -36,33 +36,47 @@ function Panel({ onClose }: { onClose: () => void }) {
   const rescan = usePhotoLib((s) => s.rescan);
   const live = usePhotoLib((s) => s.live);
   const toggleLive = usePhotoLib((s) => s.toggleLive);
-  const uploads = useWallUploads((s) => s.entries);
-  const uploadRemove = useWallUploads((s) => s.remove);
+  const diskKind = usePhotoLib((s) => s.diskKind);
+  const uploadTo = usePhotoLib((s) => s.uploadTo);
   const showToast = useUi((s) => s.showToast);
-  const districts = useData((s) => s.districts);
-  const cities = useData((s) => s.cities);
   const fileRef = useRef<HTMLInputElement>(null);
   const [confirmUnbind, setConfirmUnbind] = useState(false);
+  /** 旧版藏在 IndexedDB 里的上传（v1.1 起改为写磁盘文件夹） */
+  const [legacy, setLegacy] = useState<LegacyUpload[] | null>(null);
+  const [migrating, setMigrating] = useState(false);
 
-  const placeName = (scope: 'city' | 'district', id: string): string => {
-    if (scope === 'district') return districts[id]?.name ?? id;
-    return cities.find((c) => c.id === id)?.name ?? id;
-  };
+  // 打开设置时探一次旧库；没有旧数据就什么都不显示
+  useEffect(() => {
+    let alive = true;
+    void readLegacyUploads().then((list) => {
+      if (alive) setLegacy(list.length > 0 ? list : []);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
-  // 手动上传按地点分组（同地点内后传的在前）
-  const uploadGroups = useMemo(() => {
-    const groups = new Map<string, { scope: 'city' | 'district'; id: string; items: typeof uploads }>();
-    for (const u of uploads) {
-      const key = `${u.scope}:${u.placeId}`;
-      const g = groups.get(key) ?? { scope: u.scope, id: u.placeId, items: [] };
-      g.items.push(u);
-      groups.set(key, g);
+  /** 把旧上传逐个写进「省/市/区县」文件夹，完成后清库 */
+  const migrateLegacy = useCallback(async () => {
+    if (!legacy || legacy.length === 0 || migrating) return;
+    setMigrating(true);
+    let moved = 0;
+    let failed = 0;
+    for (const u of legacy) {
+      const file = new File([u.blob], u.name, { type: u.blob.type || undefined });
+      const r = await uploadTo(u.scope, u.placeId, [file]);
+      if (r.added > 0) moved += r.added;
+      else failed += 1;
     }
-    return [...groups.values()].map((g) => ({
-      ...g,
-      items: [...g.items].sort((a, b) => b.createdAt - a.createdAt),
-    }));
-  }, [uploads]);
+    await clearLegacyUploads();
+    setMigrating(false);
+    setLegacy([]);
+    showToast(
+      failed > 0
+        ? `已迁移 ${moved} 个，${failed} 个失败（未选择照片目录或格式不支持）`
+        : `已迁移 ${moved} 个上传到照片文件夹`,
+    );
+  }, [legacy, migrating, uploadTo, showToast]);
 
   const bound = Boolean(index);
   const districtCount = index ? Object.keys(index.byDistrict).length : 0;
@@ -117,7 +131,7 @@ function Panel({ onClose }: { onClose: () => void }) {
               {index ? (
                 <span>
                   {index.rootName} · {index.total} 个媒体 · 覆盖 {districtCount} 个区县 / {cityCount} 个城市
-                  {uploads.length > 0 && ` · 手动上传 ${uploads.length} 个`}
+                  {diskKind === 'tauri' ? ' · 套壳模式' : ''}
                 </span>
               ) : (
                 <span>绑定后，照片墙会优先展示你本机的照片与视频</span>
@@ -128,9 +142,9 @@ function Panel({ onClose }: { onClose: () => void }) {
           {error && <p className="photo-lib-error">{error}</p>}
 
           <div className="photo-lib-actions">
-            {pickerOk ? (
+            {pickerOk || diskKind === 'tauri' ? (
               <button className="primary-btn" onClick={() => void bind()}>
-                选择照片根目录
+                {bound ? '更换照片根目录' : '选择照片根目录'}
               </button>
             ) : (
               <>
@@ -214,39 +228,21 @@ function Panel({ onClose }: { onClose: () => void }) {
             </div>
           )}
 
-          {/* 手动上传管理：在照片墙里「＋ 上传」批量导入的媒体，按地点归组 */}
-          {uploadGroups.length > 0 && (
+          {/* 旧版上传迁移：v1.1 之前「＋ 上传」的字节藏在应用数据库里，磁盘上找不到 */}
+          {legacy && legacy.length > 0 && (
             <section className="photo-lib-uploads">
-              <h4>手动上传 · {uploads.length} 个媒体</h4>
-              <p>照片墙里点「＋ 上传」导入的媒体按地点归组；删除后不可恢复。</p>
-              {uploadGroups.map((g) => (
-                <div key={`${g.scope}:${g.id}`} className="photo-lib-uploads-group">
-                  <div className="photo-lib-uploads-head">
-                    <b>{placeName(g.scope, g.id)}</b>
-                    <span>{g.items.length} 个</span>
-                  </div>
-                  <ul>
-                    {g.items.map((u) => (
-                      <li key={u.id}>
-                        <span className="photo-lib-uploads-name" title={u.name}>
-                          {u.name}
-                        </span>
-                        <span className="photo-lib-uploads-size">{(u.bytes / 1048576).toFixed(1)} MB</span>
-                        <button
-                          className="visit-del"
-                          title="删除这个上传"
-                          onClick={() => {
-                            void uploadRemove(u.id);
-                            showToast('已删除该上传');
-                          }}
-                        >
-                          ×
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+              <h4>发现 {legacy.length} 个旧版上传</h4>
+              <p>
+                这些照片此前只保存在应用数据库里，磁盘上找不到。迁移会把它们写进照片根目录下的
+                「省 / 市 / 区县」文件夹，之后就能在文件管理器里直接看到。
+              </p>
+              <button
+                className="primary-btn"
+                disabled={migrating}
+                onClick={() => void migrateLegacy()}
+              >
+                {migrating ? '迁移中…' : `迁移 ${legacy.length} 个到照片文件夹`}
+              </button>
             </section>
           )}
 
@@ -255,6 +251,7 @@ function Panel({ onClose }: { onClose: () => void }) {
             <p>按「省 / 市 / 区县」三级文件夹摆放照片，程序会自动归属到对应区县：</p>
             <pre className="photo-lib-tree">{TREE}</pre>
             <ul>
+              <li>照片墙里的「＋ 上传」也会写进这套结构（如上传到淳安县 → 浙江省/杭州市/淳安县/）；</li>
               <li>支持 jpg / jpeg / png / webp / gif（动图）/ avif，视频支持 mp4 / webm / mov；</li>
               <li>照片按画幅分为横屏 / 竖屏 / 其他三类，「其他」为非常规比例（多为裁切或修改过）；</li>
               <li>单个区县最多取前 60 个媒体；文件夹名写全称或简称都可以（「淳安县」或「淳安」均可识别）；</li>

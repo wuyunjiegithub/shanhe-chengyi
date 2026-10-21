@@ -50,13 +50,27 @@ export function PhotoViewer({
   const [scale, setScale] = useState(1);
   const [rotation, setRotation] = useState(0);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  /** 删除二次确认：第一下进入待确认态，第二下（4 秒内）才真删 */
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
-  // 换图（上/下一张）时复位变换，避免沿用上一张的缩放角度
+  // 换图（上/下一张）时复位变换与删除确认，避免沿用上一张的状态
   useEffect(() => {
     setScale(1);
     setRotation(0);
     setOffset({ x: 0, y: 0 });
+    setConfirmDelete(false);
   }, [src]);
+
+  /** 删除按钮：两段式确认（删的是磁盘文件，不可恢复） */
+  const onDeleteClick = () => {
+    if (!onDelete) return;
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      window.setTimeout(() => setConfirmDelete(false), 4000);
+      return;
+    }
+    onDelete();
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -182,8 +196,13 @@ export function PhotoViewer({
           </div>
           <div className="pv-tools">
             {onDelete && (
-              <button className="pv-del" onClick={onDelete} title="删除这个上传" aria-label="删除">
-                🗑
+              <button
+                className={`pv-del${confirmDelete ? ' is-armed' : ''}`}
+                onClick={onDeleteClick}
+                title={confirmDelete ? '再点一次确认删除（磁盘文件，不可恢复）' : '删除这个照片文件'}
+                aria-label="删除"
+              >
+                {confirmDelete ? '确认删除？' : '🗑'}
               </button>
             )}
             <button onClick={() => zoom(1.25)} title="放大（＋）" aria-label="放大">
