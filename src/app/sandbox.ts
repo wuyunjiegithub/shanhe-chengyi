@@ -416,5 +416,9 @@ if (typeof window !== 'undefined') {
     focusCityById,
     backToRegion,
     resetCamera: () => manager?.resetView(),
+    /** 最近一次取景的尺寸 / 距离，供回归脚本核对「地图是否完整进屏」 */
+    lastFrame: () => manager?.lastFrame ?? null,
+    openPhotoWall: (arg: { scope: 'city' | 'district'; id: string; title: string }) =>
+      useUi.getState().openPhotoWall(arg),
   };
 }

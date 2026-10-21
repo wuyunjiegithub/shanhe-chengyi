@@ -81,7 +81,7 @@ export function BottomBar() {
         </button>
         {level === 'city' && (
           <button className="ghost-pill" onClick={backToRegion}>
-            返回 <kbd>Esc</kbd>
+            返回
           </button>
         )}
         <button className="compass" onClick={resetCamera} aria-label="重置视角">

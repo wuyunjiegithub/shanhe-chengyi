@@ -212,7 +212,7 @@ export function DataPanel() {
     setSavedAt(new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }));
     refreshPins();
     updateMarkers();
-    toast(`${cleaned.name} 已保存到本机`);
+    toast(`${cleaned.name} 已保存`);
     return true;
   }
 
@@ -524,7 +524,11 @@ export function DataPanel() {
             >
               {confirmReset ? '确认重置全部？' : '重置编辑'}
             </button>
-            <button className="ghost-btn" onClick={() => fileRef.current?.click()} disabled={!draft}>
+            <button
+              className="ghost-btn data-import-btn"
+              onClick={() => fileRef.current?.click()}
+              disabled={!draft}
+            >
               导入
             </button>
             <input
@@ -543,7 +547,7 @@ export function DataPanel() {
               onClick={() => void handleSave()}
               disabled={!dirty || errors.length > 0}
             >
-              保存到本机
+              保存
             </button>
           </div>
         </footer>

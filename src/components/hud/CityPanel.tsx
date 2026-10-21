@@ -3,7 +3,7 @@ import { useNavigation } from '../../stores/navigation';
 import { useUi } from '../../stores/ui';
 import { useCityStatus } from '../../stores/cityStatus';
 import { useVisitLog } from '../../stores/visitLog';
-import { updateMarkers } from '../../app/sandbox';
+import { backToRegion, updateMarkers } from '../../app/sandbox';
 import { BgImage } from '../shared/BgImage';
 import { bgKey } from '../../stores/backgrounds';
 import { VisitedMark } from '../shared/VisitedMark';
@@ -72,6 +72,10 @@ export function CityPanel() {
             <span className="city-cover-prov">{city.province}</span>
             <h2 className="city-cover-name">{city.name}</h2>
           </div>
+          {/* 手机端底栏（含「返回」）被半屏面板盖住，这里补一个回总览的入口 */}
+          <button type="button" className="city-back-btn" onClick={backToRegion} title="返回江浙沪皖总览">
+            ‹ 返回
+          </button>
           <PanelFullscreenBtn />
         </div>
 

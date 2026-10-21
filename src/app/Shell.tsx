@@ -140,8 +140,11 @@ export function Shell() {
   const tooltipLeft = Math.min(cursor.x + 16, window.innerWidth - 230);
   const tooltipTop = Math.min(cursor.y + 18, window.innerHeight - 80);
 
+  // 半屏面板展开时，手机端底栏会压在详情底部按钮上，这里给个状态类让 CSS 收起底栏
+  const panelOpen = drawerOpen || level === 'city';
+
   return (
-    <div className="shell" onPointerMove={onPointerMove}>
+    <div className={`shell${panelOpen ? ' panel-open' : ''}`} onPointerMove={onPointerMove}>
       <div ref={mountRef} className="canvas" />
 
       <TopBar ready={ready} />
@@ -186,9 +189,7 @@ export function Shell() {
         </div>
       )}
 
-      {level === 'region' && ready && !drawerOpen && (
-        <div className="region-hint">点击城市板块下钻 · 悬浮查看名称</div>
-      )}
+      {/* 原「点击城市板块下钻…」提示已移除：手机上它会浮在地图上方挡视线，且信息量为零 */}
     </div>
   );
 }

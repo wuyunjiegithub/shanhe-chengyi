@@ -4,7 +4,6 @@ import { useUi } from '../../stores/ui';
 import { usePhotoLib } from '../../stores/photoLib';
 import { refineShape } from '../../data/photoLibrary';
 import type { PhotoEntry, PhotoShape } from '../../data/photoLibrary';
-import { SmartImage } from '../shared/SmartImage';
 import { Gallery3D } from './Gallery3D';
 import type { HallItem } from './Gallery3D';
 import { PhotoViewer } from '../shared/PhotoViewer';
@@ -128,9 +127,12 @@ function buildItems(scope: 'city' | 'district', id: string): WallItem[] {
 function StaticPhoto({
   item,
   onShape,
+  onFail,
 }: {
   item: WallItem;
   onShape: (key: string, shape: PhotoShape) => void;
+  /** 图片确实取不到（地址失效）：上报给父层整体剔除，而不是留在墙上当裂图 */
+  onFail?: (key: string) => void;
 }) {
   const src = useItemSrc(item);
   const [failed, setFailed] = useState(false);
@@ -139,13 +141,17 @@ function StaticPhoto({
     setFailed(false);
   }, [item]);
 
-  if (failed || !src) {
-    return (
-      <div className="wall-media wall-media--empty">
-        <SmartImage src={src ?? undefined} alt={item.title} label={item.title} className="wall-media-img" />
-      </div>
-    );
-  }
+  // 本地照片的 src 是异步取流，短暂为 null 属正常加载态，不能当成失败剔除；
+  // 内置图（src 写在数据里）一旦为空就是真的没有图。
+  useEffect(() => {
+    if (item.photo) return;
+    if (!src && onFail) onFail(item.key);
+  }, [item, src, onFail]);
+
+  // 加载失败：不渲染任何占位（占位块本身就是用户看到的「裂图」），
+  // 交给父层从列表里剔除，墙上只留真正能显示的照片。
+  if (failed || !src) return null;
+
   return (
     <img
       className="wall-media-img"
@@ -159,7 +165,10 @@ function StaticPhoto({
           if (shape !== 'unknown') onShape(item.key, shape);
         }
       }}
-      onError={() => setFailed(true)}
+      onError={() => {
+        setFailed(true);
+        onFail?.(item.key);
+      }}
     />
   );
 }
@@ -219,10 +228,12 @@ function useItemSrc(item: WallItem | null): string | null {
 function WallMedia({
   item,
   onShape,
+  onFail,
   autoplay = false,
 }: {
   item: WallItem;
   onShape: (key: string, shape: PhotoShape) => void;
+  onFail?: (key: string) => void;
   autoplay?: boolean;
 }) {
   if (item.kind === 'video' && item.photo) {
@@ -237,7 +248,7 @@ function WallMedia({
   }
   return (
     <div className="wall-media">
-      <StaticPhoto item={item} onShape={onShape} />
+      <StaticPhoto item={item} onShape={onShape} onFail={onFail} />
       {item.kind === 'animated' && (
         <span className="wall-media-badge" title="动图">
           GIF
@@ -277,6 +288,8 @@ export function PhotoWall() {
   /** 删除二次确认：第一下进入待确认态（按钮变红），第二下才真删 */
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [busy, setBusy] = useState(false);
+  /** 加载失败 / 根本没有图的条目 key：整条剔除，墙上不留占位 */
+  const [failedKeys, setFailedKeys] = useState<Set<string>>(() => new Set());
 
   const allItems = useMemo(
     () => (photoWall ? buildItems(photoWall.scope, photoWall.id) : []),
@@ -297,17 +310,25 @@ export function PhotoWall() {
     setManage(false);
     setSelected(new Set());
     setConfirmDelete(false);
+    setFailedKeys(new Set());
   }, [photoWall]);
 
   const onShape = useCallback((key: string, shape: PhotoShape) => {
     setShapes((s) => (s[key] === shape ? s : { ...s, [key]: shape }));
   }, []);
 
+  /** 图片取不到 → 记录并从墙上剔除（不渲染占位块，避免出现「裂图」） */
+  const onFail = useCallback((key: string) => {
+    setFailedKeys((s) => (s.has(key) ? s : new Set(s).add(key)));
+  }, []);
+
   const items = useMemo(() => {
+    // 取不到图的条目（内置图地址失效 / 本地文件已删）整体剔除，不留占位、不留裂图
+    const live = allItems.filter((it) => !failedKeys.has(it.key));
     const list =
       shapeFilter === 'all'
-        ? allItems
-        : allItems.filter((it) => {
+        ? live
+        : live.filter((it) => {
             const sh = shapes[it.key] ?? it.shape;
             return sh === shapeFilter;
           });
@@ -322,7 +343,7 @@ export function PhotoWall() {
       if (ta === tb) return byName(a.title, b.title);
       return dir * (ta - tb);
     });
-  }, [allItems, shapeFilter, shapes, sort]);
+  }, [allItems, shapeFilter, shapes, sort, failedKeys]);
 
   /** 点击排序条：点新维度用它的自然方向，点当前维度则翻转升降序 */
   const pickSort = useCallback((key: SortKey) => {
@@ -720,7 +741,7 @@ export function PhotoWall() {
                               }
                             >
                               <div className="wall-tile-img">
-                                <WallMedia item={it} onShape={onShape} />
+                                <WallMedia item={it} onShape={onShape} onFail={onFail} />
                               </div>
                               <span className="wall-tile-plaque">
                                 <b>{it.title}</b>
@@ -762,7 +783,7 @@ export function PhotoWall() {
                   <div className="wall-stage">
                     {style === 'corridor' && (
                       <div className="wall-stage-peek wall-stage-peek--prev" aria-hidden="true">
-                        {items.length > 1 && <WallMedia item={items[(active - 1 + items.length) % items.length]} onShape={onShape} />}
+                        {items.length > 1 && <WallMedia item={items[(active - 1 + items.length) % items.length]} onShape={onShape} onFail={onFail} />}
                       </div>
                     )}
                     <figure className="wall-stage-main">
@@ -773,7 +794,7 @@ export function PhotoWall() {
                         onClick={() => openViewer(active)}
                         title="点击放大细看（支持缩放 / 旋转）"
                       >
-                        <WallMedia item={current} onShape={onShape} autoplay />
+                        <WallMedia item={current} onShape={onShape} onFail={onFail} autoplay />
                       </button>
                       <figcaption className="wall-stage-cap">
                         <b>{current.title}</b>
@@ -786,7 +807,7 @@ export function PhotoWall() {
                     </figure>
                     {style === 'corridor' && (
                       <div className="wall-stage-peek wall-stage-peek--next" aria-hidden="true">
-                        {items.length > 1 && <WallMedia item={items[(active + 1) % items.length]} onShape={onShape} />}
+                        {items.length > 1 && <WallMedia item={items[(active + 1) % items.length]} onShape={onShape} onFail={onFail} />}
                       </div>
                     )}
                     {style === 'lightbox' && (
@@ -811,7 +832,7 @@ export function PhotoWall() {
                         onClick={() => setActive(i)}
                         title={it.title}
                       >
-                        <WallMedia item={it} onShape={onShape} />
+                        <WallMedia item={it} onShape={onShape} onFail={onFail} />
                       </button>
                     ))}
                   </div>

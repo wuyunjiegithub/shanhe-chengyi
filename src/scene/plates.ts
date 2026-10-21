@@ -73,6 +73,17 @@ const MIST_NORMAL_TEXTURE = (() => {
 /** 边界线像素宽度（Line2 支持真实像素宽度，普通 LineBasicMaterial 的 linewidth 在多数 GPU 上恒为 1px） */
 const BORDER_PX = 2.0;
 
+/** 手机端同屏要塞下整块江浙沪皖，2px 的轮廓在小屏上会连成一片、显得又粗又密 */
+const BORDER_PX_NARROW = 1.05;
+
+const NARROW_QUERY = '(max-width: 820px)';
+
+/** 窄屏（手机）判定；SSR / 无 matchMedia 时按宽屏处理 */
+function isNarrow(): boolean {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+  return window.matchMedia(NARROW_QUERY).matches;
+}
+
 /** 由二维闭合环构建挤出板块（侧壁暗、顶盖带语义色微光；Y 轴向上） */
 export function createPlateMesh(
   points: [number, number][],
@@ -169,9 +180,10 @@ export function createPlateMesh(
     contourGeo,
     new LineMaterial({
       color: style.edgeColor,
-      linewidth: BORDER_PX,
+      linewidth: isNarrow() ? BORDER_PX_NARROW : BORDER_PX,
       transparent: true,
-      opacity: style.edgeOpacity,
+      // 手机上同时收窄线宽与不透明度：否则整幅地图的边界会糊成一片网格
+      opacity: style.edgeOpacity * (isNarrow() ? 0.66 : 1),
       depthWrite: false,
     }),
   );

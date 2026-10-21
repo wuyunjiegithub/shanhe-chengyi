@@ -1,3 +1,11 @@
+/* 移动端点击时的默认高亮块（Android WebView 会闪一个半透明方块）统一关掉，
+   反馈改由按钮自身的 hover / active 样式表达。 */
+button,
+a,
+[role='button'] {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* ============ Shell / canvas ============ */
 .shell {
   position: relative;
@@ -2091,15 +2099,27 @@
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 
-.data-pill:hover {
-  color: var(--text-1);
-  border-color: var(--border-active);
-  background: rgba(34, 211, 238, 0.06);
+/* 只在真有指针悬停的设备上给 hover 反馈。
+   触屏上 :hover 会在点击后「粘住」，表现为点一下按钮就出现一块底色方块——
+   这正是「区县 / 设置 / 数据」按钮被反馈有方块背景的原因。 */
+@media (hover: hover) {
+  .data-pill:hover {
+    color: var(--text-1);
+    border-color: var(--border-active);
+    background: rgba(34, 211, 238, 0.06);
+  }
 }
 
 .data-pill-icon {
   color: var(--accent);
   font-size: 13px;
+}
+
+/* 手机端专属按钮，默认隐藏（≤820px 才显示，见文件末尾断点块）。
+ * 定义必须放在断点块之前：否则同优先级的全局规则会反过来盖掉断点里的显示规则。 */
+.top-reset-btn,
+.city-back-btn {
+  display: none;
 }
 
 .data-pill b {
@@ -5353,6 +5373,27 @@ button.wall-stage-img {
     height: 52vh;
     border: none;
     border-radius: 16px 16px 0 0;
+    /* 与 .hud 同为 z-index 30，而底栏在 DOM 里排得更靠后 —— 底栏的时间线 / 游记 / 返回
+       会直接盖住面板底部的「标记去过 / 收藏 / 写游记」。抬到 45 压过底栏。 */
+    z-index: 45;
+  }
+
+  /* 面板封面上返回总览的入口：底栏在手机上会被面板盖住，返回得另给一个 */
+  .city-back-btn {
+    position: absolute;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    left: 12px;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    height: 34px;
+    padding: 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 10px;
+    background: rgba(10, 14, 23, 0.5);
+    backdrop-filter: blur(10px);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
   }
 
   .city-panel.is-full {
@@ -5528,6 +5569,52 @@ button.wall-stage-img {
   .wall-strip {
     padding: 8px 10px calc(10px + env(safe-area-inset-bottom, 0px));
   }
+
+  /* ---- 顶栏：手机端收起「设置」（照片库绑定走系统相册自动匹配，留着只会误触） ---- */
+  .top-only-desktop {
+    display: none;
+  }
+
+  /* ---- 顶栏「重置视角」：底栏的重置钮在手机上会被半屏详情盖住，这里补一个 ---- */
+  .top-reset-btn {
+    display: inline-flex;
+    padding: 0 11px;
+  }
+
+  /* ---- 半屏详情 / 城市概览展开时收起底栏 ----
+   * 底栏的时间线 / 游记 / 返回浮在最下方，正好压住详情底部的收藏、写游记等按钮。
+   * 手机上一屏只做一件事，收起底栏后这些操作全部可见。 */
+  .shell.panel-open .hud-bottom {
+    display: none;
+  }
+
+  /* ---- 详情底部操作条：吸底常驻 ----
+   * 原来它在滚动区末尾，不滚到底根本看不见，滚到底又被底栏压住。 */
+  .drawer-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    margin: 4px -16px 0;
+    padding: 10px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(180deg, rgba(12, 17, 28, 0) 0%, rgba(10, 14, 23, 0.97) 34%);
+  }
+
+  /* ---- 城市封面放大 ----
+   * 手机上原来只有 118px，一眼看过去是块色带；放大到「城区」区块上方，
+   * 第一眼是城市的画面，往下才是文字信息。 */
+  .city-cover {
+    height: 30vh;
+    min-height: 178px;
+  }
+
+  .city-cover-name {
+    font-size: 34px;
+  }
+
+  /* ---- 数据面板：手机端不做导入 —— 手机上直接编辑保存，导入 JSON 是桌面才有的流程 ---- */
+  .data-import-btn {
+    display: none;
+  }
 }
 
 /* ---- 移动端「选择城市 / 区县」全屏面板 ----
@@ -5536,6 +5623,7 @@ button.wall-stage-img {
 .idx-pick-btn {
   display: none;
 }
+
 
 .idx-backdrop {
   position: fixed;

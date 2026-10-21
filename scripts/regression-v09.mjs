@@ -272,6 +272,9 @@ await page.keyboard.press('Escape');
 await page.waitForTimeout(800);
 
 /* ---------------- ⑤ 移动端 ---------------- */
+// 先关掉 PC 页：它还挂着 3D 照片墙的 WebGL 上下文，与移动页抢 swiftshader 会把
+// 移动端首屏拖到十几秒（表现为 waitForSelector 超时），不是页面本身的问题。
+await page.close();
 const m = await browser.newPage({
   viewport: { width: 390, height: 844 },
   hasTouch: true,

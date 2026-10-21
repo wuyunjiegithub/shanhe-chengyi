@@ -294,7 +294,7 @@ export class SceneManager {
     this.controls.maxDistance = maxDim * 4;
     this.fitGroundToRegion(this.regionBox);
     this.updateProvinceLabels(shapes);
-    this.frameTo(this.regionBox, 0, 1.08);
+    this.frameTo(this.regionBox, 0, 1.08, 0, this.usableView());
     this.updateLineResolutions();
   }
 
@@ -420,8 +420,13 @@ export class SceneManager {
     if (!box.isEmpty()) this.frameTo(box, 0.6, 1.75, 16);
   }
 
+  /** 回到全省总览：按当前可用视区取景，保证整幅地图完整进屏（手机竖屏尤其明显） */
   resetView(): void {
-    this.frameTo(this.regionBox, 0.7, 1.08);
+    const view = this.usableView();
+    // 手机上留白余量收窄一点：既保证不出屏，又让地图尽量占满屏幕
+    const el = this.renderer.domElement;
+    const narrow = Boolean(el) && (el.clientWidth || 0) <= 820;
+    this.frameTo(this.regionBox, 0.7, narrow ? 1.02 : 1.08, 0, view);
   }
 
   /** 省视角城市标记：去过 = 小红旗，收藏 = 粉心 */
@@ -829,6 +834,14 @@ export class SceneManager {
     const t = Math.tan(fov / 2);
     let dist = Math.max((maxDim / (2 * t)) * factor, minDist);
 
+    // 竖屏（aspect < 1）时水平视野比垂直窄：只按 maxDim 取景会让内容左右溢出屏幕。
+    // 手机上第一次打开「地图超出屏幕」就是这个原因，这里先补一档水平距离。
+    const el = this.renderer.domElement;
+    if (el) {
+      const aspect = (el.clientWidth || 1) / (el.clientHeight || 1);
+      if (aspect < 1) dist = Math.max(dist, (size.x / (2 * t * aspect)) * factor);
+    }
+
     let offset: THREE.Vector3 | null = null;
     if (view && this.renderer.domElement) {
       const W = this.renderer.domElement.clientWidth || 1;
@@ -844,10 +857,12 @@ export class SceneManager {
       const elev = (ELEV_DEG * Math.PI) / 180;
       const probe = this.camera.clone() as THREE.PerspectiveCamera;
       probe.aspect = aspect;
+      // 只用「地面高度」的 4 个角：板块挤出高度只有几米，但 50° 斜视下远端顶角
+      // 会投影到接近地平线的位置，把包围盒高度撑大一大截，导致相机被无谓地推远、
+      // 地图缩成屏幕中间一小块（手机竖屏尤其明显）。地面 4 角才是真正要装进视野的范围。
       const corners: THREE.Vector3[] = [];
       for (const cx of [box.min.x, box.max.x])
-        for (const cy of [box.min.y, box.max.y])
-          for (const cz of [box.min.z, box.max.z]) corners.push(new THREE.Vector3(cx, cy, cz));
+        for (const cz of [box.min.z, box.max.z]) corners.push(new THREE.Vector3(cx, box.min.y, cz));
       for (let i = 0; i < 4; i++) {
         probe.position.set(center.x, center.y + Math.sin(elev) * dist, center.z + Math.cos(elev) * dist);
         probe.lookAt(center);
@@ -901,6 +916,21 @@ export class SceneManager {
     const el = this.renderer.domElement;
     const W = el.clientWidth || 1440;
     const H = el.clientHeight || 900;
+
+    // 手机（≤820px）：没有常驻侧栏，上下只有窄 HUD。
+    // 这里必须按「几乎整屏」算，否则取景会按桌面的 240/372 边距去缩，
+    // 地图被压到中间一小块、四周留黑；同时首次取景要保证整幅地图进屏。
+    if (W <= 820) {
+      const top = 68;
+      const bottom = 58;
+      return {
+        x: 6,
+        y: top,
+        w: Math.max(W - 12, 240),
+        h: Math.max(H - top - bottom, 240),
+      };
+    }
+
     const left = 240; // 左侧索引
     const right = 372; // 右侧城市面板 + 边距
     const top = 88; // 顶栏
@@ -1299,10 +1329,12 @@ export class SceneManager {
   private setupGround(): void {
     // 中心线颜色与网格线统一：否则 THREE.GridHelper 的 centerLine 会比网格线更亮，
     // 在地图中部（安徽左侧 / 上海右侧）露出一根横穿的亮线。
-    const grid = new THREE.GridHelper(400, 40, 0x0d1626, 0x0d1626);
+    // 手机上同屏塞下整幅地图，40 格地面网格会密成一片、与区县边界抢视线，这里减半并压暗
+    const narrow = typeof window !== 'undefined' && window.matchMedia('(max-width: 820px)').matches;
+    const grid = new THREE.GridHelper(400, narrow ? 16 : 40, 0x0d1626, 0x0d1626);
     const gm = grid.material as THREE.LineBasicMaterial;
     gm.transparent = true;
-    gm.opacity = 0.4;
+    gm.opacity = narrow ? 0.22 : 0.4;
     grid.position.y = -0.5;
     this.grid = grid;
     this.scene.add(grid);

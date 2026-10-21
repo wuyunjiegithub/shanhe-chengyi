@@ -3,6 +3,7 @@ import { useNavigation } from '../../stores/navigation';
 import { useUi } from '../../stores/ui';
 import { usePhotoLib } from '../../stores/photoLib';
 import { SearchConsole } from './SearchConsole';
+import { resetCamera } from '../../app/sandbox';
 
 export function TopBar({ ready }: { ready: boolean }) {
   const cities = useData((s) => s.cities);
@@ -45,8 +46,9 @@ export function TopBar({ ready }: { ready: boolean }) {
           <span className="data-pill-icon">⌖</span>
           区县
         </button>
+        {/* 手机端不暴露设置：照片库绑定走系统相册自动匹配，留着只会误触 */}
         <button
-          className="data-pill data-pill--photo"
+          className="data-pill data-pill--photo top-only-desktop"
           onClick={() => toggleSettings(true)}
           title="设置：照片库绑定 / 实时更新"
         >
@@ -54,6 +56,17 @@ export function TopBar({ ready }: { ready: boolean }) {
           设置
           {photoLive && <i className="data-pill-live" title="实时更新中" />}
           {photoTotal > 0 && <b>{photoTotal}</b>}
+        </button>
+        {/* 手机端底栏会被半屏详情盖住，重置视角改挂顶栏，任何时候都能一键回总览 */}
+        <button
+          type="button"
+          className="data-pill top-reset-btn"
+          onClick={resetCamera}
+          title="重置视角"
+          aria-label="重置视角"
+        >
+          <span className="data-pill-icon">⌖</span>
+          总览
         </button>
         <button
           className="data-pill"
