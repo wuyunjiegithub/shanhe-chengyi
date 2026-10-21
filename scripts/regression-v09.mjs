@@ -78,7 +78,9 @@ rec('③ 城市封面有换图入口', bgBefore.pickers === 1 && bgBefore.btn, `
 const pngPath = path.join(OUT, 'bg-fixture.png');
 fs.writeFileSync(pngPath, makePng(240, 160, [20, 180, 120]));
 await page.setInputFiles('.city-cover input[type=file]', pngPath);
-await page.waitForTimeout(2200);
+// 地图加了 envMap / 清漆 / 法线后，swiftshader 软件渲染下的重渲染变慢，
+// 2.2s 会在 img 挂载前就断言（诊断脚本用真实 GL 时 2.2s 足够）。
+await page.waitForTimeout(5000);
 const bgAfter = await page.evaluate(() => {
   const img = document.querySelector('.city-cover img');
   let map = {};

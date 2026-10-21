@@ -1260,39 +1260,39 @@ export class SceneManager {
    * 反射到板块的清漆面上就是随视角流动的冷白高光带。
    */
   private setupEnvironment(): void {
-    const envScene = new THREE.Scene();
+    // 用一张手绘的等距柱状图代替「真场景烘焙」：
+    // fromScene 要渲染 6 个面再做多级模糊，在软件渲染（回归用的 swiftshader）下要好几秒，
+    // 会把首屏交互一起拖住；fromEquirectangular 只处理一张 2D 图，快一个量级。
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d')!;
 
-    const room = new THREE.Mesh(
-      new THREE.BoxGeometry(24, 24, 24),
-      new THREE.MeshBasicMaterial({ color: 0x0d1522, side: THREE.BackSide }),
-    );
-    envScene.add(room);
+    // 天顶偏冷的暗蓝 → 地平线略亮 → 地面近黑
+    const sky = ctx.createLinearGradient(0, 0, 0, 256);
+    sky.addColorStop(0, '#7fa8d8');
+    sky.addColorStop(0.4, '#2b3f5c');
+    sky.addColorStop(0.52, '#101a2b');
+    sky.addColorStop(1, '#05070d');
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, 512, 256);
 
-    // 顶部大面积冷光：决定整体基调（偏冷暗蓝，不与深色底图打架）
-    const top = new THREE.Mesh(
-      new THREE.PlaneGeometry(20, 20),
-      new THREE.MeshBasicMaterial({ color: 0x6f9fd8 }),
-    );
-    top.position.set(0, 11.9, 0);
-    top.rotation.x = Math.PI / 2;
-    envScene.add(top);
+    // 地平线上方一条柔和灯带：反射到板块顶面就是那道「扫光」
+    const band = ctx.createLinearGradient(0, 88, 0, 150);
+    band.addColorStop(0, 'rgba(230,241,255,0)');
+    band.addColorStop(0.5, 'rgba(230,241,255,0.85)');
+    band.addColorStop(1, 'rgba(230,241,255,0)');
+    ctx.fillStyle = band;
+    ctx.fillRect(0, 88, 512, 62);
 
-    // 两条斜置灯带：反射到清漆面上就是流动高光（「抛光感」的主要来源）
-    const stripGeo = new THREE.PlaneGeometry(22, 2.4);
-    const stripMat = new THREE.MeshBasicMaterial({ color: 0xe6f1ff });
-    const stripA = new THREE.Mesh(stripGeo, stripMat);
-    stripA.position.set(-7, 5, 7);
-    stripA.rotation.set(-Math.PI / 3, 0, Math.PI / 5);
-    envScene.add(stripA);
-
-    const stripB = new THREE.Mesh(stripGeo, stripMat);
-    stripB.position.set(8, 3.5, -7);
-    stripB.rotation.set(-Math.PI / 2.6, 0, -Math.PI / 4);
-    envScene.add(stripB);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    tex.colorSpace = THREE.SRGBColorSpace;
 
     const pmrem = new THREE.PMREMGenerator(this.renderer);
-    const rt = pmrem.fromScene(envScene, 0.03);
+    const rt = pmrem.fromEquirectangular(tex);
     this.scene.environment = rt.texture;
+    tex.dispose();
     pmrem.dispose();
   }
 
