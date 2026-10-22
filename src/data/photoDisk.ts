@@ -265,7 +265,7 @@ async function ensureWritePermission(handle: FileSystemDirectoryHandle): Promise
 const TAURI_ROOT_KEY = 'ds.photoLib.tauriRoot.v1';
 
 /** 是否跑在 Android 套壳里（WebView UA 含 Android） */
-function isAndroidShell(): boolean {
+export function isAndroidShell(): boolean {
   return /android/i.test(navigator.userAgent);
 }
 

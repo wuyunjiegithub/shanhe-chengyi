@@ -1,7 +1,9 @@
 import { create } from 'zustand';
+import { convertFileSrc } from '@tauri-apps/api/core';
 import { useData } from './data';
 import {
   buildNameMaps,
+  classifyShape,
   cachePhotoFiles,
   clearPhotoBlobCache,
   clearPhotoUrlCache,
@@ -16,8 +18,14 @@ import {
   scanFiles,
 } from '../data/photoLibrary';
 import type { PhotoEntry, PhotoIndex } from '../data/photoLibrary';
-import { getDisk, isMediaName } from '../data/photoDisk';
+import { getDisk, isAndroidShell, isMediaName } from '../data/photoDisk';
 import type { DiskKind } from '../data/photoDisk';
+import {
+  hasMediaBridge,
+  listAndroidAlbumPhotos,
+  listAndroidAlbums,
+} from '../data/androidMedia';
+import type { AndroidPhoto } from '../data/androidMedia';
 
 export type PhotoLibStatus = 'unbound' | 'bound' | 'denied' | 'unsupported' | 'error';
 
@@ -66,11 +74,22 @@ function sanitizeSeg(s: string): string {
 }
 
 /**
- * 地点 → 「省/市/区县」相对目录。
- * 区县：浙江省/杭州市/淳安县；城市：浙江省/杭州市。
+ * 地点 → 相对目录。
+ * 桌面：三级树「省/市/区县」，便于在文件管理器里按行政区翻找。
+ * 手机：**扁平单级，目录名 = 系统相册名**（Android 的相册名就是照片所在目录名，
+ * 且相册之间平级、没有子相册），所以「淳安县」在系统相册里就是一个叫淳安县的相册，
+ * 不用让用户去理解任何目录树。
  */
 export function placeDirFor(scope: 'city' | 'district', id: string): string | null {
   const { districts, cities } = useData.getState();
+  if (isAndroidShell()) {
+    if (scope === 'district') {
+      const d = districts[id];
+      return d ? sanitizeSeg(d.name) : null;
+    }
+    const c = cities.find((x) => x.id === id);
+    return c ? sanitizeSeg(c.name) : null;
+  }
   if (scope === 'district') {
     const d = districts[id];
     if (!d) return null;
@@ -186,6 +205,58 @@ async function scanAndApply(
   set({ index: result.index, status: 'bound', error: null, lastLiveAdded: 0 });
 }
 
+/**
+ * 手机端索引：把系统相册按「相册名 = 区县名 / 城市名」同名匹配。
+ * 相册名就是照片所在目录名（Android 相册之间平级、没有子相册），
+ * 所以在相册 App 里建一个叫「淳安县」的相册，这里就会自动对上。
+ * 同名相册不存在时该区县就是 0 张，不会凭空造出占位。
+ */
+function buildAlbumIndex(): PhotoIndex | null {
+  const albums = listAndroidAlbums();
+  if (albums.length === 0) return null;
+  const counts = new Map(albums.map((a) => [a.name, a.count]));
+  const { districts, cities } = useData.getState();
+
+  const byDistrict: Record<string, PhotoEntry[]> = {};
+  for (const d of Object.values(districts)) {
+    if (!counts.has(d.name)) continue;
+    const list = listAndroidAlbumPhotos(d.name).map(albumEntry);
+    if (list.length > 0) byDistrict[d.id] = list;
+  }
+  const byCity: Record<string, PhotoEntry[]> = {};
+  for (const c of cities) {
+    if (!counts.has(c.name)) continue;
+    const list = listAndroidAlbumPhotos(c.name).map(albumEntry);
+    if (list.length > 0) byCity[c.id] = list;
+  }
+
+  let total = 0;
+  for (const list of Object.values(byDistrict)) total += list.length;
+  for (const list of Object.values(byCity)) total += list.length;
+  if (total === 0) return null;
+
+  return {
+    rootName: '系统相册',
+    boundAt: new Date().toISOString(),
+    persistent: true,
+    total,
+    byDistrict,
+    byCity,
+  };
+}
+
+/** 相册照片 → 索引条目；path 用绝对路径，photoUrl 据此走 convertFileSrc */
+function albumEntry(p: AndroidPhoto): PhotoEntry {
+  const shape = p.width > 0 && p.height > 0 ? classifyShape(p.width, p.height) : 'unknown';
+  return {
+    path: p.path,
+    name: p.name || p.path.split('/').pop() || '照片',
+    kind: 'image',
+    shape,
+    mtime: p.mtime || undefined,
+  };
+}
+
 /** 索引里所有照片路径拼成的指纹：只有它变了才说明磁盘上真有增删 */
 function indexSignature(index: PhotoIndex | null): string {
   if (!index) return '';
@@ -259,6 +330,21 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
     set({ diskKind: disk.kind });
     const idx = readIndex();
     if (idx) set({ index: idx, status: 'bound' });
+
+    // 手机端：不扫目录树，改成按相册名与区县名做同名匹配（用户在系统相册里怎么归，
+    // App 就怎么显示，不需要导入 / 复制，也不需要理解目录结构）
+    if (isAndroidShell() && hasMediaBridge()) {
+      try {
+        const albumIndex = buildAlbumIndex();
+        if (albumIndex) {
+          applyIndex(albumIndex);
+          set({ index: albumIndex, status: 'bound', error: null, lastLiveAdded: 0 });
+          return;
+        }
+      } catch {
+        /* 权限未授予或查询失败：落到下面的目录逻辑，由设置面板提示重新绑定 */
+      }
+    }
 
     if (disk.kind === 'tauri') {
       // 记住过根目录：静默重扫恢复现场；没记住则等用户在设置里选
@@ -456,6 +542,15 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
       // 套壳内文件系统路径可直接转成媒体流，省去读字节
       const direct = disk.directUrl(entry.path);
       if (direct) return direct;
+    }
+    // 相册来源的条目 path 是绝对路径（磁盘扫描的条目是相对根目录的路径），
+    // 未绑定根目录时也要能出图，这里直接转成 asset URL。
+    if (isAndroidShell() && entry.path.startsWith('/')) {
+      try {
+        return convertFileSrc(entry.path);
+      } catch {
+        /* 退化到下面的缓存逻辑 */
+      }
     }
     return resolvePhotoUrl(entry);
   },
