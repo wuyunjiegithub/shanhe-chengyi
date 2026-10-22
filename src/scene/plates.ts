@@ -109,6 +109,11 @@ export function createPlateMesh(
     normalScale: new THREE.Vector2(0.16, 0.16),
     emissive: style.glowColor,
     emissiveIntensity: style.glowIntensity,
+    // 深度往后退一档：地形网格（+0.08）、陆域底板（+0.03）都贴着顶盖铺，
+    // 不加偏移时几十米的高差在远视角下抵不过深度精度，会互相穿透成大块色斑。
+    polygonOffset: true,
+    polygonOffsetFactor: 1,
+    polygonOffsetUnits: 1,
   });
 
   // 边缘 fresnel 冷光：板块顶盖是平面，俯视角下几乎不产生明暗渐变，

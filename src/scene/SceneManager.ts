@@ -55,7 +55,7 @@ const PIN_SCREEN_PX = 12.5;
  * 爱心是实心团块，同高度下视觉面积约是红旗的两倍多，看起来会明显更大。
  * 因此这里不共用同一个数值：旗子按整体高度算，爱心按「视觉等重」压低一档。
  */
-const MARKER_SCREEN_PX: Record<MarkerKind, number> = { visited: 42, favorite: 28 };
+const MARKER_SCREEN_PX: Record<MarkerKind, number> = { visited: 48, favorite: 36 };
 
 
 interface PlateRecord {
@@ -130,9 +130,14 @@ export class SceneManager {
   private anchorGroup = new THREE.Group();
   private anchor: CSS2DObject | null = null;
   private anchorNdc = new THREE.Vector3();
-  /** 地形图层（山地 / 湖泊 / 江河）：仅在省视角显示，下钻区县时自动隐藏 */
+  /** 地形图层（山地 / 湖泊 / 江河）：省视角满比例，下钻区县时压扁成「地貌底图」 */
   private terrain: TerrainHandle | null = null;
   private terrainOn = true;
+  /** 城市多边形（世界坐标）：地形底板要用它铺一层低地色补上海岸线的网格空隙 */
+  private cityShapes: ProjectedShape[] = [];
+  /** 当前下钻城市的区县多边形：用来反算「不戳穿区县板块」的地形竖向缩放 */
+  private districtShapes: ProjectedShape[] = [];
+  private districtRelief = 1;
   /**
    * 城市边界线的原始环（世界 x / north 坐标）。
    * 板块自带的轮廓线贴在板顶 y=2.62，一旦盖上地形就被山体与平原整个埋掉，
@@ -327,6 +332,9 @@ export class SceneManager {
   setCityPlates(shapes: ProjectedShape[]): void {
     this.clearLayer(this.cityGroup, this.cities);
     this.cityRings = [];
+    this.cityShapes = shapes;
+    // 地形底板：城市多边形铺的低地色平面，补上海岸线处的网格空隙
+    this.terrain?.setLandBase(shapes);
     for (const s of shapes) this.addPlate(this.cityGroup, this.cities, s, 'city', CITY_HEIGHT);
     this.regionBox = new THREE.Box3().setFromObject(this.cityGroup);
     const size = this.regionBox.getSize(new THREE.Vector3());
@@ -346,6 +354,10 @@ export class SceneManager {
     // 区县层整体抬到城市板顶面之上：板块 / 光点 / 标记 / 标签 / 卡锚同组一起抬，
     // 拾取与相机构图都用世界坐标，不受影响。
     this.setDistrictLayerY(DISTRICT_BASE_Y);
+    this.districtShapes = shapes;
+    this.districtRelief = this.terrain
+      ? this.terrain.reliefForTop(shapes, DISTRICT_BASE_Y + DISTRICT_HEIGHT)
+      : 1;
     for (const s of shapes) this.addPlate(this.districtGroup, this.districts, s, 'district', DISTRICT_HEIGHT);
     this.updateDistrictLabels(shapes);
     this.layer = 'district';
@@ -399,6 +411,12 @@ export class SceneManager {
     this.clearLabels(this.districtLabels, this.districtLabelGroup);
     this.clearPins();
     this.clearMarkers(this.districtMarkerGroup);
+    // 回到省视角必须把城市标记显回来：
+    // setCityFocus 在进城市时把 cityMarkerGroup 关掉，而 clearDistrictPlates 里
+    // focusedCityId 已先被置空，setCityFocus(null) 会被早退挡掉 ——
+    // 结果「去过/想去」的旗子和爱心在城市视图逛一圈后就再也不出现了。
+    this.cityMarkerGroup.visible = true;
+    this.districtMarkerGroup.visible = false;
     this.setAnchor(null);
     this.districtLabelGroup.visible = false;
     this.provinceLabelGroup.visible = true;
@@ -492,6 +510,14 @@ export class SceneManager {
     this.terrain = handle;
     if (handle) {
       this.scene.add(handle.group);
+      if (this.cityShapes.length > 0) handle.setLandBase(this.cityShapes);
+      // 地形异步到达时可能已经在下钻状态：补算一次缩放，否则山体会戳穿区县板块
+      if (this.layer === 'district' && this.districtShapes.length > 0) {
+        this.districtRelief = handle.reliefForTop(
+          this.districtShapes,
+          DISTRICT_BASE_Y + DISTRICT_HEIGHT,
+        );
+      }
       const w = this.container?.clientWidth ?? 0;
       const h = this.container?.clientHeight ?? 0;
       if (w > 0 && h > 0) handle.setResolution(w, h);
@@ -505,11 +531,23 @@ export class SceneManager {
     this.applyTerrain();
   }
 
-  /** 地形仅在省视角（city 层）显示；下钻区县时自动隐藏，避免被区县板块压住 */
+  /**
+   * 地形在两个层级都显示，但比例不同：
+   * - 省视角：满比例（真实高程 × 夸张倍数），山川湖海是主视觉；
+   * - 区县视角：压到 0.12 —— 区县板块层固定在 y≈3.6，满比例的山会从天里长出来、把区县戳穿。
+   *   压扁后地形读作「板块下方的地貌底图」，颜色仍按真实海拔着色，远看还是能认出山区和平原。
+   * 城市边界线只在省视角画：区县视角用的是板块自带的区县轮廓。
+   */
   private applyTerrain(): void {
-    const show = Boolean(this.terrain && this.terrainOn && this.layer !== 'district');
-    if (this.terrain) this.terrain.group.visible = show;
-    this.rebuildBoundaryOverlay(show);
+    const on = Boolean(this.terrain && this.terrainOn);
+    if (this.terrain) {
+      this.terrain.group.visible = on;
+      this.terrain.setRelief(this.layer === 'district' ? this.districtRelief : 1);
+    }
+    // 边界线两个层级都画：区县视角里周边城市也要能读出形状，
+    // 否则地形一铺，周围就剩一整片没有分界的绿。取样用 heightAt，压扁后同样贴地。
+    this.rebuildBoundaryOverlay(on);
+    this.applyMarkerGround();
   }
 
   /**
@@ -619,8 +657,12 @@ export class SceneManager {
       const ang = -Math.PI / 2 + slot * (Math.PI * 0.66);
       const ox = Math.cos(ang);
       const oz = Math.sin(ang);
-      const baseY = rec.height + 0.32;
-      obj.position.set(rec.centroid[0] + ox, baseY, -rec.centroid[1] + oz);
+      // 地形盖在板块之上：旗子 / 爱心要插在「地表」而不是板顶，
+      // 否则山地里的标记会被山体埋掉一半（用户反馈「有了地形之后红旗和爱心看不见」）。
+      const cx = rec.centroid[0];
+      const cz = -rec.centroid[1];
+      const baseY = this.markerGroundY(cx + ox, cz + oz, rec.height) + 0.06;
+      obj.position.set(cx + ox, baseY, cz + oz);
       obj.userData.baseY = baseY;
       obj.userData.plateId = item.id;
       // 锚点与单位方向：错开距离随标记自身缩放走，
@@ -630,6 +672,30 @@ export class SceneManager {
       obj.userData.offX = ox;
       obj.userData.offZ = oz;
       group.add(obj);
+    }
+  }
+
+  /** 标记落点的地表高度：地形开启时取地形表面，否则用板块顶面 */
+  private markerGroundY(x: number, z: number, plateTop: number): number {
+    if (!this.terrain || !this.terrainOn) return plateTop;
+    return Math.max(plateTop, this.terrain.heightAt(x, z));
+  }
+
+  /**
+   * 地形挂载 / 开关 / 层级切换后，把已有标记重新插回地表。
+   * 标记是「先建后挂地形」的（地形 500KB 异步加载），不补这一步，
+   * 先建的旗子会停在板顶、被后到的山体埋住。
+   */
+  private applyMarkerGround(): void {
+    for (const marker of this.cityMarkerGroup.children) {
+      const rec = this.cities.get(marker.userData.plateId as string);
+      if (!rec) continue;
+      const x = marker.userData.anchorX as number;
+      const z = marker.userData.anchorZ as number;
+      const off = marker.userData.offX as number;
+      const offZ = marker.userData.offZ as number;
+      marker.userData.baseY =
+        this.markerGroundY(x + off, z + offZ, rec.height) + 0.06;
     }
   }
 

@@ -3,6 +3,7 @@ import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { projectPoint, type Projection } from '../data/projection';
+import type { ProjectedShape } from '../data/types';
 import type { TerrainData } from '../data/terrain';
 
 /**
@@ -12,6 +13,20 @@ import type { TerrainData } from '../data/terrain';
  * 与 SceneManager 的 CITY_HEIGHT 保持一致（改那边记得同步）。
  */
 const LAND_TOP = 2.6;
+
+/**
+ * 地形网格的基准面。
+ *
+ * 不能直接用 LAND_TOP：平原（苏北、上海）高程只有几米，换算成世界坐标不到 0.05，
+ * 地形网格与板块顶盖几乎完全共面，远视角下深度精度不够 → 两者反复争夺深度，
+ * 整片平原会闪出板块的深蓝底色（用户反馈的「江苏右上角一直闪蓝色背景」）。
+ *
+ * 抬离 0.08 世界单位（≈600m 画面高度，看不出来）后，任何视角下地形都稳定压住顶盖；
+ * 材质上再叠一层 polygonOffset 兜底。板块顶盖本身也被下面的「陆域底板」盖住，
+ * 底板用的是地形低地色，所以即使网格在海岸线处有空隙，露出来的也是陆地色而不是蓝色。
+ */
+const TERRAIN_BASE = LAND_TOP + 0.08;
+
 /** 水面相对所在地形的高差（略高于地表，避免共面 z-fighting） */
 const WATER_OFFSET = 0.08;
 /** 河道相对所在地形的高差：比湖面再高一点，江河不被湖盖住 */
@@ -63,8 +78,25 @@ export interface TerrainHandle {
   /** 视口尺寸变化：刷新 LineMaterial 的 resolution（Line2 必须，否则宽度错或不可见） */
   setResolution: (w: number, h: number) => void;
   /**
+   * 竖向起伏缩放（1 = 真实夸张比例）。
+   * 区县视角的板块层固定在 y ≈ 3.6，地形若按满比例会从板块里长出来，
+   * 所以下钻时压到 0.12，让地形读作板块下方的「地貌底图」。
+   */
+  setRelief: (k: number) => void;
+  /**
+   * 陆域底板：用城市多边形铺一层低地色平面，垫在地形网格之下。
+   * 地形是按网格格心是否在陆域内裁剪的，海岸线处必然留一圈半格～一格的空隙，
+   * 没有底板时那里会露出板块的深蓝顶盖（读作「背景漏出来」）。
+   */
+  setLandBase: (shapes: ProjectedShape[]) => void;
+  /**
+   * 按「给定多边形范围内最高地形」反算一个不会戳穿 topY 的竖向缩放。
+   * 区县视角用它保证山体压在区县板块之下。
+   */
+  reliefForTop: (shapes: ProjectedShape[], topY: number) => number;
+  /**
    * 地形表面在世界坐标 (x, z) 处的高度。
-   * 城市边界线要贴在地形上绘制（否则会被山体埋掉），需要按点取样。
+   * 城市边界线 / 标记要贴在地形上（否则会被山体埋掉），需要按点取样。
    * 落在陆地之外（海面）时返回板块顶面高度。
    */
   heightAt: (x: number, z: number) => number;
@@ -95,6 +127,14 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
   const group = new THREE.Group();
   group.name = 'terrain';
   group.renderOrder = 3;
+
+  /**
+   * 内层分组：所有地形几何都以 TERRAIN_BASE 为基准写死世界高度，
+   * 竖向缩放时绕基准面收放（而不是绕 y=0 收缩，否则整层会往海面塌下去）。
+   */
+  const inner = new THREE.Group();
+  group.add(inner);
+  let relief = 1;
 
   const disposables: Array<{ dispose: () => void }> = [];
   const { bbox, cols, rows, maxElev } = data.meta;
@@ -178,8 +218,9 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
         h = 0;
       }
 
-      positions[idx * 3 + 1] = LAND_TOP + h;
-      surfaceY[idx] = LAND_TOP + h;
+      positions[idx * 3 + 1] = TERRAIN_BASE + h;
+      // surfaceY 存「相对基准面的高度」：竖向缩放时只要乘 relief 即可
+      surfaceY[idx] = h;
       elevF[idx] = e;
       colorAt(e, maxElev, c);
       colors[idx * 3] = c.r;
@@ -221,12 +262,24 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
     colors[idx * 3 + 2] *= k;
   }
 
+  /** 满起伏状态下的顶点色：下钻压扁时往低地色混，弱化「等高带着色块」的观感 */
+  const baseColors = new Float32Array(colors);
+  const PLAIN_RGB = (() => {
+    const c0 = new THREE.Color(ELEV_STOPS[0][1]).multiplyScalar(LIGHT_COMP * 1.1);
+    return [c0.r, c0.g, c0.b];
+  })();
+
   const terrainMat = new THREE.MeshStandardMaterial({
     vertexColors: true,
     roughness: 0.94,
     metalness: 0.0,
     emissive: 0x0a1f1b,
     emissiveIntensity: 0.22,
+    // 深度兜底：平原区地形与板块顶盖高度只差 0.08，远视角下仍可能争深度。
+    // polygonOffset 在深度缓冲里再往前拉一点，与到相机距离无关。
+    polygonOffset: true,
+    polygonOffsetFactor: -2,
+    polygonOffsetUnits: -2,
   });
   // 等高线：每 CONTOUR_STEP 米一道极细的冷白刻线。
   // 用 fwidth 让线宽恒为约 1 像素，缩小到省视角时线自然变淡，不会糊成一层网。
@@ -247,7 +300,11 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
           // 省视角下每像素跨过的等高带太密，线会连成一片白雾 —— 按屏幕导数淡出，
           // 只有放大到能看清山形时才显出来。
           float fade = 1.0 - smoothstep(0.03, 0.11, w);
-          outgoingLight += vec3(0.55, 0.86, 0.78) * line * fade * 0.12;
+          // 海拔恰好为 0 的格子（苏北平原、湖面、DEM 缺测）会让 fract(cb) 恒为 0，
+          // 整片区域都被判成「在线条上」，糊成一层发白的雾。
+          // 用海拔把 0～6m 的平坦区直接排除，海边和湖面不再泛白。
+          float above = smoothstep(2.0, 8.0, vElevM);
+          outgoingLight += vec3(0.55, 0.86, 0.78) * line * fade * above * 0.12;
         }
         #include <opaque_fragment>
         `,
@@ -255,6 +312,9 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
   };
   const terrainMesh = new THREE.Mesh(meshGeo, terrainMat);
   terrainMesh.renderOrder = 3;
+  // 地形网格挂在外层 group（不参与 inner 的竖向缩放）：
+  // 非等比缩放会把法线按 1/relief 放大，压扁后原本几度的缓坡会被放大成侧壁，
+  // 整片平原被照成互不相连的大色块。高度变化直接改顶点、重算法线。
   group.add(terrainMesh);
   disposables.push(meshGeo, terrainMat);
 
@@ -353,10 +413,10 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
       latSum += lat;
     }
     const lakeElev = Math.max(0, elevAt(lngSum / w.ring.length, latSum / w.ring.length));
-    const surfaceY = LAND_TOP + lakeElev * vertScale + WATER_OFFSET;
+    const waterY = TERRAIN_BASE + lakeElev * vertScale + WATER_OFFSET;
     for (let i = 0; i < vcount; i++) {
       // ShapeGeometry 在 XY 平面，转到世界 XZ（world z = -y，与板块投影一致）
-      wPos.push(pa[i * 3], surfaceY, -pa[i * 3 + 1]);
+      wPos.push(pa[i * 3], waterY, -pa[i * 3 + 1]);
     }
     // 从 XY 转到 XZ 会镜像绕序，这里反转一次保证正面朝上
     for (let i = 0; i < ia.length; i += 3) {
@@ -376,7 +436,7 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
     waterGeo.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
     const waterMesh = new THREE.Mesh(waterGeo, waterMat);
     waterMesh.renderOrder = 4;
-    group.add(waterMesh);
+    inner.add(waterMesh);
     disposables.push(waterGeo);
   }
 
@@ -389,8 +449,8 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
       const [x1, y1] = projectPoint(lng1, lat1, p);
       const [x2, y2] = projectPoint(lng2, lat2, p);
       // 河道贴着当地地形走：上游（长江皖江段）不沉到地里，下游也不会浮空
-      const e1 = LAND_TOP + Math.max(0, elevAt(lng1, lat1)) * vertScale + RIVER_OFFSET;
-      const e2 = LAND_TOP + Math.max(0, elevAt(lng2, lat2)) * vertScale + RIVER_OFFSET;
+      const e1 = TERRAIN_BASE + Math.max(0, elevAt(lng1, lat1)) * vertScale + RIVER_OFFSET;
+      const e2 = TERRAIN_BASE + Math.max(0, elevAt(lng2, lat2)) * vertScale + RIVER_OFFSET;
       riverPositions.push(x1, e1, -y1, x2, e2, -y2);
     }
   }
@@ -414,7 +474,7 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
     riverMesh.computeLineDistances();
     riverMesh.frustumCulled = false;
     riverMesh.renderOrder = 5;
-    group.add(riverMesh);
+    inner.add(riverMesh);
     disposables.push(riverGeo, riverMat);
   }
 
@@ -434,7 +494,8 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
   /**
    * 世界坐标 → 地表高度（双线性插值）。
    * 投影是等距圆柱（线性），可以直接反解经纬度再换算成网格浮点索引；
-   * 不在网格范围内时退回板块顶面，调用方（城市边界线）不会掉到地面以下。
+   * 不在网格范围内时退回板块顶面，调用方（城市边界线 / 标记）不会掉到地面以下。
+   * 返回值已按当前竖向缩放（relief）换算，与画面里看到的地表一致。
    */
   const [originLng, originLat] = p.origin;
   const kxWorld = EARTH_M_PER_DEG * Math.cos((originLat * Math.PI) / 180) * p.scale;
@@ -444,7 +505,7 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
     const lat = originLat - z / kyWorld;
     const fi = ((lng - minLng) / (maxLng - minLng)) * cols - 0.5;
     const fj = ((maxLat - lat) / (maxLat - minLat)) * rows - 0.5;
-    if (fi < -1 || fj < -1 || fi > cols - 1 || fj > rows - 1) return LAND_TOP;
+    if (fi < -1 || fj < -1 || fi > cols - 1 || fj > rows - 1) return TERRAIN_BASE;
     const i0 = Math.max(0, Math.min(cols - 2, Math.floor(fi)));
     const j0 = Math.max(0, Math.min(rows - 2, Math.floor(fj)));
     const tx = Math.max(0, Math.min(1, fi - i0));
@@ -455,7 +516,153 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
     const d = surfaceY[(j0 + 1) * cols + i0 + 1];
     const top = a + (b - a) * tx;
     const bot = c2 + (d - c2) * tx;
-    return top + (bot - top) * ty;
+    return TERRAIN_BASE + (top + (bot - top) * ty) * relief;
+  };
+
+  /** 竖向缩放：绕基准面收放，保证山体压扁后仍贴着陆域顶面 */
+  const setRelief = (k: number) => {
+    const next = Math.max(0.02, Math.min(4, k));
+    if (next === relief) return;
+    relief = next;
+
+    // 水面 / 河道是平面，直接缩放分组即可
+    inner.scale.y = relief;
+    inner.position.y = TERRAIN_BASE * (1 - relief);
+
+    // 地形网格：改顶点高度后重算法线，才能得到「真的变平」的正确光照
+    const pos = meshGeo.attributes.position;
+    const arr = pos.array as Float32Array;
+    for (let i = 0; i < total; i++) arr[i * 3 + 1] = TERRAIN_BASE + surfaceY[i] * relief;
+    pos.needsUpdate = true;
+    meshGeo.computeVertexNormals();
+
+    // 压扁后山体明暗消失，只剩按海拔分的色块，边界会读成一块块「平铺的色板」。
+    // 往低地色混一部分，让地形退回成安静的地貌底图，视觉重心交还给区县板块。
+    const mix = Math.min(0.62, (1 - relief) * 0.55);
+    const col = meshGeo.attributes.color;
+    const ca = col.array as Float32Array;
+    for (let i = 0; i < total * 3; i++) {
+      ca[i] = baseColors[i] + (PLAIN_RGB[i % 3] - baseColors[i]) * mix;
+    }
+    col.needsUpdate = true;
+  };
+
+  /**
+   * 陆域底板：把城市多边形铺成一层低地色平面，垫在地形网格之下。
+   * 地形网格按「格心是否在陆域内」裁三角形，海岸线处必然空出半格到一格；
+   * 没有底板时那圈空隙露出的是板块顶盖的深蓝发光（用户看到的「蓝色背景一直在闪」）。
+   */
+  let landBase: THREE.Mesh | null = null;
+  const setLandBase = (shapes: ProjectedShape[]) => {
+    if (landBase) {
+      group.remove(landBase);
+      disposeObject(landBase);
+      landBase = null;
+    }
+    if (shapes.length === 0) return;
+
+    const pos: number[] = [];
+    const idx: number[] = [];
+    let offset = 0;
+    for (const s of shapes) {
+      const rings = s.outlines && s.outlines.length > 0 ? s.outlines : [s.outline];
+      for (const ring of rings) {
+        if (ring.length < 3) continue;
+        const pts = ring.map(([x, y]) => new THREE.Vector2(x, y));
+        // Shape 不接受重复的闭合尾点
+        const f = pts[0];
+        const l = pts[pts.length - 1];
+        if (Math.abs(l.x - f.x) < 1e-9 && Math.abs(l.y - f.y) < 1e-9) pts.pop();
+        if (pts.length < 3) continue;
+        const geo = new THREE.ShapeGeometry(new THREE.Shape(pts));
+        const pa = geo.attributes.position.array as ArrayLike<number>;
+        const ia = geo.index ? (geo.index.array as ArrayLike<number>) : null;
+        if (ia) {
+          const vcount = pa.length / 3;
+          for (let i = 0; i < vcount; i++) pos.push(pa[i * 3], 0, -pa[i * 3 + 1]);
+          // ShapeGeometry 在 XY 平面是逆时针（法线 +Z）；映射到 (x, 0, -y) 后
+          // 叉积正好朝 +Y，绕序无需反转 —— 反转反而让整块底板被背面剔除，等于没画
+          for (let i = 0; i < ia.length; i += 3) {
+            idx.push(offset + ia[i], offset + ia[i + 1], offset + ia[i + 2]);
+          }
+          offset += vcount;
+        }
+        geo.dispose();
+      }
+    }
+    if (idx.length === 0) return;
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geo.setIndex(idx);
+    const normals = new Float32Array(pos.length);
+    for (let i = 1; i < normals.length; i += 3) normals[i] = 1;
+    geo.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
+
+    // 颜色 = 地形最低一档色 × 光照补偿 × 平地坡度系数（1.1），
+    // 与地形网格的平原区完全同色，空隙处的拼接几乎看不出来
+    const base = new THREE.Color(ELEV_STOPS[0][1]).multiplyScalar(LIGHT_COMP * 1.1);
+    const mat = new THREE.MeshStandardMaterial({
+      color: base,
+      roughness: 0.94,
+      metalness: 0.0,
+      emissive: 0x0a1f1b,
+      emissiveIntensity: 0.22,
+      polygonOffset: true,
+      polygonOffsetFactor: -1,
+      polygonOffsetUnits: -1,
+    });
+
+    const mesh = new THREE.Mesh(geo, mat);
+    // 略低于地形基准面：底板只负责「补洞」，不该抢地形的高度。
+    // 注意挂在 group 而不是 inner 上 —— inner 会做竖向缩放，
+    // 一缩放这 0.05 的间隙就被压到 0.006，底板又会和地形抢深度（整片城市形状的色块）。
+    mesh.position.y = LAND_TOP + 0.03;
+    mesh.renderOrder = 2;
+    group.add(mesh);
+    landBase = mesh;
+    disposables.push(geo, mat);
+  };
+
+  /**
+   * 按「该市范围内最高地形」反算竖向缩放：
+   * 区县板块顶面固定在 topY，地形若按满起伏会从板块里长出来、把区块戳穿。
+   * 平坦城市（盐城、上海）算出的缩放会被 1 封顶 —— 周边山川保持真实比例；
+   * 山区城市（黄山、杭州）才需要压扁。
+   */
+  const reliefForTop = (shapes: ProjectedShape[], topY: number): number => {
+    const budget = Math.max(0.25, topY - TERRAIN_BASE - 0.12);
+    let peak = 0;
+    // 先用整座城的包围盒筛掉绝大多数格心，再逐格做点在多边形内判定
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minZ = Infinity;
+    let maxZ = -Infinity;
+    const rings: [number, number][][] = [];
+    for (const s of shapes) {
+      const rs = s.outlines && s.outlines.length > 0 ? s.outlines : [s.outline];
+      for (const r of rs) {
+        rings.push(r);
+        for (const [x, yN] of r) {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          const z = -yN;
+          if (z < minZ) minZ = z;
+          if (z > maxZ) maxZ = z;
+        }
+      }
+    }
+    if (!rings.length) return 1;
+    for (let idx = 0; idx < total; idx++) {
+      const x = positions[idx * 3];
+      const z = positions[idx * 3 + 2];
+      if (x < minX || x > maxX || z < minZ || z > maxZ) continue;
+      const h = surfaceY[idx];
+      if (h <= peak) continue;
+      if (!pointInRings(x, -z, rings)) continue;
+      peak = h;
+    }
+    return peak <= budget ? 1 : Math.max(0.04, budget / peak);
   };
 
   const dispose = () => {
@@ -466,5 +673,32 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
     });
   };
 
-  return { group, update, setResolution, heightAt, dispose };
+  return { group, update, setResolution, setRelief, setLandBase, reliefForTop, heightAt, dispose };
+}
+
+/** 点是否落在任一外环内（射线法） */
+function pointInRings(x: number, y: number, rings: [number, number][][]): boolean {
+  for (const ring of rings) {
+    let inside = false;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const [xi, yi] = ring[i];
+      const [xj, yj] = ring[j];
+      if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi || 1e-12) + xi) {
+        inside = !inside;
+      }
+    }
+    if (inside) return true;
+  }
+  return false;
+}
+
+/** 释放一個对象及其材质 / 几何（底板重建时用） */
+function disposeObject(obj: THREE.Object3D): void {
+  obj.traverse((o) => {
+    const m = o as THREE.Mesh;
+    if (m.geometry) m.geometry.dispose();
+    const mat = m.material as THREE.Material | THREE.Material[] | undefined;
+    if (Array.isArray(mat)) mat.forEach((x) => x.dispose());
+    else mat?.dispose();
+  });
 }
