@@ -11,6 +11,10 @@ export interface PhotoViewerProps {
   /** 「3 / 12」计数 */
   counter?: string;
   kind?: 'image' | 'video';
+  /** 图注（用户给单张照片写的说明） */
+  caption?: string;
+  /** 图注变更回调（传空串表示删除） */
+  onCaption?: (text: string) => void;
   onClose: () => void;
   onPrev?: () => void;
   onNext?: () => void;
@@ -42,6 +46,8 @@ export function PhotoViewer({
   time,
   counter,
   kind = 'image',
+  caption,
+  onCaption,
   onClose,
   onPrev,
   onNext,
@@ -52,6 +58,9 @@ export function PhotoViewer({
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   /** 删除二次确认：第一下进入待确认态，第二下（4 秒内）才真删 */
   const [confirmDelete, setConfirmDelete] = useState(false);
+  /** 图注编辑态 */
+  const [editingCap, setEditingCap] = useState(false);
+  const [capDraft, setCapDraft] = useState('');
 
   // 换图（上/下一张）时复位变换与删除确认，避免沿用上一张的状态
   useEffect(() => {
@@ -59,7 +68,18 @@ export function PhotoViewer({
     setRotation(0);
     setOffset({ x: 0, y: 0 });
     setConfirmDelete(false);
+    setEditingCap(false);
+    setCapDraft('');
   }, [src]);
+
+  const startEditCap = () => {
+    setCapDraft(caption ?? '');
+    setEditingCap(true);
+  };
+  const saveCap = () => {
+    onCaption?.(capDraft);
+    setEditingCap(false);
+  };
 
   /** 删除按钮：两段式确认（删的是磁盘文件，不可恢复） */
   const onDeleteClick = () => {
@@ -222,6 +242,51 @@ export function PhotoViewer({
             </button>
             <span className="pv-scale">{Math.round(scale * 100)}%</span>
           </div>
+        </div>
+
+        <div className="pv-caption">
+          {editingCap ? (
+            <div className="pv-cap-edit">
+              <textarea
+                className="pv-cap-input"
+                value={capDraft}
+                placeholder="写一句图注，记录这张照片的故事…"
+                maxLength={140}
+                onChange={(e) => setCapDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) saveCap();
+                }}
+              />
+              <div className="pv-cap-actions">
+                <button type="button" className="ghost-btn" onClick={saveCap}>
+                  保存
+                </button>
+                {caption && (
+                  <button
+                    type="button"
+                    className="ghost-btn is-danger"
+                    onClick={() => {
+                      onCaption?.('');
+                      setEditingCap(false);
+                    }}
+                  >
+                    删除
+                  </button>
+                )}
+                <button type="button" className="ghost-btn" onClick={() => setEditingCap(false)}>
+                  取消
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button type="button" className="pv-cap-line" onClick={startEditCap}>
+              {caption ? (
+                <span className="pv-cap-text">{caption}</span>
+              ) : (
+                <span className="pv-cap-placeholder">✎ 添加图注</span>
+              )}
+            </button>
+          )}
         </div>
 
         {onPrev && (

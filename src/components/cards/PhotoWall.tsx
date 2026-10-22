@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useData } from '../../stores/data';
 import { useUi } from '../../stores/ui';
 import { usePhotoLib } from '../../stores/photoLib';
+import { useCaptions } from '../../stores/captions';
 import { refineShape } from '../../data/photoLibrary';
 import type { PhotoEntry, PhotoShape } from '../../data/photoLibrary';
 import { Gallery3D } from './Gallery3D';
@@ -270,6 +271,8 @@ export function PhotoWall() {
   const libTotal = usePhotoLib((s) => s.index?.total ?? 0);
   const uploadTo = usePhotoLib((s) => s.uploadTo);
   const removePhotos = usePhotoLib((s) => s.removePhotos);
+  const captionMap = useCaptions((s) => s.map);
+  const setCaption = useCaptions((s) => s.set);
   const fileRef = useRef<HTMLInputElement>(null);
   /** 3D 照片空间容器，全屏时把这个节点交给浏览器全屏 API */
   const hall3dRef = useRef<HTMLDivElement>(null);
@@ -700,6 +703,9 @@ export function PhotoWall() {
                     🔍 放大查看
                   </button>
                 )}
+                {focus !== null && items[focus] && captionMap[items[focus].key] && (
+                  <div className="hall3d-cap">{captionMap[items[focus].key]}</div>
+                )}
               </div>
             ) : (
               <>
@@ -778,6 +784,7 @@ export function PhotoWall() {
                                 {sort.key === 'time' && it.time && (
                                   <i className="wall-tile-date">{fmtTime(it.time)}</i>
                                 )}
+                                {captionMap[it.key] && <em className="wall-cap">{captionMap[it.key]}</em>}
                               </span>
                             </button>
                             {manage && selectable && (
@@ -829,6 +836,7 @@ export function PhotoWall() {
                         <b>{current.title}</b>
                         {current.sub && <i>{current.sub}</i>}
                         {current.time && <i>{fmtTime(current.time)}</i>}
+                        {captionMap[current.key] && <em className="wall-cap">{captionMap[current.key]}</em>}
                         <span className="wall-stage-index">
                           {active + 1} / {items.length}
                         </span>
@@ -879,6 +887,8 @@ export function PhotoWall() {
             sub={viewerItem.sub}
             time={viewerItem.time}
             counter={`${(focus ?? 0) + 1} / ${items.length}`}
+            caption={captionMap[viewerItem.key] ?? ''}
+            onCaption={(t) => setCaption(viewerItem.key, t)}
             kind={viewerItem.kind === 'video' ? 'video' : 'image'}
             onClose={closeViewer}
             onPrev={items.length > 1 ? () => step(-1) : undefined}

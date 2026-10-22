@@ -3790,6 +3790,19 @@ button.wall-stage-img {
   }
 }
 
+.wall-cap {
+  font-style: normal;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--accent);
+  margin-top: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: pre-wrap;
+}
+
 .wall-stage-cap {
   display: flex;
   align-items: baseline;
@@ -5944,6 +5957,83 @@ button.wall-stage-img {
   color: var(--text-2);
 }
 
+/* 看图器里的图注：浮在画面底部、工具栏之上；只看不改时是一行可点的文字 */
+.pv-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.pv-cap-line {
+  pointer-events: auto;
+  max-width: min(560px, 92%);
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(8, 12, 20, 0.78);
+  backdrop-filter: blur(8px);
+  color: var(--text-1);
+  font-size: 13px;
+  line-height: 1.5;
+  cursor: text;
+  text-align: center;
+}
+
+.pv-cap-placeholder {
+  color: var(--text-3);
+  font-size: 12px;
+}
+
+.pv-cap-text {
+  color: var(--text-1);
+  white-space: pre-wrap;
+}
+
+.pv-cap-edit {
+  pointer-events: auto;
+  width: min(560px, 92%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: rgba(8, 12, 20, 0.92);
+  backdrop-filter: blur(10px);
+}
+
+.pv-cap-input {
+  width: 100%;
+  min-height: 64px;
+  resize: vertical;
+  padding: 9px 11px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-1);
+  font-size: 13px;
+  line-height: 1.5;
+  font-family: inherit;
+  color-scheme: dark;
+}
+
+.pv-cap-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.pv-cap-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
 .pv-nav {
   position: absolute;
   top: 50%;
@@ -6022,6 +6112,26 @@ button.wall-stage-img {
 .hall3d-zoom:hover {
   border-color: var(--accent);
   background: rgba(34, 211, 238, 0.2);
+}
+
+/* 3D 照片空间：聚焦某张时，把它的图注浮在底部一行 */
+.hall3d-cap {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 6;
+  max-width: min(560px, 88%);
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(8, 12, 20, 0.8);
+  backdrop-filter: blur(8px);
+  color: var(--text-1);
+  font-size: 12.5px;
+  line-height: 1.5;
+  text-align: center;
+  white-space: pre-wrap;
 }
 
 /* ---- 城市面板：「写游记」入口 ---- */
