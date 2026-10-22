@@ -1,8 +1,11 @@
 import { create } from 'zustand';
 import type { Favorites } from '../data/types';
 import { staticRepository } from '../data/staticRepository';
+import { isVisitedStyle } from '../scene/markerArt';
+import type { VisitedStyle } from '../scene/markerArt';
 
 const RECENT_KEY = 'ds.recent.v1';
+const MARKER_STYLE_KEY = 'ds.markerStyle.v1';
 
 export type LeafCard =
   | { kind: 'spot'; id: string }
@@ -46,6 +49,8 @@ interface UiState {
   panelFullscreen: boolean;
   /** 地图地形图层（山地 / 湖泊 / 江河）是否显示，默认开 */
   terrain: boolean;
+  /** 「去过」标记的样式：旗子 / 图钉 / 打卡章 / 脚印 */
+  visitedStyle: VisitedStyle;
 
   openDrawer: () => void;
   closeDrawer: () => void;
@@ -66,9 +71,20 @@ interface UiState {
   setDistrictPickerOpen: (open: boolean) => void;
   togglePanelFullscreen: (open?: boolean) => void;
   setTerrainOpen: (open?: boolean) => void;
+  setVisitedStyle: (style: VisitedStyle) => void;
   openPhotoWall: (state: PhotoWallState) => void;
   closePhotoWall: () => void;
   showToast: (msg: string) => void;
+}
+
+/** 读取「去过」标记样式；存的是脏值（旧版本残留 / 手改）就退回默认旗子 */
+function readMarkerStyle(): VisitedStyle {
+  try {
+    const raw = localStorage.getItem(MARKER_STYLE_KEY);
+    return isVisitedStyle(raw) ? raw : 'flag';
+  } catch {
+    return 'flag';
+  }
 }
 
 function readRecent(): string[] {
@@ -99,6 +115,7 @@ export const useUi = create<UiState>((set, get) => ({
   districtPickerOpen: false,
   panelFullscreen: false,
   terrain: true,
+  visitedStyle: readMarkerStyle(),
 
   openDrawer: () => set({ drawerOpen: true, favoritesOpen: false }),
   // 关抽屉时顺手复位全屏态：否则抽屉里点过「全屏」再用 ESC / 返回关掉，
@@ -234,6 +251,15 @@ export const useUi = create<UiState>((set, get) => ({
     set((s) => ({ panelFullscreen: open ?? !s.panelFullscreen })),
 
   setTerrainOpen: (open) => set((s) => ({ terrain: open ?? !s.terrain })),
+
+  setVisitedStyle: (visitedStyle) => {
+    set({ visitedStyle });
+    try {
+      localStorage.setItem(MARKER_STYLE_KEY, visitedStyle);
+    } catch {
+      /* 存储不可用就只在本次会话生效 */
+    }
+  },
 
   showToast: (msg) => {
     set({ toast: msg });

@@ -14,6 +14,16 @@ import type { PlateStyle } from './plates';
 import type { TerrainHandle } from './terrain';
 import { createPin, disposePin, disposePinGeometries } from './pins';
 import type { PinInput, PinRecord } from './pins';
+import {
+  FAVORITE_SCREEN_PX,
+  MARKER_ASPECT,
+  MARKER_H,
+  MARKER_W,
+  VISITED_SCREEN_PX,
+  paintFavorite,
+  paintVisited,
+} from './markerArt';
+import type { MarkerKind, VisitedStyle } from './markerArt';
 import type { ProjectedShape, Province } from '../data/types';
 
 const PROVINCE_COLOR: Record<Province, number> = {
@@ -25,12 +35,6 @@ const PROVINCE_COLOR: Record<Province, number> = {
 
 const ACTIVE_EMISSIVE = 0x22d3ee;
 const SELECTED_FACE = 0x2b3e59;
-/** 去过标记：小红旗 */
-const FLAG_RED = 0xff4d5e;
-/** 收藏标记：爱心（玫红，比原来的浅粉更饱和、在暗场里不发白，与「去过」红旗明确区分） */
-const HEART_PINK = 0xf43f7e;
-/** 标记语义：去过 = 红旗；收藏 = 粉心 */
-type MarkerKind = 'visited' | 'favorite';
 const FACE_INDEXED = 0x1c2839;
 const FACE_MUTED = 0x151d29;
 const SIDE_INDEXED = 0x0c1420;
@@ -49,25 +53,6 @@ const DISTRICT_HEIGHT = 1.0;
 const ELEV_DEG = 50;
 /** 景点 pin 的目标屏幕直径（px），由相机距离反算世界缩放 */
 const PIN_SCREEN_PX = 12.5;
-/**
- * 收藏/去过标记的目标屏幕高度（px）：保持恒定大小，缩放到哪都看得见。
- * 两类标记的形状密度差很大——红旗是「细杆 + 小旗面」，同高度下只占很窄一条；
- * 爱心是实心团块，同高度下视觉面积约是红旗的两倍多，看起来会明显更大。
- * 因此这里不共用同一个数值：旗子按整体高度算，爱心按「视觉等重」压低一档。
- */
-const MARKER_SCREEN_PX: Record<MarkerKind, number> = { visited: 48, favorite: 36 };
-/** 标记贴图宽高比（画布 128×168），按屏幕高度反算世界宽度用 */
-const MARKER_ASPECT = 128 / 168;
-
-/** 0xRRGGBB 乘亮度系数 → '#rrggbb'，给 canvas 画标记贴图用 */
-function hexColor(hex: number, k = 1): string {
-  const ch = (v: number) => Math.max(0, Math.min(255, Math.round(v)));
-  const r = ch(((hex >> 16) & 255) * k);
-  const g = ch(((hex >> 8) & 255) * k);
-  const b = ch((hex & 255) * k);
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
-}
-
 
 interface PlateRecord {
   /** 一个要素可能有多块网格（海岛 / 飞地各一块），全部参与拾取与样式 */
@@ -121,8 +106,10 @@ export class SceneManager {
   private pinGroup = new THREE.Group();
   private cityMarkerGroup = new THREE.Group();
   private districtMarkerGroup = new THREE.Group();
-  /** 标记贴图缓存（两类各一张，多个标记共用，释放时不可 dispose） */
-  private markerTextures = new Map<MarkerKind, THREE.Texture>();
+  /** 标记贴图缓存（key = `kind:style`，多个标记共用，释放时不可 dispose） */
+  private markerTextures = new Map<string, THREE.Texture>();
+  /** 「去过」标记当前样式：设置面板可切换（旗子 / 图钉 / 打卡章 / 脚印） */
+  private visitedStyle: VisitedStyle = 'flag';
   private cities = new Map<string, PlateRecord>();
   private districts = new Map<string, PlateRecord>();
   private pins = new Map<string, PinRecord>();
@@ -712,94 +699,50 @@ export class SceneManager {
   }
 
   /**
-   * 标记贴片纹理：用 canvas 现画，避免多两份静态资源。
+   * 标记贴片纹理：用 canvas 现画，避免多几份静态资源。
    *
    * 为什么不用 3D 几何：旗面是竖直平面、旗杆是竖直细杆，默认 50° 俯角看下去
    * 两者都接近正侧对镜头，屏幕上只剩一条红线——这就是「exe 里看不到小旗子和爱心」的原因。
    * Sprite 是屏幕对齐的公告板，任何角度都完整可见。
+   *
+   * 绘制细节全在 markerArt.ts：设置面板的样式预览复用它，保证「预览 = 实样」。
    */
   private markerTexture(kind: MarkerKind): THREE.Texture {
-    const cached = this.markerTextures.get(kind);
+    // 去过标记按当前样式单独缓存：来回切换样式时不用重画，切回去直接命中
+    const key = kind === 'visited' ? `visited:${this.visitedStyle}` : 'favorite';
+    const cached = this.markerTextures.get(key);
     if (cached) return cached;
 
-    const W = 128;
-    const H = 168;
     const cv = document.createElement('canvas');
-    cv.width = W;
-    cv.height = H;
+    cv.width = MARKER_W;
+    cv.height = MARKER_H;
     const ctx = cv.getContext('2d')!;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-
-    if (kind === 'visited') {
-      // 旗杆：底部落在画布下沿，锚点即落地点
-      const poleX = 34;
-      const topY = 20;
-      const botY = H - 6;
-      // 先描一圈深色底，浅色旗杆在浅绿地面上也能立住
-      ctx.strokeStyle = 'rgba(9,14,22,0.6)';
-      ctx.lineWidth = 11;
-      ctx.beginPath();
-      ctx.moveTo(poleX, botY);
-      ctx.lineTo(poleX, topY);
-      ctx.stroke();
-      ctx.strokeStyle = '#dbe5f3';
-      ctx.lineWidth = 6;
-      ctx.beginPath();
-      ctx.moveTo(poleX, botY);
-      ctx.lineTo(poleX, topY);
-      ctx.stroke();
-      // 杆头金球
-      ctx.fillStyle = '#ffd479';
-      ctx.beginPath();
-      ctx.arc(poleX, topY - 4, 8.5, 0, Math.PI * 2);
-      ctx.fill();
-      // 旗面：右侧做一点飘动弧度，不是死板方块
-      ctx.beginPath();
-      ctx.moveTo(poleX + 3, topY + 1);
-      ctx.lineTo(poleX + 84, topY + 12);
-      ctx.quadraticCurveTo(poleX + 98, topY + 44, poleX + 84, topY + 76);
-      ctx.lineTo(poleX + 3, topY + 64);
-      ctx.closePath();
-      const grad = ctx.createLinearGradient(poleX, topY, poleX + 84, topY + 76);
-      grad.addColorStop(0, hexColor(FLAG_RED, 1.35));
-      grad.addColorStop(1, hexColor(FLAG_RED, 0.72));
-      ctx.fillStyle = grad;
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(9,14,22,0.6)';
-      ctx.lineWidth = 5;
-      ctx.stroke();
-    } else {
-      // 爱心：经典贝塞尔轮廓，上两瓣下尖
-      const cx = W / 2;
-      const cy = H / 2 + 8;
-      const s = 46;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy + s * 0.82);
-      ctx.bezierCurveTo(cx - s * 1.5, cy - s * 0.28, cx - s * 0.72, cy - s * 1.32, cx, cy - s * 0.42);
-      ctx.bezierCurveTo(cx + s * 0.72, cy - s * 1.32, cx + s * 1.5, cy - s * 0.28, cx, cy + s * 0.82);
-      ctx.closePath();
-      const grad = ctx.createLinearGradient(cx, cy - s, cx, cy + s);
-      grad.addColorStop(0, hexColor(HEART_PINK, 1.28));
-      grad.addColorStop(1, hexColor(HEART_PINK, 0.82));
-      ctx.fillStyle = grad;
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(9,14,22,0.55)';
-      ctx.lineWidth = 5;
-      ctx.stroke();
-      // 高光
-      ctx.fillStyle = 'rgba(255,255,255,0.45)';
-      ctx.beginPath();
-      ctx.ellipse(cx - s * 0.42, cy - s * 0.5, s * 0.2, s * 0.13, -0.6, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    if (kind === 'visited') paintVisited(ctx, this.visitedStyle);
+    else paintFavorite(ctx);
 
     const tex = new THREE.CanvasTexture(cv);
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.minFilter = THREE.LinearFilter;
     tex.generateMipmaps = false;
-    this.markerTextures.set(kind, tex);
+    this.markerTextures.set(key, tex);
     return tex;
+  }
+
+  /**
+   * 切换「去过」标记样式。已有的标记就地换贴图，不重建整组 ——
+   * 重建会连带丢掉落点、槽位错开等 userData，还得重跑一次贴地计算。
+   */
+  setVisitedStyle(style: VisitedStyle): void {
+    if (style === this.visitedStyle) return;
+    this.visitedStyle = style;
+    for (const group of [this.cityMarkerGroup, this.districtMarkerGroup]) {
+      for (const marker of group.children) {
+        if (marker.userData.kind !== 'visited') continue;
+        const mat = (marker as THREE.Sprite).material as THREE.SpriteMaterial;
+        mat.map = this.markerTexture('visited');
+        mat.needsUpdate = true;
+      }
+    }
   }
 
   /** 创建贴片标记：底边对齐锚点，落在地表上 */
@@ -1507,8 +1450,11 @@ export class SceneManager {
     for (const group of [this.cityMarkerGroup, this.districtMarkerGroup]) {
       for (const marker of group.children) {
         const kind = (marker.userData.kind as MarkerKind) ?? 'favorite';
-        // 贴片：屏幕高度反算世界高度，宽度按画布比例，不再有缩放上限
-        const worldH = MARKER_SCREEN_PX[kind] / pxPerUnit;
+        // 贴片：屏幕高度反算世界高度，宽度按画布比例，不再有缩放上限。
+        // 去过标记按当前样式取不同基准高度——印章 / 脚印是实心块，同高度下比细长的旗子重得多。
+        const pxH =
+          kind === 'visited' ? VISITED_SCREEN_PX[this.visitedStyle] : FAVORITE_SCREEN_PX;
+        const worldH = pxH / pxPerUnit;
         const worldW = worldH * MARKER_ASPECT;
         marker.scale.set(worldW, worldH, 1);
         // 贴片底边对齐锚点：地表高度 + 所属板块的抬升量

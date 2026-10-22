@@ -58,6 +58,13 @@ export async function initSandbox(container: HTMLElement): Promise<void> {
     }),
   );
 
+  // 「去过」标记样式：设置面板切换后立刻换脸，不用等下次重建标记
+  unsubscribers.push(
+    useUi.subscribe((s, prev) => {
+      if (s.visitedStyle !== prev.visitedStyle) manager?.setVisitedStyle(s.visitedStyle);
+    }),
+  );
+
   // 打开照片墙时暂停主场景渲染：避免与 3D 展厅双 WebGL 上下文同时渲染导致主上下文被回收（回退白屏）
   unsubscribers.push(
     useUi.subscribe((s, prev) => {
@@ -94,6 +101,8 @@ export async function initSandbox(container: HTMLElement): Promise<void> {
   const cityGeo = useData.getState().cityGeo;
   projection = computeProjection(cityGeo);
   const proj = projection;
+  // 标记样式要在第一批标记建出来之前就位，否则首屏会先闪一下默认旗子
+  scene.setVisitedStyle(useUi.getState().visitedStyle);
   scene.setCityPlates(projectFeatures(cityGeo, proj));
   // 地形图层（真实高程 / 湖岸线 / 河道）：与板块共用同一投影，精确落在对应陆/水之上。
   // 数据体积约 500KB，异步加载；加载失败只是少一层观感，不影响地图主功能。

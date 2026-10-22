@@ -6356,3 +6356,107 @@ button.wall-stage-img {
     border: 1px solid var(--border);
   }
 }
+
+/* ---------- 设置 · 去过标记样式 ---------- */
+
+.marker-style {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 13px 14px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.marker-style-head {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.marker-style-head b {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.marker-style-head span {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+
+.marker-style-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.marker-style-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: rgba(8, 12, 20, 0.55);
+  transition:
+    border-color 0.16s,
+    background 0.16s,
+    transform 0.16s;
+}
+
+.marker-style-opt:hover {
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.marker-style-opt:active {
+  transform: translateY(1px);
+}
+
+.marker-style-opt.is-on {
+  border-color: var(--border-active);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.22);
+}
+
+.marker-style-opt b {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.marker-style-opt.is-on b {
+  color: var(--text-1);
+}
+
+/* 预览画布按 128×168 原始分辨率绘制，这里只缩显示尺寸，缩到 34px 也不糊 */
+.marker-style-art {
+  width: auto;
+  height: 40px;
+  aspect-ratio: 128 / 168;
+  display: block;
+  pointer-events: none;
+}
+
+.marker-style-note {
+  margin: 0;
+  font-size: 10.5px;
+  line-height: 1.55;
+  color: var(--text-3);
+  min-height: 16px;
+}
+
+@media (max-width: 560px) {
+  .marker-style-art {
+    height: 34px;
+  }
+
+  .marker-style-opt b {
+    font-size: 10.5px;
+  }
+}

@@ -5,6 +5,8 @@ import { isDirectoryPickerSupported } from '../../data/photoLibrary';
 import type { PhotoEntry } from '../../data/photoLibrary';
 import { clearLegacyUploads, readLegacyUploads } from '../../data/legacyUploads';
 import type { LegacyUpload } from '../../data/legacyUploads';
+import { MARKER_H, MARKER_W, VISITED_STYLES, renderMarkerCanvas } from '../../scene/markerArt';
+import type { VisitedStyle } from '../../scene/markerArt';
 
 const TREE = `照片根目录/
 ├─ 浙江省/
@@ -38,6 +40,8 @@ function Panel({ onClose }: { onClose: () => void }) {
   const toggleLive = usePhotoLib((s) => s.toggleLive);
   const terrainOn = useUi((s) => s.terrain);
   const setTerrainOpen = useUi((s) => s.setTerrainOpen);
+  const visitedStyle = useUi((s) => s.visitedStyle);
+  const setVisitedStyle = useUi((s) => s.setVisitedStyle);
   const diskKind = usePhotoLib((s) => s.diskKind);
   const uploadTo = usePhotoLib((s) => s.uploadTo);
   const showToast = useUi((s) => s.showToast);
@@ -225,6 +229,36 @@ function Panel({ onClose }: { onClose: () => void }) {
             高程 AWS Terrain Tiles · 水系 © OpenStreetMap 贡献者（ODbL）
           </p>
 
+          {/* 地图标记：去过的地方用哪种样式，即时生效 */}
+          <div className="marker-style">
+            <div className="marker-style-head">
+              <b>去过标记样式</b>
+              <span>「去过」的城市 / 区县插哪种标记，改了立刻生效</span>
+            </div>
+            <div className="marker-style-grid" role="radiogroup" aria-label="去过标记样式">
+              {VISITED_STYLES.map((item) => {
+                const active = item.id === visitedStyle;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    className={`marker-style-opt${active ? ' is-on' : ''}`}
+                    title={item.note}
+                    onClick={() => setVisitedStyle(item.id)}
+                  >
+                    <MarkerPreview style={item.id} />
+                    <b>{item.label}</b>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="marker-style-note">
+              {VISITED_STYLES.find((x) => x.id === visitedStyle)?.note}
+            </p>
+          </div>
+
           {bound && (
             <div className="photo-lib-stats">
               <span>
@@ -283,5 +317,29 @@ function Panel({ onClose }: { onClose: () => void }) {
         </div>
       </section>
     </div>
+  );
+}
+
+/**
+ * 样式预览：用与地图标记完全相同的绘制函数画到 canvas 上，
+ * 再靠 CSS 缩放成小图 —— 预览和实样永远不会走样。
+ */
+function MarkerPreview({ style }: { style: VisitedStyle }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const cv = ref.current;
+    const ctx = cv?.getContext('2d');
+    if (!cv || !ctx) return;
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.drawImage(renderMarkerCanvas('visited', style), 0, 0);
+  }, [style]);
+  return (
+    <canvas
+      ref={ref}
+      className="marker-style-art"
+      width={MARKER_W}
+      height={MARKER_H}
+      aria-hidden="true"
+    />
   );
 }
