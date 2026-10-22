@@ -1,5 +1,6 @@
 import { SceneManager } from '../scene/SceneManager';
 import { createTerrain } from '../scene/terrain';
+import { loadTerrainData } from '../data/terrain';
 import type { PinInput } from '../scene/pins';
 import { computeProjection, projectFeatures, projectPoint } from '../data/projection';
 import type { Projection } from '../data/projection';
@@ -92,10 +93,15 @@ export async function initSandbox(container: HTMLElement): Promise<void> {
 
   const cityGeo = useData.getState().cityGeo;
   projection = computeProjection(cityGeo);
-  scene.setCityPlates(projectFeatures(cityGeo, projection));
-  // 地形图层（山地 / 湖泊 / 江河）：与板块共用同一投影，精确落在对应陆/水之上
-  scene.setTerrain(createTerrain(projection));
-  scene.setTerrainVisible(useUi.getState().terrain);
+  const proj = projection;
+  scene.setCityPlates(projectFeatures(cityGeo, proj));
+  // 地形图层（真实高程 / 湖岸线 / 河道）：与板块共用同一投影，精确落在对应陆/水之上。
+  // 数据体积约 500KB，异步加载；加载失败只是少一层观感，不影响地图主功能。
+  void loadTerrainData().then((terrain) => {
+    if (!terrain || manager !== scene) return;
+    scene.setTerrain(createTerrain(proj, terrain));
+    scene.setTerrainVisible(useUi.getState().terrain);
+  });
   updateMarkers();
 }
 

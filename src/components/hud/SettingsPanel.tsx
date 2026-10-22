@@ -205,11 +205,11 @@ function Panel({ onClose }: { onClose: () => void }) {
             </button>
           </div>
 
-          {/* 地图图层：地形（山地 / 湖泊 / 江河） */}
+          {/* 地图图层：地形（真实高程 / 湖岸线 / 河道） */}
           <div className="photo-lib-live">
             <div className="photo-lib-live-text">
               <b>地形图层</b>
-              <span>在地图上叠加山地、湖泊与江河：黄山、太湖、长江、京杭大运河等写意落位</span>
+              <span>按真实高程起伏显示山地，湖泊与江河取自真实岸线与河道（垂直夸张显示，示意用途）</span>
             </div>
             <button
               className={`switch${terrainOn ? ' is-on' : ''}`}
@@ -221,6 +221,9 @@ function Panel({ onClose }: { onClose: () => void }) {
               <i />
             </button>
           </div>
+          <p className="terrain-credit">
+            高程 AWS Terrain Tiles · 水系 © OpenStreetMap 贡献者（ODbL）
+          </p>
 
           {bound && (
             <div className="photo-lib-stats">
