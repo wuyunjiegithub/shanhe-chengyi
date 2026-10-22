@@ -56,6 +56,17 @@ const PIN_SCREEN_PX = 12.5;
  * 因此这里不共用同一个数值：旗子按整体高度算，爱心按「视觉等重」压低一档。
  */
 const MARKER_SCREEN_PX: Record<MarkerKind, number> = { visited: 48, favorite: 36 };
+/** 标记贴图宽高比（画布 128×168），按屏幕高度反算世界宽度用 */
+const MARKER_ASPECT = 128 / 168;
+
+/** 0xRRGGBB 乘亮度系数 → '#rrggbb'，给 canvas 画标记贴图用 */
+function hexColor(hex: number, k = 1): string {
+  const ch = (v: number) => Math.max(0, Math.min(255, Math.round(v)));
+  const r = ch(((hex >> 16) & 255) * k);
+  const g = ch(((hex >> 8) & 255) * k);
+  const b = ch((hex & 255) * k);
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+}
 
 
 interface PlateRecord {
@@ -110,6 +121,8 @@ export class SceneManager {
   private pinGroup = new THREE.Group();
   private cityMarkerGroup = new THREE.Group();
   private districtMarkerGroup = new THREE.Group();
+  /** 标记贴图缓存（两类各一张，多个标记共用，释放时不可 dispose） */
+  private markerTextures = new Map<MarkerKind, THREE.Texture>();
   private cities = new Map<string, PlateRecord>();
   private districts = new Map<string, PlateRecord>();
   private pins = new Map<string, PinRecord>();
@@ -292,6 +305,8 @@ export class SceneManager {
     this.clearPins();
     this.clearMarkers(this.cityMarkerGroup);
     this.clearMarkers(this.districtMarkerGroup);
+    for (const tex of this.markerTextures.values()) tex.dispose();
+    this.markerTextures.clear();
     if (this.terrain) {
       this.scene.remove(this.terrain.group);
       this.terrain.dispose();
@@ -647,10 +662,7 @@ export class SceneManager {
     for (const item of items) {
       const rec = records.get(item.id);
       if (!rec) continue;
-      const obj =
-        item.kind === 'visited' ? this.createFlag(FLAG_RED, 1) : this.createHeartMarker(1);
-      // 记录标记本征高度与语义：运行时按相机距离反算缩放，保证屏幕高度恒定
-      obj.userData.intrinsicH = item.kind === 'visited' ? 1.55 : 0.9;
+      const obj = this.createMarker(item.kind);
       obj.userData.kind = item.kind;
       const slot = seen.get(item.id) ?? 0;
       seen.set(item.id, slot + 1);
@@ -700,102 +712,111 @@ export class SceneManager {
   }
 
   /**
-   * 标记始终画在场景之上。
-   * 标记是「语义指示物」，若参与深度测试，会被所在区县板块或相邻板块挡住——
-   * 这正是用户反馈「收藏 / 去过标记看不见」的根因。
+   * 标记贴片纹理：用 canvas 现画，避免多两份静态资源。
+   *
+   * 为什么不用 3D 几何：旗面是竖直平面、旗杆是竖直细杆，默认 50° 俯角看下去
+   * 两者都接近正侧对镜头，屏幕上只剩一条红线——这就是「exe 里看不到小旗子和爱心」的原因。
+   * Sprite 是屏幕对齐的公告板，任何角度都完整可见。
    */
-  private makeMarkerAlwaysOnTop(g: THREE.Group): void {
-    g.traverse((o) => {
-      const mesh = o as THREE.Mesh;
-      if (mesh.material) {
-        const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-        for (const m of mats) {
-          m.depthTest = false;
-          m.depthWrite = false;
-        }
-      }
-      o.renderOrder = 20;
-    });
-  }
+  private markerTexture(kind: MarkerKind): THREE.Texture {
+    const cached = this.markerTextures.get(kind);
+    if (cached) return cached;
 
-  /** 去过：小红旗（细旗杆 + 方旗 + 金色杆头），插在板块上 */
-  private createFlag(color: number, scale: number): THREE.Group {
-    const g = new THREE.Group();
-    const poleH = 1.5;
-    const pole = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.038, 0.038, poleH, 8),
-      new THREE.MeshStandardMaterial({ color: 0xe8eef5, roughness: 0.35, metalness: 0.65 }),
-    );
-    pole.position.y = poleH / 2;
-    const finial = new THREE.Mesh(
-      new THREE.SphereGeometry(0.07, 10, 10),
-      new THREE.MeshStandardMaterial({ color: 0xffd479, roughness: 0.25, metalness: 0.8 }),
-    );
-    finial.position.y = poleH + 0.045;
-    const flag = new THREE.Mesh(
-      new THREE.PlaneGeometry(0.78, 0.48),
-      new THREE.MeshStandardMaterial({
-        color,
-        emissive: color,
-        emissiveIntensity: 0.45,
-        side: THREE.DoubleSide,
-        roughness: 0.55,
-      }),
-    );
-    flag.position.set(0.41, poleH - 0.3, 0);
-    g.add(pole, finial, flag);
-    g.scale.setScalar(scale);
-    this.makeMarkerAlwaysOnTop(g);
-    return g;
-  }
+    const W = 128;
+    const H = 168;
+    const cv = document.createElement('canvas');
+    cv.width = W;
+    cv.height = H;
+    const ctx = cv.getContext('2d')!;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
 
-  /**
-   * 收藏标记：爱心，竖插在板块上（与「去过」红旗明确区分）。
-   * 用经典心形参数方程生成轮廓，而不是手搓贝塞尔：
-   * 旧轮廓的两个圆弧落在下方、尖端朝上，渲染出来是「倒过来的爱心」——
-   * 参数方程天然保证「上方两个圆瓣 + 下方一个尖」，不会画反。
-   */
-  private createHeartMarker(scale: number): THREE.Group {
-    const g = new THREE.Group();
-    const pts: THREE.Vector2[] = [];
-    const N = 84;
-    for (let i = 0; i <= N; i++) {
-      const t = (i / N) * Math.PI * 2;
-      // x = 16sin³t，y = 13cos t − 5cos2t − 2cos3t − cos4t
-      const x = (16 * Math.pow(Math.sin(t), 3)) / 16;
-      const y =
-        (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) / 16;
-      pts.push(new THREE.Vector2(x, y));
+    if (kind === 'visited') {
+      // 旗杆：底部落在画布下沿，锚点即落地点
+      const poleX = 34;
+      const topY = 20;
+      const botY = H - 6;
+      // 先描一圈深色底，浅色旗杆在浅绿地面上也能立住
+      ctx.strokeStyle = 'rgba(9,14,22,0.6)';
+      ctx.lineWidth = 11;
+      ctx.beginPath();
+      ctx.moveTo(poleX, botY);
+      ctx.lineTo(poleX, topY);
+      ctx.stroke();
+      ctx.strokeStyle = '#dbe5f3';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(poleX, botY);
+      ctx.lineTo(poleX, topY);
+      ctx.stroke();
+      // 杆头金球
+      ctx.fillStyle = '#ffd479';
+      ctx.beginPath();
+      ctx.arc(poleX, topY - 4, 8.5, 0, Math.PI * 2);
+      ctx.fill();
+      // 旗面：右侧做一点飘动弧度，不是死板方块
+      ctx.beginPath();
+      ctx.moveTo(poleX + 3, topY + 1);
+      ctx.lineTo(poleX + 84, topY + 12);
+      ctx.quadraticCurveTo(poleX + 98, topY + 44, poleX + 84, topY + 76);
+      ctx.lineTo(poleX + 3, topY + 64);
+      ctx.closePath();
+      const grad = ctx.createLinearGradient(poleX, topY, poleX + 84, topY + 76);
+      grad.addColorStop(0, hexColor(FLAG_RED, 1.35));
+      grad.addColorStop(1, hexColor(FLAG_RED, 0.72));
+      ctx.fillStyle = grad;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(9,14,22,0.6)';
+      ctx.lineWidth = 5;
+      ctx.stroke();
+    } else {
+      // 爱心：经典贝塞尔轮廓，上两瓣下尖
+      const cx = W / 2;
+      const cy = H / 2 + 8;
+      const s = 46;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy + s * 0.82);
+      ctx.bezierCurveTo(cx - s * 1.5, cy - s * 0.28, cx - s * 0.72, cy - s * 1.32, cx, cy - s * 0.42);
+      ctx.bezierCurveTo(cx + s * 0.72, cy - s * 1.32, cx + s * 1.5, cy - s * 0.28, cx, cy + s * 0.82);
+      ctx.closePath();
+      const grad = ctx.createLinearGradient(cx, cy - s, cx, cy + s);
+      grad.addColorStop(0, hexColor(HEART_PINK, 1.28));
+      grad.addColorStop(1, hexColor(HEART_PINK, 0.82));
+      ctx.fillStyle = grad;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(9,14,22,0.55)';
+      ctx.lineWidth = 5;
+      ctx.stroke();
+      // 高光
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.beginPath();
+      ctx.ellipse(cx - s * 0.42, cy - s * 0.5, s * 0.2, s * 0.13, -0.6, 0, Math.PI * 2);
+      ctx.fill();
     }
-    const geo = new THREE.ExtrudeGeometry(new THREE.Shape(pts), {
-      depth: 0.09,
-      bevelEnabled: false,
+
+    const tex = new THREE.CanvasTexture(cv);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.minFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
+    this.markerTextures.set(kind, tex);
+    return tex;
+  }
+
+  /** 创建贴片标记：底边对齐锚点，落在地表上 */
+  private createMarker(kind: MarkerKind): THREE.Sprite {
+    const mat = new THREE.SpriteMaterial({
+      map: this.markerTexture(kind),
+      transparent: true,
+      depthTest: false,
+      depthWrite: false,
+      toneMapped: false,
     });
-    // 居中：心形 y∈[-1.06, 0.31]，居中后尖端自然落在下方
-    geo.computeBoundingBox();
-    const bb = geo.boundingBox!;
-    geo.translate(
-      -(bb.min.x + bb.max.x) / 2,
-      -(bb.min.y + bb.max.y) / 2,
-      -(bb.min.z + bb.max.z) / 2,
-    );
-    const mesh = new THREE.Mesh(
-      geo,
-      new THREE.MeshStandardMaterial({
-        color: HEART_PINK,
-        emissive: HEART_PINK,
-        emissiveIntensity: 0.55,
-        roughness: 0.32,
-        metalness: 0.18,
-      }),
-    );
-    mesh.scale.setScalar(0.62);
-    // 立在板面上：半个高度 + 一点离地间隙
-    mesh.position.y = ((bb.max.y - bb.min.y) / 2) * 0.62 + 0.12;
-    g.add(mesh);
-    g.scale.setScalar(scale);
-    this.makeMarkerAlwaysOnTop(g);
-    return g;
+    // 纹理是共享缓存，别在移除单个标记时把它 dispose 掉
+    mat.userData.sharedTexture = true;
+    const sp = new THREE.Sprite(mat);
+    sp.center.set(0.5, 0);
+    sp.renderOrder = 20;
+    return sp;
   }
 
   setAnchor(info: AnchorInfo | null): void {
@@ -1037,7 +1058,8 @@ export class SceneManager {
     if (!obj) return;
     obj.traverse((o) => {
       const mesh = o as THREE.Mesh;
-      if (mesh.geometry) mesh.geometry.dispose();
+      // Sprite 用的是 three 内部共享的几何体，单独 dispose 会把所有贴片一起弄坏
+      if (mesh.geometry && !(o as THREE.Sprite).isSprite) mesh.geometry.dispose();
       const mat = mesh.material as THREE.Material | THREE.Material[] | undefined;
       if (Array.isArray(mat)) mat.forEach((m) => this.disposeMaterial(m));
       else if (mat) this.disposeMaterial(mat);
@@ -1046,6 +1068,11 @@ export class SceneManager {
 
   /** 材质上的贴图（地面/星空等 CanvasTexture）不会随 material.dispose 释放，必须显式回收 */
   private disposeMaterial(mat: THREE.Material): void {
+    // 共享贴图（标记图标）只随 SceneManager 一起释放，单个标记移除时不能 dispose
+    if (mat.userData?.sharedTexture) {
+      mat.dispose();
+      return;
+    }
     const slots = ['map', 'alphaMap', 'emissiveMap', 'normalMap'] as const;
     for (const slot of slots) {
       const tex = (mat as unknown as Record<string, THREE.Texture | null>)[slot];
@@ -1319,13 +1346,11 @@ export class SceneManager {
     }
     for (const marker of this.districtMarkerGroup.children) {
       const rec = this.districts.get(marker.userData.plateId as string);
-      marker.position.y =
-        (marker.userData.baseY as number) + (rec ? rec.meshes[0].position.y : 0);
+      marker.userData.lift = rec ? rec.meshes[0].position.y : 0;
     }
     for (const marker of this.cityMarkerGroup.children) {
       const rec = this.cities.get(marker.userData.plateId as string);
-      marker.position.y =
-        (marker.userData.baseY as number) + (rec ? rec.meshes[0].position.y : 0);
+      marker.userData.lift = rec ? rec.meshes[0].position.y : 0;
     }
   }
 
@@ -1481,17 +1506,20 @@ export class SceneManager {
     const pxPerUnit = h / (2 * Math.tan(fov / 2) * dist);
     for (const group of [this.cityMarkerGroup, this.districtMarkerGroup]) {
       for (const marker of group.children) {
-        const ih = (marker.userData.intrinsicH as number) || 1;
         const kind = (marker.userData.kind as MarkerKind) ?? 'favorite';
-        const targetWorld = MARKER_SCREEN_PX[kind] / pxPerUnit;
-        const s = Math.min(Math.max(targetWorld / ih, 0.25), 3.5);
-        marker.scale.setScalar(s);
-        // 同一地点的多个标记按自身尺寸错开，远看不会叠成一团
+        // 贴片：屏幕高度反算世界高度，宽度按画布比例，不再有缩放上限
+        const worldH = MARKER_SCREEN_PX[kind] / pxPerUnit;
+        const worldW = worldH * MARKER_ASPECT;
+        marker.scale.set(worldW, worldH, 1);
+        // 贴片底边对齐锚点：地表高度 + 所属板块的抬升量
+        marker.position.y =
+          ((marker.userData.baseY as number) || 0) + ((marker.userData.lift as number) || 0);
+        // 同一地点的多个标记按自身宽度错开，远看不会叠成一团
         const ax = marker.userData.anchorX as number | undefined;
         const az = marker.userData.anchorZ as number | undefined;
         if (ax !== undefined && az !== undefined) {
-          marker.position.x = ax + (marker.userData.offX as number) * s;
-          marker.position.z = az + (marker.userData.offZ as number) * s;
+          marker.position.x = ax + ((marker.userData.offX as number) || 0) * worldW * 0.42;
+          marker.position.z = az + ((marker.userData.offZ as number) || 0) * worldW * 0.42;
         }
       }
     }
