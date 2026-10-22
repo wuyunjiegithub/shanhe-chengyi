@@ -27,10 +27,10 @@ const LAND_TOP = 2.6;
  */
 const TERRAIN_BASE = LAND_TOP + 0.08;
 
-/** 水面相对所在地形的高差（略高于地表，避免共面 z-fighting） */
-const WATER_OFFSET = 0.08;
+/** 水面相对所在地形的高差（略高于地表，避免共面 z-fighting；配合材质 polygonOffset） */
+const WATER_OFFSET = 0.12;
 /** 河道相对所在地形的高差：比湖面再高一点，江河不被湖盖住 */
-const RIVER_OFFSET = 0.16;
+const RIVER_OFFSET = 0.2;
 
 /**
  * 垂直夸张倍数。
@@ -341,6 +341,12 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
     side: THREE.DoubleSide,
     depthWrite: false,
     fog: true,
+    // 湖面与湖底地形只差 WATER_OFFSET（0.12）——远视角下这个差值小于深度缓冲精度，
+    // 太湖这种「大而平」的湖整片被地形遮住，看起来就是「水干了」。
+    // 用面的深度偏移把水面压到地形前面（线宽/几何都不用动）。
+    polygonOffset: true,
+    polygonOffsetFactor: -4,
+    polygonOffsetUnits: -8,
   });
   waterMat.onBeforeCompile = (shader) => {
     shader.uniforms.uTime = waterU;
