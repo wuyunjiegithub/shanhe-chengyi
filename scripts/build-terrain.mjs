@@ -33,6 +33,8 @@ const GRID_LONG = 240;
 const MIN_WATER_AREA = 2.0;
 /** 河流长度阈值（km）：只保留主干河道 */
 const MIN_RIVER_KM = 18;
+/** 陆域裁剪后残留片段的最小长度（km）：更短的只是贴边的一点尾巴，画出来反而突兀 */
+const MIN_RIVER_RUN_KM = 6;
 /**
  * 主要水系白名单：OSM 里一条大河被切成几十段 way，
  * 全量渲染会有几百段线（每段一个绘制对象），既乱又拖性能。
@@ -440,12 +442,25 @@ out geom;`;
       stat.thin++;
       continue;
     }
+    // 再按陆域裁一刀：省界上的界湖（如皖鄂交界的龙感湖、苏鲁交界的石梁河水库）
+    // 质心在本省、但有一半伸到省外，不裁就会在板块边缘挂出一块「无主水面」。
+    const trimmedRing = simplified.filter(([lng, lat]) => inLand(lng, lat, landRings));
+    if (trimmedRing.length < 3) {
+      stat.thin++;
+      continue;
+    }
+    const trimmedArea = ringAreaKm2(trimmedRing);
+    // 裁完只剩零碎的小角（面积掉到阈值以下）就不画了
+    if (trimmedArea < MIN_WATER_AREA * 0.6) {
+      stat.small++;
+      continue;
+    }
     stat.ok++;
     out.push({
       id: `w${out.length}`,
       name: el.tags?.name || '',
-      area: Math.round(area * 10) / 10,
-      ring: simplified,
+      area: Math.round(trimmedArea * 10) / 10,
+      ring: trimmedRing,
     });
   }
   out.sort((a, b2) => b2.area - a.area);
@@ -454,7 +469,52 @@ out geom;`;
   return out;
 }
 
-async function buildRivers(bbox) {
+/**
+ * 河道裁剪：只保留落在江浙沪皖陆域内的部分。
+ *
+ * Overpass 的 bbox 查询只保证「这条 way 与 bbox 有交集」，返回的却是整条 way 的几何，
+ * 于是长江上游段会一路画到 114.5°E（本图 bbox 西界 114.83°E），在屏幕左侧悬空跑到图外；
+ * 京杭大运河也会越过北界。这里按 ~1.2km 加密后逐段做陆域判定，把连续在陆上的片段取出。
+ */
+function clipLineToLand(line, landRings, stepKm = 1.2) {
+  const midLat = line.reduce((s, p) => s + p[1], 0) / line.length;
+  const kx = (EARTH_M_PER_DEG * Math.cos((midLat * Math.PI) / 180)) / 1000;
+  const ky = EARTH_M_PER_DEG / 1000;
+
+  // 1) 加密：原 way 顶点间距可达数十公里，不加密断口会歪出去十几公里
+  const dense = [];
+  for (let i = 1; i < line.length; i++) {
+    const [x1, y1] = line[i - 1];
+    const [x2, y2] = line[i];
+    const segKm = Math.hypot((x2 - x1) * kx, (y2 - y1) * ky);
+    const n = Math.max(1, Math.ceil(segKm / stepKm));
+    for (let k = 0; k < n; k++) dense.push([x1 + ((x2 - x1) * k) / n, y1 + ((y2 - y1) * k) / n]);
+  }
+  dense.push(line[line.length - 1]);
+  if (dense.length < 2) return [];
+
+  // 2) 逐段判陆：以中点为准，连续在陆上的段落归为一段
+  const runs = [];
+  let cur = [];
+  for (let i = 0; i < dense.length - 1; i++) {
+    const a = dense[i];
+    const b = dense[i + 1];
+    const inside = inLand((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, landRings);
+    if (inside) {
+      if (!cur.length) cur.push(a);
+      cur.push(b);
+    } else if (cur.length) {
+      runs.push(cur);
+      cur = [];
+    }
+  }
+  if (cur.length) runs.push(cur);
+
+  // 3) 丢掉出界后剩下的零星小段（贴边的一点点尾巴没有意义）
+  return runs.filter((r) => r.length >= 2 && ringPerimKm(r) >= MIN_RIVER_RUN_KM);
+}
+
+async function buildRivers(bbox, landRings) {
   const b = bboxStr(bbox);
   const query = `[out:json][timeout:180];
 (
@@ -465,6 +525,7 @@ out geom;`;
   const data = await overpass(query, 'rivers.json');
 
   const out = [];
+  const stat = { in: 0, clipped: 0, cut: 0, ok: 0 };
   for (const el of data.elements) {
     if (!el.geometry) continue;
     const name = el.tags?.name || '';
@@ -473,15 +534,30 @@ out geom;`;
     if (line.length < 3) continue;
     const km = ringPerimKm(line);
     if (km < MIN_RIVER_KM) continue;
-    const simplified = simplify(line, SIMPLIFY_TOL * 1.4).map(([lng, lat]) => [round(lng), round(lat)]);
-    if (simplified.length < 2) continue;
-    out.push({
-      id: `r${out.length}`,
-      name: el.tags?.name || '',
-      km: Math.round(km),
-      line: simplified,
-    });
+    stat.in++;
+    // 先裁到陆域（可能被切成多段：比如长江上游出省后又被切回来）
+    const runs = clipLineToLand(line, landRings);
+    if (!runs.length) {
+      stat.clipped++;
+      continue;
+    }
+    const keptKm = runs.reduce((s, r) => s + ringPerimKm(r), 0);
+    if (keptKm < km - 1) stat.cut++;
+    for (const run of runs) {
+      const simplified = simplify(run, SIMPLIFY_TOL * 1.4).map(([lng, lat]) => [round(lng), round(lat)]);
+      // DP 简化会削掉转角，个别顶点又落到边界外几百米，这里再兜一刀
+      const trimmed = simplified.filter(([lng, lat]) => inLand(lng, lat, landRings));
+      if (trimmed.length < 2) continue;
+      stat.ok++;
+      out.push({
+        id: `r${out.length}`,
+        name: el.tags?.name || '',
+        km: Math.round(ringPerimKm(trimmed)),
+        line: trimmed,
+      });
+    }
   }
+  log(`· 河道裁剪：入选 ${stat.in} 条，其中 ${stat.cut} 条被切短、${stat.clipped} 条整条在图外丢弃`);
   log(`· 河道：${out.length} 段（≥${MIN_RIVER_KM}km）`);
   return out;
 }
@@ -581,7 +657,7 @@ async function main() {
 
   // 5. 水体 / 河流
   const water = await buildWater(bbox, landRings);
-  const rivers = await buildRivers(bbox);
+  const rivers = await buildRivers(bbox, landRings);
   await fs.writeFile(path.join(OUT, 'water.json'), JSON.stringify(water));
   await fs.writeFile(path.join(OUT, 'rivers.json'), JSON.stringify(rivers));
 
