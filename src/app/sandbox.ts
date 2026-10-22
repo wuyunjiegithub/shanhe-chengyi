@@ -386,10 +386,15 @@ export function updateMarkers(): void {
   const favorites = useUi.getState().favorites;
   const data = useData.getState();
   // 区县去过时，其所属城市也要在全景上插上小红旗（用户标注了淳安，杭州就该插旗）
+  // 注意：内容里 district.city 存的是城市**名称**（"杭州市"），不是 id，
+  // 直接塞进 id 集合会因 setCityMarkers 按 id 取不到而被静默丢弃 ——
+  // 这正是「标了淳安、省视角杭州没有旗子」的原因。统一按行政区划编码前 4 位推城市 id。
+  const cityIds = new Set(data.cities.map((c) => c.id));
   const visitedCities = new Set(visited);
   for (const did of visitedDistricts) {
     const d = data.districts[did];
-    if (d?.city) visitedCities.add(d.city);
+    const cityId = cityIdOfDistrict(did, d?.province ?? '');
+    if (cityIds.has(cityId)) visitedCities.add(cityId);
   }
   manager?.setCityMarkers([
     ...[...visitedCities].map((id) => ({ id, kind: 'visited' as const })),
@@ -402,7 +407,9 @@ export function updateMarkers(): void {
 }
 
 export function cityIdOfDistrict(districtId: string, province: string): string {
-  if (province === '上海市') return '310000';
+  // 区县码前 4 位即所属地级市：330127（淳安）→ 330100（杭州）
+  // 直辖市没有地级市这一层，上海 310101 → 310000（按码前 2 位兜底，未录入区县也能推）
+  if (province === '上海市' || districtId.startsWith('31')) return '310000';
   return districtId.slice(0, 4) + '00';
 }
 
