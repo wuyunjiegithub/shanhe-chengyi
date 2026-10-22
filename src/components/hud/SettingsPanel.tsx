@@ -36,6 +36,8 @@ function Panel({ onClose }: { onClose: () => void }) {
   const rescan = usePhotoLib((s) => s.rescan);
   const live = usePhotoLib((s) => s.live);
   const toggleLive = usePhotoLib((s) => s.toggleLive);
+  const terrainOn = useUi((s) => s.terrain);
+  const setTerrainOpen = useUi((s) => s.setTerrainOpen);
   const diskKind = usePhotoLib((s) => s.diskKind);
   const uploadTo = usePhotoLib((s) => s.uploadTo);
   const showToast = useUi((s) => s.showToast);
@@ -115,8 +117,8 @@ function Panel({ onClose }: { onClose: () => void }) {
       <section className="photo-lib" onPointerDown={(e) => e.stopPropagation()}>
         <header className="data-head">
           <div className="data-head-title">
-            <div className="drawer-kicker">设置 · 本地资源</div>
-            <h2 className="drawer-title">照片库</h2>
+            <div className="drawer-kicker">设置 · 地图与本地资源</div>
+            <h2 className="drawer-title">设置</h2>
           </div>
           <button className="icon-btn" onClick={onClose} aria-label="关闭">
             ×
@@ -198,6 +200,23 @@ function Panel({ onClose }: { onClose: () => void }) {
               aria-checked={live}
               title={live ? '关闭实时更新' : '开启实时更新'}
               onClick={() => void toggleLive()}
+            >
+              <i />
+            </button>
+          </div>
+
+          {/* 地图图层：地形（山地 / 湖泊 / 江河） */}
+          <div className="photo-lib-live">
+            <div className="photo-lib-live-text">
+              <b>地形图层</b>
+              <span>在地图上叠加山地、湖泊与江河：黄山、太湖、长江、京杭大运河等写意落位</span>
+            </div>
+            <button
+              className={`switch${terrainOn ? ' is-on' : ''}`}
+              role="switch"
+              aria-checked={terrainOn}
+              title={terrainOn ? '关闭地形图层' : '开启地形图层'}
+              onClick={() => setTerrainOpen()}
             >
               <i />
             </button>

@@ -9,6 +9,7 @@ import { Line2 } from 'three/examples/jsm/lines/Line2.js';
 import type { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { createPlateMesh, CAP_MATERIAL_INDEX } from './plates';
 import type { PlateStyle } from './plates';
+import type { TerrainHandle } from './terrain';
 import { createPin, disposePin, disposePinGeometries } from './pins';
 import type { PinInput, PinRecord } from './pins';
 import type { ProjectedShape, Province } from '../data/types';
@@ -127,6 +128,9 @@ export class SceneManager {
   private anchorGroup = new THREE.Group();
   private anchor: CSS2DObject | null = null;
   private anchorNdc = new THREE.Vector3();
+  /** 地形图层（山地 / 湖泊 / 江河）：仅在省视角显示，下钻区县时自动隐藏 */
+  private terrain: TerrainHandle | null = null;
+  private terrainOn = true;
   private layer: 'city' | 'district' = 'city';
   /** 城市视图聚焦：进入城市后其余城市板块压暗为背景 */
   private focusedCityId: string | null = null;
@@ -273,6 +277,11 @@ export class SceneManager {
     this.clearPins();
     this.clearMarkers(this.cityMarkerGroup);
     this.clearMarkers(this.districtMarkerGroup);
+    if (this.terrain) {
+      this.scene.remove(this.terrain.group);
+      this.terrain.dispose();
+      this.terrain = null;
+    }
     this.disposeObject(this.stars);
     this.disposeObject(this.ground);
     this.disposeObject(this.grid);
@@ -310,6 +319,7 @@ export class SceneManager {
     this.updateProvinceLabels(shapes);
     this.frameTo(this.regionBox, 0, 1.08, 0, this.usableView());
     this.updateLineResolutions();
+    this.applyTerrain();
   }
 
   setDistrictPlates(shapes: ProjectedShape[]): void {
@@ -330,6 +340,7 @@ export class SceneManager {
     this.setHover(null);
     this.refreshStyles();
     this.updateLineResolutions();
+    this.applyTerrain();
   }
 
   /** 区县层（板块 / 光点 / 标记 / 标签 / 卡锚）统一抬升，避免被城市板块压住 */
@@ -374,6 +385,7 @@ export class SceneManager {
     this.districtLabelGroup.visible = false;
     this.provinceLabelGroup.visible = true;
     this.layer = 'city';
+    this.applyTerrain();
     this.selectedDistrictId = null;
     this.focusedSpotId = null;
     this.focusedCityId = null;
@@ -451,6 +463,34 @@ export class SceneManager {
   /** 城市视角区县标记：去过 = 小红旗，收藏 = 粉心 */
   setDistrictMarkers(items: { id: string; kind: MarkerKind }[]): void {
     this.fillMarkers(this.districtMarkerGroup, this.districts, items);
+  }
+
+  /** 挂载地形图层（水体 / 江河 / 山脉），复用 scene 当前投影 */
+  setTerrain(handle: TerrainHandle | null): void {
+    if (this.terrain) {
+      this.scene.remove(this.terrain.group);
+      this.terrain.dispose();
+    }
+    this.terrain = handle;
+    if (handle) {
+      this.scene.add(handle.group);
+      const w = this.container?.clientWidth ?? 0;
+      const h = this.container?.clientHeight ?? 0;
+      if (w > 0 && h > 0) handle.setResolution(w, h);
+      this.applyTerrain();
+    }
+  }
+
+  /** 用户开关：是否显示地形 */
+  setTerrainVisible(on: boolean): void {
+    this.terrainOn = on;
+    this.applyTerrain();
+  }
+
+  /** 地形仅在省视角（city 层）显示；下钻区县时自动隐藏，避免被区县板块压住 */
+  private applyTerrain(): void {
+    if (!this.terrain) return;
+    this.terrain.group.visible = this.terrainOn && this.layer !== 'district';
   }
 
   private fillMarkers(
@@ -1190,6 +1230,7 @@ export class SceneManager {
         for (const m of rec.edgeMaterials) m.resolution.set(w, h);
       }
     }
+    this.terrain?.setResolution(w, h);
   }
 
   private resize = (): void => {
@@ -1239,6 +1280,7 @@ export class SceneManager {
 
     this.updatePinScales();
     this.updateMarkerScales();
+    this.terrain?.update(t, dt);
 
     // 锚点卡靠近视口边缘时隐藏，避免被顶部/侧边裁切
     if (this.anchor) {

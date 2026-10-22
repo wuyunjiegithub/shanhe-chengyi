@@ -44,6 +44,8 @@ interface UiState {
    * 点面板上的「全屏」按钮才铺满，看完再点「退出全屏」回到半屏。
    */
   panelFullscreen: boolean;
+  /** 地图地形图层（山地 / 湖泊 / 江河）是否显示，默认开 */
+  terrain: boolean;
 
   openDrawer: () => void;
   closeDrawer: () => void;
@@ -63,6 +65,7 @@ interface UiState {
   toggleSettings: (open?: boolean) => void;
   setDistrictPickerOpen: (open: boolean) => void;
   togglePanelFullscreen: (open?: boolean) => void;
+  setTerrainOpen: (open?: boolean) => void;
   openPhotoWall: (state: PhotoWallState) => void;
   closePhotoWall: () => void;
   showToast: (msg: string) => void;
@@ -95,6 +98,7 @@ export const useUi = create<UiState>((set, get) => ({
   travelPrefill: null,
   districtPickerOpen: false,
   panelFullscreen: false,
+  terrain: true,
 
   openDrawer: () => set({ drawerOpen: true, favoritesOpen: false }),
   // 关抽屉时顺手复位全屏态：否则抽屉里点过「全屏」再用 ESC / 返回关掉，
@@ -228,6 +232,8 @@ export const useUi = create<UiState>((set, get) => ({
 
   togglePanelFullscreen: (open) =>
     set((s) => ({ panelFullscreen: open ?? !s.panelFullscreen })),
+
+  setTerrainOpen: (open) => set((s) => ({ terrain: open ?? !s.terrain })),
 
   showToast: (msg) => {
     set({ toast: msg });

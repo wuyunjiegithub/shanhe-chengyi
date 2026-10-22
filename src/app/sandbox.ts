@@ -1,4 +1,5 @@
 import { SceneManager } from '../scene/SceneManager';
+import { createTerrain } from '../scene/terrain';
 import type { PinInput } from '../scene/pins';
 import { computeProjection, projectFeatures, projectPoint } from '../data/projection';
 import type { Projection } from '../data/projection';
@@ -49,6 +50,13 @@ export async function initSandbox(container: HTMLElement): Promise<void> {
     }),
   );
 
+  // 地形图层开关：用户在「设置 → 地图图层」里切换
+  unsubscribers.push(
+    useUi.subscribe((s, prev) => {
+      if (s.terrain !== prev.terrain) manager?.setTerrainVisible(s.terrain);
+    }),
+  );
+
   // 打开照片墙时暂停主场景渲染：避免与 3D 展厅双 WebGL 上下文同时渲染导致主上下文被回收（回退白屏）
   unsubscribers.push(
     useUi.subscribe((s, prev) => {
@@ -85,6 +93,9 @@ export async function initSandbox(container: HTMLElement): Promise<void> {
   const cityGeo = useData.getState().cityGeo;
   projection = computeProjection(cityGeo);
   scene.setCityPlates(projectFeatures(cityGeo, projection));
+  // 地形图层（山地 / 湖泊 / 江河）：与板块共用同一投影，精确落在对应陆/水之上
+  scene.setTerrain(createTerrain(projection));
+  scene.setTerrainVisible(useUi.getState().terrain);
   updateMarkers();
 }
 
