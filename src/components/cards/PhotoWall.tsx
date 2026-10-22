@@ -271,10 +271,14 @@ export function PhotoWall() {
   const uploadTo = usePhotoLib((s) => s.uploadTo);
   const removePhotos = usePhotoLib((s) => s.removePhotos);
   const fileRef = useRef<HTMLInputElement>(null);
+  /** 3D 照片空间容器，全屏时把这个节点交给浏览器全屏 API */
+  const hall3dRef = useRef<HTMLDivElement>(null);
   const [style, setStyle] = useState<WallStyle>('gallery');
   const [active, setActive] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [touring, setTouring] = useState(false);
+  /** 3D 照片空间是否处于全屏 */
+  const [isFs, setIsFs] = useState(false);
   const [focus, setFocus] = useState<number | null>(null);
   /** 查看器（缩放 / 旋转 / 平移）是否打开；与 focus 配合：3D 空间先飞抵、再按需放大 */
   const [viewer, setViewer] = useState(false);
@@ -312,6 +316,23 @@ export function PhotoWall() {
     setConfirmDelete(false);
     setFailedKeys(new Set());
   }, [photoWall]);
+
+  // 全屏状态随浏览器事件同步（用户也可能按 Esc 退出全屏）
+  useEffect(() => {
+    const onFs = () => setIsFs(Boolean(document.fullscreenElement));
+    document.addEventListener('fullscreenchange', onFs);
+    return () => document.removeEventListener('fullscreenchange', onFs);
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    const el = hall3dRef.current;
+    if (!el) return;
+    if (document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => undefined);
+    } else {
+      void el.requestFullscreen?.().catch(() => undefined);
+    }
+  }, []);
 
   const onShape = useCallback((key: string, shape: PhotoShape) => {
     setShapes((s) => (s[key] === shape ? s : { ...s, [key]: shape }));
@@ -655,12 +676,20 @@ export function PhotoWall() {
         ) : (
           <>
             {style === 'hall3d' ? (
-              <>
+              <div className="hall3d-wrap" ref={hall3dRef}>
                 <Gallery3D items={hallItems} focus={focus} onFocus={setFocus} touring={touring} />
                 <div className="hall3d-hint">
                   拖动环绕 · 滚轮缩放 · 点击照片飞抵近看 · 点空白处退出 · Esc 关闭
                   {items.length > HALL_SLOTS && <b>（空间内铺前 {HALL_SLOTS} 张，共 {items.length} 张）</b>}
                 </div>
+                <button
+                  type="button"
+                  className="hall3d-fs"
+                  onClick={toggleFullscreen}
+                  title={isFs ? '退出全屏' : '全屏预览漫游'}
+                >
+                  {isFs ? '⤢ 退出全屏' : '⤢ 全屏'}
+                </button>
                 {focus !== null && items[focus] && (
                   <button
                     type="button"
@@ -671,7 +700,7 @@ export function PhotoWall() {
                     🔍 放大查看
                   </button>
                 )}
-              </>
+              </div>
             ) : (
               <>
                 {style === 'gallery' && (

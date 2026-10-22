@@ -40,6 +40,7 @@ export function DistrictDrawer() {
   const district = activeDistrictId ? districts[activeDistrictId] : null;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [visitDate, setVisitDate] = useState('');
+  const [visitEnd, setVisitEnd] = useState('');
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 });
@@ -294,19 +295,22 @@ export function DistrictDrawer() {
 
             <section className="content-block">
               <h3 className="block-title">
-                <i />到访时间
+                <i />游玩日期
                 <span className="block-count">{districtVisits.length}</span>
               </h3>
               {districtVisits.length === 0 ? (
                 <p className="block-empty">
-                  还没有到访记录。点上方「去过」会自动记一次；也可以手动补充具体的到访日期。
+                  还没有游玩记录。点上方「去过」会自动记一次；也可以手动补充具体的游玩日期，支持起止范围。
                 </p>
               ) : (
                 <ul className="visit-list">
                   {districtVisits.map((r) => (
                     <li key={r.id} className="visit-row">
-                      <span className="visit-date">{fmtDate(r.at)}</span>
-                      <button className="visit-del" title="删除这条到访记录" onClick={() => removeRecord(r.id)}>
+                      <span className="visit-date">
+                        {fmtDate(r.at)}
+                        {r.endAt ? ` – ${fmtDate(r.endAt)}` : ''}
+                      </span>
+                      <button className="visit-del" title="删除这条游玩记录" onClick={() => removeRecord(r.id)}>
                         ×
                       </button>
                     </li>
@@ -314,32 +318,44 @@ export function DistrictDrawer() {
                 </ul>
               )}
               <div className="visit-add">
-                <input
-                  type="date"
-                  className="visit-date-input"
-                  value={visitDate}
-                  max={new Date().toISOString().slice(0, 10)}
-                  onChange={(e) => setVisitDate(e.target.value)}
-                />
+                <div className="visit-range">
+                  <input
+                    type="date"
+                    className="visit-date-input"
+                    value={visitDate}
+                    max={visitEnd || new Date().toISOString().slice(0, 10)}
+                    onChange={(e) => setVisitDate(e.target.value)}
+                    placeholder="起始日期"
+                  />
+                  <span className="visit-range-sep">至</span>
+                  <input
+                    type="date"
+                    className="visit-date-input"
+                    value={visitEnd}
+                    min={visitDate || undefined}
+                    max={new Date().toISOString().slice(0, 10)}
+                    onChange={(e) => setVisitEnd(e.target.value)}
+                    placeholder="结束日期（可选）"
+                  />
+                </div>
                 <button
                   className="ghost-btn"
                   disabled={!visitDate}
                   onClick={() => {
                     if (!visitDate) return;
                     const t = new Date(`${visitDate}T12:00:00`).getTime();
-                    logVisitAt('district', district.id, t);
+                    const end = visitEnd ? new Date(`${visitEnd}T12:00:00`).getTime() : undefined;
+                    logVisitAt('district', district.id, t, end && end >= t ? end : undefined);
                     setVisitDate('');
+                    setVisitEnd('');
                   }}
                 >
-                  添加这次到访
+                  添加这次游玩
                 </button>
               </div>
             </section>
 
             <div className="drawer-actions">
-              <button className="primary-btn" onClick={() => toggleFavorite('district', district.id)}>
-                {favored ? '♥ 已收藏该区县' : '♡ 收藏该区县'}
-              </button>
               <button
                 className="ghost-btn"
                 onClick={() =>

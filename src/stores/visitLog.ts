@@ -10,16 +10,18 @@ export interface VisitRecord {
   kind: VisitKind;
   /** 城市 id 或区县 id */
   placeId: string;
-  /** 到访时间（ms 时间戳） */
+  /** 到访（游玩）起始时间（ms 时间戳） */
   at: number;
+  /** 游玩结束时间（可选，用于「游玩日期」支持起止范围） */
+  endAt?: number;
 }
 
 interface VisitLogState {
   records: VisitRecord[];
   /** 记录一次到访（标记「去过」时自动调用，也可在时间线里补录） */
   logVisit: (kind: VisitKind, placeId: string) => void;
-  /** 记录一次到访（指定到访时间，用于区县抽屉里手动补录某次到访的具体日期） */
-  logVisitAt: (kind: VisitKind, placeId: string, at: number) => void;
+  /** 记录一次到访（指定到访时间，用于区县/城市抽屉里手动补录某次游玩的具体日期；可附带结束时间形成范围） */
+  logVisitAt: (kind: VisitKind, placeId: string, at: number, endAt?: number) => void;
   /** 删除单条记录 */
   removeRecord: (id: string) => void;
   /** 清空时间线 */
@@ -72,10 +74,11 @@ export const useVisitLog = create<VisitLogState>((set) => ({
       return { records: next };
     }),
 
-  logVisitAt: (kind, placeId, at) =>
+  logVisitAt: (kind, placeId, at, endAt) =>
     set((s) => {
       const t = Number.isFinite(at) && at > 0 ? at : Date.now();
-      const next = [...s.records, { id: nextId(), kind, placeId, at: t }];
+      const end = Number.isFinite(endAt) && endAt! > 0 ? endAt : undefined;
+      const next = [...s.records, { id: nextId(), kind, placeId, at: t, ...(end ? { endAt: end } : {}) }];
       write(next);
       return { records: next };
     }),

@@ -325,7 +325,8 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
 
     // ---------- 照片 ----------
 
-    const backingMat = new THREE.MeshBasicMaterial({ color: 0xe9e2d2, fog: false });
+    // 边框用接近星空底的深蓝，不再用刺眼的米白；厚度也收窄，只留一圈细边
+    const backingMat = new THREE.MeshBasicMaterial({ color: 0x1a2436, fog: false });
     const haloMat = new THREE.MeshBasicMaterial({
       color: 0x22d3ee,
       transparent: true,
@@ -351,9 +352,9 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       node.plane.geometry.dispose();
       node.plane.geometry = new THREE.PlaneGeometry(w, h);
       node.backing.geometry.dispose();
-      node.backing.geometry = new THREE.PlaneGeometry(w + 0.36, h + 0.36);
+      node.backing.geometry = new THREE.PlaneGeometry(w + 0.2, h + 0.2);
       node.halo.geometry.dispose();
-      node.halo.geometry = new THREE.PlaneGeometry(w + 0.54, h + 0.54);
+      node.halo.geometry = new THREE.PlaneGeometry(w + 0.34, h + 0.34);
     };
 
     for (let i = 0; i < shown; i++) {
@@ -374,7 +375,7 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       disposables.push(planeMat);
 
       const backing = new THREE.Mesh(
-        new THREE.PlaneGeometry(PHOTO_H * 1.5 + 0.36, PHOTO_H + 0.36),
+        new THREE.PlaneGeometry(PHOTO_H * 1.5 + 0.2, PHOTO_H + 0.2),
         backingMat,
       );
       group.add(backing);

@@ -35,14 +35,11 @@ export function TimelinePanel() {
   const records = useVisitLog((s) => s.records);
   const removeRecord = useVisitLog((s) => s.removeRecord);
   const clearVisits = useVisitLog((s) => s.clearVisits);
-  const logVisit = useVisitLog((s) => s.logVisit);
   const cities = useData((s) => s.cities);
   const districts = useData((s) => s.districts);
   const districtNames = useData((s) => s.districtNames);
   const cityVisited = useCityStatus((s) => s.visited);
   const visitedDistricts = useCityStatus((s) => s.visitedDistricts);
-  const toggleCityVisited = useCityStatus((s) => s.toggleVisited);
-  const toggleVisitedDistrict = useCityStatus((s) => s.toggleVisitedDistrict);
   const [confirmClear, setConfirmClear] = useState(false);
 
   useEffect(() => {
@@ -102,25 +99,17 @@ export function TimelinePanel() {
     else void selectDistrictById(g.placeId);
   };
 
-  const onVisitAgain = (g: PlaceGroup) => {
-    if (!g.marked) {
-      // 未标记时先标记（标记动作自身会记一条）
-      if (g.kind === 'city') toggleCityVisited(g.placeId);
-      else toggleVisitedDistrict(g.placeId);
-      return;
-    }
-    logVisit(g.kind, g.placeId);
-  };
-
   return (
     <div className="modal-backdrop" onPointerDown={() => close(false)}>
       <section className="fav-panel timeline-panel" onPointerDown={(e) => e.stopPropagation()}>
         <header className="fav-head">
           <div>
             <div className="drawer-kicker">到访记录 · 本地保存</div>
-            <h2 className="drawer-title">时间线</h2>
+            <div className="fav-title-line">
+              <h2 className="drawer-title">时间线</h2>
+              <span className="fav-total">{records.length} 次</span>
+            </div>
           </div>
-          <span className="fav-total">{records.length} 次</span>
           <button className="icon-btn" onClick={() => close(false)} aria-label="关闭">
             ×
           </button>
@@ -144,7 +133,7 @@ export function TimelinePanel() {
           {records.length === 0 ? (
             <p className="block-empty">
               还没有到访记录。在城市面板或区县抽屉点「去过」，这里就会按时间记下一笔；
-              同一地点再去，次数会累加。
+              具体的游玩日期可在那里手动补充。
             </p>
           ) : (
             <>
@@ -167,13 +156,6 @@ export function TimelinePanel() {
                             {g.sub} · 去过 {g.count} 次 · 最近 {fmtDate(g.lastAt)}
                           </span>
                         </span>
-                      </button>
-                      <button
-                        className="timeline-again"
-                        onClick={() => onVisitAgain(g)}
-                        title="补录一次到访"
-                      >
-                        ＋ 再去
                       </button>
                     </li>
                   ))}

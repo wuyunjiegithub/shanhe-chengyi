@@ -131,7 +131,7 @@ export function LeafCard() {
                 className={`primary-btn${favored ? ' is-on' : ''}`}
                 onClick={() => toggleFavorite('spot', spot.id)}
               >
-                {favored ? '★ 已收藏' : '☆ 收藏景点'}
+                {favored ? '★ 已想去' : '☆ 想去'}
               </button>
               <button
                 className="ghost-btn"

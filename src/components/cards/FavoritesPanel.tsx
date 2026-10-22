@@ -154,9 +154,9 @@ export function FavoritesPanel() {
       empty: '还没有收藏的区县。打开任意区县抽屉，点心形图标即可加入。',
     },
     {
-      title: '收藏的景点',
+      title: '想去的地方',
       rows: favSpotRows,
-      empty: '还没有收藏的景点。打开景点卡片，点「收藏景点」即可。',
+      empty: '还没有想去的地方。打开景点卡片，点「想去」即可加入这份清单。',
     },
   ];
 
@@ -197,9 +197,12 @@ export function FavoritesPanel() {
         <header className="fav-head">
           <div>
             <div className="drawer-kicker">足迹与收藏 · 本地保存</div>
-            <h2 className="drawer-title">我的足迹</h2>
+            <div className="fav-title-line">
+              <h2 className="drawer-title">我的足迹</h2>
+              <span className="fav-total">{total}</span>
+            </div>
+            <p className="fav-wander">你提过的好地方，我标在地图上，等哪一天我带你去流浪，流浪。</p>
           </div>
-          <span className="fav-total">{total}</span>
           <button className="icon-btn" onClick={() => close(false)} aria-label="关闭">
             ×
           </button>

@@ -353,8 +353,15 @@ export function clearSpotFocus(): void {
 export function updateMarkers(): void {
   const { visited, visitedDistricts } = useCityStatus.getState();
   const favorites = useUi.getState().favorites;
+  const data = useData.getState();
+  // 区县去过时，其所属城市也要在全景上插上小红旗（用户标注了淳安，杭州就该插旗）
+  const visitedCities = new Set(visited);
+  for (const did of visitedDistricts) {
+    const d = data.districts[did];
+    if (d?.city) visitedCities.add(d.city);
+  }
   manager?.setCityMarkers([
-    ...visited.map((id) => ({ id, kind: 'visited' as const })),
+    ...[...visitedCities].map((id) => ({ id, kind: 'visited' as const })),
     ...favorites.cities.map((id) => ({ id, kind: 'favorite' as const })),
   ]);
   manager?.setDistrictMarkers([

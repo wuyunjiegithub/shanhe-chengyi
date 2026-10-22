@@ -650,9 +650,11 @@ export function TravelNotesPanel() {
         <header className="fav-head">
           <div>
             <div className="drawer-kicker">旅行游记 · 本地保存</div>
-            <h2 className="drawer-title">我的游记</h2>
+            <div className="fav-title-line">
+              <h2 className="drawer-title">我的游记</h2>
+              <span className="fav-total">{notes.length} 篇</span>
+            </div>
           </div>
-          <span className="fav-total">{notes.length} 篇</span>
           <button className="icon-btn" onClick={() => close(false)} aria-label="关闭">
             ×
           </button>
