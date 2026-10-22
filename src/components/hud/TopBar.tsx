@@ -3,7 +3,7 @@ import { useNavigation } from '../../stores/navigation';
 import { useUi } from '../../stores/ui';
 import { usePhotoLib } from '../../stores/photoLib';
 import { SearchConsole } from './SearchConsole';
-import { resetCamera } from '../../app/sandbox';
+import { goToOverview } from '../../app/sandbox';
 
 export function TopBar({ ready }: { ready: boolean }) {
   const cities = useData((s) => s.cities);
@@ -61,7 +61,7 @@ export function TopBar({ ready }: { ready: boolean }) {
         <button
           type="button"
           className="data-pill top-reset-btn"
-          onClick={resetCamera}
+          onClick={goToOverview}
           title="重置视角"
           aria-label="重置视角"
         >

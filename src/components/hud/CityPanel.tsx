@@ -1,14 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigation } from '../../stores/navigation';
 import { useUi } from '../../stores/ui';
 import { useCityStatus } from '../../stores/cityStatus';
 import { useVisitLog } from '../../stores/visitLog';
+import { useData } from '../../stores/data';
 import { backToRegion, updateMarkers } from '../../app/sandbox';
 import { BgImage } from '../shared/BgImage';
 import { bgKey } from '../../stores/backgrounds';
 import { VisitedMark } from '../shared/VisitedMark';
 import { HeartMark } from '../shared/HeartMark';
 import { PanelFullscreenBtn } from '../shared/PanelFullscreenBtn';
+import { WeatherCard } from '../drawer/WeatherCard';
 import type { City } from '../../data/types';
 
 function fmtDate(at: number): string {
@@ -34,6 +36,20 @@ export function CityPanel() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [visitDate, setVisitDate] = useState('');
   const [visitEnd, setVisitEnd] = useState('');
+  // 城市没有 District 实体，用其下各区县的质心（平均经纬度）作为天气定位点
+  const allDistricts = useData((s) => s.districts);
+  const cityCenter = useMemo<[number, number] | null>(() => {
+    const ds = Object.values(allDistricts).filter((d) => d.city === city?.name && d.center);
+    if (ds.length === 0) return null;
+    const sum = ds.reduce(
+      (acc, d) => {
+        const c = d.center as [number, number];
+        return [acc[0] + c[0], acc[1] + c[1]] as [number, number];
+      },
+      [0, 0] as [number, number],
+    );
+    return [sum[0] / ds.length, sum[1] / ds.length];
+  }, [allDistricts, city?.name]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 });
@@ -89,6 +105,8 @@ export function CityPanel() {
         )}
 
         <p className="city-intro">{city.intro || '按区县逐级浏览历史、人文与可玩地点。'}</p>
+
+        {cityCenter && <WeatherCard id={`city:${city.id}`} center={cityCenter} />}
 
         {city.urbanDistricts && city.urbanDistricts.length > 0 && (
           <section className="content-block city-urban">

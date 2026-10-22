@@ -1,11 +1,32 @@
+import { useEffect } from 'react';
 import type { District } from '../../data/types';
 import { useWeather } from '../../stores/weather';
 import { monthDayOf, weatherOf, weekdayOf } from '../shared/meta';
 import { WeatherIcon } from '../shared/WeatherIcon';
 
-export function WeatherCard({ district }: { district: District }) {
-  const cache = useWeather((s) => s.cache[district.id]);
-  const status = useWeather((s) => s.status[district.id] ?? 'idle');
+export function WeatherCard({
+  district,
+  id,
+  center,
+}: {
+  /** 兼容旧调用：直接传 District */
+  district?: District;
+  /** 新调用：任意天气 key（城市概览用 `city:<id>`） */
+  id?: string;
+  /** 经纬度：[经度, 纬度]；缺省则不拉取 */
+  center?: [number, number] | null;
+}) {
+  const weatherId = id ?? district?.id ?? '';
+  const weatherCenter = center ?? district?.center ?? null;
+  const cache = useWeather((s) => s.cache[weatherId]);
+  const status = useWeather((s) => s.status[weatherId] ?? 'idle');
+  const ensureAt = useWeather((s) => s.ensureAt);
+
+  useEffect(() => {
+    if (weatherCenter && Number.isFinite(weatherCenter[0]) && Number.isFinite(weatherCenter[1])) {
+      void ensureAt(weatherId, weatherCenter[1], weatherCenter[0]);
+    }
+  }, [weatherId, weatherCenter, ensureAt]);
 
   const loading = status === 'loading' && !cache;
   const offline = status === 'offline';

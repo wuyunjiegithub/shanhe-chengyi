@@ -5281,7 +5281,7 @@ button.wall-stage-img {
   position: absolute;
   right: 8px;
   bottom: 8px;
-  z-index: 6;
+  z-index: 2;
   display: flex;
   gap: 4px;
   opacity: 0.38;

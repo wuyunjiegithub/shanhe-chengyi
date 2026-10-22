@@ -148,6 +148,20 @@ export function resetCamera(): void {
   manager?.resetView();
 }
 
+/** 顶栏「总览」：收起所有详情与浮层，回到区域总览 */
+export function goToOverview(): void {
+  backToRegion();
+  const ui = useUi.getState();
+  ui.toggleFavoritesPanel(false);
+  ui.toggleTimelinePanel(false);
+  ui.toggleTravelPanel(false);
+  ui.toggleDataPanel(false);
+  ui.toggleSettings(false);
+  ui.setSearchOpen(false);
+  ui.setDistrictPickerOpen(false);
+  ui.closePhotoWall();
+}
+
 /** 关闭抽屉并取消区县高亮 */
 export function clearDistrictSelection(): void {
   useNavigation.getState().selectDistrict(null);

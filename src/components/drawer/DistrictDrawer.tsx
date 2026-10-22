@@ -103,21 +103,21 @@ export function DistrictDrawer() {
             </div>
           </header>
 
-          <div className="drawer-cover">
-            <BgImage
-              bgKey={bgKey('district', district.id)}
-              src={district.image ?? `/assets/districts/${district.id}.jpg`}
-              alt={district.name}
-              label={district.name}
-              tags={district.tags}
-              className="drawer-cover-img"
-              editable
-            />
-            <div className="drawer-cover-grad" />
-          </div>
-
           <div className="drawer-scroll" ref={scrollRef} key={district.id}>
-            <WeatherCard district={district} />
+            <div className="drawer-cover">
+              <BgImage
+                bgKey={bgKey('district', district.id)}
+                src={district.image ?? `/assets/districts/${district.id}.jpg`}
+                alt={district.name}
+                label={district.name}
+                tags={district.tags}
+                className="drawer-cover-img"
+                editable
+              />
+              <div className="drawer-cover-grad" />
+            </div>
+
+            <WeatherCard id={district.id} center={district.center} />
 
             <p className="drawer-oneliner">{district.oneLiner}</p>
 
