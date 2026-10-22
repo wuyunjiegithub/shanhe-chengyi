@@ -33,17 +33,28 @@ const EXAGGERATION = 26;
  */
 const LIGHT_COMP = 0.28;
 
-/** 海拔配色（米 → 颜色）：江浙沪皖以丘陵林地为主，山体保持青绿化，高处才转灰岩 / 雪顶 */
+/** 每世界单位对应的米数换算基准（与 projection.ts 保持一致） */
+const EARTH_M_PER_DEG = 111_320;
+
+/**
+ * 海拔配色（米 → 颜色）。
+ * 走「低地冷青绿 → 丘陵黄绿 → 山地暖赭 → 岩灰 → 雪顶」这条冷暖过渡，
+ * 只用一个绿色系会让整幅地图糊成一块草地，读不出地势。
+ */
 const ELEV_STOPS: Array<[number, number]> = [
-  [0, 0x4d6f4e],
-  [60, 0x537249],
-  [180, 0x5b7a4b],
-  [420, 0x66804f],
-  [760, 0x748256],
-  [1100, 0x8a8a6c],
-  [1450, 0xa8a48e],
-  [1750, 0xe4ebee],
+  [0, 0x2f5a4a],
+  [80, 0x376a52],
+  [220, 0x46794f],
+  [480, 0x638a54],
+  [820, 0x86935f],
+  [1150, 0xa3986c],
+  [1450, 0xbcae8d],
+  [1700, 0xccd0c9],
+  [1900, 0xf0f6f7],
 ];
+
+/** 等高线间隔（米）：细刻线只用来读出地势层次，不做测绘含义 */
+const CONTOUR_STEP = 220;
 
 export interface TerrainHandle {
   group: THREE.Group;
@@ -51,6 +62,12 @@ export interface TerrainHandle {
   update: (t: number, dt: number) => void;
   /** 视口尺寸变化：刷新 LineMaterial 的 resolution（Line2 必须，否则宽度错或不可见） */
   setResolution: (w: number, h: number) => void;
+  /**
+   * 地形表面在世界坐标 (x, z) 处的高度。
+   * 城市边界线要贴在地形上绘制（否则会被山体埋掉），需要按点取样。
+   * 落在陆地之外（海面）时返回板块顶面高度。
+   */
+  heightAt: (x: number, z: number) => number;
   dispose: () => void;
 }
 
@@ -89,6 +106,10 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
   const colors = new Float32Array(total * 3);
   const land = new Uint8Array(total);
   const elevs = new Float32Array(total);
+  /** 平滑后的海拔（米）：顶点色 / 等高线 / 水位取样都用它，避免 DEM 锯齿乱跳 */
+  const elevF = new Float32Array(total);
+  /** 每个格心的地表世界高度：城市边界线贴地取样 */
+  const surfaceY = new Float32Array(total);
 
   // 先把每个格心的世界坐标 / 海拔都算出来
   for (let j = 0; j < rows; j++) {
@@ -158,6 +179,8 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
       }
 
       positions[idx * 3 + 1] = LAND_TOP + h;
+      surfaceY[idx] = LAND_TOP + h;
+      elevF[idx] = e;
       colorAt(e, maxElev, c);
       colors[idx * 3] = c.r;
       colors[idx * 3 + 1] = c.g;
@@ -181,16 +204,55 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
   const meshGeo = new THREE.BufferGeometry();
   meshGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   meshGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  // 海拔（米）另存一份属性：等高线在着色器里按它画，不能靠顶点色反推
+  meshGeo.setAttribute('elev', new THREE.BufferAttribute(elevF, 1));
   meshGeo.setIndex(indices);
   meshGeo.computeVertexNormals();
 
+  // 坡度明暗：俯视时方向光几乎照不出起伏，按法线 Y 分量再压一档，
+  // 陡坡转暗、缓坡留亮，山脊与谷地才有「体积感」而不是一张色卡。
+  const nrm = meshGeo.attributes.normal.array as Float32Array;
+  for (let idx = 0; idx < total; idx++) {
+    if (!land[idx]) continue;
+    const ny = Math.min(1, Math.max(0, nrm[idx * 3 + 1]));
+    const k = 0.74 + 0.36 * ny;
+    colors[idx * 3] *= k;
+    colors[idx * 3 + 1] *= k;
+    colors[idx * 3 + 2] *= k;
+  }
+
   const terrainMat = new THREE.MeshStandardMaterial({
     vertexColors: true,
-    roughness: 0.98,
+    roughness: 0.94,
     metalness: 0.0,
-    emissive: 0x0a1611,
-    emissiveIntensity: 0.3,
+    emissive: 0x0a1f1b,
+    emissiveIntensity: 0.22,
   });
+  // 等高线：每 CONTOUR_STEP 米一道极细的冷白刻线。
+  // 用 fwidth 让线宽恒为约 1 像素，缩小到省视角时线自然变淡，不会糊成一层网。
+  terrainMat.onBeforeCompile = (shader) => {
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nattribute float elev;\nvarying float vElevM;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvElevM = elev;');
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nvarying float vElevM;')
+      .replace(
+        '#include <opaque_fragment>',
+        `
+        {
+          float cb = vElevM / ${CONTOUR_STEP.toFixed(1)};
+          float w = max(fwidth(cb), 1e-5);
+          float f = abs(fract(cb + 0.5) - 0.5);
+          float line = 1.0 - smoothstep(0.0, w * 0.9, f);
+          // 省视角下每像素跨过的等高带太密，线会连成一片白雾 —— 按屏幕导数淡出，
+          // 只有放大到能看清山形时才显出来。
+          float fade = 1.0 - smoothstep(0.03, 0.11, w);
+          outgoingLight += vec3(0.55, 0.86, 0.78) * line * fade * 0.12;
+        }
+        #include <opaque_fragment>
+        `,
+      );
+  };
   const terrainMesh = new THREE.Mesh(meshGeo, terrainMat);
   terrainMesh.renderOrder = 3;
   group.add(terrainMesh);
@@ -206,28 +268,54 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
   };
 
   const waterU = { value: 0 };
-  const waterMat = new THREE.MeshStandardMaterial({
-    color: 0x0e3542,
+  /**
+   * 水面用「自发光式」材质而不是 PBR：
+   * 场景打光很亮（半球光 1.3 + 方向光 2.4）且带环境贴图，PBR 水面朝上时
+   * 会被反射成一片灰白，无论怎么调基色都留不住蓝绿。
+   * 这张地图是插画调性，水面当「会呼吸的色块」处理即可，直接在着色器里定色。
+   */
+  const waterMat = new THREE.MeshBasicMaterial({
+    color: 0x0b4a5e,
     transparent: true,
-    opacity: 0.78,
-    roughness: 0.22,
-    metalness: 0.16,
-    emissive: 0x08202c,
-    emissiveIntensity: 0.7,
+    opacity: 0.92,
     side: THREE.DoubleSide,
     depthWrite: false,
+    fog: true,
   });
   waterMat.onBeforeCompile = (shader) => {
     shader.uniforms.uTime = waterU;
     shader.vertexShader = shader.vertexShader
-      .replace('#include <common>', '#include <common>\nuniform float uTime;')
+      .replace(
+        '#include <common>',
+        '#include <common>\nuniform float uTime;\nvarying vec3 vWaterPos;',
+      )
       .replace(
         '#include <begin_vertex>',
         `#include <begin_vertex>
-        // 水面在 XZ 平面，直接沿 +Y 叠两张错频正弦波
-        float _w = sin(transformed.x * 0.7 + uTime * 1.2) * 0.05
-                + sin(transformed.z * 1.1 - uTime * 0.9) * 0.05;
-        transformed.y += _w;`,
+        // 水面在 XZ 平面，叠两张错频正弦波做细浪（local y 就是世界高度）
+        float _w = sin(transformed.x * 0.55 + uTime * 1.1) * 0.06
+                + sin(transformed.z * 0.9 - uTime * 0.8) * 0.06;
+        transformed.y += _w;
+        vWaterPos = (modelMatrix * vec4(transformed, 1.0)).xyz;`,
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        '#include <common>',
+        '#include <common>\nuniform float uTime;\nvarying vec3 vWaterPos;',
+      )
+      .replace(
+        '#include <opaque_fragment>',
+        `
+        {
+          // 两组缓慢漂移的正弦叠加成「水纹」，只提亮不改变色相，
+          // 看上去像湖面上流动的浅滩反光。
+          float r1 = sin(vWaterPos.x * 1.35 + vWaterPos.z * 0.55 + uTime * 0.9);
+          float r2 = sin(vWaterPos.z * 1.9 - vWaterPos.x * 0.4 - uTime * 0.65);
+          float shimmer = pow(max(0.0, r1 * 0.5 + r2 * 0.5), 3.0);
+          vec3 wcol = diffuseColor.rgb + vec3(0.11, 0.27, 0.30) * shimmer;
+          gl_FragColor = vec4(wcol, diffuseColor.a);
+        }
+        `,
       );
   };
   disposables.push(waterMat);
@@ -343,6 +431,33 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
     for (const mat of riverMats) mat.resolution.set(w, h);
   };
 
+  /**
+   * 世界坐标 → 地表高度（双线性插值）。
+   * 投影是等距圆柱（线性），可以直接反解经纬度再换算成网格浮点索引；
+   * 不在网格范围内时退回板块顶面，调用方（城市边界线）不会掉到地面以下。
+   */
+  const [originLng, originLat] = p.origin;
+  const kxWorld = EARTH_M_PER_DEG * Math.cos((originLat * Math.PI) / 180) * p.scale;
+  const kyWorld = EARTH_M_PER_DEG * p.scale;
+  const heightAt = (x: number, z: number): number => {
+    const lng = originLng + x / kxWorld;
+    const lat = originLat - z / kyWorld;
+    const fi = ((lng - minLng) / (maxLng - minLng)) * cols - 0.5;
+    const fj = ((maxLat - lat) / (maxLat - minLat)) * rows - 0.5;
+    if (fi < -1 || fj < -1 || fi > cols - 1 || fj > rows - 1) return LAND_TOP;
+    const i0 = Math.max(0, Math.min(cols - 2, Math.floor(fi)));
+    const j0 = Math.max(0, Math.min(rows - 2, Math.floor(fj)));
+    const tx = Math.max(0, Math.min(1, fi - i0));
+    const ty = Math.max(0, Math.min(1, fj - j0));
+    const a = surfaceY[j0 * cols + i0];
+    const b = surfaceY[j0 * cols + i0 + 1];
+    const c2 = surfaceY[(j0 + 1) * cols + i0];
+    const d = surfaceY[(j0 + 1) * cols + i0 + 1];
+    const top = a + (b - a) * tx;
+    const bot = c2 + (d - c2) * tx;
+    return top + (bot - top) * ty;
+  };
+
   const dispose = () => {
     for (const d of disposables) d.dispose();
     group.traverse((o) => {
@@ -351,5 +466,5 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
     });
   };
 
-  return { group, update, setResolution, dispose };
+  return { group, update, setResolution, heightAt, dispose };
 }

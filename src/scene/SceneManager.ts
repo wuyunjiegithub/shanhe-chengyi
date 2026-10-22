@@ -6,7 +6,9 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { Line2 } from 'three/examples/jsm/lines/Line2.js';
-import type { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
+import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { createPlateMesh, CAP_MATERIAL_INDEX } from './plates';
 import type { PlateStyle } from './plates';
 import type { TerrainHandle } from './terrain';
@@ -131,6 +133,14 @@ export class SceneManager {
   /** 地形图层（山地 / 湖泊 / 江河）：仅在省视角显示，下钻区县时自动隐藏 */
   private terrain: TerrainHandle | null = null;
   private terrainOn = true;
+  /**
+   * 城市边界线的原始环（世界 x / north 坐标）。
+   * 板块自带的轮廓线贴在板顶 y=2.62，一旦盖上地形就被山体与平原整个埋掉，
+   * 于是「城市之间的分隔」消失。这里另存一份，按地形高度逐段取样后重新画一遍。
+   */
+  private cityRings: Array<{ ring: [number, number][]; color: number }> = [];
+  private boundaryOverlay: LineSegments2 | null = null;
+  private boundaryMaterial: LineMaterial | null = null;
   private layer: 'city' | 'district' = 'city';
   /** 城市视图聚焦：进入城市后其余城市板块压暗为背景 */
   private focusedCityId: string | null = null;
@@ -282,6 +292,13 @@ export class SceneManager {
       this.terrain.dispose();
       this.terrain = null;
     }
+    // 贴地边界线不在任何 group 里（直接挂在 scene），要单独回收
+    if (this.boundaryOverlay) {
+      this.scene.remove(this.boundaryOverlay);
+      this.disposeObject(this.boundaryOverlay);
+      this.boundaryOverlay = null;
+      this.boundaryMaterial = null;
+    }
     this.disposeObject(this.stars);
     this.disposeObject(this.ground);
     this.disposeObject(this.grid);
@@ -309,6 +326,7 @@ export class SceneManager {
 
   setCityPlates(shapes: ProjectedShape[]): void {
     this.clearLayer(this.cityGroup, this.cities);
+    this.cityRings = [];
     for (const s of shapes) this.addPlate(this.cityGroup, this.cities, s, 'city', CITY_HEIGHT);
     this.regionBox = new THREE.Box3().setFromObject(this.cityGroup);
     const size = this.regionBox.getSize(new THREE.Vector3());
@@ -489,8 +507,90 @@ export class SceneManager {
 
   /** 地形仅在省视角（city 层）显示；下钻区县时自动隐藏，避免被区县板块压住 */
   private applyTerrain(): void {
-    if (!this.terrain) return;
-    this.terrain.group.visible = this.terrainOn && this.layer !== 'district';
+    const show = Boolean(this.terrain && this.terrainOn && this.layer !== 'district');
+    if (this.terrain) this.terrain.group.visible = show;
+    this.rebuildBoundaryOverlay(show);
+  }
+
+  /**
+   * 重建「贴地城市边界线」。
+   * 地形把板块顶盖连同它的轮廓线一起盖住了，城市的形状只能靠这条线读出来：
+   * 逐点问地形要高度（heightAt），沿线每 ~3.7km 打一个采样点，整条线贴着山形起伏，
+   * 所有城市合并成一次绘制，桌面 / 安卓都只多 1 个 draw call。
+   */
+  private rebuildBoundaryOverlay(show: boolean): void {
+    if (this.boundaryOverlay) {
+      this.scene.remove(this.boundaryOverlay);
+      this.disposeObject(this.boundaryOverlay);
+      this.boundaryOverlay = null;
+      this.boundaryMaterial = null;
+    }
+    if (!show || !this.terrain || this.cityRings.length === 0) return;
+
+    const positions: number[] = [];
+    const colors: number[] = [];
+    const col = new THREE.Color();
+    /** 采样步长（世界单位）：江浙沪皖约 900km / 120 单位，0.5 ≈ 3.7km */
+    const STEP = 0.5;
+    /** 抬离地表的量：高过湖面（0.08）与河道（0.16），又不至于浮空 */
+    const LIFT = 0.26;
+    const t = this.terrain;
+
+    for (const item of this.cityRings) {
+      col.setHex(item.color);
+      const ring = item.ring;
+      const n = ring.length;
+      if (n < 3) continue;
+      for (let i = 0; i < n; i++) {
+        const [x1, y1] = ring[i];
+        const [x2, y2] = ring[(i + 1) % n];
+        // 投影后的 y 是「北」，世界 z = -y（与投影一致）
+        const z1 = -y1;
+        const z2 = -y2;
+        const dx = x2 - x1;
+        const dz = z2 - z1;
+        const len = Math.hypot(dx, dz);
+        if (len < 1e-6) continue;
+        const steps = Math.max(1, Math.ceil(len / STEP));
+        for (let s = 0; s < steps; s++) {
+          const t0 = s / steps;
+          const t1 = (s + 1) / steps;
+          const ax = x1 + dx * t0;
+          const az = z1 + dz * t0;
+          const bx = x1 + dx * t1;
+          const bz = z1 + dz * t1;
+          positions.push(ax, t.heightAt(ax, az) + LIFT, az, bx, t.heightAt(bx, bz) + LIFT, bz);
+          colors.push(col.r, col.g, col.b, col.r, col.g, col.b);
+        }
+      }
+    }
+    if (positions.length < 6) return;
+
+    const geo = new LineSegmentsGeometry();
+    geo.setPositions(positions);
+    geo.setColors(colors);
+    const mat = new LineMaterial({
+      vertexColors: true,
+      linewidth: this.isNarrowViewport() ? 1.4 : 2.4,
+      transparent: true,
+      opacity: 0.9,
+      depthWrite: false,
+    });
+    const w = this.container?.clientWidth ?? 0;
+    const h = this.container?.clientHeight ?? 0;
+    if (w > 0 && h > 0) mat.resolution.set(w, h);
+    const overlay = new LineSegments2(geo, mat);
+    overlay.computeLineDistances();
+    // 和板块轮廓线一样：包围球由实例几何推导，斜视角容易被误剔除
+    overlay.frustumCulled = false;
+    overlay.renderOrder = 6;
+    this.scene.add(overlay);
+    this.boundaryOverlay = overlay;
+    this.boundaryMaterial = mat;
+  }
+
+  private isNarrowViewport(): boolean {
+    return this.container ? this.container.clientWidth <= 820 : false;
   }
 
   private fillMarkers(
@@ -758,6 +858,17 @@ export class SceneManager {
       sideGlow,
       edgeOpacity,
     };
+    // 城市层额外留一份轮廓给「贴地边界线」用：
+    // 亮度必须压在 bloom 阈值（0.62）以下 —— 满图的城市线一旦泛光，
+    // 会把整块地形冲成一片白光，什么都看不见。这里只提亮一点点，靠对比度而非发光取胜。
+    if (kind === 'city') {
+      // 提亮 + 略降饱和：浙江省的颜色本来就和地形绿色同族，
+      // 直接用地形色画线会「线消失在填充里」，偏亮的薄荷色才拉得开层次。
+      const ringColor = new THREE.Color(provColor).offsetHSL(0, -0.2, 0.18);
+      ringColor.multiplyScalar(indexed ? 0.74 : 0.4);
+      const ringsForOverlay = s.outlines && s.outlines.length > 0 ? s.outlines : [s.outline];
+      for (const ring of ringsForOverlay) this.cityRings.push({ ring, color: ringColor.getHex() });
+    }
     // 同一层级内所有板块统一厚度：不再按轮廓大小自适应。
     // 自适应深度会让大板块高、小板块薄，3D 视角下读作「地势」，
     // 靠前的厚板块还会挡住后面的薄板块，导致低地势的区县点不到。
@@ -1230,6 +1341,7 @@ export class SceneManager {
         for (const m of rec.edgeMaterials) m.resolution.set(w, h);
       }
     }
+    this.boundaryMaterial?.resolution.set(w, h);
     this.terrain?.setResolution(w, h);
   }
 

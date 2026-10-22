@@ -14,6 +14,8 @@ export function TopBar({ ready }: { ready: boolean }) {
   const toggleDataPanel = useUi((s) => s.toggleDataPanel);
   const toggleSettings = useUi((s) => s.toggleSettings);
   const setDistrictPickerOpen = useUi((s) => s.setDistrictPickerOpen);
+  const terrainOn = useUi((s) => s.terrain);
+  const setTerrainOpen = useUi((s) => s.setTerrainOpen);
   const photoTotal = usePhotoLib((s) => s.index?.total ?? 0);
   const photoLive = usePhotoLib((s) => s.live);
 
@@ -45,6 +47,17 @@ export function TopBar({ ready }: { ready: boolean }) {
         >
           <span className="data-pill-icon">⌖</span>
           区县
+        </button>
+        {/* 地形开关放在顶栏：只藏在一级设置里没人找得到（手机端连设置入口都没有） */}
+        <button
+          type="button"
+          className={`data-pill data-pill--terrain${terrainOn ? ' is-on' : ''}`}
+          onClick={() => setTerrainOpen()}
+          title={terrainOn ? '隐藏地形图层（山地 / 湖泊 / 江河）' : '显示地形图层'}
+          aria-pressed={terrainOn}
+        >
+          <span className="data-pill-icon">⛰</span>
+          <span className="data-pill-label">地形</span>
         </button>
         {/* 手机端不暴露设置：照片库绑定走系统相册自动匹配，留着只会误触 */}
         <button

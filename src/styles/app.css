@@ -2163,6 +2163,23 @@ a,
   font-size: 13px;
 }
 
+/* 地形开关：开=强调色描边 + 亮图标，关=退回普通按钮（图标压暗，一眼看得出关了） */
+.data-pill--terrain .data-pill-icon {
+  color: var(--text-3);
+  transition: color 0.15s, text-shadow 0.15s;
+}
+
+.data-pill--terrain.is-on {
+  border-color: rgba(34, 211, 238, 0.42);
+  background: rgba(34, 211, 238, 0.1);
+  color: var(--text-1);
+}
+
+.data-pill--terrain.is-on .data-pill-icon {
+  color: var(--accent);
+  text-shadow: 0 0 10px rgba(34, 211, 238, 0.65);
+}
+
 /* 手机端专属按钮，默认隐藏（≤820px 才显示，见文件末尾断点块）。
  * 定义必须放在断点块之前：否则同优先级的全局规则会反过来盖掉断点里的显示规则。 */
 .top-reset-btn,
@@ -5807,6 +5824,15 @@ button.wall-stage-img {
 
   .data-pill {
     padding: 0 10px;
+  }
+
+  /* 手机上顶栏要塞下 区县 / 地形 / 总览 / 数据，地形只留图标 */
+  .data-pill--terrain {
+    padding: 0 9px;
+  }
+
+  .data-pill--terrain .data-pill-label {
+    display: none;
   }
 
   .hud-bottom {
