@@ -8,7 +8,6 @@ import { NotePhotoPicker } from './NotePhotoPicker';
 import type { PickedPhoto } from './NotePhotoPicker';
 
 const MAX_IMAGES = 9;
-const MAX_FILE_MB = 8;
 
 function fmtDate(at: number): string {
   const d = new Date(at);
@@ -87,7 +86,8 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [libOpen, setLibOpen] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
+  /** 插入照片后滚到这里，否则图片区在正文下方，加完看不见 */
+  const imagesRef = useRef<HTMLDivElement>(null);
 
   /* ---------- 自动保存 ----------
    * 编辑过程中按 500ms 防抖落库；卸载时若有未落库改动立即冲刷。
@@ -195,36 +195,6 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
       .slice(0, 8);
   }, [placeQuery, places]);
 
-  const onPickFiles = async (files: FileList | null) => {
-    if (!files || files.length === 0) return;
-    const room = MAX_IMAGES - images.length;
-    if (room <= 0) {
-      showToast(`一篇游记最多 ${MAX_IMAGES} 张图`);
-      return;
-    }
-    const list = Array.from(files).slice(0, room);
-    const tooBig = list.filter((f) => f.size > MAX_FILE_MB * 1024 * 1024);
-    if (tooBig.length > 0) {
-      showToast(`${tooBig[0].name} 超过 ${MAX_FILE_MB}MB，已跳过`);
-    }
-    const ok = list.filter((f) => f.size <= MAX_FILE_MB * 1024 * 1024);
-    setBusy(true);
-    try {
-      const ids: string[] = [];
-      for (const f of ok) {
-        try {
-          ids.push(await saveImage(f, f.name));
-        } catch {
-          showToast(`${f.name} 保存失败`);
-        }
-      }
-      if (ids.length > 0) setImages((prev) => [...prev, ...ids]);
-    } finally {
-      setBusy(false);
-      if (fileRef.current) fileRef.current.value = '';
-    }
-  };
-
   const onRemoveImage = (id: string) => {
     setImages((prev) => prev.filter((x) => x !== id));
     setUrls((prev) => {
@@ -272,8 +242,10 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
       if (ids.length > 0) {
         setImages((prev) => [...prev, ...ids]);
         for (const id of ids) pendingAdded.current.add(id);
+        // 图片区在正文下方，插完主动滚过去，免得看着像「没加进来」
+        window.setTimeout(() => imagesRef.current?.scrollIntoView({ block: 'nearest' }), 60);
       }
-      showToast(ids.length > 0 ? `已从照片库添加 ${ids.length} 张` : '没有可添加的照片');
+      showToast(ids.length > 0 ? `已插入 ${ids.length} 张到本篇游记` : '没有可添加的照片');
     } finally {
       setBusy(false);
       setLibOpen(false);
@@ -377,7 +349,7 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
         rows={12}
       />
 
-      <div className="note-images">
+      <div className="note-images" ref={imagesRef}>
         <div className="note-images-head">
           <span>
             图片 <b>{images.length}</b> / {MAX_IMAGES}
@@ -388,28 +360,11 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
               className="ghost-btn"
               onClick={() => setLibOpen(true)}
               disabled={busy || images.length >= MAX_IMAGES}
-              title="从绑定的本地照片库挑选（可多选批量添加）"
+              title="从绑定的本地照片库挑选（可多选，批量插入本篇游记）"
             >
-              {busy ? '导入中…' : '＋ 从照片库挑选'}
-            </button>
-            <button
-              type="button"
-              className="ghost-btn ghost-btn--slim"
-              onClick={() => fileRef.current?.click()}
-              disabled={busy || images.length >= MAX_IMAGES}
-              title="从磁盘选择图片文件（照片库没有时再用）"
-            >
-              从磁盘导入
+              {busy ? '插入中…' : '＋ 插入照片'}
             </button>
           </div>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            multiple
-            hidden
-            onChange={(e) => void onPickFiles(e.target.files)}
-          />
         </div>
         {images.length > 0 && (
           <ul className="note-image-grid">
@@ -444,7 +399,6 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
           >
             {confirmDelete ? '确认删除这篇游记？' : '删除游记'}
           </button>
-          <span className="fav-tip">图文均只存在本机（图片在 IndexedDB，正文在 localStorage）</span>
         </footer>
       )}
 
@@ -649,7 +603,7 @@ export function TravelNotesPanel() {
       <section className="fav-panel travel-panel" onPointerDown={(e) => e.stopPropagation()}>
         <header className="fav-head">
           <div>
-            <div className="drawer-kicker">旅行游记 · 本地保存</div>
+            <div className="drawer-kicker">旅行游记</div>
             <div className="fav-title-line">
               <h2 className="drawer-title">我的游记</h2>
               <span className="fav-total">{notes.length} 篇</span>
@@ -664,7 +618,7 @@ export function TravelNotesPanel() {
           {notes.length === 0 ? (
             <p className="block-empty">
               还没有游记。在区县或城市详情里点「写游记」即可记录一路见闻，支持多张图片
-              （从本地照片库批量挑选，或从磁盘导入），并自动关联到该地点。
+              （从本地照片库批量挑选插入），并自动关联到该地点。
             </p>
           ) : (
             <ul className="note-list">
@@ -698,10 +652,6 @@ export function TravelNotesPanel() {
             </ul>
           )}
         </div>
-
-        <footer className="fav-foot">
-          <span className="fav-tip">游记仅保存在本机，换设备或清缓存会丢失</span>
-        </footer>
       </section>
     </div>
   );

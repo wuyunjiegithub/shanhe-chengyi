@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { District, Spot, Tag } from '../../data/types';
+import type { City, District, Spot, Tag } from '../../data/types';
 import { validateDraft } from '../../data/validate';
 import type { Issue } from '../../data/validate';
 import { useData } from '../../stores/data';
@@ -42,6 +42,23 @@ function signature(d: District, spots: Spot[]): string {
   return JSON.stringify(normalizeDistrict(d, spots));
 }
 
+/** 城市级清洗：与区县同思路，只动可编辑字段 */
+function normalizeCity(c: City): City {
+  return {
+    ...c,
+    intro: c.intro?.trim() ?? '',
+    poem: c.poem?.trim() ?? '',
+    poemFrom: c.poemFrom?.trim() ?? '',
+    foods: (c.foods ?? []).filter(
+      (f) => f.name.trim() || f.category.trim() || f.recommend.trim() || f.note.trim(),
+    ),
+  };
+}
+
+function signatureCity(c: City): string {
+  return JSON.stringify(normalizeCity(c));
+}
+
 export function DataPanel() {
   const open = useUi((s) => s.dataPanelOpen);
   const close = useUi((s) => s.toggleDataPanel);
@@ -51,14 +68,18 @@ export function DataPanel() {
   const districts = useData((s) => s.districts);
   const spotsByDistrict = useData((s) => s.spotsByDistrict);
   const spotCount = useData((s) => Object.keys(s.spots).length);
-  const editedIds = useData((s) => s.editedDistrictIds);
+  const editedDistrictIds = useData((s) => s.editedDistrictIds);
+  const editedCityIds = useData((s) => s.editedCityIds);
   const activeDistrictId = useNavigation((s) => s.activeDistrictId);
 
+  const [kind, setKind] = useState<'district' | 'city'>('district');
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const [draft, setDraft] = useState<District | null>(null);
   const [draftSpots, setDraftSpots] = useState<Spot[]>([]);
+  const [cityDraft, setCityDraft] = useState<City | null>(null);
   const [query, setQuery] = useState('');
-  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [pending, setPending] = useState<{ kind: 'district' | 'city'; id: string } | null>(null);
   const [confirmReset, setConfirmReset] = useState(false);
   const [confirmRemove, setConfirmRemove] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
@@ -99,16 +120,21 @@ export function DataPanel() {
 
   const original = selectedId ? districts[selectedId] ?? null : null;
   const originalSpots = selectedId ? spotsByDistrict[selectedId] ?? EMPTY_SPOTS : EMPTY_SPOTS;
+  const cityOriginal = selectedCityId ? cities.find((c) => c.id === selectedCityId) ?? null : null;
 
   const dirty = useMemo(() => {
+    if (kind === 'city') {
+      if (!cityDraft || !cityOriginal) return false;
+      return signatureCity(cityDraft) !== signatureCity(cityOriginal);
+    }
     if (!draft || !original) return false;
     return signature(draft, draftSpots) !== signature(original, originalSpots);
-  }, [draft, draftSpots, original, originalSpots]);
+  }, [kind, draft, draftSpots, original, originalSpots, cityDraft, cityOriginal]);
 
   const issues = useMemo<Issue[]>(() => {
-    if (!draft) return [];
+    if (kind === 'city' || !draft) return [];
     return validateDraft({ ...draft, spots: draftSpots.map((s) => s.id) }, draftSpots);
-  }, [draft, draftSpots]);
+  }, [kind, draft, draftSpots]);
 
   const errors = issues.filter((i) => i.level === 'error');
   const warnings = issues.filter((i) => i.level === 'warn');
@@ -116,21 +142,27 @@ export function DataPanel() {
     issues.find((i) => i.level === 'error' && i.field === field)?.message;
   const spotErrorOf = (spotId: string, field: string) => errorOf(`spot.${spotId}.${field}`);
 
-  /* 打开面板时优先落到当前正在看的区县，否则落到第一个区县；数据重置 / 删除后自动修正选中项 */
+  /* 打开面板时优先落到当前正在看的区县（城市级则落到第一个城市）；数据重置 / 删除后自动修正选中项 */
   useEffect(() => {
     if (!open) return;
-    if (selectedId && districts[selectedId]) return;
-    const preferred =
-      activeDistrictId && districts[activeDistrictId] ? districts[activeDistrictId] : ordered[0];
-    if (!preferred) return;
-    setSelectedId(preferred.id);
-    setDraft(clone(preferred));
-    setDraftSpots(clone(spotsByDistrict[preferred.id] ?? []));
-  }, [open, selectedId, ordered, districts, spotsByDistrict, activeDistrictId]);
+    if (kind === 'district') {
+      if (selectedId && districts[selectedId]) return;
+      const preferred =
+        activeDistrictId && districts[activeDistrictId] ? districts[activeDistrictId] : ordered[0];
+      if (!preferred) return;
+      loadDistrict(preferred.id);
+    } else {
+      if (selectedCityId && cities.some((c) => c.id === selectedCityId)) return;
+      const first = cities[0];
+      if (!first) return;
+      loadCity(first.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, kind, selectedId, selectedCityId, ordered, districts, spotsByDistrict, activeDistrictId, cities]);
 
   useEffect(() => {
     if (!open) {
-      setPendingId(null);
+      setPending(null);
       setConfirmReset(false);
       setConfirmRemove(false);
       setSavedAt(null);
@@ -151,29 +183,50 @@ export function DataPanel() {
 
   if (!open) return null;
 
-  function loadDraft(id: string) {
+  function loadDistrict(id: string) {
     const d = districts[id];
     if (!d) return;
+    setKind('district');
     setSelectedId(id);
     setDraft(clone(d));
     setDraftSpots(clone(spotsByDistrict[id] ?? []));
-    setPendingId(null);
+    setPending(null);
     setConfirmRemove(false);
     setSavedAt(null);
   }
 
-  function requestSelect(id: string) {
-    if (id === selectedId) return;
+  function loadCity(id: string) {
+    const c = cities.find((x) => x.id === id);
+    if (!c) return;
+    setKind('city');
+    setSelectedCityId(id);
+    setCityDraft(clone(c));
+    setPending(null);
+    setSavedAt(null);
+  }
+
+  function selectDistrict(id: string) {
+    if (kind === 'district' && id === selectedId) return;
     if (dirty) {
-      setPendingId(id);
+      setPending({ kind: 'district', id });
       return;
     }
-    loadDraft(id);
+    loadDistrict(id);
+  }
+
+  function selectCity(id: string) {
+    if (kind === 'city' && id === selectedCityId) return;
+    if (dirty) {
+      setPending({ kind: 'city', id });
+      return;
+    }
+    loadCity(id);
   }
 
   const update = (patch: Partial<District>) => setDraft((d) => (d ? { ...d, ...patch } : d));
   const updateSpot = (id: string, patch: Partial<Spot>) =>
     setDraftSpots((list) => list.map((s) => (s.id === id ? { ...s, ...patch } : s)));
+  const updateCity = (patch: Partial<City>) => setCityDraft((c) => (c ? { ...c, ...patch } : c));
 
   function addSpot() {
     if (!draft) return;
@@ -218,6 +271,25 @@ export function DataPanel() {
     setSavedAt(new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }));
     refreshPins();
     updateMarkers();
+    toast(`${cleaned.name} 已保存`);
+    return true;
+  }
+
+  async function handleSaveCity(): Promise<boolean> {
+    if (!cityDraft || !cityOriginal) return false;
+    if (errors.length > 0) {
+      toast(`还有 ${errors.length} 项需要修正`);
+      return false;
+    }
+    const cleaned: City = normalizeCity(cityDraft);
+    try {
+      await useData.getState().applyCityEdits(cleaned);
+    } catch (e) {
+      toast(e instanceof Error ? `保存失败：${e.message}` : '保存失败，内容未改动');
+      return false;
+    }
+    setCityDraft(clone(cleaned));
+    setSavedAt(new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }));
     toast(`${cleaned.name} 已保存`);
     return true;
   }
@@ -280,14 +352,22 @@ export function DataPanel() {
     toast('已重置为静态内容');
   }
 
-  const editedHere = draft ? editedIds.includes(draft.id) : false;
+  const editedHere =
+    kind === 'city'
+      ? selectedCityId
+        ? editedCityIds.includes(selectedCityId)
+        : false
+      : draft
+        ? editedDistrictIds.includes(draft.id)
+        : false;
+  const totalEdited = editedDistrictIds.length + editedCityIds.length;
 
   return (
     <div className="modal-backdrop" onPointerDown={() => close(false)}>
       <section className="data-panel" onPointerDown={(e) => e.stopPropagation()}>
         <header className="data-head">
           <div className="data-head-title">
-            <div className="drawer-kicker">数据管理 · 本地内容</div>
+            <div className="drawer-kicker">数据管理</div>
             <h2 className="drawer-title">内容编辑器</h2>
           </div>
           <div className="data-head-stats">
@@ -297,8 +377,8 @@ export function DataPanel() {
             <span>
               <b>{spotCount}</b> 景点
             </span>
-            <span className={editedIds.length ? 'is-accent' : undefined}>
-              <b>{editedIds.length}</b> 已编辑
+            <span className={totalEdited ? 'is-accent' : undefined}>
+              <b>{totalEdited}</b> 已编辑
             </span>
           </div>
           <button className="icon-btn" onClick={() => close(false)} aria-label="关闭">
@@ -317,31 +397,158 @@ export function DataPanel() {
               />
             </div>
             <div className="data-rail-scroll">
-              {filteredGroups.map(([city, list]) => (
-                <div className="data-group" key={city}>
-                  <div className="data-group-title">
-                    {city}
-                    <span>{list.length}</span>
+              {filteredGroups.map(([cityName, list]) => {
+                const city = cities.find((c) => c.name === cityName);
+                const cityId = city?.id;
+                const cityEdited = cityId ? editedCityIds.includes(cityId) : false;
+                const cityActive = kind === 'city' && cityId === selectedCityId;
+                return (
+                  <div className="data-group" key={cityName}>
+                    {city ? (
+                      <button
+                        className={`data-group-title data-group-title--city${cityActive ? ' is-active' : ''}`}
+                        onClick={() => selectCity(cityId!)}
+                      >
+                        <span className={`data-dot${cityEdited ? ' is-edited' : ''}`} />
+                        {cityName}
+                        <span className="data-group-count">{list.length}</span>
+                      </button>
+                    ) : (
+                      <div className="data-group-title">
+                        {cityName}
+                        <span>{list.length}</span>
+                      </div>
+                    )}
+                    {list.map((d) => (
+                      <button
+                        key={d.id}
+                        className={`data-row${kind === 'district' && d.id === selectedId ? ' is-active' : ''}`}
+                        onClick={() => selectDistrict(d.id)}
+                      >
+                        <span className={`data-dot${editedDistrictIds.includes(d.id) ? ' is-edited' : ''}`} />
+                        <span className="data-row-name">{d.name}</span>
+                        <span className="data-row-sub">{d.spots.length}</span>
+                      </button>
+                    ))}
                   </div>
-                  {list.map((d) => (
-                    <button
-                      key={d.id}
-                      className={`data-row${d.id === selectedId ? ' is-active' : ''}`}
-                      onClick={() => requestSelect(d.id)}
-                    >
-                      <span className={`data-dot${editedIds.includes(d.id) ? ' is-edited' : ''}`} />
-                      <span className="data-row-name">{d.name}</span>
-                      <span className="data-row-sub">{d.spots.length}</span>
-                    </button>
-                  ))}
-                </div>
-              ))}
+                );
+              })}
               {filteredGroups.length === 0 && <p className="data-empty">没有匹配的区县</p>}
             </div>
           </aside>
 
           <div className="data-main">
-            {!draft ? (
+            {kind === 'city' ? (
+              !cityDraft ? (
+                <p className="data-empty data-empty--main">暂无可编辑的城市内容。</p>
+              ) : (
+                <>
+                  <header className="data-editor-head">
+                    <div>
+                      <div className="data-editor-kicker">
+                        {cityDraft.province} · {cityDraft.id}
+                      </div>
+                      <h3 className="data-editor-title">{cityDraft.name}</h3>
+                    </div>
+                    <div className="data-editor-meta">
+                      <span className={`data-badge${editedHere ? ' is-edited' : ''}`}>
+                        {editedHere ? '已编辑' : '静态内容'}
+                      </span>
+                      {dirty && <span className="data-badge is-dirty">未保存</span>}
+                    </div>
+                  </header>
+
+                  {pending && (
+                    <div className="data-confirm">
+                      <span>当前内容有未保存修改，切换会丢弃这些修改。</span>
+                      <button
+                        className="ghost-btn"
+                        onClick={() => setPending(null)}
+                      >
+                        继续编辑
+                      </button>
+                      <button
+                        className="ghost-btn is-danger"
+                        onClick={() =>
+                          pending.kind === 'city' ? loadCity(pending.id) : loadDistrict(pending.id)
+                        }
+                      >
+                        放弃并切换
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="data-scroll">
+                    <section className="data-section">
+                      <h4 className="data-section-title">
+                        <i />
+                        基础信息
+                      </h4>
+                      <div className="data-grid">
+                        <Field label="所属" hint="由内容文件决定">
+                          <input
+                            className="input"
+                            value={cityDraft.province}
+                            readOnly
+                            disabled
+                          />
+                        </Field>
+                        <Field label="id" hint="只读，用于收藏引用">
+                          <input className="input" value={cityDraft.id} readOnly disabled />
+                        </Field>
+                      </div>
+                    </section>
+
+                    <section className="data-section">
+                      <h4 className="data-section-title">
+                        <i />
+                        内容块
+                      </h4>
+                      <div className="data-grid">
+                        <Field label="城市简介" className="field--wide">
+                          <textarea
+                            className="input input--area"
+                            rows={3}
+                            value={cityDraft.intro ?? ''}
+                            placeholder="一句话概括 + 一段介绍…"
+                            onChange={(e) => updateCity({ intro: e.target.value })}
+                          />
+                        </Field>
+                        <Field label="诗句" className="field--wide">
+                          <textarea
+                            className="input input--area"
+                            rows={2}
+                            value={cityDraft.poem ?? ''}
+                            placeholder="描写这座城市的诗句…"
+                            onChange={(e) => updateCity({ poem: e.target.value })}
+                          />
+                        </Field>
+                        <Field label="诗句出处" className="field--wide">
+                          <input
+                            className="input"
+                            value={cityDraft.poemFrom ?? ''}
+                            placeholder="作者 / 篇名"
+                            onChange={(e) => updateCity({ poemFrom: e.target.value })}
+                          />
+                        </Field>
+                      </div>
+                    </section>
+
+                    <section className="data-section">
+                      <h4 className="data-section-title">
+                        <i />
+                        美食
+                        <span className="data-section-count">{(cityDraft.foods ?? []).length}</span>
+                      </h4>
+                      <FoodsEditor
+                        value={cityDraft.foods ?? []}
+                        onChange={(foods) => updateCity({ foods })}
+                      />
+                    </section>
+                  </div>
+                </>
+              )
+            ) : !draft ? (
               <p className="data-empty data-empty--main">暂无可编辑的区县内容。</p>
             ) : (
               <>
@@ -366,13 +573,18 @@ export function DataPanel() {
                   </div>
                 </header>
 
-                {pendingId && (
+                {pending && (
                   <div className="data-confirm">
                     <span>当前区县有未保存修改，切换会丢弃这些修改。</span>
-                    <button className="ghost-btn" onClick={() => setPendingId(null)}>
+                    <button className="ghost-btn" onClick={() => setPending(null)}>
                       继续编辑
                     </button>
-                    <button className="ghost-btn is-danger" onClick={() => loadDraft(pendingId)}>
+                    <button
+                      className="ghost-btn is-danger"
+                      onClick={() =>
+                        pending.kind === 'city' ? loadCity(pending.id) : loadDistrict(pending.id)
+                      }
+                    >
                       放弃并切换
                     </button>
                   </div>
@@ -526,7 +738,7 @@ export function DataPanel() {
             <button
               className={`ghost-btn${confirmReset ? ' is-danger' : ''}`}
               onClick={handleReset}
-              disabled={editedIds.length === 0 && !dirty}
+              disabled={totalEdited === 0 && !dirty}
             >
               {confirmReset ? '确认重置全部？' : '重置编辑'}
             </button>
@@ -550,7 +762,7 @@ export function DataPanel() {
             />
             <button
               className="primary-btn data-save"
-              onClick={() => void handleSave()}
+              onClick={() => void (kind === 'city' ? handleSaveCity() : handleSave())}
               disabled={!dirty || errors.length > 0}
             >
               保存

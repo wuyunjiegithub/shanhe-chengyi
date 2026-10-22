@@ -104,7 +104,7 @@ export function TimelinePanel() {
       <section className="fav-panel timeline-panel" onPointerDown={(e) => e.stopPropagation()}>
         <header className="fav-head">
           <div>
-            <div className="drawer-kicker">到访记录 · 本地保存</div>
+            <div className="drawer-kicker">到访记录</div>
             <div className="fav-title-line">
               <h2 className="drawer-title">时间线</h2>
               <span className="fav-total">{records.length} 次</span>
@@ -220,7 +220,6 @@ export function TimelinePanel() {
               {confirmClear ? '确认清空时间线？' : '清空时间线'}
             </button>
           </div>
-          <span className="fav-tip">到访记录仅保存在本机，换设备或清缓存会丢失</span>
         </footer>
       </section>
     </div>

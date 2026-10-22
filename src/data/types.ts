@@ -99,13 +99,28 @@ export interface DailyWeather {
   windKmh: number;
 }
 
+export interface CurrentWeather {
+  /** 此刻观测到的 WMO 天气码（最近一次观测，通常 15 分钟内） */
+  code: number;
+  /** 此刻气温 ℃ */
+  temp: number;
+  /** 观测时刻（ISO，本地时区） */
+  time: string;
+}
+
 export interface WeatherCache {
   districtId: string;
   fetchedAt: string;
   source: 'open-meteo';
   tz: string;
+  /** 此刻真实观测（用于 3D 特效「现在下没下」的判定） */
+  current?: CurrentWeather;
+  /** 未来 7 天每日概况（用于天气面板的多日预报展示） */
   daily: DailyWeather[];
 }
+
+/** 3D 天气特效用的「大类」：晴 / 多云 / 阴 / 雨 / 雪 / 雾 */
+export type WeatherKind = 'sunny' | 'cloudy' | 'overcast' | 'rain' | 'snow' | 'fog';
 
 export interface Favorites {
   districts: string[];

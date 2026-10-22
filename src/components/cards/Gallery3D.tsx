@@ -18,13 +18,15 @@ export interface HallItem {
 
 /** 单张照片的基准高度；宽度按真实画幅换算，保证不变形、不被裁 */
 const PHOTO_H = 2.9;
+/** 聚焦时照片放大的倍数 */
+const FOCUS_SCALE = 2.2;
+/** 聚焦照片停在相机正前方的固定距离：无论星系大小，呈现大小恒定、居中 */
+const FOCUS_DIST = 9;
 const MAX_PHOTOS = 220;
 
 /** 触屏设备：星点更密更亮、机位更广、照片略大——小屏也要有星海的冲击力 */
 const IS_MOBILE =
   typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
-
-const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
 /** 画幅极端时把宽高比夹一下，避免超长全景 / 竖图把画面拉爆 */
 function clampAspect(a: number): number {
@@ -120,6 +122,8 @@ interface PhotoNode {
   bob: number;
   /** 漂浮强度（1 = 正常漂浮，0 = 聚焦冻结） */
   still: number;
+  /** 聚焦混合（0 = 在旋臂原位，1 = 飞抵中央展示） */
+  focus: number;
   index: number;
 }
 
@@ -326,7 +330,7 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     // ---------- 照片 ----------
 
     // 边框用接近星空底的深蓝，不再用刺眼的米白；厚度也收窄，只留一圈细边
-    const backingMat = new THREE.MeshBasicMaterial({ color: 0x1a2436, fog: false });
+    const backingMat = new THREE.MeshBasicMaterial({ color: 0x1a2436, fog: false, transparent: true });
     const haloMat = new THREE.MeshBasicMaterial({
       color: 0x22d3ee,
       transparent: true,
@@ -366,7 +370,7 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       group.position.copy(spot);
       galaxy.add(group);
 
-      const planeMat = new THREE.MeshBasicMaterial({ color: 0x141d2c, fog: false });
+      const planeMat = new THREE.MeshBasicMaterial({ color: 0x141d2c, fog: false, transparent: true });
       const plane = new THREE.Mesh(new THREE.PlaneGeometry(PHOTO_H * 1.5, PHOTO_H), planeMat);
       plane.position.z = 0.02;
       plane.userData.index = i;
@@ -376,7 +380,7 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
 
       const backing = new THREE.Mesh(
         new THREE.PlaneGeometry(PHOTO_H * 1.5 + 0.2, PHOTO_H + 0.2),
-        backingMat,
+        backingMat.clone(),
       );
       group.add(backing);
 
@@ -399,6 +403,8 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
         bob: 0.22 + Math.random() * 0.45,
         /** 漂浮强度：聚焦时平滑收敛到 0（细节查看必须稳，不能一直晃） */
         still: 1,
+        /** 聚焦混合（0 = 在旋臂原位，1 = 飞抵中央展示） */
+        focus: 0,
         index: i,
       };
       nodes.push(node);
@@ -477,6 +483,16 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     const onDown = (e: PointerEvent) => {
       downXY = [e.clientX, e.clientY];
     };
+    /** 取第一张可见照片：淡出的照片（聚焦态）不挡点击，点空白才能退出聚焦 */
+    const pickFirst = (): number | null => {
+      const hits = raycaster.intersectObjects(pickables, false);
+      for (const h of hits) {
+        if ((h.object.parent as THREE.Object3D | null)?.visible) {
+          return h.object.userData.index as number;
+        }
+      }
+      return null;
+    };
     const onUp = (e: PointerEvent) => {
       if (!downXY) return;
       const moved = Math.hypot(e.clientX - downXY[0], e.clientY - downXY[1]);
@@ -488,9 +504,7 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
         -((e.clientY - rect.top) / rect.height) * 2 + 1,
       );
       raycaster.setFromCamera(pointer, camera);
-      const hit = raycaster.intersectObjects(pickables, false)[0];
-      if (hit) onFocus((hit.object.userData.index as number) ?? null);
-      else onFocus(null);
+      onFocus(pickFirst());
     };
     const onMove = (e: PointerEvent) => {
       // 触屏没有真正的 hover，别在移动端弹提示
@@ -501,12 +515,11 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
         -((e.clientY - rect.top) / rect.height) * 2 + 1,
       );
       raycaster.setFromCamera(pointer, camera);
-      const hit = raycaster.intersectObjects(pickables, false)[0];
-      if (!hit) {
+      const idx = pickFirst();
+      if (idx === null) {
         setHover(null);
         return;
       }
-      const idx = hit.object.userData.index as number;
       const it = items[idx];
       if (!it) {
         setHover(null);
@@ -523,27 +536,8 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     dom.addEventListener('pointermove', onMove);
     dom.addEventListener('pointerleave', onLeave);
 
-    // ---------- 飞抵聚焦 ----------
-    let fly: {
-      fromPos: THREE.Vector3;
-      toPos: THREE.Vector3;
-      t: number;
-      dur: number;
-    } | null = null;
-    let lastFocus = focusRef.current;
-    const focusTick = () => {
-      if (focusRef.current === lastFocus) return;
-      lastFocus = focusRef.current;
-      if (lastFocus === null || lastFocus >= nodes.length) return;
-      const node = nodes[lastFocus];
-      // 停在照片外侧一点：沿「盘心 → 照片」方向外推，再从盘上方斜看过去，
-      // 避免相机钻进薄薄的盘面里被别的照片挡住
-      const to = node.dir
-        .clone()
-        .multiplyScalar(node.radius + PHOTO_H * 1.9)
-        .add(new THREE.Vector3(0, PHOTO_H * 0.95, 0));
-      fly = { fromPos: camera.position.clone(), toPos: to, t: 0, dur: 1.0 };
-    };
+    // ---------- 聚焦：把选中的照片飞到中央展示，其余淡出 ----------
+    let focusEnv = 0;
 
     // ---------- 尺寸 ----------
     const resize = () => {
@@ -562,7 +556,14 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     let raf = 0;
     let last = performance.now();
     let elapsed = 0;
-    const tmp = new THREE.Vector3();
+    const lerp = THREE.MathUtils.lerp;
+
+    /** 整体调暗 / 调亮某张照片的相框、图片与光晕（三件套同进退） */
+    const setNodeOpacity = (node: PhotoNode, op: number) => {
+      (node.plane.material as THREE.Material).opacity = op;
+      (node.backing.material as THREE.Material).opacity = op;
+      (node.halo.material as THREE.Material).opacity = op;
+    };
 
     const tick = () => {
       const now = performance.now();
@@ -570,28 +571,44 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       last = now;
       elapsed += dt;
 
-      controls.autoRotate = touring && !fly && focusRef.current === null;
-      focusTick();
+      // 有聚焦时停止自动漫游；其余时间按设定巡航
+      controls.autoRotate = touring && focusRef.current === null;
 
-      if (fly) {
-        fly.t = Math.min(1, fly.t + dt / fly.dur);
-        camera.position.lerpVectors(fly.fromPos, fly.toPos, easeInOut(fly.t));
-        controls.target.lerp(tmp.set(0, 0, 0), 0.12);
-        if (fly.t >= 1) fly = null;
-      }
+      // 聚焦环境：有选中照片时朝 1 收敛（其余照片淡出），退出时朝 0 回归
+      const fActive = focusRef.current !== null;
+      focusEnv = Math.min(1, Math.max(0, focusEnv + (fActive ? dt * 3 : -dt * 3)));
 
-      // 漂浮：整组上下浮动（相框与图片同进同退），再让照片正面朝向相机。
-      // 聚焦时漂浮平滑收敛到 0——细节查看时照片必须稳住，不能再晃。
+      // 聚焦照片停在相机正前方的固定距离上（沿相机→星系中心轴线），
+      // 所以永远居中、且不论星系多大呈现大小都恒定；其余照片沿旋臂归位并淡出。
+      const camLen = camera.position.length() || 1;
+      const fk = 1 - FOCUS_DIST / camLen;
+
+      // 漂浮 + 聚焦：选中照片飞抵中央放大，其余淡出；平时整组缓慢自转
       for (const node of nodes) {
         const on = focusRef.current === node.index;
+        node.focus = Math.min(1, Math.max(0, node.focus + (on ? dt * 3 : -dt * 3)));
+        const f = node.focus;
         node.still = Math.min(1, Math.max(0, node.still + (on ? -dt * 2.4 : dt * 2.4)));
-        const y = node.dir.y * node.radius + Math.sin(elapsed * 0.55 + node.phase) * node.bob * node.still;
-        node.group.position.y = y;
+        const bobY = Math.sin(elapsed * 0.55 + node.phase) * node.bob * node.still;
+        const sx = node.dir.x * node.radius;
+        const sy = node.dir.y * node.radius + bobY;
+        const sz = node.dir.z * node.radius;
+        const tx = on ? camera.position.x * fk : sx;
+        const ty = on ? camera.position.y * fk : sy;
+        const tz = on ? camera.position.z * fk : sz;
+        node.group.position.set(lerp(sx, tx, f), lerp(sy, ty, f), lerp(sz, tz, f));
+        node.group.scale.setScalar(lerp(1, FOCUS_SCALE, f));
         node.group.lookAt(camera.position);
+        // 选中照片全亮且始终可见；其余在聚焦环境下淡出（退出聚焦时平滑回归）
+        const op = on ? 1 : Math.max(1 - focusEnv, node.focus);
+        setNodeOpacity(node, op);
+        node.group.visible = on || op > 0.02;
+        node.plane.renderOrder = on ? 5 : 0;
         const mat = node.halo.material as THREE.MeshBasicMaterial;
-        const target = on ? 0.55 : IS_MOBILE ? 0.2 : 0.12;
+        const target = on ? 0.6 : IS_MOBILE ? 0.2 : 0.12;
         mat.opacity += (target - mat.opacity) * Math.min(1, dt * 6);
       }
+
       // 星系动画：整盘极慢自转，核心呼吸，星云明暗浮动
       galaxy.rotation.y += dt * 0.02;
       coreGlow.scale.setScalar(R * 0.16 * (1 + Math.sin(elapsed * 0.9) * 0.07));
@@ -602,6 +619,7 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       }
       stars.rotation.y -= dt * 0.004;
 
+      controls.target.set(0, 0, 0);
       controls.update();
       renderer.render(scene, camera);
       raf = requestAnimationFrame(tick);

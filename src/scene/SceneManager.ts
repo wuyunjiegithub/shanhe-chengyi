@@ -24,7 +24,8 @@ import {
   paintVisited,
 } from './markerArt';
 import type { MarkerKind, VisitedStyle } from './markerArt';
-import type { ProjectedShape, Province } from '../data/types';
+import type { ProjectedShape, Province, WeatherKind } from '../data/types';
+import { WeatherFX } from './weatherFX';
 
 const PROVINCE_COLOR: Record<Province, number> = {
   上海市: 0x00f2fe,
@@ -133,6 +134,15 @@ export class SceneManager {
   /** 地形图层（山地 / 湖泊 / 江河）：省视角满比例，下钻区县时压扁成「地貌底图」 */
   private terrain: TerrainHandle | null = null;
   private terrainOn = true;
+  /** 天气特效层：地图空中的雨雪粒子 + 天色氛围，由当前可见层驱动 */
+  private weatherFX: WeatherFX | null = null;
+  private sun!: THREE.DirectionalLight;
+  private weatherOn = true;
+  private weatherAgg: WeatherKind | null = null;
+  /** 主方向光基准亮度（setWeatherAmbience 据此调暗阴雨）；与 setupLights 里的初值保持一致 */
+  private readonly weatherBaseDir = 2.4;
+  /** 雾基准浓度（同 constructor 里 FogExp2 的初值） */
+  private readonly weatherBaseFog = 0.0018;
   /** 城市多边形（世界坐标）：地形底板要用它铺一层低地色补上海岸线的网格空隙 */
   private cityShapes: ProjectedShape[] = [];
   /** 当前下钻城市的区县多边形：用来反算「不戳穿区县板块」的地形竖向缩放 */
@@ -230,6 +240,7 @@ export class SceneManager {
     this.setupEnvironment();
     this.setupGround();
     this.setupStars();
+    this.weatherFX = new WeatherFX(this.scene);
     this.scene.add(
       this.cityGroup,
       this.districtGroup,
@@ -299,6 +310,12 @@ export class SceneManager {
       this.terrain.dispose();
       this.terrain = null;
     }
+    if (this.weatherFX) {
+      this.weatherFX.dispose();
+      this.weatherFX = null;
+    }
+    if (this.sun) this.sun.intensity = this.weatherBaseDir;
+    if (this.scene.fog) (this.scene.fog as THREE.FogExp2).density = this.weatherBaseFog;
     // 贴地边界线不在任何 group 里（直接挂在 scene），要单独回收
     if (this.boundaryOverlay) {
       this.scene.remove(this.boundaryOverlay);
@@ -531,6 +548,78 @@ export class SceneManager {
   setTerrainVisible(on: boolean): void {
     this.terrainOn = on;
     this.applyTerrain();
+  }
+
+  /**
+   * 天气图层：把当前可见层各区域的天气画到天上。
+   * items 来自天气 store 的缓存（liveWeatherKind，优先 current 实时观测），id 与板块一致，
+   * 这里从板块包围盒反算投放范围（质心 + 半幅 + 抬升后的顶面高度）。
+   */
+  setWeather(items: { id: string; kind: WeatherKind }[]): void {
+    if (!this.weatherFX) return;
+    const map = this.layer === 'district' ? this.districts : this.cities;
+    const baseY = this.layer === 'district' ? DISTRICT_BASE_Y : 0;
+    const regions = items
+      .map((it) => {
+        // 省视角的天气 key 是 `city:<id>`（与城市详情面板共用一份缓存），
+        // 而城市板块在场景里的 key 是纯 id —— 两边对不上就会整层不下雨，这里剥掉前缀。
+        const key = it.id.startsWith('city:') ? it.id.slice(5) : it.id;
+        const rec = map.get(key);
+        if (!rec) return null;
+        const box = new THREE.Box3();
+        for (const m of rec.meshes) box.expandByObject(m);
+        const size = box.getSize(new THREE.Vector3());
+        const radius = Math.max(size.x, size.z) * 0.55;
+        return {
+          id: it.id,
+          kind: it.kind,
+          x: rec.centroid[0],
+          z: -rec.centroid[1],
+          radius,
+          topY: baseY + rec.height + 0.2,
+          height: 9,
+        };
+      })
+      .filter(Boolean) as {
+      id: string;
+      kind: WeatherKind;
+      x: number;
+      z: number;
+      radius: number;
+      topY: number;
+      height: number;
+    }[];
+    this.weatherFX.setRegions(regions);
+  }
+
+  /**
+   * 全局天色：按当前各区域天气综合出一档明暗 / 雾浓度。
+   * 取「最严重的那类」作为氛围（雪 / 雨 > 雾 > 阴 > 多云 > 晴），
+   * 阴雨时整体压暗、加雾，晴天略提亮 —— 这是「氛围」不是逐格预报。
+   */
+  setWeatherAmbience(kind: WeatherKind | null): void {
+    this.weatherAgg = kind;
+    if (!this.sun) return;
+    const dir = this.weatherBaseDir;
+    const fog = this.weatherBaseFog;
+    const presets: Record<WeatherKind, { dir: number; fog: number }> = {
+      sunny: { dir: dir * 1.08, fog: fog * 0.85 },
+      cloudy: { dir: dir * 0.85, fog: fog * 1.1 },
+      overcast: { dir: dir * 0.55, fog: fog * 1.6 },
+      fog: { dir: dir * 0.5, fog: fog * 2.6 },
+      rain: { dir: dir * 0.5, fog: fog * 2.0 },
+      snow: { dir: dir * 0.7, fog: fog * 1.5 },
+    };
+    const p = kind ? presets[kind] : { dir, fog };
+    this.sun.intensity = p.dir;
+    if (this.scene.fog) (this.scene.fog as THREE.FogExp2).density = p.fog;
+  }
+
+  /** 用户开关：天气图层是否显示（含天色氛围） */
+  setWeatherVisible(on: boolean): void {
+    this.weatherOn = on;
+    this.weatherFX?.setVisible(on);
+    this.setWeatherAmbience(on ? this.weatherAgg : null);
   }
 
   /**
@@ -781,7 +870,6 @@ export class SceneManager {
         <span class="map-anchor__name">${info.name}</span>
         <span class="map-anchor__count">${info.spotCount} 处景点</span>
       </span>
-      <span class="map-anchor__hint">${info.city} · 点击查看详情</span>
       <span class="map-anchor__stem"></span>
     `;
     el.addEventListener('click', (e) => {
@@ -1427,6 +1515,7 @@ export class SceneManager {
     this.updatePinScales();
     this.updateMarkerScales();
     this.terrain?.update(t, dt);
+    if (this.weatherOn && this.weatherFX) this.weatherFX.update(dt);
 
     // 锚点卡靠近视口边缘时隐藏，避免被顶部/侧边裁切
     if (this.anchor) {
@@ -1490,6 +1579,7 @@ export class SceneManager {
     this.scene.add(new THREE.AmbientLight(0x1b2637, 0.35));
 
     const dir = new THREE.DirectionalLight(0xffffff, 2.4);
+    this.sun = dir;
     dir.position.set(80, 160, 40);
     dir.castShadow = true;
     dir.shadow.mapSize.set(2048, 2048);

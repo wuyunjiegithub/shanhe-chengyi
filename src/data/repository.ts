@@ -27,6 +27,7 @@ export interface SandboxRepository {
   // ---- 本地内容编辑（P1：数据管理） ----
   readContentEdits(): Promise<ContentEdits>;
   saveDistrictContent(d: District): Promise<void>;
+  saveCityContent(c: City): Promise<void>;
   saveSpotContent(s: Spot): Promise<void>;
   deleteDistrictContent(id: string): Promise<void>;
   deleteSpotContent(id: string): Promise<void>;

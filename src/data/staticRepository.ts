@@ -152,6 +152,7 @@ export const staticRepository: SandboxRepository = {
     const params = new URLSearchParams({
       latitude: String(lat),
       longitude: String(lng),
+      current: 'weather_code,temperature_2m',
       daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max',
       timezone: 'Asia/Shanghai',
       forecast_days: '7',
@@ -164,6 +165,7 @@ export const staticRepository: SandboxRepository = {
       });
       if (!res.ok) throw new Error(`天气请求失败（HTTP ${res.status}）`);
       const raw = (await res.json()) as {
+        current?: { time?: string; weather_code?: number; temperature_2m?: number };
         daily?: {
           time?: string[];
           weather_code?: number[];
@@ -175,11 +177,19 @@ export const staticRepository: SandboxRepository = {
       };
       const d = raw.daily;
       if (!d?.time?.length) throw new Error('天气数据为空');
+      const c = raw.current;
       const cache: WeatherCache = {
         districtId,
         fetchedAt: new Date().toISOString(),
         source: 'open-meteo',
         tz: 'Asia/Shanghai',
+        current: c
+          ? {
+              code: c.weather_code ?? 0,
+              temp: Math.round(c.temperature_2m ?? 0),
+              time: c.time ?? '',
+            }
+          : undefined,
         daily: d.time.map((date, i) => ({
           date,
           code: d.weather_code?.[i] ?? 0,
@@ -215,6 +225,12 @@ export const staticRepository: SandboxRepository = {
     mutateEdits((edits) => {
       edits.districts[d.id] = d;
       edits.deletedDistricts = edits.deletedDistricts.filter((id) => id !== d.id);
+    });
+  },
+
+  async saveCityContent(c: City): Promise<void> {
+    mutateEdits((edits) => {
+      edits.cities[c.id] = c;
     });
   },
 

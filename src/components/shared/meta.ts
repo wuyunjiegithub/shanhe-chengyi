@@ -1,4 +1,4 @@
-import type { Province, Tag } from '../../data/types';
+import type { Province, Tag, WeatherCache, WeatherKind } from '../../data/types';
 
 export const TAGS: Tag[] = ['古镇', '山水', '博物馆', '寺庙', '亲子', '拍照', '徒步', '历史文化'];
 
@@ -71,6 +71,37 @@ const WEATHER_MAP: Record<number, { label: string; icon: string }> = {
 
 export function weatherOf(code: number): { label: string; icon: string } {
   return WEATHER_MAP[code] ?? { label: '未知', icon: '·' };
+}
+
+/** 把 WMO 天气代码归并成 3D 天气特效用的「大类」 */
+export function weatherKind(code: number): WeatherKind {
+  if (code === 0) return 'sunny';
+  if (code === 1 || code === 2) return 'cloudy';
+  if (code === 3) return 'overcast';
+  if (code === 45 || code === 48) return 'fog';
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'snow';
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82) || (code >= 95 && code <= 99)) return 'rain';
+  // 未知 / 异常码：按多云处理，绝不落到降水——
+  // 否则一个没覆盖到的码就会让整张地图莫名其妙下起雨来。
+  return 'cloudy';
+}
+
+/** 取今天（daily[0]）的天气大类；无缓存时返回 null（用于多日预报展示） */
+export function todayWeatherKind(cache: WeatherCache | undefined): WeatherKind | null {
+  if (!cache || !cache.daily || cache.daily.length === 0) return null;
+  return weatherKind(cache.daily[0].code);
+}
+
+/**
+ * 取「此刻」天气大类：优先用 open-meteo 的 current 实时观测码，
+ * 没有时回退到 daily[0]（今日概况）。3D 特效用它来判定「现在下没下」，
+ * 避免「当天某时段下过雪就被判一整天在下雪」的误报。
+ */
+export function liveWeatherKind(cache: WeatherCache | undefined): WeatherKind | null {
+  if (!cache) return null;
+  if (cache.current) return weatherKind(cache.current.code);
+  if (cache.daily && cache.daily.length > 0) return weatherKind(cache.daily[0].code);
+  return null;
 }
 
 /** 由主标签生成缩略图底色（离线，不依赖外链图片） */

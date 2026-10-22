@@ -11,6 +11,8 @@ import { useNavigation } from '../stores/navigation';
 import { useUi } from '../stores/ui';
 import { useWeather } from '../stores/weather';
 import { useCityStatus } from '../stores/cityStatus';
+import { liveWeatherKind } from '../components/shared/meta';
+import type { WeatherKind } from '../data/types';
 import { usePhotoLib } from '../stores/photoLib';
 
 let manager: SceneManager | null = null;
@@ -19,6 +21,8 @@ const unsubscribers: Array<() => void> = [];
 let projection: Projection | null = null;
 const districtGeoCache = new Map<string, GeoFeature[]>();
 let loadingCityId: string | null = null;
+/** 每小时刷新一次当前可见层天气（用户要求：每小时刷新） */
+let weatherTimer: number | null = null;
 
 export async function initSandbox(container: HTMLElement): Promise<void> {
   if (manager) {
@@ -72,6 +76,32 @@ export async function initSandbox(container: HTMLElement): Promise<void> {
     }),
   );
 
+  // 天气缓存变化（联网返回 / 每小时刷新）后，重新把天气画到地图上
+  unsubscribers.push(
+    useWeather.subscribe((s, prev) => {
+      if (s.cache !== prev.cache) applyWeatherToScene();
+    }),
+  );
+
+  // 天气图层开关：用户在「设置 → 地图图层」里切换
+  unsubscribers.push(
+    useUi.subscribe((s, prev) => {
+      if (s.weather !== prev.weather) manager?.setWeatherVisible(s.weather);
+    }),
+  );
+
+  // 每小时强制刷新当前可见层天气（走 refreshAt 忽略 3h 缓存）
+  weatherTimer = window.setInterval(() => {
+    if (!manager || !useUi.getState().weather) return;
+    for (const t of visibleWeatherTargets()) {
+      void useWeather
+        .getState()
+        .refreshAt(t.id, t.lat, t.lng)
+        .then(applyWeatherToScene)
+        .catch(() => {});
+    }
+  }, 3600_000);
+
   const scene = new SceneManager();
   manager = scene;
   scene.mount(container);
@@ -104,6 +134,8 @@ export async function initSandbox(container: HTMLElement): Promise<void> {
   // 标记样式要在第一批标记建出来之前就位，否则首屏会先闪一下默认旗子
   scene.setVisitedStyle(useUi.getState().visitedStyle);
   scene.setCityPlates(projectFeatures(cityGeo, proj));
+  // 天气图层：省视角默认展示各城市天气（按需联网，命中缓存立即返回）
+  void refreshWeather();
   // 地形图层（真实高程 / 湖岸线 / 河道）：与板块共用同一投影，精确落在对应陆/水之上。
   // 数据体积约 500KB，异步加载；加载失败只是少一层观感，不影响地图主功能。
   void loadTerrainData().then((terrain) => {
@@ -117,6 +149,10 @@ export async function initSandbox(container: HTMLElement): Promise<void> {
 export function teardownSandbox(): void {
   for (const un of unsubscribers) un();
   unsubscribers.length = 0;
+  if (weatherTimer !== null) {
+    window.clearInterval(weatherTimer);
+    weatherTimer = null;
+  }
   manager?.dispose();
   manager = null;
   projection = null;
@@ -146,6 +182,7 @@ export async function drillIntoCity(cityId: string): Promise<void> {
     useData.getState().registerDistrictNames(geo);
     manager.setDistrictPlates(projectFeatures(geo, projection));
     manager.setCityFocus(cityId);
+    void refreshWeather();
     manager.selectDistrict(null);
     manager.setAnchor(null);
     refreshPins();
@@ -166,6 +203,7 @@ export function backToRegion(): void {
   ui.setSearchOpen(false);
   manager?.clearDistrictPlates();
   manager?.resetView();
+  void refreshWeather();
   useNavigation.getState().backToRegion();
   useNavigation.getState().setHovered(null);
 }
@@ -420,6 +458,62 @@ export function cityIdOfDistrict(districtId: string, province: string): string {
   // 直辖市没有地级市这一层，上海 310101 → 310000（按码前 2 位兜底，未录入区县也能推）
   if (province === '上海市' || districtId.startsWith('31')) return '310000';
   return districtId.slice(0, 4) + '00';
+}
+
+// ---------- 天气图层 ----------
+
+/** 当前可见层需要拉天气的目标（城市视角 = 该城市各区县；省视角 = 各城市，取区县质心均值算经纬度） */
+function visibleWeatherTargets(): { id: string; lat: number; lng: number }[] {
+  const nav = useNavigation.getState();
+  const data = useData.getState();
+  if (nav.level === 'city' && nav.currentCity) {
+    const out: { id: string; lat: number; lng: number }[] = [];
+    for (const did of nav.currentCity.districts) {
+      const d = data.districts[did];
+      if (d?.center) out.push({ id: d.id, lat: d.center[1], lng: d.center[0] });
+    }
+    return out;
+  }
+  const out: { id: string; lat: number; lng: number }[] = [];
+  for (const c of data.cities) {
+    const pts = c.districts
+      .map((id) => data.districts[id]?.center)
+      .filter((p): p is [number, number] => Boolean(p));
+    if (!pts.length) continue;
+    const lat = pts.reduce((a, p) => a + p[1], 0) / pts.length;
+    const lng = pts.reduce((a, p) => a + p[0], 0) / pts.length;
+    out.push({ id: `city:${c.id}`, lat, lng });
+  }
+  return out;
+}
+
+/** 把当前天气缓存画到地图：城市级用 city:<id> 作 key，区县用 districtId */
+function applyWeatherToScene(): void {
+  if (!manager) return;
+  const cache = useWeather.getState().cache;
+  const targets = visibleWeatherTargets();
+  const items = targets
+    .map((t) => {
+      const kind = liveWeatherKind(cache[t.id]);
+      return kind ? { id: t.id, kind } : null;
+    })
+    .filter(Boolean) as { id: string; kind: WeatherKind }[];
+  manager.setWeather(items);
+  const sev: Record<WeatherKind, number> = { sunny: 0, cloudy: 1, overcast: 2, fog: 3, rain: 4, snow: 5 };
+  let agg: WeatherKind | null = null;
+  for (const it of items) {
+    if (agg === null || sev[it.kind] > sev[agg]) agg = it.kind;
+  }
+  manager.setWeatherAmbience(agg);
+}
+
+/** 拉取当前可见层天气（命中 3h 缓存立即返回，否则联网），完成后重绘 */
+async function refreshWeather(): Promise<void> {
+  const targets = visibleWeatherTargets();
+  await Promise.all(
+    targets.map((t) => useWeather.getState().ensureAt(t.id, t.lat, t.lng).catch(() => {})),
+  );
+  applyWeatherToScene();
 }
 
 // ---------- 内容导入（本地编辑） ----------

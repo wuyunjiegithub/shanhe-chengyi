@@ -3,6 +3,8 @@ import { useData } from '../../stores/data';
 import { useUi } from '../../stores/ui';
 import { usePhotoLib } from '../../stores/photoLib';
 import { useCaptions } from '../../stores/captions';
+import { usePhotoNames } from '../../stores/photoNames';
+import { isAndroidShell } from '../../data/photoDisk';
 import { refineShape } from '../../data/photoLibrary';
 import type { PhotoEntry, PhotoShape } from '../../data/photoLibrary';
 import { Gallery3D } from './Gallery3D';
@@ -12,6 +14,7 @@ import type { Tag } from '../../data/types';
 
 type WallStyle = 'gallery' | 'corridor' | 'lightbox' | 'hall3d';
 type ShapeFilter = 'all' | 'landscape' | 'portrait' | 'other';
+type TypeFilter = 'all' | 'image' | 'animated' | 'video';
 /** 排序维度：默认（入库顺序）/ 名称 / 拍摄或修改时间 */
 type SortKey = 'default' | 'name' | 'time';
 interface SortState {
@@ -30,7 +33,7 @@ const STYLES: { id: WallStyle; name: string; hint: string }[] = [
   { id: 'gallery', name: '展厅', hint: '展墙网格：均匀挂画 + 展签' },
   { id: 'corridor', name: '长廊', hint: '长廊移步：单幅大字 + 两侧窥视' },
   { id: 'lightbox', name: '灯箱', hint: '灯箱独照：暗场聚光 + 展签' },
-  { id: 'hall3d', name: '照片空间 · 3D', hint: '所有照片汇成一条旋臂星河：拖动环绕、滚轮缩放、点击飞抵近看' },
+  { id: 'hall3d', name: '照片空间 · 3D', hint: '所有照片汇成一条旋臂星河：拖动环绕、滚轮缩放、点击居中放大' },
 ];
 
 const SHAPE_FILTERS: { id: ShapeFilter; name: string }[] = [
@@ -38,6 +41,13 @@ const SHAPE_FILTERS: { id: ShapeFilter; name: string }[] = [
   { id: 'landscape', name: '横屏' },
   { id: 'portrait', name: '竖屏' },
   { id: 'other', name: '其他' },
+];
+
+const TYPE_FILTERS: { id: TypeFilter; name: string }[] = [
+  { id: 'all', name: '全部' },
+  { id: 'image', name: '照片' },
+  { id: 'animated', name: '动图' },
+  { id: 'video', name: '视频' },
 ];
 
 const AUTOPLAY_MS = 4600;
@@ -116,10 +126,16 @@ function buildItems(scope: 'city' | 'district', id: string): WallItem[] {
     for (const f of c?.foods ?? []) {
       if (f.image) items.push({ key: `f:${f.name}`, title: f.name, src: f.image, kind: 'image', shape: 'unknown' });
     }
-    for (const did of c?.districts ?? []) {
+      for (const did of c?.districts ?? []) {
       const dd = data.districts[did];
       if (dd?.image) items.push({ key: `d:${did}`, title: dd.name, tags: dd.tags, src: dd.image, kind: 'image', shape: 'unknown' });
     }
+  }
+  // 自定义名称（桌面端改名）覆盖默认显示名：仅影响展示，不改磁盘文件名
+  const names = usePhotoNames.getState().map;
+  for (const it of items) {
+    const custom = names[it.key];
+    if (custom) it.title = custom;
   }
   return items;
 }
@@ -255,11 +271,6 @@ function WallMedia({
           GIF
         </span>
       )}
-      {item.photo?.fresh && (
-        <span className="wall-media-badge wall-media-badge--live" title="新上传 / 实时扫描新发现">
-          LIVE
-        </span>
-      )}
     </div>
   );
 }
@@ -273,6 +284,14 @@ export function PhotoWall() {
   const removePhotos = usePhotoLib((s) => s.removePhotos);
   const captionMap = useCaptions((s) => s.map);
   const setCaption = useCaptions((s) => s.set);
+  /** 自定义照片名（桌面端改名）覆盖表；订阅以便改名后即时重绘 */
+  const photoNames = usePhotoNames((s) => s.map);
+  const setPhotoName = usePhotoNames((s) => s.set);
+  /** 移动端（Android 套壳）不显示照片名、也不允许改名；其余环境为桌面 */
+  const showName = !isAndroidShell();
+  /** 正在就地改名的展品 key（仅桌面） */
+  const [renamingKey, setRenamingKey] = useState<string | null>(null);
+  const [nameDraft, setNameDraft] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
   /** 3D 照片空间容器，全屏时把这个节点交给浏览器全屏 API */
   const hall3dRef = useRef<HTMLDivElement>(null);
@@ -286,6 +305,7 @@ export function PhotoWall() {
   /** 查看器（缩放 / 旋转 / 平移）是否打开；与 focus 配合：3D 空间先飞抵、再按需放大 */
   const [viewer, setViewer] = useState(false);
   const [shapeFilter, setShapeFilter] = useState<ShapeFilter>('all');
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
   const [sort, setSort] = useState<SortState>({ key: 'default', desc: false });
   /** 渲染时回填的画幅（key → shape），用于即时筛选 */
   const [shapes, setShapes] = useState<Record<string, PhotoShape>>({});
@@ -300,8 +320,8 @@ export function PhotoWall() {
 
   const allItems = useMemo(
     () => (photoWall ? buildItems(photoWall.scope, photoWall.id) : []),
-    // 照片库数量变化时重建（绑定 / 解绑 / 上传 / 删除）
-    [photoWall, libTotal],
+    // 照片库数量 / 改名覆盖表变化时重建（绑定 / 解绑 / 上传 / 删除 / 改名）
+    [photoWall, libTotal, photoNames],
   );
 
   useEffect(() => {
@@ -312,6 +332,7 @@ export function PhotoWall() {
     setTouring(false);
     setStyle('gallery');
     setShapeFilter('all');
+    setTypeFilter('all');
     setSort({ key: 'default', desc: false });
     setShapes({});
     setManage(false);
@@ -349,13 +370,14 @@ export function PhotoWall() {
   const items = useMemo(() => {
     // 取不到图的条目（内置图地址失效 / 本地文件已删）整体剔除，不留占位、不留裂图
     const live = allItems.filter((it) => !failedKeys.has(it.key));
-    const list =
+    const byShape =
       shapeFilter === 'all'
         ? live
         : live.filter((it) => {
             const sh = shapes[it.key] ?? it.shape;
             return sh === shapeFilter;
           });
+    const list = typeFilter === 'all' ? byShape : byShape.filter((it) => it.kind === typeFilter);
     if (sort.key === 'default') return list;
     const dir = sort.desc ? -1 : 1;
     // 复制后再排：allItems 是 memo 结果，就地排序会污染下次渲染
@@ -430,6 +452,13 @@ export function PhotoWall() {
     setConfirmDelete(false);
   }, []);
 
+  /** 提交就地改名：空串 = 恢复默认显示名（删除覆盖） */
+  const commitRename = useCallback(() => {
+    if (renamingKey) setPhotoName(renamingKey, nameDraft);
+    setRenamingKey(null);
+    setNameDraft('');
+  }, [renamingKey, nameDraft, setPhotoName]);
+
   /** 批量删除：第一下进入待确认，第二下（5 秒内）才执行；删的是磁盘真实文件 */
   const onBatchDelete = useCallback(() => {
     if (busy || selected.size === 0) return;
@@ -472,6 +501,14 @@ export function PhotoWall() {
     }
     return acc;
   }, [allItems, shapes]);
+
+  const typeCounts = useMemo(() => {
+    const acc: Record<TypeFilter, number> = { all: allItems.length, image: 0, animated: 0, video: 0 };
+    for (const it of allItems) {
+      if (it.kind === 'image' || it.kind === 'animated' || it.kind === 'video') acc[it.kind] += 1;
+    }
+    return acc;
+  }, [allItems]);
 
   const go = useCallback(
     (delta: number) => setActive((a) => (items.length ? (a + delta + items.length) % items.length : 0)),
@@ -548,7 +585,7 @@ export function PhotoWall() {
           <div className="wall-head-title">
             <h2 className="wall-title">{photoWall.title}</h2>
             <span className="wall-count">
-              {items.length} 张{libTotal > 0 && allItems[0]?.photo ? ' · 本地照片库' : ''}
+              {items.length} 张{libTotal > 0 && allItems[0]?.photo ? ' · 照片库' : ''}
             </span>
           </div>
 
@@ -642,6 +679,25 @@ export function PhotoWall() {
           ))}
         </div>
 
+        {/* 类型筛选：照片 / 动图 / 视频 */}
+        <div className="wall-shapes">
+          {TYPE_FILTERS.map((f) => (
+            <button
+              key={f.id}
+              className={`wall-shape-chip${typeFilter === f.id ? ' is-active' : ''}`}
+              onClick={() => {
+                setTypeFilter(f.id);
+                setActive(0);
+                setFocus(null);
+              }}
+              title={f.id === 'image' ? '静态照片' : f.id === 'animated' ? '动图（GIF）' : f.id === 'video' ? '视频' : undefined}
+            >
+              {f.name}
+              <i>{typeCounts[f.id]}</i>
+            </button>
+          ))}
+        </div>
+
         {/* 排序：默认顺序 / 名称 / 时间，点击当前项翻转升 / 降序 */}
         <div className="wall-sorts">
           <span className="wall-sorts-label">排序</span>
@@ -682,7 +738,7 @@ export function PhotoWall() {
               <div className="hall3d-wrap" ref={hall3dRef}>
                 <Gallery3D items={hallItems} focus={focus} onFocus={setFocus} touring={touring} />
                 <div className="hall3d-hint">
-                  拖动环绕 · 滚轮缩放 · 点击照片飞抵近看 · 点空白处退出 · Esc 关闭
+                  拖动环绕 · 滚轮缩放 · 点击照片居中放大 · 点空白处退出 · Esc 关闭
                   {items.length > HALL_SLOTS && <b>（空间内铺前 {HALL_SLOTS} 张，共 {items.length} 张）</b>}
                 </div>
                 <button
@@ -779,14 +835,47 @@ export function PhotoWall() {
                                 <WallMedia item={it} onShape={onShape} onFail={onFail} />
                               </div>
                               <span className="wall-tile-plaque">
-                                <b>{it.title}</b>
-                                {it.sub && <i>{it.sub}</i>}
+                                {showName && <b>{it.title}</b>}
+                                {showName && it.sub && <i>{it.sub}</i>}
                                 {sort.key === 'time' && it.time && (
                                   <i className="wall-tile-date">{fmtTime(it.time)}</i>
                                 )}
                                 {captionMap[it.key] && <em className="wall-cap">{captionMap[it.key]}</em>}
                               </span>
                             </button>
+                            {showName && renamingKey !== it.key && (
+                              <button
+                                type="button"
+                                className="wall-tile-edit"
+                                title="改名"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setRenamingKey(it.key);
+                                  setNameDraft(it.title);
+                                }}
+                              >
+                                ✎
+                              </button>
+                            )}
+                            {showName && renamingKey === it.key && (
+                              <div className="wall-tile-rename-wrap" onClick={(e) => e.stopPropagation()}>
+                                <input
+                                  className="wall-tile-rename"
+                                  autoFocus
+                                  value={nameDraft}
+                                  placeholder="改名（留空恢复原名）"
+                                  maxLength={60}
+                                  onChange={(e) => setNameDraft(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') commitRename();
+                                    if (e.key === 'Escape') {
+                                      setRenamingKey(null);
+                                      setNameDraft('');
+                                    }
+                                  }}
+                                />
+                              </div>
+                            )}
                             {manage && selectable && (
                               <span
                                 className={`wall-tile-check${checked ? ' is-on' : ''}`}
@@ -833,8 +922,8 @@ export function PhotoWall() {
                         <WallMedia item={current} onShape={onShape} onFail={onFail} autoplay />
                       </button>
                       <figcaption className="wall-stage-cap">
-                        <b>{current.title}</b>
-                        {current.sub && <i>{current.sub}</i>}
+                        {showName && <b>{current.title}</b>}
+                        {showName && current.sub && <i>{current.sub}</i>}
                         {current.time && <i>{fmtTime(current.time)}</i>}
                         {captionMap[current.key] && <em className="wall-cap">{captionMap[current.key]}</em>}
                         <span className="wall-stage-index">
@@ -889,6 +978,8 @@ export function PhotoWall() {
             counter={`${(focus ?? 0) + 1} / ${items.length}`}
             caption={captionMap[viewerItem.key] ?? ''}
             onCaption={(t) => setCaption(viewerItem.key, t)}
+            showName={showName}
+            onRename={showName ? (t) => setPhotoName(viewerItem.key, t) : undefined}
             kind={viewerItem.kind === 'video' ? 'video' : 'image'}
             onClose={closeViewer}
             onPrev={items.length > 1 ? () => step(-1) : undefined}

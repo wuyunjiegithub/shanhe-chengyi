@@ -58,6 +58,8 @@ export interface PhotoDisk {
   scan(): Promise<DiskHit[]>;
   /** 直接可播放的地址（Tauri 用 convertFileSrc；其余返回 null，走照片库解析） */
   directUrl(path: string): string | null;
+  /** 读单张照片的字节（供把本地照片复制进游记图片库等需要 Blob 的场景） */
+  readFile(path: string): Promise<Blob | null>;
 }
 
 /* ---------------- 公共工具 ---------------- */
@@ -242,6 +244,27 @@ class FsaDisk implements PhotoDisk {
   directUrl(): string | null {
     return null;
   }
+
+  async readFile(path: string): Promise<Blob | null> {
+    const root = await getStoredHandle();
+    if (!root) return null;
+    const segs = path.split('/').filter(Boolean);
+    const fileName = segs.pop();
+    if (!fileName) return null;
+    let dir: FileSystemDirectoryHandle = root;
+    for (const seg of segs) {
+      try {
+        dir = await dir.getDirectoryHandle(seg);
+      } catch {
+        return null;
+      }
+    }
+    try {
+      return await dir.getFileHandle(fileName).then((h) => h.getFile());
+    } catch {
+      return null;
+    }
+  }
 }
 
 /** 取（或在用户手势内申请）目录写权限 */
@@ -413,6 +436,17 @@ class TauriDisk implements PhotoDisk {
       return null;
     }
   }
+
+  async readFile(path: string): Promise<Blob | null> {
+    if (!this.root) return null;
+    try {
+      const bytes = await tauriReadFile(joinTauri(this.root, path));
+      const name = path.split('/').pop() ?? 'photo';
+      return new File([bytes], name, { type: mimeOf(name) });
+    } catch {
+      return null;
+    }
+  }
 }
 
 /* ---------------- 无后端 ---------------- */
@@ -449,6 +483,10 @@ class NoneDisk implements PhotoDisk {
   }
 
   directUrl(): string | null {
+    return null;
+  }
+
+  async readFile(): Promise<Blob | null> {
     return null;
   }
 }

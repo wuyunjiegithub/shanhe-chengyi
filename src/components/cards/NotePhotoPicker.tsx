@@ -35,6 +35,11 @@ function useLibRows(place: NotePhotoPickerProps['place']): LibRow[] {
   const index = usePhotoLib((s) => s.index);
   const cities = useData((s) => s.cities);
   const districts = useData((s) => s.districts);
+  // 只取原语值作记忆依赖：调用方每次渲染都会新建 place 对象，
+  // 若直接依赖 place 引用，useMemo 永远不命中，缩略图会反复清空重载（闪烁）。
+  const placeKind = place?.kind;
+  const placeId = place?.id;
+  const placeName = place?.name;
 
   return useMemo(() => {
     if (!index) return [];
@@ -49,11 +54,11 @@ function useLibRows(place: NotePhotoPickerProps['place']): LibRow[] {
         rows.push({ entry, sub });
       }
     };
-    if (place?.kind === 'district') {
-      push(index.byDistrict[place.id], place.name);
-    } else if (place?.kind === 'city') {
-      push(index.byCity[place.id], place.name);
-      const city = cities.find((c) => c.id === place.id);
+    if (placeKind === 'district' && placeId != null) {
+      push(index.byDistrict[placeId], placeName ?? '');
+    } else if (placeKind === 'city' && placeId != null) {
+      push(index.byCity[placeId], placeName ?? '');
+      const city = cities.find((c) => c.id === placeId);
       for (const did of city?.districts ?? []) {
         push(index.byDistrict[did], districts[did]?.name ?? '区县');
       }
@@ -65,7 +70,7 @@ function useLibRows(place: NotePhotoPickerProps['place']): LibRow[] {
       if (rows.length > 150) return rows.slice(0, 150);
     }
     return rows;
-  }, [index, place, cities, districts]);
+  }, [index, placeKind, placeId, placeName, cities, districts]);
 }
 
 /** 单张缩略图：按需解析 object URL（照片库统一走 LRU 缓存，这里不负责释放） */
@@ -74,11 +79,14 @@ function LibThumb({
   selected,
   disabled,
   onToggle,
+  onDouble,
 }: {
   row: LibRow;
   selected: boolean;
   disabled: boolean;
   onToggle: () => void;
+  /** 双击 = 立刻插入这一张，省掉「勾选 → 再点插入」两步 */
+  onDouble: () => void;
 }) {
   const photoUrl = usePhotoLib((s) => s.photoUrl);
   const [src, setSrc] = useState<string | null>(null);
@@ -103,8 +111,9 @@ function LibThumb({
       type="button"
       className={`np-cell${selected ? ' is-on' : ''}${disabled ? ' is-disabled' : ''}`}
       onClick={onToggle}
+      onDoubleClick={onDouble}
       disabled={disabled}
-      title={`${row.entry.name}${row.sub ? ` · ${row.sub}` : ''}`}
+      title={`${row.entry.name}${row.sub ? ` · ${row.sub}` : ''}（双击直接插入）`}
     >
       <span className="np-cell-img">
         {src ? <img src={src} alt={row.entry.name} loading="lazy" draggable={false} /> : null}
@@ -120,7 +129,7 @@ function LibThumb({
 
 export function NotePhotoPicker({ place, room, onConfirm, onClose }: NotePhotoPickerProps) {
   const rows = useLibRows(place);
-  const photoUrl = usePhotoLib((s) => s.photoUrl);
+  const photoBlob = usePhotoLib((s) => s.photoBlob);
   const [picked, setPicked] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
 
@@ -137,17 +146,17 @@ export function NotePhotoPicker({ place, room, onConfirm, onClose }: NotePhotoPi
 
   const selectAll = () => setPicked(rows.slice(0, room).map((r) => r.entry.path));
 
-  const confirm = async () => {
-    if (pickedRows.length === 0) return;
+  const insert = async (rows: LibRow[]) => {
+    if (rows.length === 0) return;
     setBusy(true);
     try {
       const items: PickedPhoto[] = [];
-      for (const row of pickedRows) {
-        const url = await photoUrl(row.entry);
-        if (!url) continue;
+      for (const row of rows) {
+        // 直接读字节（套壳 / FSA 都稳定），不再依赖「解析 URL 后 fetch」——
+        // Tauri 的 asset:// 链接对 <img> 可用，但 fetch 取不到字节会让添加静默失败。
         try {
-          const blob = await (await fetch(url)).blob();
-          items.push({ name: row.entry.name, blob });
+          const blob = await photoBlob(row.entry);
+          if (blob) items.push({ name: row.entry.name, blob });
         } catch {
           /* 单张失败不影响其余 */
         }
@@ -157,6 +166,10 @@ export function NotePhotoPicker({ place, room, onConfirm, onClose }: NotePhotoPi
       setBusy(false);
     }
   };
+
+  const confirm = () => void insert(pickedRows);
+  /** 双击单张：直接插入这一张 */
+  const insertOne = (row: LibRow) => void insert([row]);
 
   // Esc 关闭
   useEffect(() => {
@@ -178,7 +191,7 @@ export function NotePhotoPicker({ place, room, onConfirm, onClose }: NotePhotoPi
             <div className="drawer-kicker">本地照片库 · 可多选</div>
             <h2 className="np-title">{place ? `${place.name} · 照片` : '全部本地照片'}</h2>
           </div>
-          <span className="np-count">
+          <span className={`np-count${picked.length > 0 ? ' is-on' : ''}`}>
             已选 <b>{picked.length}</b> / 还可选 {room}
           </span>
           <button className="icon-btn" onClick={onClose} aria-label="关闭">
@@ -206,7 +219,7 @@ export function NotePhotoPicker({ place, room, onConfirm, onClose }: NotePhotoPi
             <button type="button" className="ghost-btn" onClick={() => setPicked([])} disabled={picked.length === 0}>
               清空选择
             </button>
-            <span className="np-toolbar-note">点击图片勾选 / 取消</span>
+            <span className="np-toolbar-note">点击勾选 / 取消 · 双击单张直接插入</span>
           </div>
         )}
 
@@ -219,24 +232,27 @@ export function NotePhotoPicker({ place, room, onConfirm, onClose }: NotePhotoPi
                 selected={picked.includes(row.entry.path)}
                 disabled={!picked.includes(row.entry.path) && full}
                 onToggle={() => toggle(row.entry.path)}
+                onDouble={() => insertOne(row)}
               />
             ))}
           </div>
         )}
 
         <footer className="np-foot">
-          <span className="np-foot-tip">勾选的照片会复制进本篇游记（仅存本机）</span>
+          <span className="np-foot-tip">
+            {pickedRows.length > 0 ? '勾选的照片会复制进本篇游记' : '先勾选照片，再点右侧按钮插入'}
+          </span>
           <div className="np-foot-acts">
             <button type="button" className="ghost-btn" onClick={onClose}>
               取消
             </button>
             <button
               type="button"
-              className="primary-btn"
-              onClick={() => void confirm()}
+              className="primary-btn np-insert-btn"
+              onClick={confirm}
               disabled={busy || pickedRows.length === 0}
             >
-              {busy ? '导入中…' : `添加 ${pickedRows.length} 张`}
+              {busy ? '插入中…' : `插入正文 ${pickedRows.length} 张`}
             </button>
           </div>
         </footer>

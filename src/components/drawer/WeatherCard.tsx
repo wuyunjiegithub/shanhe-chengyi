@@ -33,6 +33,11 @@ export function WeatherCard({
   const updated = cache
     ? new Date(cache.fetchedAt).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
     : null;
+  // 「此刻」实况：open-meteo 的 current 观测码，与 3D 天气用的是同一份数据，
+  // 单独摆出来，好让人一眼核对「现在到底下没下」。
+  const cur = cache?.current;
+  const curLabel = cur ? weatherOf(cur.code).label : '';
+  const curTime = cur?.time ? cur.time.slice(11, 16) : '';
 
   return (
     <section className="weather-card">
@@ -45,6 +50,17 @@ export function WeatherCard({
           {!loading && !offline && !updated && '待获取'}
         </span>
       </header>
+
+      {cur && (
+        <div className="weather-now">
+          <span className="weather-now-icon">
+            <WeatherIcon code={cur.code} size={26} />
+          </span>
+          <b>{curLabel}</b>
+          <span className="weather-now-temp">{cur.temp}°</span>
+          <em>此刻{curTime ? ` ${curTime}` : ''}实测</em>
+        </div>
+      )}
 
       {cache ? (
               <div className="weather-grid">

@@ -23,7 +23,7 @@ export interface VisitedStyleMeta {
 
 export const VISITED_STYLES: VisitedStyleMeta[] = [
   { id: 'flag', label: '小旗子', note: '插旗宣示「我到了」，旗杆落地' },
-  { id: 'pin', label: '图钉', note: '水滴形地图钉，最像纸质地图上的大头针' },
+  { id: 'pin', label: '图钉', note: '地图钉，最像纸质地图上的大头针' },
   { id: 'stamp', label: '打卡章', note: '圆形印章带对勾，像护照上的出入境章' },
   { id: 'footprint', label: '脚印', note: '双足印，呼应「足迹」面板的说法' },
 ];

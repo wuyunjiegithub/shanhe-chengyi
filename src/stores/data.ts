@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { City, District, GeoFeature, Spot } from '../data/types';
 import { staticRepository } from '../data/staticRepository';
-import { editedDistrictIds } from '../data/contentEdits';
+import { editedDistrictIds, editedCityIds } from '../data/contentEdits';
 
 interface DataState {
   cities: City[];
@@ -13,6 +13,8 @@ interface DataState {
   districtNames: Record<string, string>;
   /** 被本地编辑过的区县 id，用于入口角标与列表标记 */
   editedDistrictIds: string[];
+  /** 被本地编辑过的城市 id */
+  editedCityIds: string[];
   loaded: boolean;
   error: string | null;
 
@@ -22,6 +24,8 @@ interface DataState {
 
   /** 原子保存一个区县的区县内容与景点列表（含新增 / 删除） */
   applyDistrictEdits: (district: District, spots: Spot[]) => Promise<void>;
+  /** 保存一个城市的本地覆盖（简介 / 诗句 / 美食等），与区县共用同一覆盖层 */
+  applyCityEdits: (city: City) => Promise<void>;
   /** 移除某个区县的全部本地内容（板块仍由 GeoJSON 呈现，回到「未录入」） */
   removeDistrictContent: (id: string) => Promise<void>;
   /** 导入内容 bundle（区县 + 景点），按当前数据集中已知 id 校验 */
@@ -41,6 +45,7 @@ export const useData = create<DataState>((set, get) => ({
   cityGeo: [],
   districtNames: {},
   editedDistrictIds: [],
+  editedCityIds: [],
   loaded: false,
   error: null,
 
@@ -77,6 +82,7 @@ export const useData = create<DataState>((set, get) => ({
         spots: spotMap,
         cityGeo,
         editedDistrictIds: editedDistrictIds(),
+        editedCityIds: editedCityIds(),
         loaded: true,
         error: null,
       });
@@ -127,6 +133,23 @@ export const useData = create<DataState>((set, get) => ({
         spotsByDistrict: { ...state.spotsByDistrict, [district.id]: spots },
         editedDistrictIds: edited,
       };
+    });
+  },
+
+  applyCityEdits: async (city) => {
+    try {
+      await staticRepository.saveCityContent(city);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : '未知错误';
+      set({ error: `保存失败：${msg}（内容未改动）` });
+      throw e;
+    }
+    set((state) => {
+      const cities = state.cities.map((c) => (c.id === city.id ? city : c));
+      const edited = state.editedCityIds.includes(city.id)
+        ? state.editedCityIds
+        : [...state.editedCityIds, city.id];
+      return { cities, editedCityIds: edited };
     });
   },
 
@@ -194,7 +217,7 @@ export const useData = create<DataState>((set, get) => ({
 
   resetContent: async () => {
     await staticRepository.resetContentEdits();
-    set({ loaded: false, editedDistrictIds: [] });
+    set({ loaded: false, editedDistrictIds: [], editedCityIds: [] });
     await get().loadCore();
   },
 }));

@@ -49,6 +49,8 @@ interface UiState {
   panelFullscreen: boolean;
   /** 地图地形图层（山地 / 湖泊 / 江河）是否显示，默认开 */
   terrain: boolean;
+  /** 天气图层（地图空中的雨 / 雪 / 晴 / 阴等）是否显示，默认开 */
+  weather: boolean;
   /** 「去过」标记的样式：旗子 / 图钉 / 打卡章 / 脚印 */
   visitedStyle: VisitedStyle;
 
@@ -71,6 +73,7 @@ interface UiState {
   setDistrictPickerOpen: (open: boolean) => void;
   togglePanelFullscreen: (open?: boolean) => void;
   setTerrainOpen: (open?: boolean) => void;
+  setWeatherOpen: (open?: boolean) => void;
   setVisitedStyle: (style: VisitedStyle) => void;
   openPhotoWall: (state: PhotoWallState) => void;
   closePhotoWall: () => void;
@@ -115,6 +118,7 @@ export const useUi = create<UiState>((set, get) => ({
   districtPickerOpen: false,
   panelFullscreen: false,
   terrain: true,
+  weather: true,
   visitedStyle: readMarkerStyle(),
 
   openDrawer: () => set({ drawerOpen: true, favoritesOpen: false }),
@@ -251,6 +255,8 @@ export const useUi = create<UiState>((set, get) => ({
     set((s) => ({ panelFullscreen: open ?? !s.panelFullscreen })),
 
   setTerrainOpen: (open) => set((s) => ({ terrain: open ?? !s.terrain })),
+
+  setWeatherOpen: (open) => set((s) => ({ weather: open ?? !s.weather })),
 
   setVisitedStyle: (visitedStyle) => {
     set({ visitedStyle });

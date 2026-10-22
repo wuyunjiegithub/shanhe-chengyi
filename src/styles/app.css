@@ -1073,6 +1073,15 @@ a,
   padding-bottom: 2px;
 }
 
+/* 区县名前的「去过 / 收藏」状态标记：常驻显示，激活实心、未激活描边，点击后立即反馈 */
+.drawer-title-marks {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  vertical-align: -3px;
+  margin-right: 9px;
+}
+
 .drawer-head-actions {
   display: flex;
   gap: 4px;
@@ -1103,14 +1112,14 @@ a,
   background: rgba(255, 177, 71, 0.1);
 }
 
-/* 「去过」= 红色印章，与「想去」的琥珀星明确区分 */
+/* 「去过」= 红色印章 */
 .icon-btn--visited.is-on {
   color: #ff6b78;
   border-color: rgba(255, 77, 94, 0.5);
   background: rgba(255, 77, 94, 0.12);
 }
 
-/* 「收藏」= 粉色爱心，与「去过」红、「想去」琥珀星明确区分 */
+/* 「收藏」= 粉色爱心，与「去过」红明确区分 */
 .icon-btn--fav.is-on {
   color: #f472b6;
   border-color: rgba(244, 114, 182, 0.5);
@@ -1164,6 +1173,38 @@ a,
 
 .weather-status.is-offline {
   color: #fbbf24;
+}
+
+/* 「此刻」实况条：一眼核对现在下没下 */
+.weather-now {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 2px 10px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 12px;
+  color: var(--text-1);
+}
+
+.weather-now-icon {
+  display: flex;
+  align-items: center;
+}
+
+.weather-now-temp {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.weather-now em {
+  margin-left: auto;
+  font-style: normal;
+  font-size: 10px;
+  color: var(--text-3);
 }
 
 .weather-grid {
@@ -2292,6 +2333,29 @@ a,
   color: var(--text-3);
 }
 
+/* 城市标题变为可点击节点：点它进入城市级编辑（与区县共用同一编辑器） */
+.data-group-title--city {
+  width: 100%;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+.data-group-title--city:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-1);
+}
+.data-group-title--city.is-active {
+  background: var(--accent-soft);
+  color: var(--text-1);
+}
+.data-group-title--city .data-group-count {
+  color: var(--text-3);
+}
+
 .data-row {
   width: 100%;
   display: flex;
@@ -2985,6 +3049,46 @@ a,
   display: none;
 }
 
+/* 城市概览的右上角按钮排：全屏 + 收藏 + 去过。
+ * 区县详情同一组按钮在标题栏（.drawer-head-actions），这里没有标题栏，
+ * 只能浮在封面上 —— 位置与层级保持一致，两边看上去就是同一个东西。 */
+.place-head-actions {
+  position: absolute;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  right: 12px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 浮在封面图上，按钮要带底才看得清 */
+.place-head-actions .icon-btn {
+  width: 30px;
+  height: 30px;
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(10, 14, 23, 0.55);
+  color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(6px);
+}
+
+.place-head-actions .icon-btn:hover {
+  background: rgba(10, 14, 23, 0.82);
+  color: #fff;
+}
+
+.place-head-actions .icon-btn--fav.is-on {
+  color: #f472b6;
+  border-color: rgba(244, 114, 182, 0.6);
+  background: rgba(58, 12, 38, 0.78);
+}
+
+.place-head-actions .icon-btn--visited.is-on {
+  color: #ff6b78;
+  border-color: rgba(255, 77, 94, 0.6);
+  background: rgba(58, 12, 18, 0.78);
+}
+
 .city-poem {
   position: relative;
   margin: 6px 0 16px;
@@ -3218,7 +3322,10 @@ a,
   font-size: 15px;
 }
 
-.city-actions {
+/* 面板底部常驻操作条：城市概览与区县详情共用一套（现在只放「写游记」，
+ * 收藏 / 去过已统一挪到右上角，与区县格式一致） */
+.place-actions {
+  flex: 0 0 auto;
   display: flex;
   gap: 8px;
   padding: 12px 18px;
@@ -3226,7 +3333,7 @@ a,
   background: rgba(255, 255, 255, 0.012);
 }
 
-.city-act {
+.place-act {
   flex: 1;
   height: 38px;
   display: inline-flex;
@@ -3242,36 +3349,24 @@ a,
   transition: all 0.15s;
 }
 
-.city-act:hover {
+.place-act:hover {
   color: var(--text-1);
   border-color: var(--border-active);
 }
 
-.city-act.is-on {
+.place-act.is-on {
   color: #ffd166;
   border-color: rgba(255, 209, 102, 0.5);
   background: rgba(255, 209, 102, 0.1);
 }
 
-.city-act--flag.is-on {
-  color: #ff6b78;
-  border-color: rgba(255, 77, 94, 0.5);
-  background: rgba(255, 77, 94, 0.12);
+.place-act--note {
+  color: var(--text-1);
 }
 
-.city-act--fav.is-on {
-  color: #f472b6;
-  border-color: rgba(244, 114, 182, 0.5);
-  background: rgba(244, 114, 182, 0.12);
-}
-
-.city-act--travel {
-  color: var(--text-2);
-}
-
-.city-act--travel:hover {
-  color: #7dd3fc;
-  border-color: rgba(125, 211, 252, 0.5);
+.place-act--note:hover {
+  border-color: var(--border-active);
+  color: var(--accent);
 }
 
 /* 「去过」小红旗徽标：未标记为描边空旗，已标记为实心红旗 */
@@ -3669,6 +3764,52 @@ a,
   border-color: var(--accent);
   background: var(--accent);
   color: #04222b;
+}
+
+/* 展签改名（桌面端）：悬浮显形的铅笔，与就地编辑输入框（叠在展签上） */
+.wall-tile-edit {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 4;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: rgba(8, 12, 20, 0.72);
+  color: var(--text-1);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.wall-tile:hover .wall-tile-edit {
+  opacity: 1;
+}
+.wall-tile-rename-wrap {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  z-index: 5;
+}
+.wall-tile-rename {
+  width: 100%;
+  padding: 6px 9px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: rgba(8, 12, 20, 0.95);
+  color: var(--text-1);
+  font-size: 12px;
+  font-family: inherit;
+  color-scheme: dark;
+}
+.wall-tile-rename:focus {
+  outline: none;
 }
 
 /* 删除确认态：整钮变红，明确告知不可恢复 */
@@ -4193,23 +4334,11 @@ button.wall-stage-img {
   pointer-events: none;
 }
 
-.wall-media-badge--live {
-  left: auto;
-  right: 6px;
-  border: 1px solid rgba(255, 77, 94, 0.45);
-  color: #ff8a8a;
-}
-
 .wall-media-badge--upload {
   left: auto;
   right: 6px;
   border: 1px solid rgba(34, 211, 238, 0.45);
   color: var(--accent);
-}
-
-/* LIVE 与「上传」同时出现时错开，别叠在一起 */
-.wall-media-badge--live + .wall-media-badge--upload {
-  right: 52px;
 }
 
 /* ---- 3D 展览馆 ---- */
@@ -5061,12 +5190,14 @@ button.wall-stage-img {
 }
 
 .np-foot {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--border);
+  background: rgba(6, 10, 18, 0.9);
 }
 
 .np-foot-tip {
@@ -5083,6 +5214,23 @@ button.wall-stage-img {
   height: 30px;
   padding: 0 14px;
   font-size: 12px;
+}
+
+/* 插入按钮是这张面板的主行动，做重一点，别让人找不到 */
+.np-insert-btn {
+  height: 36px !important;
+  padding: 0 18px !important;
+  font-size: 13px !important;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.np-count.is-on {
+  color: var(--accent);
+}
+
+.np-count.is-on b {
+  color: var(--accent);
 }
 
 /* 游记列表卡片 */
@@ -5535,7 +5683,7 @@ button.wall-stage-img {
     border-radius: 0;
   }
 
-  .city-actions {
+  .place-actions {
     padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   }
 
@@ -5575,10 +5723,7 @@ button.wall-stage-img {
 
   /* 城市概览没有标题栏按钮组，把这个钮浮在封面右上角 */
   .city-panel .panel-fs-btn {
-    position: absolute;
-    top: calc(10px + env(safe-area-inset-top, 0px));
-    right: 12px;
-    z-index: 4;
+    /* 不再自己 absolute：现在与收藏 / 去过同排在 .place-head-actions 容器里 */
     background: rgba(10, 14, 23, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 10px;
@@ -6063,6 +6208,12 @@ button.wall-stage-img {
   border-color: var(--accent);
 }
 
+/* 改名输入框复用图注输入框样式，但压成单行高度 */
+.pv-rename-input {
+  min-height: 0;
+  height: 36px;
+}
+
 .pv-cap-actions {
   display: flex;
   gap: 8px;
@@ -6169,15 +6320,7 @@ button.wall-stage-img {
   white-space: pre-wrap;
 }
 
-/* ---- 城市面板：「写游记」入口 ---- */
-.city-act--note {
-  color: var(--text-1);
-}
-
-.city-act--note:hover {
-  border-color: var(--border-active);
-  color: var(--accent);
-}
+/* ---- 面板底部「写游记」入口（城市 / 区县共用，样式见 .place-act--note） ---- */
 
 /* ---- 区县选择器（移动端全屏浮层，PC 端也可用） ---- */
 .dp-backdrop {

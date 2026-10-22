@@ -94,7 +94,6 @@ export function LeftIndex() {
             );
           })}
         </div>
-        <div className="index-foot">点击区县 · 打开详情抽屉</div>
       </aside>
     );
   }

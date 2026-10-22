@@ -84,7 +84,7 @@ export function TopBar({ ready }: { ready: boolean }) {
         <button
           className="data-pill"
           onClick={() => toggleDataPanel(true)}
-          title="编辑本地内容（本机保存）"
+          title="编辑内容（本机保存）"
         >
           <span className="data-pill-icon">✎</span>
           数据

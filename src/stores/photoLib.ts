@@ -125,6 +125,8 @@ interface PhotoLibState {
   removePhotos: (paths: string[]) => Promise<{ removed: number; error?: string }>;
   photosFor: (scope: 'city' | 'district', id: string) => PhotoEntry[];
   photoUrl: (entry: PhotoEntry) => Promise<string | null>;
+  /** 读照片字节：优先走磁盘后端直接读（套壳 / FSA 都稳定），失败再回退到「解析 URL 后 fetch」 */
+  photoBlob: (entry: PhotoEntry) => Promise<Blob | null>;
 }
 
 function mapsFromContent() {
@@ -553,6 +555,24 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
       }
     }
     return resolvePhotoUrl(entry);
+  },
+
+  photoBlob: async (entry) => {
+    const disk = getDisk();
+    try {
+      const blob = await disk.readFile(entry.path);
+      if (blob) return blob;
+    } catch {
+      /* 走下方兜底 */
+    }
+    // 兜底：照片库已解析出的可显示 URL 再 fetch（例如 FSA 句柄失效但字节缓存仍在）
+    try {
+      const url = await resolvePhotoUrl(entry);
+      if (url) return await (await fetch(url)).blob();
+    } catch {
+      /* 取不到字节 */
+    }
+    return null;
   },
   };
 });

@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import type { CSSProperties } from 'react';
 import { useData } from '../../stores/data';
 import { useNavigation } from '../../stores/navigation';
 import { useUi } from '../../stores/ui';
 import { useCityStatus } from '../../stores/cityStatus';
-import { useVisitLog } from '../../stores/visitLog';
 import { clearDistrictSelection, focusSpotById } from '../../app/sandbox';
 import { TAG_COLOR } from '../shared/meta';
 import { BgImage } from '../shared/BgImage';
@@ -13,12 +12,7 @@ import { VisitedMark } from '../shared/VisitedMark';
 import { HeartMark } from '../shared/HeartMark';
 import { PanelFullscreenBtn } from '../shared/PanelFullscreenBtn';
 import { WeatherCard } from './WeatherCard';
-
-function fmtDate(at: number): string {
-  const d = new Date(at);
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-}
+import { PlaceStatusActions, PhotoWallBlock, VisitLogSection, WriteNoteBar } from '../shared/PlaceBlocks';
 
 export function DistrictDrawer() {
   const open = useUi((s) => s.drawerOpen);
@@ -26,21 +20,14 @@ export function DistrictDrawer() {
   const togglePanelFullscreen = useUi((s) => s.togglePanelFullscreen);
   const favorites = useUi((s) => s.favorites);
   const toggleFavorite = useUi((s) => s.toggleFavorite);
-  const openTravelWithPlace = useUi((s) => s.openTravelWithPlace);
   const openLeaf = useUi((s) => s.openLeaf);
-  const openPhotoWall = useUi((s) => s.openPhotoWall);
   const activeDistrictId = useNavigation((s) => s.activeDistrictId);
   const districts = useData((s) => s.districts);
   const spotsByDistrict = useData((s) => s.spotsByDistrict);
   const visitedDistricts = useCityStatus((s) => s.visitedDistricts);
   const toggleVisitedDistrict = useCityStatus((s) => s.toggleVisitedDistrict);
-  const visitRecords = useVisitLog((s) => s.records);
-  const logVisitAt = useVisitLog((s) => s.logVisitAt);
-  const removeRecord = useVisitLog((s) => s.removeRecord);
   const district = activeDistrictId ? districts[activeDistrictId] : null;
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [visitDate, setVisitDate] = useState('');
-  const [visitEnd, setVisitEnd] = useState('');
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 });
@@ -54,11 +41,6 @@ export function DistrictDrawer() {
   const spots = [...allSpots].sort((a, b) => Number(Boolean(b.hot)) - Number(Boolean(a.hot)));
   const favored = district ? favorites.districts.includes(district.id) : false;
   const visitedDistrict = district ? visitedDistricts.includes(district.id) : false;
-  const districtVisits = district
-    ? visitRecords
-        .filter((r) => r.kind === 'district' && r.placeId === district.id)
-        .sort((a, b) => b.at - a.at)
-    : [];
 
   return (
     <aside
@@ -72,24 +54,24 @@ export function DistrictDrawer() {
               <div className="drawer-kicker">
                 {district.province} · {district.city}
               </div>
-              <h2 className="drawer-title">{district.name}</h2>
+              <h2 className="drawer-title">
+                <span className="drawer-title-marks" aria-hidden="true">
+                  <VisitedMark on={visitedDistrict} />
+                  <HeartMark on={favored} />
+                </span>
+                {district.name}
+              </h2>
             </div>
             <div className="drawer-head-actions">
               <PanelFullscreenBtn />
-              <button
-                className={`icon-btn icon-btn--fav${favored ? ' is-on' : ''}`}
-                title={favored ? '取消收藏该区县' : '收藏该区县'}
-                onClick={() => toggleFavorite('district', district.id)}
-              >
-                <HeartMark on={favored} />
-              </button>
-              <button
-                className={`icon-btn icon-btn--visited${visitedDistrict ? ' is-on' : ''}`}
-                title={visitedDistrict ? '取消「去过」标记' : '标记去过（插小红旗）'}
-                onClick={() => toggleVisitedDistrict(district.id)}
-              >
-                <VisitedMark on={visitedDistrict} />
-              </button>
+              <PlaceStatusActions
+                favored={favored}
+                visited={visitedDistrict}
+                onToggleFav={() => toggleFavorite('district', district.id)}
+                onToggleVisited={() => toggleVisitedDistrict(district.id)}
+                favTitleOff="收藏该区县"
+                favTitleOn="取消收藏该区县"
+              />
               <button
                 className="icon-btn"
                 title="关闭"
@@ -280,97 +262,21 @@ export function DistrictDrawer() {
               </section>
             )}
 
-            <section className="content-block">
-              <h3 className="block-title">
-                <i />照片墙
-              </h3>
-              <button
-                className="photo-wall-trigger"
-                onClick={() => openPhotoWall({ scope: 'district', id: district.id, title: `${district.name} · 照片墙` })}
-              >
-                <span className="photo-wall-trigger-ico">▦</span>
-                打开 {district.name} 照片墙
-              </button>
-            </section>
+            <PhotoWallBlock scope="district" id={district.id} title={district.name} />
 
-            <section className="content-block">
-              <h3 className="block-title">
-                <i />游玩日期
-                <span className="block-count">{districtVisits.length}</span>
-              </h3>
-              {districtVisits.length === 0 ? (
-                <p className="block-empty">
-                  还没有游玩记录。点上方「去过」会自动记一次；也可以手动补充具体的游玩日期，支持起止范围。
-                </p>
-              ) : (
-                <ul className="visit-list">
-                  {districtVisits.map((r) => (
-                    <li key={r.id} className="visit-row">
-                      <span className="visit-date">
-                        {fmtDate(r.at)}
-                        {r.endAt ? ` – ${fmtDate(r.endAt)}` : ''}
-                      </span>
-                      <button className="visit-del" title="删除这条游玩记录" onClick={() => removeRecord(r.id)}>
-                        ×
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <div className="visit-add">
-                <div className="visit-range">
-                  <input
-                    type="date"
-                    className="visit-date-input"
-                    value={visitDate}
-                    max={visitEnd || new Date().toISOString().slice(0, 10)}
-                    onChange={(e) => setVisitDate(e.target.value)}
-                    placeholder="起始日期"
-                  />
-                  <span className="visit-range-sep">至</span>
-                  <input
-                    type="date"
-                    className="visit-date-input"
-                    value={visitEnd}
-                    min={visitDate || undefined}
-                    max={new Date().toISOString().slice(0, 10)}
-                    onChange={(e) => setVisitEnd(e.target.value)}
-                    placeholder="结束日期（可选）"
-                  />
-                </div>
-                <button
-                  className="ghost-btn"
-                  disabled={!visitDate}
-                  onClick={() => {
-                    if (!visitDate) return;
-                    const t = new Date(`${visitDate}T12:00:00`).getTime();
-                    const end = visitEnd ? new Date(`${visitEnd}T12:00:00`).getTime() : undefined;
-                    logVisitAt('district', district.id, t, end && end >= t ? end : undefined);
-                    setVisitDate('');
-                    setVisitEnd('');
-                  }}
-                >
-                  添加这次游玩
-                </button>
-              </div>
-            </section>
-
-            <div className="drawer-actions">
-              <button
-                className="ghost-btn"
-                onClick={() =>
-                  openTravelWithPlace({ kind: 'district', id: district.id, name: district.name })
-                }
-              >
-                ✎ 写游记
-              </button>
-            </div>
+            <VisitLogSection
+              kind="district"
+              placeId={district.id}
+              emptyHint="还没有游玩记录。点右上角「去过」会自动记一次；也可以手动补充具体的游玩日期，支持起止范围。"
+            />
 
             <footer className="drawer-source">
-              <span>资料来源：{district.source ?? '本地整理'}</span>
               <span>更新于 {district.updatedAt}</span>
             </footer>
           </div>
+
+          {/* 写游记：与城市概览同一位置（滚动区之外，常驻底部） */}
+          <WriteNoteBar kind="district" id={district.id} name={district.name} />
         </div>
       )}
     </aside>

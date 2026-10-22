@@ -8,6 +8,9 @@ dist-ssr
 # 出包产物（APK / EXE 等，体积大，本地留档即可）
 out/
 
+# 本机构建助手（含 C:\VSBuildTools / Windows Kits 等绝对路径，勿入库）
+build-desktop.bat
+
 # 文档生成流水线中间产物（截图/HTML，可重新生成，体积大）
 output/
 

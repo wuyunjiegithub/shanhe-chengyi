@@ -15,6 +15,10 @@ export interface PhotoViewerProps {
   caption?: string;
   /** 图注变更回调（传空串表示删除） */
   onCaption?: (text: string) => void;
+  /** 是否显示照片名（移动端套壳不显示） */
+  showName?: boolean;
+  /** 改名回调（桌面端提供；传空串表示恢复默认名） */
+  onRename?: (text: string) => void;
   onClose: () => void;
   onPrev?: () => void;
   onNext?: () => void;
@@ -48,6 +52,8 @@ export function PhotoViewer({
   kind = 'image',
   caption,
   onCaption,
+  showName = true,
+  onRename,
   onClose,
   onPrev,
   onNext,
@@ -61,6 +67,9 @@ export function PhotoViewer({
   /** 图注编辑态 */
   const [editingCap, setEditingCap] = useState(false);
   const [capDraft, setCapDraft] = useState('');
+  /** 改名编辑态 */
+  const [editingName, setEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState('');
 
   // 换图（上/下一张）时复位变换与删除确认，避免沿用上一张的状态
   useEffect(() => {
@@ -70,6 +79,8 @@ export function PhotoViewer({
     setConfirmDelete(false);
     setEditingCap(false);
     setCapDraft('');
+    setEditingName(false);
+    setNameDraft('');
   }, [src]);
 
   const startEditCap = () => {
@@ -79,6 +90,15 @@ export function PhotoViewer({
   const saveCap = () => {
     onCaption?.(capDraft);
     setEditingCap(false);
+  };
+
+  const startEditName = () => {
+    setNameDraft(title);
+    setEditingName(true);
+  };
+  const saveName = () => {
+    onRename?.(nameDraft.trim());
+    setEditingName(false);
   };
 
   /** 删除按钮：两段式确认（删的是磁盘文件，不可恢复） */
@@ -209,8 +229,12 @@ export function PhotoViewer({
 
         <div className="pv-bar">
           <div className="pv-meta">
-            <b>{title}</b>
-            {sub && <i>{sub}</i>}
+            {showName && (
+              <>
+                <b>{title}</b>
+                {sub && <i>{sub}</i>}
+              </>
+            )}
             {time ? <i>{fmtTime(time)}</i> : null}
             {counter && <span>{counter}</span>}
           </div>
@@ -245,6 +269,46 @@ export function PhotoViewer({
         </div>
 
         <div className="pv-caption">
+          {showName && onRename && (
+            editingName ? (
+              <div className="pv-cap-edit">
+                <input
+                  className="pv-cap-input pv-rename-input"
+                  value={nameDraft}
+                  placeholder="给这张照片起个名字（留空恢复原名）"
+                  maxLength={60}
+                  autoFocus
+                  onChange={(e) => setNameDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') saveName();
+                    if (e.key === 'Escape') setEditingName(false);
+                  }}
+                />
+                <div className="pv-cap-actions">
+                  <button type="button" className="ghost-btn" onClick={saveName}>
+                    保存
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost-btn"
+                    onClick={() => {
+                      onRename('');
+                      setEditingName(false);
+                    }}
+                  >
+                    恢复原名
+                  </button>
+                  <button type="button" className="ghost-btn" onClick={() => setEditingName(false)}>
+                    取消
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button type="button" className="pv-cap-line" onClick={startEditName}>
+                <span className="pv-cap-placeholder">✎ 改名</span>
+              </button>
+            )
+          )}
           {editingCap ? (
             <div className="pv-cap-edit">
               <textarea

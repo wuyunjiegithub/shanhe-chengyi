@@ -40,6 +40,8 @@ function Panel({ onClose }: { onClose: () => void }) {
   const toggleLive = usePhotoLib((s) => s.toggleLive);
   const terrainOn = useUi((s) => s.terrain);
   const setTerrainOpen = useUi((s) => s.setTerrainOpen);
+  const weatherOn = useUi((s) => s.weather);
+  const setWeatherOpen = useUi((s) => s.setWeatherOpen);
   const visitedStyle = useUi((s) => s.visitedStyle);
   const setVisitedStyle = useUi((s) => s.setVisitedStyle);
   const diskKind = usePhotoLib((s) => s.diskKind);
@@ -225,15 +227,27 @@ function Panel({ onClose }: { onClose: () => void }) {
               <i />
             </button>
           </div>
-          <p className="terrain-credit">
-            高程 AWS Terrain Tiles · 水系 © OpenStreetMap 贡献者（ODbL）
-          </p>
 
-          {/* 地图标记：去过的地方用哪种样式，即时生效 */}
+          {/* 天气图层：地图空中的雨 / 雪 / 晴 / 阴 */}
+          <div className="photo-lib-live">
+            <div className="photo-lib-live-text">
+              <b>天气图层</b>
+              <span>在地图对应区域上空显示雨 / 雪 / 晴 / 阴，每小时联网刷新（离线时用缓存）</span>
+            </div>
+            <button
+              className={`switch${weatherOn ? ' is-on' : ''}`}
+              role="switch"
+              aria-checked={weatherOn}
+              title={weatherOn ? '关闭天气图层' : '开启天气图层'}
+              onClick={() => setWeatherOpen()}
+            >
+              <i />
+            </button>
+          </div>
+
           <div className="marker-style">
             <div className="marker-style-head">
               <b>去过标记样式</b>
-              <span>「去过」的城市 / 区县插哪种标记，改了立刻生效</span>
             </div>
             <div className="marker-style-grid" role="radiogroup" aria-label="去过标记样式">
               {VISITED_STYLES.map((item) => {
@@ -311,7 +325,7 @@ function Panel({ onClose }: { onClose: () => void }) {
               <li>支持 jpg / jpeg / png / webp / gif（动图）/ avif，视频支持 mp4 / webm / mov；</li>
               <li>照片按画幅分为横屏 / 竖屏 / 其他三类，「其他」为非常规比例（多为裁切或修改过）；</li>
               <li>单个区县最多取前 60 个媒体；文件夹名写全称或简称都可以（「淳安县」或「淳安」均可识别）；</li>
-              <li>照片只在本机读取，不会上传；绑定信息保存在本浏览器内。</li>
+              <li>照片只在本机读取，不会上传；绑定信息保存在本机。</li>
             </ul>
           </section>
         </div>
