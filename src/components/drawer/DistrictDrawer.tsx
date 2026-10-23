@@ -8,11 +8,8 @@ import { clearDistrictSelection, focusSpotById } from '../../app/sandbox';
 import { TAG_COLOR } from '../shared/meta';
 import { BgImage } from '../shared/BgImage';
 import { bgKey } from '../../stores/backgrounds';
-import { VisitedMark } from '../shared/VisitedMark';
-import { HeartMark } from '../shared/HeartMark';
-import { PanelFullscreenBtn } from '../shared/PanelFullscreenBtn';
 import { WeatherCard } from './WeatherCard';
-import { PlaceStatusActions, PhotoWallBlock, VisitLogSection, WriteNoteBar } from '../shared/PlaceBlocks';
+import { PlaceHeader, PhotoWallBlock, VisitLogSection, WriteNoteBar } from '../shared/PlaceBlocks';
 
 export function DistrictDrawer() {
   const open = useUi((s) => s.drawerOpen);
@@ -49,41 +46,21 @@ export function DistrictDrawer() {
     >
       {district && (
         <div className="drawer-inner">
-          <header className="drawer-head">
-            <div className="drawer-title-wrap">
-              <div className="drawer-kicker">
-                {district.province} · {district.city}
-              </div>
-              <h2 className="drawer-title">
-                <span className="drawer-title-marks" aria-hidden="true">
-                  <VisitedMark on={visitedDistrict} />
-                  <HeartMark on={favored} />
-                </span>
-                {district.name}
-              </h2>
-            </div>
-            <div className="drawer-head-actions">
-              <PanelFullscreenBtn />
-              <PlaceStatusActions
-                favored={favored}
-                visited={visitedDistrict}
-                onToggleFav={() => toggleFavorite('district', district.id)}
-                onToggleVisited={() => toggleVisitedDistrict(district.id)}
-                favTitleOff="收藏该区县"
-                favTitleOn="取消收藏该区县"
-              />
-              <button
-                className="icon-btn"
-                title="关闭"
-                onClick={() => {
-                  clearDistrictSelection();
-                  togglePanelFullscreen(false);
-                }}
-              >
-                ×
-              </button>
-            </div>
-          </header>
+          <PlaceHeader
+            kicker={`${district.province} · ${district.city}`}
+            name={district.name}
+            favored={favored}
+            visited={visitedDistrict}
+            onToggleFav={() => toggleFavorite('district', district.id)}
+            onToggleVisited={() => toggleVisitedDistrict(district.id)}
+            onClose={() => {
+              clearDistrictSelection();
+              togglePanelFullscreen(false);
+            }}
+            favTitleOff="收藏该区县"
+            favTitleOn="取消收藏该区县"
+            closeTitle="关闭"
+          />
 
           <div className="drawer-scroll" ref={scrollRef} key={district.id}>
             <div className="drawer-cover">

@@ -6,10 +6,8 @@ import { useData } from '../../stores/data';
 import { backToRegion, updateMarkers } from '../../app/sandbox';
 import { BgImage } from '../shared/BgImage';
 import { bgKey } from '../../stores/backgrounds';
-import { VisitedMark } from '../shared/VisitedMark';
-import { HeartMark } from '../shared/HeartMark';
 import { WeatherCard } from '../drawer/WeatherCard';
-import { PlaceHeadActions, PhotoWallBlock, VisitLogSection, WriteNoteBar } from '../shared/PlaceBlocks';
+import { PlaceHeader, PhotoWallBlock, VisitLogSection, WriteNoteBar } from '../shared/PlaceBlocks';
 import type { City } from '../../data/types';
 
 export function CityPanel() {
@@ -17,6 +15,7 @@ export function CityPanel() {
   const city = useNavigation((s) => s.currentCity) as City | null;
   const drawerOpen = useUi((s) => s.drawerOpen);
   const panelFullscreen = useUi((s) => s.panelFullscreen);
+  const togglePanelFullscreen = useUi((s) => s.togglePanelFullscreen);
   const favorites = useUi((s) => s.favorites);
   const toggleFavorite = useUi((s) => s.toggleFavorite);
   const visited = useCityStatus((s) => s.visited);
@@ -63,9 +62,28 @@ export function CityPanel() {
     toggleFavorite('city', city.id);
     updateMarkers();
   };
+  // 右上角 ×：与区县详情同一个位置、同一个动作语义 —— 关掉这个面板，回到江浙沪皖总览
+  const onClose = () => {
+    togglePanelFullscreen(false);
+    backToRegion();
+  };
 
   return (
     <aside className={`city-panel hud${panelFullscreen ? ' is-full' : ''}`}>
+      <PlaceHeader
+        kicker={city.province}
+        name={city.name}
+        favored={isFav}
+        visited={isVisited}
+        onToggleFav={onFav}
+        onToggleVisited={onVisited}
+        onClose={onClose}
+        favTitleOff="收藏这座城市"
+        favTitleOn="取消收藏这座城市"
+        visitedTitleOff="标记去过这座城市"
+        closeTitle="关闭城市概览，返回江浙沪皖总览"
+      />
+
       <div className="city-panel-scroll" ref={scrollRef}>
         <div className="city-cover">
           <BgImage
@@ -77,29 +95,6 @@ export function CityPanel() {
             editable
           />
           <div className="city-cover-grad" />
-          <div className="city-cover-head">
-            <span className="city-cover-prov">{city.province}</span>
-            <h2 className="city-cover-name">
-              <span className="drawer-title-marks" aria-hidden="true">
-                <VisitedMark on={isVisited} />
-                <HeartMark on={isFav} />
-              </span>
-              {city.name}
-            </h2>
-          </div>
-          {/* 手机端底栏（含「返回」）被半屏面板盖住，这里补一个回总览的入口 */}
-          <button type="button" className="city-back-btn" onClick={backToRegion} title="返回江浙沪皖总览">
-            ‹ 返回
-          </button>
-          {/* 收藏 / 去过：与区县详情一致，放右上角（区县那边在标题栏，这里浮在封面上） */}
-          <PlaceHeadActions
-            favored={isFav}
-            visited={isVisited}
-            onToggleFav={onFav}
-            onToggleVisited={onVisited}
-            favTitleOff="收藏这座城市"
-            visitedTitleOff="标记去过这座城市"
-          />
         </div>
 
         {city.poem && (

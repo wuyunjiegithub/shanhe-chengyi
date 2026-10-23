@@ -60,13 +60,70 @@ export function PlaceStatusActions({
   );
 }
 
-/** 封面右上角那一排：全屏钮 + 收藏 + 去过（城市概览没有标题栏，只能浮在封面上） */
-export function PlaceHeadActions(props: Parameters<typeof PlaceStatusActions>[0]) {
+/**
+ * 城市概览 / 区县详情**共用的头部**：左边「省份 · 城市 + 名字（带去过 / 收藏标记）」，
+ * 右边「全屏 → 收藏 → 去过 → 关闭」。
+ *
+ * 之前两边各写一份标题栏（城市把按钮浮在封面上、区县放在标题栏里），
+ * 结果按钮数量、顺序、有没有关闭叉号都不一样。现在两边都调这一个，header 必然一致。
+ */
+export function PlaceHeader({
+  kicker,
+  name,
+  favored,
+  visited,
+  onToggleFav,
+  onToggleVisited,
+  onClose,
+  favTitleOn = '取消收藏',
+  favTitleOff = '收藏',
+  visitedTitleOn = '取消「去过」标记',
+  visitedTitleOff = '标记去过（插小红旗）',
+  closeTitle = '关闭',
+}: {
+  /** 名字上方的小字（城市写省份、区县写「省 · 市」） */
+  kicker: string;
+  name: string;
+  favored: boolean;
+  visited: boolean;
+  onToggleFav: () => void;
+  onToggleVisited: () => void;
+  onClose: () => void;
+  favTitleOn?: string;
+  favTitleOff?: string;
+  visitedTitleOn?: string;
+  visitedTitleOff?: string;
+  closeTitle?: string;
+}) {
   return (
-    <div className="place-head-actions">
-      <PanelFullscreenBtn />
-      <PlaceStatusActions {...props} />
-    </div>
+    <header className="place-head">
+      <div className="place-title-wrap">
+        <div className="place-kicker">{kicker}</div>
+        <h2 className="place-title">
+          <span className="place-title-marks" aria-hidden="true">
+            <VisitedMark on={visited} />
+            <HeartMark on={favored} />
+          </span>
+          {name}
+        </h2>
+      </div>
+      <div className="place-head-actions">
+        <PanelFullscreenBtn />
+        <PlaceStatusActions
+          favored={favored}
+          visited={visited}
+          onToggleFav={onToggleFav}
+          onToggleVisited={onToggleVisited}
+          favTitleOn={favTitleOn}
+          favTitleOff={favTitleOff}
+          visitedTitleOn={visitedTitleOn}
+          visitedTitleOff={visitedTitleOff}
+        />
+        <button type="button" className="icon-btn" title={closeTitle} onClick={onClose}>
+          ×
+        </button>
+      </div>
+    </header>
   );
 }
 
