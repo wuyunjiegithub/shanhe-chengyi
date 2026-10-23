@@ -4806,6 +4806,72 @@ button.wall-stage-img {
   background: rgba(34, 211, 238, 0.04);
 }
 
+/* ---- 正文效果：图文混排后的样子（正文里的 {{图:…}} 在这里变成图片） ---- */
+.note-preview {
+  border: 1px dashed var(--border-strong);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.015);
+  padding: 10px 12px 12px;
+}
+
+.note-preview-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.note-preview-hint {
+  font-weight: 400;
+  font-size: 10px;
+  color: var(--text-3);
+}
+
+.note-body-view {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.note-body-para {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--text-1);
+  white-space: pre-wrap;
+}
+
+.note-body-figure {
+  margin: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.note-body-figure img {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+}
+
+.note-body-fig-ph {
+  display: block;
+  padding: 18px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.note-body-empty {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
 .note-images {
   display: flex;
   flex-direction: column;
@@ -4884,6 +4950,36 @@ button.wall-stage-img {
 
 .note-image-grid li:hover .note-image-remove {
   opacity: 1;
+}
+
+/* 把这张图插到正文光标处 */
+.note-image-insert {
+  position: absolute;
+  left: 3px;
+  bottom: 3px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  font-size: 9.5px;
+  line-height: 1;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.62);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.note-image-grid li:hover .note-image-insert {
+  opacity: 1;
+}
+
+/* 触屏没有 hover：两个操作钮常驻，否则手机上根本点不到 */
+@media (hover: none) {
+  .note-image-insert,
+  .note-image-remove {
+    opacity: 1;
+  }
 }
 
 .note-editor-foot {

@@ -240,7 +240,9 @@ export function NotePhotoPicker({ place, room, onConfirm, onClose }: NotePhotoPi
 
         <footer className="np-foot">
           <span className="np-foot-tip">
-            {pickedRows.length > 0 ? '勾选的照片会复制进本篇游记' : '先勾选照片，再点右侧按钮插入'}
+            {pickedRows.length > 0
+              ? '点「插入正文」后，图片会落在正文光标所在的那一段'
+              : '先勾选照片，再点右侧「插入正文」'}
           </span>
           <div className="np-foot-acts">
             <button type="button" className="ghost-btn" onClick={onClose}>

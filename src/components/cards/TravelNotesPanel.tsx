@@ -4,8 +4,10 @@ import { useUi } from '../../stores/ui';
 import { useTravelNotes } from '../../stores/travelNotes';
 import type { NotePlaceKind, TravelNote } from '../../stores/travelNotes';
 import { deleteImage, imageUrl, saveImage } from '../../data/imageStore';
+import { imgToken, stripImgTokens } from '../../data/noteBody';
 import { NotePhotoPicker } from './NotePhotoPicker';
 import type { PickedPhoto } from './NotePhotoPicker';
+import { NoteBodyView } from './NoteBodyView';
 
 const MAX_IMAGES = 9;
 
@@ -86,8 +88,11 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [libOpen, setLibOpen] = useState(false);
-  /** 插入照片后滚到这里，否则图片区在正文下方，加完看不见 */
-  const imagesRef = useRef<HTMLDivElement>(null);
+  /** 插入照片后滚到这里：正文效果是「图文混排后的样子」，看完才知道图片落在哪一段 */
+  const previewRef = useRef<HTMLDivElement>(null);
+  /** 正文光标位置：图片插在光标处，而不是一律追加到末尾 */
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
+  const caretRef = useRef<number | null>(null);
 
   /* ---------- 自动保存 ----------
    * 编辑过程中按 500ms 防抖落库；卸载时若有未落库改动立即冲刷。
@@ -197,6 +202,16 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
 
   const onRemoveImage = (id: string) => {
     setImages((prev) => prev.filter((x) => x !== id));
+    // 正文里引用这张图的占位行一起删掉，否则渲染时会留一个永远读不出来的图
+    setBody((prev) => {
+      const token = imgToken(id);
+      if (!prev.includes(token)) return prev;
+      return prev
+        .split('\n')
+        .filter((line) => line.trim() !== token)
+        .join('\n')
+        .replace(/\n{3,}/g, '\n\n');
+    });
     setUrls((prev) => {
       const next = { ...prev };
       if (next[id]) URL.revokeObjectURL(next[id]);
@@ -227,9 +242,35 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
     onCancel();
   };
 
-  /** 照片库挑选器确认：把勾选的本地照片复制进本篇游记 */
+  /**
+   * 把图片占位插到正文里：有光标就插在光标处，没有就追加到正文末尾。
+   * 正文是纯文本框，图片以 `{{图:id}}` 占位，「正文效果」里才换成真图。
+   */
+  const insertTokens = (ids: string[]) => {
+    if (ids.length === 0) return;
+    const block = ids.map(imgToken).join('\n\n');
+    setBody((prev) => {
+      const pos = caretRef.current;
+      if (pos == null || pos < 0 || pos > prev.length) {
+        const sep = !prev.trim() ? '' : prev.endsWith('\n\n') ? '' : prev.endsWith('\n') ? '\n' : '\n\n';
+        const next = `${prev}${sep}${block}\n\n`;
+        caretRef.current = next.length;
+        return next;
+      }
+      const before = prev.slice(0, pos);
+      const after = prev.slice(pos);
+      const lead = !before || before.endsWith('\n\n') ? '' : before.endsWith('\n') ? '\n' : '\n\n';
+      const tail = !after || after.startsWith('\n\n') ? '' : after.startsWith('\n') ? '\n' : '\n\n';
+      const next = `${before}${lead}${block}${tail}${after}`;
+      caretRef.current = before.length + lead.length + block.length;
+      return next;
+    });
+  };
+
+  /** 照片库挑选器确认：把勾选的本地照片复制进本篇游记，并插进正文光标处 */
   const onLibConfirm = async (items: PickedPhoto[]) => {
     setBusy(true);
+    const atCaret = caretRef.current != null && caretRef.current > 0;
     try {
       const ids: string[] = [];
       for (const it of items) {
@@ -242,10 +283,15 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
       if (ids.length > 0) {
         setImages((prev) => [...prev, ...ids]);
         for (const id of ids) pendingAdded.current.add(id);
-        // 图片区在正文下方，插完主动滚过去，免得看着像「没加进来」
-        window.setTimeout(() => imagesRef.current?.scrollIntoView({ block: 'nearest' }), 60);
+        insertTokens(ids);
+        // 滚到「正文效果」，插完立刻看到图落在哪一段
+        window.setTimeout(() => previewRef.current?.scrollIntoView({ block: 'nearest' }), 60);
       }
-      showToast(ids.length > 0 ? `已插入 ${ids.length} 张到本篇游记` : '没有可添加的照片');
+      showToast(
+        ids.length > 0
+          ? `已插入 ${ids.length} 张${atCaret ? '到正文光标处' : '到正文末尾'}，下方「正文效果」可预览`
+          : '没有可添加的照片',
+      );
     } finally {
       setBusy(false);
       setLibOpen(false);
@@ -342,14 +388,33 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
       </div>
 
       <textarea
+        ref={bodyRef}
         className="note-body-input"
         value={body}
-        onChange={(e) => setBody(e.target.value)}
-        placeholder="正文：走了哪些地方、吃了什么、遇见什么人和事……空行分段。"
+        onChange={(e) => {
+          setBody(e.target.value);
+          caretRef.current = e.target.selectionStart;
+        }}
+        onSelect={(e) => {
+          caretRef.current = e.currentTarget.selectionStart;
+        }}
+        onFocus={(e) => {
+          caretRef.current = e.currentTarget.selectionStart;
+        }}
+        placeholder="正文：走了哪些地方、吃了什么、遇见什么人和事……空行分段。光标停在哪，图片就插在哪。"
         rows={12}
       />
 
-      <div className="note-images" ref={imagesRef}>
+      {/* 图文混排后的真实效果：正文里的 {{图:…}} 在这里变成图片 */}
+      <div className="note-preview" ref={previewRef}>
+        <div className="note-preview-head">
+          <span>正文效果</span>
+          <span className="note-preview-hint">图片按正文顺序排版 · 光标停在正文某处再插图片，图就落在那里</span>
+        </div>
+        <NoteBodyView body={body} urls={urls} emptyHint="写点正文，或插几张照片看看效果" />
+      </div>
+
+      <div className="note-images">
         <div className="note-images-head">
           <span>
             图片 <b>{images.length}</b> / {MAX_IMAGES}
@@ -360,7 +425,7 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
               className="ghost-btn"
               onClick={() => setLibOpen(true)}
               disabled={busy || images.length >= MAX_IMAGES}
-              title="从绑定的本地照片库挑选（可多选，批量插入本篇游记）"
+              title="从绑定的本地照片库挑选（可多选，批量插入正文光标处）"
             >
               {busy ? '插入中…' : '＋ 插入照片'}
             </button>
@@ -375,6 +440,16 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
                 ) : (
                   <span className="note-image-loading">…</span>
                 )}
+                <button
+                  className="note-image-insert"
+                  onClick={() => {
+                    bodyRef.current?.focus();
+                    insertTokens([id]);
+                  }}
+                  title="把这张图插到正文光标处"
+                >
+                  ⤴ 正文
+                </button>
                 <button className="note-image-remove" onClick={() => onRemoveImage(id)} title="移除图片">
                   ×
                 </button>
@@ -639,7 +714,9 @@ export function TravelNotesPanel() {
                       <span className="note-card-body">
                         <span className="note-card-title">{n.title}</span>
                         {n.placeName && <span className="note-card-place">{n.placeName}</span>}
-                        <span className="note-card-excerpt">{n.body.replace(/\s+/g, ' ').slice(0, 60) || '（正文为空）'}</span>
+                        <span className="note-card-excerpt">
+                          {stripImgTokens(n.body).slice(0, 60) || (n.images.length > 0 ? '（纯图记录）' : '（正文为空）')}
+                        </span>
                         <span className="note-card-meta">
                           {fmtDate(n.updatedAt)}
                           {n.images.length > 0 && ` · ${n.images.length} 图`}
