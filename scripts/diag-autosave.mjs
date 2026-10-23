@@ -29,10 +29,11 @@ console.log('editor?', await page.evaluate(() => !!document.querySelector('.note
 console.log('title input?', await page.evaluate(() => !!document.querySelector('.note-title-input')));
 
 await page.fill('.note-title-input', '自动保存测试');
-await page.fill('.note-body-input', '这是一段自动保存的正文。');
+await page.click('.rt-body');
+await page.keyboard.type('这是一段自动保存的正文。');
 const mid = await page.evaluate(() => ({
   titleVal: document.querySelector('.note-title-input')?.value,
-  bodyVal: document.querySelector('.note-body-input')?.value,
+  bodyVal: document.querySelector('.rt-body')?.innerText,
   ls: localStorage.getItem('ds.travelNotes.v1'),
 }));
 console.log('MID', JSON.stringify(mid));

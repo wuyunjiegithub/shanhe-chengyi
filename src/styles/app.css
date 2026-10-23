@@ -4837,103 +4837,212 @@ button.wall-stage-img {
   font-family: var(--font-mono);
 }
 
-.note-body-input {
-  width: 100%;
-  min-height: 170px;
-  padding: 12px;
+/* ---- 富文本正文编辑器（所见即所得） ----
+ * 不再有「编辑框 + 正文效果预览」两栏：写的时候就是最终排版，
+ * 加粗 / 标题 / 引用 / 列表 / 图片都在同一块区域里即时生效。 */
+.rt-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--border);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-1);
-  font-family: var(--font-body);
-  font-size: 13px;
-  line-height: 1.7;
-  resize: vertical;
-  user-select: text;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.035);
+  overflow: hidden;
 }
 
-.note-body-input::placeholder {
-  color: var(--text-3);
-}
-
-.note-body-input:focus {
+.rt-wrap:focus-within {
   border-color: var(--border-active);
   background: rgba(34, 211, 238, 0.04);
 }
 
-/* ---- 正文效果：图文混排后的样子（正文里的 {{图:…}} 在这里变成图片） ---- */
-.note-preview {
-  border: 1px dashed var(--border-strong);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.015);
-  padding: 10px 12px 12px;
-}
-
-.note-preview-head {
+.rt-toolbar {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--text-1);
-}
-
-.note-preview-hint {
-  font-weight: 400;
-  font-size: 10px;
-  color: var(--text-3);
-}
-
-.note-body-view {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.note-body-para {
-  font-size: 13px;
-  line-height: 1.75;
-  color: var(--text-1);
-  white-space: pre-wrap;
-}
-
-.note-body-figure {
-  margin: 0;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid var(--border);
+  align-items: center;
+  gap: 3px;
+  padding: 6px;
+  border-bottom: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.03);
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
-.note-body-figure img {
+.rt-toolbar::-webkit-scrollbar {
+  height: 0;
+}
+
+.rt-btn {
+  flex: 0 0 auto;
+  min-width: 30px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--text-2);
+  transition: background 0.12s, color 0.12s;
+}
+
+.rt-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--text-1);
+}
+
+.rt-btn.is-on {
+  background: rgba(34, 211, 238, 0.16);
+  color: var(--accent);
+}
+
+.rt-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.rt-btn--img {
+  color: var(--accent);
+  border: 1px solid rgba(34, 211, 238, 0.35);
+}
+
+.rt-sep {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 18px;
+  margin: 0 3px;
+  background: var(--border);
+}
+
+/* 书写区：像一张纸，不要输入框那圈描边（描边交给上面的 wrap） */
+.rt-body {
+  min-height: 230px;
+  padding: 12px 14px 16px;
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: var(--text-1);
+  outline: none;
+  user-select: text;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.rt-body.is-empty::before {
+  content: attr(data-ph);
+  color: var(--text-3);
+  pointer-events: none;
+}
+
+.rt-body p,
+.rt-body div {
+  margin: 0 0 10px;
+}
+
+.rt-body p:last-child,
+.rt-body div:last-child {
+  margin-bottom: 0;
+}
+
+.rt-body h2 {
+  margin: 18px 0 8px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #fff;
+}
+
+.rt-body h3 {
+  margin: 14px 0 6px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-1);
+}
+
+.rt-body h2:first-child,
+.rt-body h3:first-child {
+  margin-top: 2px;
+}
+
+.rt-body blockquote {
+  margin: 10px 0;
+  padding: 2px 0 2px 12px;
+  border-left: 3px solid rgba(34, 211, 238, 0.45);
+  color: var(--text-2);
+}
+
+.rt-body ul,
+.rt-body ol {
+  margin: 0 0 10px;
+  padding-left: 22px;
+}
+
+.rt-body ul {
+  list-style: disc;
+}
+
+.rt-body ol {
+  list-style: decimal;
+}
+
+.rt-body li {
+  margin: 3px 0;
+}
+
+.rt-body hr {
+  margin: 16px 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+.rt-body b,
+.rt-body strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.rt-body a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* 正文里的图片：整幅显示；点一下右上角浮出删除钮 */
+.rt-body img[data-img] {
   display: block;
   width: 100%;
-  max-height: 320px;
+  max-height: 340px;
+  margin: 12px 0;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
   object-fit: cover;
+  cursor: pointer;
 }
 
-.note-body-fig-ph {
-  display: block;
-  padding: 18px;
-  text-align: center;
-  font-size: 11px;
-  color: var(--text-3);
-}
-
-.note-body-empty {
-  font-size: 12px;
-  color: var(--text-3);
-}
-
-.note-images {
+.rt-img-del {
+  position: absolute;
+  z-index: 3;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  line-height: 1;
+  color: #fff;
+  background: rgba(8, 10, 16, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(6px);
 }
 
-.note-images-head {
+.rt-img-del:hover {
+  background: rgba(190, 30, 40, 0.92);
+}
+
+/* 编辑器下方：图片计数 + 插入入口 */
+.rt-bar {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -4941,140 +5050,17 @@ button.wall-stage-img {
   color: var(--text-2);
 }
 
-.note-images-head b {
+.rt-count b {
   color: var(--accent);
   font-family: var(--font-mono);
 }
 
-.note-images-head .ghost-btn {
-  margin-left: auto;
-  padding: 4px 10px;
-  font-size: 11px;
-}
-
-.note-image-grid {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
-  gap: 8px;
-}
-
-.note-image-grid li {
-  position: relative;
-  aspect-ratio: 1;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.note-image-grid li img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.note-image-loading {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-3);
-  font-size: 14px;
-}
-
-.note-image-remove {
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  line-height: 1;
-  color: #fff;
-  background: rgba(0, 0, 0, 0.6);
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-
-.note-image-grid li:hover .note-image-remove {
-  opacity: 1;
-}
-
-/* 把这张图插到正文光标处 */
-.note-image-insert {
-  position: absolute;
-  left: 3px;
-  bottom: 3px;
-  height: 18px;
-  padding: 0 6px;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  font-size: 9.5px;
-  line-height: 1;
-  color: #fff;
-  background: rgba(0, 0, 0, 0.62);
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-
-.note-image-grid li:hover .note-image-insert {
-  opacity: 1;
-}
-
-/* 触屏没有 hover：两个操作钮常驻，否则手机上根本点不到 */
-@media (hover: none) {
-  .note-image-insert,
-  .note-image-remove {
-    opacity: 1;
-  }
-}
-
-.note-editor-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-
-.note-editor-foot .ghost-btn {
-  padding: 5px 10px;
-  font-size: 11px;
-}
-
-.note-editor-foot .ghost-btn.is-danger {
-  color: #ffb4ab;
-  border-color: rgba(255, 180, 171, 0.45);
-  background: rgba(147, 0, 10, 0.22);
-}
-
-/* 游记图片入口：照片库挑选（主）+ 磁盘导入（次） */
-.note-images-acts {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.note-images-acts .ghost-btn {
-  padding: 4px 10px;
-  font-size: 11px;
-}
-
-.note-images-acts .ghost-btn--slim {
-  padding: 4px 8px;
+.rt-tip {
   font-size: 10.5px;
   color: var(--text-3);
 }
+
+/* 游记图片入口（旧版网格图头，已被 .rt-bar 取代，保留占位说明以免误加回来） */
 
 /* ============ 照片库挑选器（游记配图） ============ */
 .np-backdrop {
@@ -5904,12 +5890,26 @@ button.wall-stage-img {
   }
 
   /* ---- 游记正文：手机上把书写区放大 ----
-   * 全屏编辑器里正文是最重要的区域，之前 rows=12 在手机上偏矮。
-   * 用 vh 给足高度（约半屏），字体也放大一档，长时间写字不累。 */
-  .note-body-input {
-    min-height: 46vh;
+   * 全屏编辑器里正文是最重要的区域，用 vh 给足高度，字体放大一档。 */
+  .rt-body {
+    min-height: 52vh;
     font-size: 15px;
-    line-height: 1.8;
+    line-height: 1.9;
+  }
+
+  .rt-toolbar {
+    padding: 5px;
+    gap: 2px;
+    /* 手机上按钮放不下一行：改成换行两排，别让「＋图片」被推出屏幕外 */
+    flex-wrap: wrap;
+    overflow-x: visible;
+    row-gap: 4px;
+  }
+
+  .rt-btn {
+    height: 30px;
+    min-width: 32px;
+    font-size: 12.5px;
   }
 
   /* 照片墙：网格降列 */

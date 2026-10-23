@@ -428,7 +428,8 @@ await page.evaluate(() => {
 await page.waitForTimeout(800);
 const editorOpen = await page.evaluate(() => !!document.querySelector('.note-editor'));
 await page.fill('.note-title-input', '自动保存测试');
-await page.fill('.note-body-input', '这是一段自动保存的正文。');
+await page.click('.rt-body');
+await page.keyboard.type('这是一段自动保存的正文。');
 await page.keyboard.press('Escape');
 await page.waitForTimeout(700);
 await page.evaluate(() => {

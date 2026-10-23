@@ -102,7 +102,8 @@ const travelOpen = await page.evaluate(() => !!document.querySelector('.travel-p
 console.log('4) travel editor open:', travelOpen, travelOpen ? 'PASS' : 'FAIL');
 if (travelOpen) {
   await page.fill('.note-title-input', '黄浦江畔的傍晚');
-  await page.fill('.note-body-input', '今天沿着外滩走了很久，江水、灯光、轮渡，都很温柔。');
+  await page.click('.rt-body');
+await page.keyboard.type('今天沿着外滩走了很久，江水、灯光、轮渡，都很温柔。');
   const prefill = await page.evaluate(() => document.querySelector('.note-place-chip')?.textContent?.replace(/\s+/g, ' ').trim() ?? null);
   console.log('   prefill place:', JSON.stringify(prefill));
   const fileInput = page.locator('.note-images input[type=file]');
