@@ -1,10 +1,13 @@
 /**
  * 游记正文的存储格式与转换
  * --------------------------------
- * **v2（现在）**：正文存富文本 HTML。图片写成 `<img data-img="图片id" alt="">`，
+ * **v2（现在）**：正文存富文本 HTML。图片写成 `<img data-img="图片id" alt="" width="显示宽度">`，
  *   - 图片字节仍然存在 IndexedDB（见 imageStore），HTML 里只留 id；
  *   - 不把 `src` 存进去，因为 blob: URL 跨会话/跨重启必然失效，
- *     打开编辑器时再按 id 重新注入（见 NoteRichEditor 的 hydrate）。
+ *     打开编辑器时再按 id 重新注入（见 NoteRichEditor 的 hydrate）；
+ *   - `width` 是「用户可见的显示宽度（px）」，插入时按原图尺寸（撑不下则缩到正文宽），
+ *     之后可在编辑器里拖动图片右下角的手柄改；高度不存，浏览器按比例自动算。
+ *   字体用 `<font face="字体族">`（execCommand 在 styleWithCSS=false 时的产物）。
  *   这样正文可以加粗、标题、引用、列表、图文混排，而 localStorage 不会被图片撑爆。
  *
  * **v1（旧）**：纯文本 + 一行占位标记 `{{图:图片id}}`。
@@ -79,17 +82,20 @@ export function legacyToHtml(text: string): string {
  */
 const ALLOWED_TAGS = new Set([
   'P', 'DIV', 'BR', 'B', 'STRONG', 'I', 'EM', 'U', 'S', 'STRIKE', 'MARK', 'CODE', 'PRE',
-  'H1', 'H2', 'H3', 'H4', 'UL', 'OL', 'LI', 'BLOCKQUOTE', 'HR', 'IMG', 'FIGURE', 'FIGCAPTION', 'A',
+  'H1', 'H2', 'H3', 'H4', 'UL', 'OL', 'LI', 'BLOCKQUOTE', 'HR', 'IMG', 'FIGURE', 'FIGCAPTION', 'A', 'FONT',
 ]);
 const DROP_TAGS = new Set([
   'SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'EMBED', 'LINK', 'META', 'SVG', 'MATH',
   'FORM', 'INPUT', 'TEXTAREA', 'BUTTON', 'SELECT', 'VIDEO', 'AUDIO', 'CANVAS',
 ]);
 const ALLOWED_ATTRS: Record<string, string[]> = {
-  IMG: ['data-img', 'alt'],
+  IMG: ['data-img', 'alt', 'width'],
+  FONT: ['face'],
   A: ['href'],
 };
 const IMG_ID_RE = /^[A-Za-z0-9_-]+$/;
+/** font face 只放行字体族名字符（字母/数字/空格/逗号/引号/连字符/中文），挡掉注入 */
+const FONT_FACE_RE = /^[A-Za-z0-9\s,\-."'\u4e00-\u9fa5]{1,120}$/;
 
 export function sanitizeNoteHtml(html: string): string {
   if (!html) return '';
@@ -122,6 +128,17 @@ export function sanitizeNoteHtml(html: string): string {
         el.remove();
         continue;
       }
+      // width 是用户拖出来的显示宽度：只接受 24~2400 的整数，脏值直接去掉（退回自然尺寸）
+      const w = el.getAttribute('width');
+      if (w != null) {
+        const n = Number.parseInt(w, 10);
+        if (!Number.isFinite(n) || n < 24 || n > 2400) el.removeAttribute('width');
+        else el.setAttribute('width', String(n));
+      }
+    }
+    if (tag === 'FONT') {
+      const face = el.getAttribute('face') ?? '';
+      if (!face.trim() || !FONT_FACE_RE.test(face)) el.removeAttribute('face');
     }
     if (tag === 'A') {
       const href = el.getAttribute('href') ?? '';
@@ -131,9 +148,9 @@ export function sanitizeNoteHtml(html: string): string {
   }
 
   /* 结构性清洗：contenteditable 会留下不少空壳，存进去越积越多 */
-  for (const el of Array.from(root.querySelectorAll('b, strong, i, em, u, s, strike, span, a'))) {
+  for (const el of Array.from(root.querySelectorAll('b, strong, i, em, u, s, strike, span, a, font'))) {
     if (!el.parentNode) continue;
-    const hasText = (el.textContent ?? '').trim() !== '';
+    const hasText = (el.textContent ?? '').replace(/\u200b/g, '').trim() !== '';
     const img = el.querySelector('img[data-img]');
     // 空的加粗/斜体壳（删字后残留、或 Chromium 造的「加粗空行」）直接去掉
     if (!hasText && !img) {

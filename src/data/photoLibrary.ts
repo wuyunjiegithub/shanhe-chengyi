@@ -44,6 +44,14 @@ export interface PhotoEntry {
   uri?: string;
 }
 
+/**
+ * 条目的稳定键：磁盘扫描条目用相对路径；系统相册条目在部分新机型上
+ * MediaStore.DATA 为空，只能靠 content:// URI 区分（都按 path 记会全部撞成同一个键）。
+ */
+export function entryKey(entry: PhotoEntry): string {
+  return entry.path || entry.uri || entry.name;
+}
+
 export interface PhotoIndex {
   rootName: string;
   boundAt: string;

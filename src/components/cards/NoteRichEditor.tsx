@@ -1,5 +1,5 @@
 import { useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
-import type { MouseEvent as ReactMouseEvent, Ref } from 'react';
+import type { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent, Ref } from 'react';
 import { sanitizeNoteHtml } from '../../data/noteBody';
 
 /**
@@ -13,9 +13,34 @@ import { sanitizeNoteHtml } from '../../data/noteBody';
  * - **不要用 React 管 contenteditable 的内容**。只在挂载时写一次 innerHTML，
  *   之后 DOM 由浏览器维护；每次输入只「读出 HTML 上报」，绝不回写，
  *   否则光标会在每次按键后跳到开头。
- * - 图片只存 `data-img`（src 是临时 blob:，由 hydrate 注入，序列化时被清洗掉）。
+ * - 图片只存 `data-img` + `width`（显示宽度，src 是临时 blob:，序列化时被清洗掉）。
+ *   插入时按原图自然尺寸（超过正文宽度才缩），之后可拖右下角手柄改大小，高度始终按比例。
+ * - 字体走 `execCommand('fontName')`（styleWithCSS=false 时产出 `<font face>`，
+ *   见 noteBody 的清洗白名单），不引入 contenteditable 之外的样式来源。
  * - 粘贴一律按纯文本插入，避免把网页样式（字体、颜色、表格）带进来。
  */
+
+/** 工具栏字体下拉：常见中文字体 + 几款常见西文字体，值即 CSS font-family */
+const FONTS: { label: string; value: string }[] = [
+  { label: '默认字体', value: 'system-ui, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif' },
+  { label: '宋体', value: 'SimSun, STSong, 宋体, serif' },
+  { label: '黑体', value: 'SimHei, STHeiti, 黑体, sans-serif' },
+  { label: '微软雅黑', value: '"Microsoft YaHei", "PingFang SC", 微软雅黑, sans-serif' },
+  { label: '楷体', value: 'KaiTi, STKaiti, 楷体, serif' },
+  { label: '仿宋', value: 'FangSong, STFangsong, 仿宋, serif' },
+  { label: '隶书', value: 'LiSu, 隶书, serif' },
+  { label: '幼圆', value: 'YouYuan, 幼圆, sans-serif' },
+  { label: 'Arial', value: 'Arial, Helvetica, sans-serif' },
+  { label: 'Times New Roman', value: '"Times New Roman", Times, serif' },
+  { label: 'Georgia', value: 'Georgia, serif' },
+  { label: 'Verdana', value: 'Verdana, sans-serif' },
+  { label: 'Courier New', value: '"Courier New", monospace' },
+];
+
+/** 取字体族第一个名字，用于把 queryCommandValue 的结果对回下拉选项 */
+function fontKey(v: string): string {
+  return v.split(',')[0].trim().replace(/["']/g, '').toLowerCase();
+}
 
 export interface RichInsert {
   id: string;
@@ -64,16 +89,50 @@ export function NoteRichEditor({
   /** 最后一次落在编辑器里的选区：点工具栏/选图会移动焦点，插入时用它复原 */
   const lastRangeRef = useRef<Range | null>(null);
   const [empty, setEmpty] = useState(!html.trim());
-  const [fmt, setFmt] = useState({ bold: false, italic: false, underline: false, strike: false, ul: false, ol: false, block: '' });
-  /** 当前点中的图片（用于浮出的删除钮） */
+  const [fmt, setFmt] = useState({ bold: false, italic: false, underline: false, strike: false, ul: false, ol: false, block: '', font: '' });
+  /** 当前点中的图片：浮出删除钮 + 右下角缩放手柄 */
   const imgElRef = useRef<HTMLImageElement | null>(null);
-  const [imgPos, setImgPos] = useState<{ top: number; left: number } | null>(null);
+  const [imgBox, setImgBox] = useState<{ top: number; left: number; w: number; h: number } | null>(null);
+  /** 缩放手柄的拖动状态（pointer capture 在柄上，移动/抬起都走柄自身的事件） */
+  const dragRef = useRef<{ pointerId: number; startX: number; startW: number } | null>(null);
+
+  /** 正文可用宽度（去掉左右内边距）：图片插入 / 缩大的上限 */
+  const contentWidth = () => {
+    const el = bodyRef.current;
+    if (!el) return 320;
+    const cs = getComputedStyle(el);
+    const pad = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+    return Math.max(80, el.clientWidth - pad);
+  };
+
+  const syncImgBox = (img: HTMLImageElement) => {
+    setImgBox({ top: img.offsetTop, left: img.offsetLeft, w: img.offsetWidth, h: img.offsetHeight });
+  };
+
+  /** 把图片摆到「原图尺寸」：超过正文宽度才缩；同时刷新选中框位置 */
+  const fitImage = (img: HTMLImageElement) => {
+    const apply = () => {
+      const nat = img.naturalWidth || 0;
+      if (nat <= 0) return;
+      // 注意：不能写 `if (img.width !== w)` —— 没有 width 属性时 img.width 读的是
+      // 「渲染宽度」，原尺寸恰好等于渲染宽时会被跳过，属性永远写不上。
+      img.width = Math.max(48, Math.min(nat, contentWidth()));
+      if (imgElRef.current === img) syncImgBox(img);
+    };
+    if (img.complete && img.naturalWidth > 0) apply();
+    else if (img.dataset.fitted !== '1') {
+      img.dataset.fitted = '1';
+      img.addEventListener('load', apply, { once: true });
+    }
+  };
 
   const hydrate = (root: HTMLElement) => {
     root.querySelectorAll<HTMLImageElement>('img[data-img]').forEach((img) => {
       const id = img.dataset.img ?? '';
       const url = urlsRef.current[id];
       if (url && img.getAttribute('src') !== url) img.setAttribute('src', url);
+      // 老游记里的图没有 width：按原图尺寸补一次（只改显示，不影响已存内容）
+      if (!img.getAttribute('width')) fitImage(img);
     });
   };
 
@@ -109,6 +168,26 @@ export function NoteRichEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urls]);
 
+  /**
+   * 光标处（选区起点）的字体。编辑器只产出 `<font face>`（styleWithCSS=false），
+   * 所以从起点往上找最近的 font 即可 —— 比 queryCommandValue('fontName') 可靠：
+   * 后者在选区里混有图片 / 多个块时会返回空值或串值，下拉框会错显示「默认字体」。
+   */
+  const fontAtCaret = (): string => {
+    const el = bodyRef.current;
+    const sel = window.getSelection();
+    if (!el || !sel || sel.rangeCount === 0) return '';
+    const r = sel.getRangeAt(0);
+    if (!el.contains(r.commonAncestorContainer)) return '';
+    let cur: HTMLElement | null =
+      r.startContainer.nodeType === 1 ? (r.startContainer as HTMLElement) : r.startContainer.parentElement;
+    while (cur && cur !== el) {
+      if (cur.tagName === 'FONT') return cur.getAttribute('face') ?? '';
+      cur = cur.parentElement;
+    }
+    return '';
+  };
+
   /* 选区变化：同步按钮高亮 + 记住位置 */
   useEffect(() => {
     const onSel = () => {
@@ -128,6 +207,7 @@ export function NoteRichEditor({
           ul: document.queryCommandState('insertUnorderedList'),
           ol: document.queryCommandState('insertOrderedList'),
           block: String(document.queryCommandValue('formatBlock') ?? '').toLowerCase(),
+          font: fontAtCaret(),
         });
       } catch {
         /* 个别环境不实现 queryCommand*，忽略高亮即可 */
@@ -174,6 +254,8 @@ export function NoteRichEditor({
     const img = document.createElement('img');
     img.setAttribute('data-img', item.id);
     img.alt = '';
+    // contenteditable 里 img 默认可拖拽：手机上长按一晃就把图拖到别处，关掉
+    img.draggable = false;
     const url = item.url ?? urlsRef.current[item.id];
     if (url) img.setAttribute('src', url);
     return img;
@@ -204,6 +286,8 @@ export function NoteRichEditor({
     for (const item of items) {
       const img = makeImg(item);
       anchor.parentNode?.insertBefore(img, anchor);
+      // 原图尺寸进正文：宽超过正文才缩，高度按比例自动算
+      fitImage(img);
     }
     if (sel) {
       const r = document.createRange();
@@ -234,15 +318,24 @@ export function NoteRichEditor({
     return api;
   });
 
+  const selectImg = (img: HTMLImageElement | null) => {
+    // 换选中图：先把上一张的选中描边去掉
+    if (imgElRef.current && imgElRef.current !== img) imgElRef.current.classList.remove('is-sel');
+    imgElRef.current = img;
+    if (img) {
+      img.classList.add('is-sel');
+      syncImgBox(img);
+    } else {
+      setImgBox(null);
+    }
+  };
+
   const onClick = (e: ReactMouseEvent<HTMLDivElement>) => {
     const t = e.target as HTMLElement;
     if (t.tagName === 'IMG' && (t as HTMLImageElement).dataset.img) {
-      const img = t as HTMLImageElement;
-      imgElRef.current = img;
-      setImgPos({ top: img.offsetTop + 8, left: Math.max(8, img.offsetLeft + img.offsetWidth - 42) });
+      selectImg(t as HTMLImageElement);
     } else {
-      imgElRef.current = null;
-      setImgPos(null);
+      selectImg(null);
     }
   };
 
@@ -251,8 +344,38 @@ export function NoteRichEditor({
     if (!img) return;
     img.remove();
     imgElRef.current = null;
-    setImgPos(null);
+    setImgBox(null);
     emit();
+  };
+
+  /* ---------- 图片缩放：拖右下角手柄改宽度，高度按比例跟随 ---------- */
+  const onResizeStart = (e: ReactPointerEvent<HTMLSpanElement>) => {
+    const img = imgElRef.current;
+    if (!img) return;
+    e.preventDefault();
+    e.stopPropagation();
+    // 起点取渲染宽度（offsetWidth 含边框，与 width 属性在 border-box 下一致）：
+    // 这样拖动delta 就是屏幕上看到的像素变化
+    dragRef.current = { pointerId: e.pointerId, startX: e.clientX, startW: img.offsetWidth || 200 };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const onResizeMove = (e: ReactPointerEvent<HTMLSpanElement>) => {
+    const d = dragRef.current;
+    const img = imgElRef.current;
+    if (!d || !img || d.pointerId !== e.pointerId) return;
+    e.preventDefault();
+    // 只改 width 属性：CSS height:auto 会按原图比例算高度，不会拉变形
+    const w = Math.max(48, Math.min(contentWidth(), Math.round(d.startW + (e.clientX - d.startX))));
+    img.width = w;
+    syncImgBox(img);
+  };
+
+  const onResizeEnd = (e: ReactPointerEvent<HTMLSpanElement>) => {
+    if (!dragRef.current) return;
+    dragRef.current = null;
+    if (e.currentTarget.hasPointerCapture?.(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+    emit(); // 落库这次改的宽度
   };
 
   const btn = (
@@ -334,6 +457,20 @@ export function NoteRichEditor({
         {btn('• 列表', 'insertUnorderedList', { on: fmt.ul, title: '无序列表' })}
         {btn('1. 列表', 'insertOrderedList', { on: fmt.ol, title: '有序列表' })}
         <span className="rt-sep" />
+        <select
+          className="rt-font"
+          value={FONTS.find((f) => fontKey(f.value) === fontKey(fmt.font))?.value ?? FONTS[0].value}
+          onChange={(e) => exec('fontName', e.target.value)}
+          title="正文字体"
+          aria-label="正文字体"
+        >
+          {FONTS.map((f) => (
+            <option key={f.label} value={f.value} style={{ fontFamily: f.value }}>
+              {f.label}
+            </option>
+          ))}
+        </select>
+        <span className="rt-sep" />
         <button
           type="button"
           className="rt-btn rt-btn--img"
@@ -376,17 +513,37 @@ export function NoteRichEditor({
         onClick={onClick}
       />
 
-      {imgPos && (
-        <button
-          type="button"
-          className="rt-img-del"
-          style={{ top: imgPos.top, left: imgPos.left }}
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={removeImg}
-          title="删除这张图片"
-        >
-          ×
-        </button>
+      {imgBox && imgElRef.current && (
+        <>
+          {/* 删除钮：图片右上角 */}
+          <button
+            type="button"
+            className="rt-img-del"
+            style={{ top: imgBox.top + 8, left: Math.max(8, imgBox.left + imgBox.w - 42) }}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={removeImg}
+            title="删除这张图片"
+          >
+            ×
+          </button>
+          {/* 缩放手柄：图片右下角，左右拖动改宽度（高度按比例） */}
+          <span
+            className="rt-img-resize"
+            role="slider"
+            aria-label="拖动调整图片大小"
+            aria-valuenow={imgBox.w}
+            style={{ top: imgBox.top + imgBox.h - 13, left: imgBox.left + imgBox.w - 13 }}
+            onPointerDown={onResizeStart}
+            onPointerMove={onResizeMove}
+            onPointerUp={onResizeEnd}
+            onPointerCancel={onResizeEnd}
+          >
+            <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
+              <path d="M1 11 L11 1" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+              <path d="M5 1 h6 v6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            </svg>
+          </span>
+        </>
       )}
     </div>
   );

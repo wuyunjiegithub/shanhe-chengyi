@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useData } from '../../stores/data';
 import { usePhotoLib } from '../../stores/photoLib';
 import type { PhotoEntry } from '../../data/photoLibrary';
+import { entryKey } from '../../data/photoLibrary';
 
 /**
  * 游记配图的「照片库挑选器」
@@ -29,6 +30,8 @@ interface NotePhotoPickerProps {
 
 interface LibRow {
   entry: PhotoEntry;
+  /** 稳定键（path 或 content:// URI），勾选状态按它记 */
+  key: string;
   sub: string;
 }
 
@@ -50,9 +53,11 @@ function useLibRows(place: NotePhotoPickerProps['place']): LibRow[] {
       for (const entry of entries ?? []) {
         // 游记只放图片：视频 / 动图不进编辑器
         if (entry.kind !== 'image') continue;
-        if (seen.has(entry.path)) continue;
-        seen.add(entry.path);
-        rows.push({ entry, sub });
+        // 键不能只按 path：系统相册条目在部分机型上 DATA 为空，会全撞成同一张
+        const key = entryKey(entry);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        rows.push({ entry, key, sub });
       }
     };
     if (placeKind === 'district' && placeId != null) {
@@ -134,18 +139,18 @@ export function NotePhotoPicker({ place, room, onConfirm, onClose }: NotePhotoPi
   const [picked, setPicked] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
 
-  const pickedRows = useMemo(() => rows.filter((r) => picked.includes(r.entry.path)), [rows, picked]);
+  const pickedRows = useMemo(() => rows.filter((r) => picked.includes(r.key)), [rows, picked]);
   const full = picked.length >= room;
 
-  const toggle = (path: string) => {
+  const toggle = (key: string) => {
     setPicked((prev) => {
-      if (prev.includes(path)) return prev.filter((p) => p !== path);
+      if (prev.includes(key)) return prev.filter((p) => p !== key);
       if (prev.length >= room) return prev;
-      return [...prev, path];
+      return [...prev, key];
     });
   };
 
-  const selectAll = () => setPicked(rows.slice(0, room).map((r) => r.entry.path));
+  const selectAll = () => setPicked(rows.slice(0, room).map((r) => r.key));
 
   const insert = async (rows: LibRow[]) => {
     if (rows.length === 0) return;
@@ -235,11 +240,11 @@ export function NotePhotoPicker({ place, room, onConfirm, onClose }: NotePhotoPi
           <div className="np-grid">
             {rows.map((row) => (
               <LibThumb
-                key={row.entry.path}
+                key={row.key}
                 row={row}
-                selected={picked.includes(row.entry.path)}
-                disabled={!picked.includes(row.entry.path) && full}
-                onToggle={() => toggle(row.entry.path)}
+                selected={picked.includes(row.key)}
+                disabled={!picked.includes(row.key) && full}
+                onToggle={() => toggle(row.key)}
                 onDouble={() => insertOne(row)}
               />
             ))}

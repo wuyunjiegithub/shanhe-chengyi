@@ -6,7 +6,7 @@ import { useCaptions } from '../../stores/captions';
 import { usePhotoNames } from '../../stores/photoNames';
 import { isAndroidShell } from '../../data/photoDisk';
 import { hasMediaBridge } from '../../data/androidMedia';
-import { refineShape } from '../../data/photoLibrary';
+import { entryKey, refineShape } from '../../data/photoLibrary';
 import type { PhotoEntry, PhotoShape } from '../../data/photoLibrary';
 import { Gallery3D } from './Gallery3D';
 import type { HallItem } from './Gallery3D';
@@ -92,7 +92,7 @@ function buildItems(scope: 'city' | 'district', id: string): WallItem[] {
   const pushLocal = (entries: PhotoEntry[], sub: string) => {
     for (const p of entries) {
       items.push({
-        key: `p:${p.path}`,
+        key: `p:${entryKey(p)}`,
         title: p.name.replace(/\.[a-z0-9]+$/i, ''),
         sub,
         photo: p,

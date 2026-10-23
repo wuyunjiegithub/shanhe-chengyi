@@ -5091,17 +5091,63 @@ button.wall-stage-img {
   text-decoration: underline;
 }
 
-/* 正文里的图片：整幅显示；点一下右上角浮出删除钮 */
+/* 正文里的图片：按原图尺寸显示（width 属性由插入/拖动写入，CSS 不写死宽度），
+ * 点一下浮出删除钮 + 右下角缩放手柄 */
 .rt-body img[data-img] {
   display: block;
-  width: 100%;
-  max-height: 340px;
+  max-width: 100%;
+  height: auto;
+  /* 只兜「超高」：竖长图超过这个高度才按比例缩，宽仍以 width 属性为准 */
+  max-height: 480px;
   margin: 12px 0;
   border-radius: 10px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.05);
-  object-fit: cover;
   cursor: pointer;
+}
+
+/* 选中态：青色描边，和缩放手柄呼应 */
+.rt-body img[data-img].is-sel {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.35);
+}
+
+/* 缩放手柄：钉在图片右下角，左右拖动改宽度（touch-action:none 才能在手机上拖动） */
+.rt-img-resize {
+  position: absolute;
+  z-index: 4;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  background: rgba(8, 10, 16, 0.82);
+  border: 1px solid rgba(34, 211, 238, 0.55);
+  backdrop-filter: blur(6px);
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+/* 工具栏字体下拉：和按钮同高同风格 */
+.rt-font {
+  flex: 0 0 auto;
+  height: 28px;
+  max-width: 92px;
+  padding: 0 4px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-2);
+  font-family: var(--font-body);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.rt-font:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--text-1);
 }
 
 .rt-img-del {
@@ -5994,6 +6040,19 @@ button.wall-stage-img {
     height: 30px;
     min-width: 32px;
     font-size: 12.5px;
+  }
+
+  /* 手机上字体下拉和按钮同高，宽度给足（字体名最长「Times New Roman」） */
+  .rt-font {
+    height: 30px;
+    max-width: 116px;
+    font-size: 12.5px;
+  }
+
+  /* 缩放手柄在手机上再大一点，好按 */
+  .rt-img-resize {
+    width: 30px;
+    height: 30px;
   }
 
   /* 照片墙：网格降列 */
