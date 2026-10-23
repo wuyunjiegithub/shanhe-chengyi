@@ -79,6 +79,11 @@ export function legacyToHtml(text: string): string {
  * - script/style/iframe 这类连内容一起丢掉；
  * - img 只留 data-img（src 是临时的 blob:，不入库），没有 data-img 的外链图一律丢弃；
  * - 事件属性、class、style 全部剥掉，避免 localStorage 里的脏数据被 innerHTML 执行。
+ *   唯一的例外是段落对齐：Blink 的 justify 命令（styleWithCSS=false 时）产出
+ *   `<p style="text-align: center;">`，所以块级标签放行「只有 text-align」的 style，
+ *   值限定 left/center/right/justify，并存成无空格规范形 `text-align:center`。
+ *   对齐是排版意图（居中标题、右对齐落款），不能因为「style 全剥」而失效。
+ *   left 是默认对齐，一律按「无对齐」丢掉，库里只留 center/right/justify。
  */
 const ALLOWED_TAGS = new Set([
   'P', 'DIV', 'BR', 'B', 'STRONG', 'I', 'EM', 'U', 'S', 'STRIKE', 'MARK', 'CODE', 'PRE',
@@ -96,6 +101,12 @@ const ALLOWED_ATTRS: Record<string, string[]> = {
 const IMG_ID_RE = /^[A-Za-z0-9_-]+$/;
 /** font face 只放行字体族名字符（字母/数字/空格/逗号/引号/连字符/中文），挡掉注入 */
 const FONT_FACE_RE = /^[A-Za-z0-9\s,\-."'\u4e00-\u9fa5]{1,120}$/;
+/** 允许带对齐 style 的块级标签（execCommand('justify*') 的落点）。
+ *  IMG 也在内：我们的正文图是 display:block，Blink 对齐顶层图片时会把
+ *  text-align 直接写在 <img> 身上（CSS 再用 margin 让它真的挪窝）。 */
+const ALIGN_TAGS = new Set(['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'BLOCKQUOTE', 'LI', 'FIGURE', 'IMG']);
+/** 整条 style 必须「只有」一个 text-align（拒绝 color:red;text-align:center 这类混装） */
+const TEXT_ALIGN_ONLY_RE = /^\s*text-align\s*:\s*(left|center|right|justify)\s*;?\s*$/i;
 
 export function sanitizeNoteHtml(html: string): string {
   if (!html) return '';
@@ -120,7 +131,17 @@ export function sanitizeNoteHtml(html: string): string {
     }
     const keep = ALLOWED_ATTRS[tag] ?? [];
     for (const attr of Array.from(el.attributes)) {
-      if (!keep.includes(attr.name.toLowerCase())) el.removeAttribute(attr.name);
+      const name = attr.name.toLowerCase();
+      // 块级标签：只放行「纯 text-align」的 style，并规范成无空格形式
+      // （CSS 用 [style*="text-align:center"] 命中它，空格会让选择器失效）
+      if (ALIGN_TAGS.has(tag) && name === 'style') {
+        const m = TEXT_ALIGN_ONLY_RE.exec(attr.value);
+        // left 是默认对齐：显式写出来只是噪音，按「无对齐」处理
+        if (m && m[1].toLowerCase() !== 'left') el.setAttribute('style', `text-align:${m[1].toLowerCase()}`);
+        else el.removeAttribute('style');
+        continue;
+      }
+      if (!keep.includes(name)) el.removeAttribute(name);
     }
     if (tag === 'IMG') {
       const id = el.getAttribute('data-img') ?? '';
@@ -163,9 +184,10 @@ export function sanitizeNoteHtml(html: string): string {
       el.parentNode.removeChild(el);
     }
   }
-  // 彻底的空白段落（没有字、没有图、没有换行）
+  // 彻底的空白段落（没有字、没有图、没有换行）——带对齐样式的空行留着：
+  // 那是「这一行要居中、还没开始打字」的排版意图，删了对齐就丢了
   for (const el of Array.from(root.querySelectorAll('p, div'))) {
-    if (el.children.length === 0 && (el.textContent ?? '').trim() === '') el.remove();
+    if (el.children.length === 0 && (el.textContent ?? '').trim() === '' && !el.getAttribute('style')) el.remove();
   }
   return root.innerHTML;
 }

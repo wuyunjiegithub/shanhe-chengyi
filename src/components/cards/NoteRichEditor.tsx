@@ -17,6 +17,11 @@ import { sanitizeNoteHtml } from '../../data/noteBody';
  *   插入时按原图自然尺寸（超过正文宽度才缩），之后可拖右下角手柄改大小，高度始终按比例。
  * - 字体走 `execCommand('fontName')`（styleWithCSS=false 时产出 `<font face>`，
  *   见 noteBody 的清洗白名单），不引入 contenteditable 之外的样式来源。
+ * - 段落对齐走 `execCommand('justify*')`：Blink 不论 styleWithCSS 都产出
+ *   `<p style="text-align:center">`，清洗时只放行「纯 text-align」并规范成无空格形，
+ *   编辑当时也要 normalizeAlign 一遍，否则 CSS 的 [style*="text-align:center"]
+ *   选择器命中不了（块级图片不会因为 text-align 自己挪窝，靠它 margin:auto）。
+ * - 工具栏不挂 title 悬浮提示（手机上长按会弹系统浮层挡按钮），只留 aria-label。
  * - 粘贴一律按纯文本插入，避免把网页样式（字体、颜色、表格）带进来。
  */
 
@@ -36,6 +41,40 @@ const FONTS: { label: string; value: string }[] = [
   { label: 'Verdana', value: 'Verdana, sans-serif' },
   { label: 'Courier New', value: '"Courier New", monospace' },
 ];
+
+/** 段落对齐按钮：图标是四条横线，按各自方向排布 */
+const ALIGN_BTNS: { dir: AlignDir; label: string; cmd: string }[] = [
+  { dir: 'left', label: '左对齐', cmd: 'justifyLeft' },
+  { dir: 'center', label: '居中', cmd: 'justifyCenter' },
+  { dir: 'right', label: '右对齐', cmd: 'justifyRight' },
+  { dir: 'justify', label: '两端对齐', cmd: 'justifyFull' },
+];
+
+/** 命令 -> 落库的对齐值（left 是默认，一律按「无对齐」处理） */
+const ALIGN_VALUE: Record<string, string> = {
+  justifyLeft: '',
+  justifyCenter: 'center',
+  justifyRight: 'right',
+  justifyFull: 'justify',
+};
+
+/** 能承载 text-align 的块级宿主（图片在段落里时，对齐整个段落） */
+const ALIGN_HOSTS = new Set(['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'BLOCKQUOTE', 'LI']);
+
+type AlignDir = 'left' | 'center' | 'right' | 'justify';
+
+function AlignIcon({ dir }: { dir: AlignDir }) {
+  // 四条线：前三条长短不一，两端对齐则全部拉满（左右都顶到边）
+  const lens = dir === 'justify' ? [15, 15, 15, 15] : [15, 10, 13, 8];
+  const xs = lens.map((w) => (dir === 'left' ? 1.5 : dir === 'center' ? (18 - w) / 2 : dir === 'right' ? 16.5 - w : 1.5));
+  return (
+    <svg viewBox="0 0 18 18" width="15" height="15" aria-hidden="true" focusable="false">
+      {[3, 7, 11, 15].map((y, i) => (
+        <line key={y} x1={xs[i]} x2={xs[i] + lens[i]} y1={y} y2={y} stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+      ))}
+    </svg>
+  );
+}
 
 /** 取字体族第一个名字，用于把 queryCommandValue 的结果对回下拉选项 */
 function fontKey(v: string): string {
@@ -89,7 +128,18 @@ export function NoteRichEditor({
   /** 最后一次落在编辑器里的选区：点工具栏/选图会移动焦点，插入时用它复原 */
   const lastRangeRef = useRef<Range | null>(null);
   const [empty, setEmpty] = useState(!html.trim());
-  const [fmt, setFmt] = useState({ bold: false, italic: false, underline: false, strike: false, ul: false, ol: false, block: '', font: '' });
+  const [fmt, setFmt] = useState({
+    bold: false,
+    italic: false,
+    underline: false,
+    strike: false,
+    ul: false,
+    ol: false,
+    block: '',
+    font: '',
+    /** 当前段落对齐：'' 表示选区跨多种对齐（不高亮任何一个） */
+    align: '' as AlignDir | '',
+  });
   /** 当前点中的图片：浮出删除钮 + 右下角缩放手柄 */
   const imgElRef = useRef<HTMLImageElement | null>(null);
   const [imgBox, setImgBox] = useState<{ top: number; left: number; w: number; h: number } | null>(null);
@@ -126,6 +176,20 @@ export function NoteRichEditor({
     }
   };
 
+  /**
+   * 把编辑器里所有 style 规范成 `text-align:<值>`（浏览器产出的是 `text-align: center;`
+   * 带空格带分号）。不清成规范形，CSS 的 [style*="text-align:center"] 选择器就命中不了，
+   * 「段落居中了但块级图片不动」。在 exec 之后 / hydrate 时调用。
+   * text-align:left 是默认对齐，和清洗器一样按「无对齐」去掉，库里不留噪音。
+   */
+  const normalizeAlign = (root: HTMLElement) => {
+    root.querySelectorAll<HTMLElement>('[style]').forEach((el) => {
+      const m = /text-align\s*:\s*(left|center|right|justify)/i.exec(el.getAttribute('style') ?? '');
+      if (m && m[1].toLowerCase() !== 'left') el.setAttribute('style', `text-align:${m[1].toLowerCase()}`);
+      else el.removeAttribute('style');
+    });
+  };
+
   const hydrate = (root: HTMLElement) => {
     root.querySelectorAll<HTMLImageElement>('img[data-img]').forEach((img) => {
       const id = img.dataset.img ?? '';
@@ -134,6 +198,7 @@ export function NoteRichEditor({
       // 老游记里的图没有 width：按原图尺寸补一次（只改显示，不影响已存内容）
       if (!img.getAttribute('width')) fitImage(img);
     });
+    normalizeAlign(root);
   };
 
   const emit = () => {
@@ -208,6 +273,16 @@ export function NoteRichEditor({
           ol: document.queryCommandState('insertOrderedList'),
           block: String(document.queryCommandValue('formatBlock') ?? '').toLowerCase(),
           font: fontAtCaret(),
+          // 四个状态互斥（left 是默认兜底）：先判特殊三种，再落回 left
+          align: document.queryCommandState('justifyCenter')
+            ? 'center'
+            : document.queryCommandState('justifyRight')
+              ? 'right'
+              : document.queryCommandState('justifyFull')
+                ? 'justify'
+                : document.queryCommandState('justifyLeft')
+                  ? 'left'
+                  : '',
         });
       } catch {
         /* 个别环境不实现 queryCommand*，忽略高亮即可 */
@@ -238,6 +313,9 @@ export function NoteRichEditor({
     } catch {
       /* 忽略：命令不被支持时不影响继续写 */
     }
+    // 对齐命令刚产出的 style 带空格（"text-align: center;"），规范掉再让 CSS 选择器命中
+    const el = bodyRef.current;
+    if (el) normalizeAlign(el);
     emit();
     // 命令后光标位置变了，重新记一次
     const sel = window.getSelection();
@@ -248,6 +326,55 @@ export function NoteRichEditor({
   const toggleBlock = (tag: 'h2' | 'h3' | 'blockquote') => {
     const cur = fmt.block.replace(/[<>]/g, '');
     exec('formatBlock', cur === tag ? 'p' : tag);
+  };
+
+  /**
+   * 段落对齐。和普通 exec 的区别：用户点过图片时，先把 DOM 选区钉到图片节点上。
+   * 不钉的话 Blink 的落点会漂（有时把 text-align 写到旁边空段落上，图片自己不动），
+   * 而且我们的图是 display:block，Blink 会把样式直接写在 <img> 身上——对块级图
+   * 毫无视觉效果。所以命令跑完后按「点的哪个对齐」把最终状态确定性地写到目标上：
+   * 图在段落里 → 写段落（文字和图一起对齐）；图是顶层块 → 写图自己（CSS 认）。
+   */
+  const execAlign = (cmd: string) => {
+    const img = imgElRef.current;
+    const el = bodyRef.current;
+    if (img && img.isConnected && el) {
+      const sel = window.getSelection();
+      if (sel) {
+        const r = document.createRange();
+        r.selectNode(img);
+        sel.removeAllRanges();
+        sel.addRange(r);
+        lastRangeRef.current = r.cloneRange();
+      }
+    }
+    exec(cmd);
+    if (!img || !img.isConnected) return;
+
+    const a = ALIGN_VALUE[cmd] ?? '';
+    const host = img.parentElement;
+    const target = host && host !== el && ALIGN_HOSTS.has(host.tagName) ? host : img;
+    if (a) target.setAttribute('style', `text-align:${a}`);
+    else target.removeAttribute('style');
+    // 宿主是段落时，图自己不留样式（避免和段落样式打架，也少一份噪音）
+    if (target !== img) img.removeAttribute('style');
+    // Blink 的副作用：对齐顶层图时，紧挨着的空段落也会被写上同样的 text-align。
+    // 空段落没有可对齐的内容，纯噪音（还会被清洗器当排版意图存进库），清掉。
+    for (const sib of [img.previousElementSibling, img.nextElementSibling]) {
+      if (
+        sib &&
+        sib.tagName === 'P' &&
+        sib.getAttribute('style') &&
+        !(sib.textContent ?? '').trim() &&
+        !sib.querySelector('img')
+      ) {
+        sib.removeAttribute('style');
+      }
+    }
+    syncImgBox(img); // 图挪了位置，选中框 / 手柄跟着走
+    // exec() 里已经 emit 过一次，但那是在清理之前：补发一次，
+    // 让 React 里的正文（保存时就存它）也是清理后的干净版本
+    emit();
   };
 
   const makeImg = (item: RichInsert): HTMLImageElement => {
@@ -381,7 +508,7 @@ export function NoteRichEditor({
   const btn = (
     label: string,
     cmd: string,
-    opts?: { on?: boolean; title?: string; value?: string; cls?: string },
+    opts?: { on?: boolean; value?: string; cls?: string },
   ) => (
     <button
       type="button"
@@ -389,7 +516,6 @@ export function NoteRichEditor({
       // 用 mousedown 拦掉默认行为，否则点按钮会先夺走编辑器焦点、丢失选区
       onMouseDown={(e) => e.preventDefault()}
       onClick={() => exec(cmd, opts?.value)}
-      title={opts?.title ?? label}
     >
       {label}
     </button>
@@ -397,13 +523,14 @@ export function NoteRichEditor({
 
   return (
     <div className="rt-wrap">
+      {/* 工具栏不挂 title 悬浮提示：手机上没有 hover，长按还会弹系统浮层挡按钮 */}
       <div className="rt-toolbar">
         <button
           type="button"
           className={`rt-btn${fmt.bold ? ' is-on' : ''}`}
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => exec('bold')}
-          title="加粗（Ctrl+B）"
+          aria-label="加粗"
         >
           <b>B</b>
         </button>
@@ -412,7 +539,7 @@ export function NoteRichEditor({
           className={`rt-btn${fmt.italic ? ' is-on' : ''}`}
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => exec('italic')}
-          title="斜体（Ctrl+I）"
+          aria-label="斜体"
         >
           <i>I</i>
         </button>
@@ -421,7 +548,7 @@ export function NoteRichEditor({
           className={`rt-btn${fmt.underline ? ' is-on' : ''}`}
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => exec('underline')}
-          title="下划线"
+          aria-label="下划线"
         >
           <u>U</u>
         </button>
@@ -431,7 +558,6 @@ export function NoteRichEditor({
           className={`rt-btn${fmt.block === 'h2' ? ' is-on' : ''}`}
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => toggleBlock('h2')}
-          title="大标题"
         >
           标题
         </button>
@@ -440,7 +566,6 @@ export function NoteRichEditor({
           className={`rt-btn${fmt.block === 'h3' ? ' is-on' : ''}`}
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => toggleBlock('h3')}
-          title="小标题"
         >
           小标题
         </button>
@@ -449,19 +574,30 @@ export function NoteRichEditor({
           className={`rt-btn${fmt.block === 'blockquote' ? ' is-on' : ''}`}
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => toggleBlock('blockquote')}
-          title="引用 / 摘句"
         >
           引用
         </button>
         <span className="rt-sep" />
-        {btn('• 列表', 'insertUnorderedList', { on: fmt.ul, title: '无序列表' })}
-        {btn('1. 列表', 'insertOrderedList', { on: fmt.ol, title: '有序列表' })}
+        {btn('• 列表', 'insertUnorderedList', { on: fmt.ul })}
+        {btn('1. 列表', 'insertOrderedList', { on: fmt.ol })}
+        <span className="rt-sep" />
+        {ALIGN_BTNS.map((a) => (
+          <button
+            key={a.dir}
+            type="button"
+            className={`rt-btn rt-btn--ico${fmt.align === a.dir ? ' is-on' : ''}`}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => execAlign(a.cmd)}
+            aria-label={a.label}
+          >
+            <AlignIcon dir={a.dir} />
+          </button>
+        ))}
         <span className="rt-sep" />
         <select
           className="rt-font"
           value={FONTS.find((f) => fontKey(f.value) === fontKey(fmt.font))?.value ?? FONTS[0].value}
           onChange={(e) => exec('fontName', e.target.value)}
-          title="正文字体"
           aria-label="正文字体"
         >
           {FONTS.map((f) => (
@@ -477,7 +613,6 @@ export function NoteRichEditor({
           onMouseDown={(e) => e.preventDefault()}
           onClick={onPickImage}
           disabled={imageFull}
-          title={imageFull ? '图片已达上限' : '从照片库插入图片到光标处'}
         >
           ＋ 图片
         </button>
@@ -522,7 +657,7 @@ export function NoteRichEditor({
             style={{ top: imgBox.top + 8, left: Math.max(8, imgBox.left + imgBox.w - 42) }}
             onMouseDown={(e) => e.preventDefault()}
             onClick={removeImg}
-            title="删除这张图片"
+            aria-label="删除这张图片"
           >
             ×
           </button>

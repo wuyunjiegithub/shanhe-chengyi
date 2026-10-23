@@ -4989,6 +4989,17 @@ button.wall-stage-img {
   border: 1px solid rgba(34, 211, 238, 0.35);
 }
 
+/* 纯图标按钮（段落对齐）：方形，图标用 currentColor 跟着高亮态变色 */
+.rt-btn--ico {
+  padding: 0;
+  width: 30px;
+  min-width: 30px;
+}
+
+.rt-btn--ico svg {
+  display: block;
+}
+
 .rt-sep {
   flex: 0 0 auto;
   width: 1px;
@@ -5112,6 +5123,39 @@ button.wall-stage-img {
   box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.35);
 }
 
+/* 段落对齐时图片也要跟着走：img 是 display:block，不吃父级的 text-align，
+ * 这里用 margin 把它推到对应一侧。style 已被编辑器/清洗器规范成无空格形
+ * （text-align:center），两个写法都匹配只是兜底老数据。
+ * 注意：不要在别处给 img 写 margin-left/right，否则优先级会盖过这里。 */
+.rt-body p[style*="text-align:center"] img[data-img],
+.rt-body p[style*="text-align: center"] img[data-img],
+.rt-body div[style*="text-align:center"] img[data-img],
+.rt-body div[style*="text-align: center"] img[data-img] {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rt-body p[style*="text-align:right"] img[data-img],
+.rt-body p[style*="text-align: right"] img[data-img],
+.rt-body div[style*="text-align:right"] img[data-img],
+.rt-body div[style*="text-align: right"] img[data-img] {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* 顶层图片：Blink 会把 text-align 直接写在 <img> 自己身上（我们的图是 display:block，
+ * Blink 就把它当成承载对齐的块）。写在图上的 text-align 本身不挪图，靠这里的
+ * margin 把它推到对应一侧。放在段落规则后面：图自己的样式优先于宿主段落的。 */
+.rt-body img[data-img][style*="text-align:center"] {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rt-body img[data-img][style*="text-align:right"] {
+  margin-left: auto;
+  margin-right: 0;
+}
+
 /* 缩放手柄：钉在图片右下角，左右拖动改宽度（touch-action:none 才能在手机上拖动） */
 .rt-img-resize {
   position: absolute;
@@ -5171,7 +5215,7 @@ button.wall-stage-img {
   background: rgba(190, 30, 40, 0.92);
 }
 
-/* 编辑器下方：图片计数 + 插入入口 */
+/* 编辑器下方：图片计数 */
 .rt-bar {
   display: flex;
   align-items: center;
@@ -5183,11 +5227,6 @@ button.wall-stage-img {
 .rt-count b {
   color: var(--accent);
   font-family: var(--font-mono);
-}
-
-.rt-tip {
-  font-size: 10.5px;
-  color: var(--text-3);
 }
 
 /* 游记图片入口（旧版网格图头，已被 .rt-bar 取代，保留占位说明以免误加回来） */
@@ -6040,6 +6079,12 @@ button.wall-stage-img {
     height: 30px;
     min-width: 32px;
     font-size: 12.5px;
+  }
+
+  /* 对齐图标钮：和文字钮同高，保持正方形 */
+  .rt-btn--ico {
+    width: 32px;
+    min-width: 32px;
   }
 
   /* 手机上字体下拉和按钮同高，宽度给足（字体名最长「Times New Roman」） */

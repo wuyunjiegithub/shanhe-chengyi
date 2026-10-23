@@ -361,15 +361,12 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
           setLibOpen(true);
         }}
         imageFull={images.length >= MAX_IMAGES}
-        placeholder="正文：走了哪些地方、吃了什么、遇见什么事…… 上面的工具栏可以加粗、分标题、引用、列表，光标停在哪，图片就插在哪。"
+        placeholder="正文：走了哪些地方、吃了什么、遇见什么事……"
       />
 
       <div className="rt-bar">
         <span className="rt-count">
           图片 <b>{images.length}</b> / {MAX_IMAGES}
-        </span>
-        <span className="rt-tip">
-          {images.length >= MAX_IMAGES ? '已达上限，点正文里的图片可删除' : '用上方「＋ 图片」插入到光标处'}
         </span>
       </div>
 
