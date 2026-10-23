@@ -3094,6 +3094,7 @@ dependencies = [
 name = "shanhe-chengyi"
 version = "0.9.0"
 dependencies = [
+ "jni",
  "serde",
  "serde_json",
  "tauri",

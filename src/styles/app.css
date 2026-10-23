@@ -3620,6 +3620,43 @@ a,
   opacity: 0.85;
 }
 
+/* ---- 照片墙 · 系统相册说明卡（手机端） ---- */
+.wall-media-tip {
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  text-align: center;
+}
+
+.wall-media-tip-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.wall-media-tip-body {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-3);
+}
+
+.wall-media-albums {
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--text-3);
+  opacity: 0.92;
+}
+
+.wall-media-btn {
+  margin-top: 2px;
+}
+
 /* ---- 展厅：挂画网格 + 展签 ---- */
 .wall-gallery {
   flex: 1;
@@ -4704,7 +4741,18 @@ button.wall-stage-img {
   padding: 4px 18px 14px;
 }
 
+/* 编辑器外壳：头部（返回 / 保存 / 关闭）钉住不滚，下面才是可滚的书写区。
+ * 手机键盘弹出时正文会向上滚，如果头部也在同一个滚动容器里，
+ * 「返回列表」「保存」会一起被推走 —— 写完想保存还得先往下滚半天。 */
 .note-editor {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.note-editor-scroll {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -4718,7 +4766,7 @@ button.wall-stage-img {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding-bottom: 10px;
+  padding: 14px 18px 10px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -4874,7 +4922,9 @@ button.wall-stage-img {
   border: 1px solid var(--border);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.035);
-  overflow: hidden;
+  /* 注意：不要在这里加 overflow:hidden —— 它会把 position:sticky 的工具栏
+   * 困在 .rt-wrap 自己身上（sticky 的包含块变成最近的有溢出滚动的祖先），
+   * 手机键盘一弹、正文滚动，工具栏就跟着跑了。圆角由子元素各自承担。 */
 }
 
 .rt-wrap:focus-within {
@@ -4883,12 +4933,19 @@ button.wall-stage-img {
 }
 
 .rt-toolbar {
+  /* 吸顶：手机键盘弹出后正文会滚动，工具栏钉在编辑区顶部不跟着跑，
+   * 否则「加粗 / 标题 / ＋图片」被推到屏幕外，一个都点不到。 */
+  position: sticky;
+  top: 0;
+  z-index: 6;
   display: flex;
   align-items: center;
   gap: 3px;
   padding: 6px;
   border-bottom: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  border-radius: 11px 11px 0 0;
+  background: rgba(16, 22, 34, 0.92);
+  backdrop-filter: blur(8px);
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -5949,13 +6006,53 @@ button.wall-stage-img {
     border-radius: 0;
   }
 
+  /* ---- 照片墙头部：关闭钮固定右上角 ----
+   * 原来是 flex + wrap：标题 / 风格切换 / 操作各占一行，× 被挤到第二行正中间，
+   * 手机屏幕上「关闭」既不在角上、也不显眼。改成两行网格：
+   * 第一行「标题 + ×」，第二行风格切换（横向可滚）。 */
   .wall-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    row-gap: 10px;
     gap: 8px;
     /* 仅改左右 / 下内边距，上内边距留给上面的安全区规则（12px + 刘海高度），
        否则会盖掉安全区、让关闭钮被手机顶部信息栏挡住。 */
     padding-bottom: 10px;
     padding-left: 12px;
     padding-right: 12px;
+  }
+
+  .wall-head-title {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .wall-head-actions {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .wall-styles {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    order: 0;
+    width: auto;
+    margin-left: 0;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .wall-styles::-webkit-scrollbar {
+    height: 0;
+  }
+
+  /* 关闭钮在手机上按得舒服点（原来只有 28px，太难点） */
+  .wall-close {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
   }
 
   .wall-title {

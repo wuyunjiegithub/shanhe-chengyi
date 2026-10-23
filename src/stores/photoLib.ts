@@ -21,17 +21,22 @@ import type { PhotoEntry, PhotoIndex } from '../data/photoLibrary';
 import { getDisk, isAndroidShell, isMediaName } from '../data/photoDisk';
 import type { DiskKind } from '../data/photoDisk';
 import {
+  allAndroidPhotos,
   hasMediaBridge,
-  listAndroidAlbumPhotos,
+  hasMediaPermission,
   listAndroidAlbums,
+  readAndroidPhoto,
+  requestMediaPermission,
 } from '../data/androidMedia';
-import type { AndroidPhoto } from '../data/androidMedia';
+import type { AndroidAlbum, AndroidPhoto } from '../data/androidMedia';
 
 export type PhotoLibStatus = 'unbound' | 'bound' | 'denied' | 'unsupported' | 'error';
 
 /** 实时模式：定时重扫绑定目录，新照片自动进照片墙 */
 const LIVE_KEY = 'ds.photoLib.live.v1';
 const LIVE_INTERVAL_MS = 20_000;
+/** 是否已经替用户拉过一次系统相册权限弹窗（只拉一次，别每次都弹） */
+const MEDIA_ASKED_KEY = 'ds.photoLib.mediaAsked.v1';
 
 /** 上传 / 删除结果 */
 export interface UploadResult {
@@ -111,6 +116,10 @@ interface PhotoLibState {
   lastLiveAdded: number;
   /** 当前磁盘后端：fsa（浏览器）/ tauri（套壳）/ none */
   diskKind: DiskKind;
+  /** 手机端系统相册：相册列表（名称 + 张数），用于「没绑同名相册」时给提示 */
+  albums: AndroidAlbum[];
+  /** 是否已授权读系统相册 */
+  mediaGranted: boolean;
   restore: () => Promise<void>;
   /** 选择本地照片根目录并扫描（换绑也走这里） */
   bind: () => Promise<void>;
@@ -119,6 +128,10 @@ interface PhotoLibState {
   unbind: () => Promise<void>;
   rescan: () => Promise<void>;
   toggleLive: () => Promise<void>;
+  /** 申请系统相册读取权限，并在拿到后重建相册索引 */
+  requestMedia: () => Promise<void>;
+  /** 重新拉一次相册索引（权限弹窗回来后、切回前台时用） */
+  refreshMedia: () => Promise<void>;
   /** 上传照片 / 视频到「省/市/区县」文件夹并入库 */
   uploadTo: (scope: 'city' | 'district', id: string, files: File[]) => Promise<UploadResult>;
   /** 删除本地照片（磁盘真实文件），返回删除数 */
@@ -212,30 +225,49 @@ async function scanAndApply(
  * 相册名就是照片所在目录名（Android 相册之间平级、没有子相册），
  * 所以在相册 App 里建一个叫「淳安县」的相册，这里就会自动对上。
  * 同名相册不存在时该区县就是 0 张，不会凭空造出占位。
+ *
+ * 一次查询拉全量照片（带 bucket），在 JS 侧按相册名分组——
+ * 比起「每个区县查一次」少几百轮 MediaStore 扫描。
  */
-function buildAlbumIndex(): PhotoIndex | null {
-  const albums = listAndroidAlbums();
-  if (albums.length === 0) return null;
-  const counts = new Map(albums.map((a) => [a.name, a.count]));
+async function buildAlbumIndex(): Promise<PhotoIndex | null> {
+  const photos = await allAndroidPhotos();
+  if (photos.length === 0) return null;
   const { districts, cities } = useData.getState();
 
-  const byDistrict: Record<string, PhotoEntry[]> = {};
+  // 相册名 → 区县 id。Android 相册名就是照片所在目录名，用户在相册 App 里建一个
+  // 「淳安县」，这里就要能对上。索引的 byDistrict 一律按区县 id 存（与磁盘扫描一致），
+  // 所以必须先按名字查到 id；同时兼容「淳安」这种去掉市县后缀的叫法（精确名优先）。
+  const districtByName = new Map<string, string>();
+  const districtByNorm = new Map<string, string>();
   for (const d of Object.values(districts)) {
-    if (!counts.has(d.name)) continue;
-    const list = listAndroidAlbumPhotos(d.name).map(albumEntry);
-    if (list.length > 0) byDistrict[d.id] = list;
+    districtByName.set(d.name, d.id);
+    const norm = d.name.replace(/[省市区县新区]+$/, '');
+    if (norm && !districtByNorm.has(norm)) districtByNorm.set(norm, d.id);
   }
+
+  const byDistrict: Record<string, PhotoEntry[]> = {};
   const byCity: Record<string, PhotoEntry[]> = {};
-  for (const c of cities) {
-    if (!counts.has(c.name)) continue;
-    const list = listAndroidAlbumPhotos(c.name).map(albumEntry);
-    if (list.length > 0) byCity[c.id] = list;
+  const others: Record<string, PhotoEntry[]> = {};
+  for (const p of photos) {
+    const entry = albumEntry(p);
+    const districtId = districtByName.get(p.bucket) ?? districtByNorm.get(p.bucket);
+    if (districtId) {
+      (byDistrict[districtId] ??= []).push(entry);
+      continue;
+    }
+    const city = cities.find(
+      (c) => c.name === p.bucket || c.name.replace(/[省市区县]+$/, '') === p.bucket,
+    );
+    if (city) {
+      (byCity[city.id] ??= []).push(entry);
+    } else {
+      // 与任何市区县都不同名的相册：先留着，后面按「未匹配」汇总（不丢照片）
+      (others[p.bucket] ??= []).push(entry);
+    }
   }
 
   let total = 0;
-  for (const list of Object.values(byDistrict)) total += list.length;
-  for (const list of Object.values(byCity)) total += list.length;
-  if (total === 0) return null;
+  for (const list of [...Object.values(byDistrict), ...Object.values(byCity)]) total += list.length;
 
   return {
     rootName: '系统相册',
@@ -256,6 +288,7 @@ function albumEntry(p: AndroidPhoto): PhotoEntry {
     kind: 'image',
     shape,
     mtime: p.mtime || undefined,
+    uri: p.uri,
   };
 }
 
@@ -274,6 +307,32 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
   let scanInflight: Promise<void> | null = null;
   /** 上一轮扫描的指纹，用于判断是否需要失效 blob URL 缓存 */
   let lastSignature = '';
+  /** 相册索引是否已就绪（避免每次 restore / visibilitychange 都重查 MediaStore） */
+  let mediaReady = false;
+  /** 相册照片兜底读字节产生的 object URL（uri → url），解绑时统一回收 */
+  const albumUrls = new Map<string, string>();
+
+  /** 读相册 + 建索引。没权限 / 不是手机端时静默返回。 */
+  const loadMediaAlbums = async (): Promise<boolean> => {
+    if (!hasMediaBridge()) return false;
+    const granted = await hasMediaPermission();
+    set({ mediaGranted: granted });
+    if (!granted) return false;
+    try {
+      const albums = await listAndroidAlbums();
+      set({ albums });
+      const albumIndex = await buildAlbumIndex();
+      if (albumIndex) {
+        applyIndex(albumIndex);
+        set({ index: albumIndex, status: 'bound', error: null, lastLiveAdded: 0 });
+        mediaReady = true;
+        return true;
+      }
+    } catch {
+      /* 查询失败：保持现状，由照片墙里的入口重试 */
+    }
+    return false;
+  };
 
   const doRescan = async (): Promise<void> => {
     const disk = getDisk();
@@ -326,6 +385,8 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
   live: readLive(),
   lastLiveAdded: 0,
   diskKind: 'none',
+  albums: [],
+  mediaGranted: false,
 
   restore: async () => {
     const disk = getDisk();
@@ -336,15 +397,16 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
     // 手机端：不扫目录树，改成按相册名与区县名做同名匹配（用户在系统相册里怎么归，
     // App 就怎么显示，不需要导入 / 复制，也不需要理解目录结构）
     if (isAndroidShell() && hasMediaBridge()) {
-      try {
-        const albumIndex = buildAlbumIndex();
-        if (albumIndex) {
-          applyIndex(albumIndex);
-          set({ index: albumIndex, status: 'bound', error: null, lastLiveAdded: 0 });
-          return;
+      if (await loadMediaAlbums()) return;
+      // 没权限：首次启动帮用户拉一次系统弹窗（只拉一次，之后由照片墙里的按钮负责）
+      if (!get().mediaGranted && !localStorage.getItem(MEDIA_ASKED_KEY)) {
+        try {
+          localStorage.setItem(MEDIA_ASKED_KEY, '1');
+        } catch {
+          /* 忽略 */
         }
-      } catch {
-        /* 权限未授予或查询失败：落到下面的目录逻辑，由设置面板提示重新绑定 */
+        void get().requestMedia();
+        return;
       }
     }
 
@@ -434,12 +496,15 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
     clearPhotoUrlCache();
     await clearPhotoBlobCache();
     persistIndex(null);
+    for (const url of albumUrls.values()) URL.revokeObjectURL(url);
+    albumUrls.clear();
     set({
       index: null,
       status: 'unbound',
       error: null,
       lastLiveAdded: 0,
       diskKind: disk.kind,
+      albums: [],
     });
   },
 
@@ -466,6 +531,19 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
     } else {
       stopLiveTimer();
     }
+  },
+
+  requestMedia: async () => {
+    if (!hasMediaBridge()) return;
+    await requestMediaPermission();
+    // 权限弹窗是异步的，这里查到的多半还是 false；真正生效靠 visibilitychange 后的 refreshMedia
+    set({ mediaGranted: await hasMediaPermission() });
+    if (get().mediaGranted) await loadMediaAlbums();
+  },
+
+  refreshMedia: async () => {
+    if (!hasMediaBridge() || mediaReady) return;
+    await loadMediaAlbums();
   },
 
   uploadTo: async (scope, id, files) => {
@@ -551,13 +629,29 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
       try {
         return convertFileSrc(entry.path);
       } catch {
-        /* 退化到下面的缓存逻辑 */
+        /* 退化到下面的兜底逻辑 */
+      }
+    }
+    // 兜底：DATA 路径缺失（部分新机型）时，走原生桥按 content:// URI 读字节
+    if (entry.uri) {
+      const cached = albumUrls.get(entry.uri);
+      if (cached) return cached;
+      const blob = await readAndroidPhoto(entry.uri);
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        albumUrls.set(entry.uri, url);
+        return url;
       }
     }
     return resolvePhotoUrl(entry);
   },
 
   photoBlob: async (entry) => {
+    // 系统相册条目：字节走原生桥（fs 插件不认绝对路径，会因作用域拒掉）
+    if (entry.uri) {
+      const blob = await readAndroidPhoto(entry.uri);
+      if (blob) return blob;
+    }
     const disk = getDisk();
     try {
       const blob = await disk.readFile(entry.path);
@@ -576,3 +670,14 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
   },
   };
 });
+
+// 从系统权限弹窗 / 相册 App 切回本 App：补建相册索引。
+// 权限是异步授予的（弹窗里点「允许」后本 App 才 resume），
+// 所以不能只依赖启动时那一次查询。
+if (typeof window !== 'undefined') {
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      void usePhotoLib.getState().refreshMedia();
+    }
+  });
+}

@@ -5,6 +5,7 @@ import { usePhotoLib } from '../../stores/photoLib';
 import { useCaptions } from '../../stores/captions';
 import { usePhotoNames } from '../../stores/photoNames';
 import { isAndroidShell } from '../../data/photoDisk';
+import { hasMediaBridge } from '../../data/androidMedia';
 import { refineShape } from '../../data/photoLibrary';
 import type { PhotoEntry, PhotoShape } from '../../data/photoLibrary';
 import { Gallery3D } from './Gallery3D';
@@ -282,6 +283,11 @@ export function PhotoWall() {
   const libTotal = usePhotoLib((s) => s.index?.total ?? 0);
   const uploadTo = usePhotoLib((s) => s.uploadTo);
   const removePhotos = usePhotoLib((s) => s.removePhotos);
+  /** 手机端系统相册：是否可用 / 是否已授权 / 相册清单 */
+  const mediaBridge = hasMediaBridge();
+  const mediaGranted = usePhotoLib((s) => s.mediaGranted);
+  const albums = usePhotoLib((s) => s.albums);
+  const requestMedia = usePhotoLib((s) => s.requestMedia);
   const captionMap = useCaptions((s) => s.map);
   const setCaption = useCaptions((s) => s.set);
   /** 自定义照片名（桌面端改名）覆盖表；订阅以便改名后即时重绘 */
@@ -733,10 +739,40 @@ export function PhotoWall() {
         {items.length === 0 ? (
           <div className="wall-empty">
             <p>{allItems.length > 0 ? '这个筛选下暂时没有照片。' : '这个范围还没有照片。'}</p>
-            <p className="wall-empty-hint">
-              点右上角「＋ 上传」会把照片 / 视频写进照片根目录下的「省 / 市 / 区县」文件夹
-              （如 浙江省/杭州市/淳安县），也可在「设置 → 照片库」绑定本地目录。
-            </p>
+            {/* 手机端：说明照片从哪来（系统相册同名匹配），并给授权入口 */}
+            {mobileShell && mediaBridge && (
+              <div className="wall-media-tip">
+                <p className="wall-media-tip-title">照片来自手机系统相册</p>
+                <p className="wall-media-tip-body">
+                  在系统相册里建一个叫「{photoWall.title.replace(/ · 照片墙$/, '')}」的相册，
+                  把照片放进去，这里就会自动显示（相册之间平级，直接建同名相册即可）。
+                </p>
+                {!mediaGranted ? (
+                  <button
+                    type="button"
+                    className="primary-btn wall-media-btn"
+                    onClick={() => void requestMedia()}
+                  >
+                    允许访问系统相册
+                  </button>
+                ) : (
+                  <p className="wall-media-albums">
+                    {albums.length > 0
+                      ? `已连接系统相册 · 你的相册：${albums
+                          .slice(0, 12)
+                          .map((a) => `${a.name}（${a.count}）`)
+                          .join('、 ')}${albums.length > 12 ? '…' : ''}`
+                      : '已连接系统相册，但还没有读到相册（新拍的照片过几秒再来看）。'}
+                  </p>
+                )}
+              </div>
+            )}
+            {!mobileShell && (
+              <p className="wall-empty-hint">
+                点右上角「＋ 上传」会把照片 / 视频写进照片根目录下的「省 / 市 / 区县」文件夹
+                （如 浙江省/杭州市/淳安县），也可在「设置 → 照片库」绑定本地目录。
+              </p>
+            )}
           </div>
         ) : (
           <>

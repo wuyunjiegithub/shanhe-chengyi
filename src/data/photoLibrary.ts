@@ -40,6 +40,8 @@ export interface PhotoEntry {
   mtime?: number;
   /** 实时扫描新发现（同一次绑定会话内高亮） */
   fresh?: boolean;
+  /** 系统相册来源的 content:// URI（仅 Android 套壳）；path 缺失时靠它兜底读字节 */
+  uri?: string;
 }
 
 export interface PhotoIndex {

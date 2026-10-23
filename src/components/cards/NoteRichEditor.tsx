@@ -26,6 +26,8 @@ export interface RichInsert {
 export interface NoteRichEditorHandle {
   insertImages: (items: RichInsert[]) => void;
   focus: () => void;
+  /** 收起键盘：打开选图面板前调用，否则键盘一直浮在面板后面 */
+  blur: () => void;
 }
 
 interface NoteRichEditorProps {
@@ -180,6 +182,10 @@ export function NoteRichEditor({
   const insertImages = (items: RichInsert[]) => {
     const el = bodyRef.current;
     if (!el || items.length === 0) return;
+    // 选图面板是「失焦 → 挑图 → 插回光标处」：从面板回来时编辑器并没有焦点，
+    // 为了能 execCommand 必须临时聚焦，插完立刻 blur 把键盘收掉
+    // （否则手机上选一张图、键盘弹一次，很吵）。
+    const wasFocused = document.activeElement === el;
     const box = restore();
     if (!box) return;
     const sel = window.getSelection();
@@ -208,6 +214,7 @@ export function NoteRichEditor({
       lastRangeRef.current = r.cloneRange();
     }
     emit();
+    if (!wasFocused) el.blur();
   };
 
   useImperativeHandle(ref, () => {
@@ -215,6 +222,9 @@ export function NoteRichEditor({
       insertImages,
       focus: () => {
         restore();
+      },
+      blur: () => {
+        bodyRef.current?.blur();
       },
     };
     // 开发模式下暴露给无头回归脚本（prod 打包时该分支被静态剔除）

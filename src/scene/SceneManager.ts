@@ -372,8 +372,11 @@ export class SceneManager {
     this.controls.maxDistance = maxDim * 4;
     this.fitGroundToRegion(this.regionBox);
     this.updateProvinceLabels(shapes);
-    // 窄屏（手机）用更紧的留白系数，让首屏地图更大一些；与 resetView 的窄屏系数一致
-    const initialFactor = this.isNarrowViewport() ? 0.92 : 1.08;
+    // 窄屏（手机）首屏取景：用户要求「地图撑满屏幕、不需要全部看见」。
+    // 区域图（约 102×120，宽高比 0.85）在竖屏手机上若按 contain 取景只能占屏高约 4 成，
+    // 上下大片留白。这里用 0.55 的收紧系数把地图放到约屏高 2/3（宽方向每边裁约 16%，
+    // 只切到舟山一角，沪宁杭甬苏温都在屏内）；与 resetView 的窄屏系数保持一致。
+    const initialFactor = this.isNarrowViewport() ? 0.55 : 1.08;
     this.frameTo(this.regionBox, 0, initialFactor, 0, this.usableView());
     this.updateLineResolutions();
     this.applyTerrain();
@@ -521,7 +524,9 @@ export class SceneManager {
     // 手机上留白余量收窄一点：既保证不出屏，又让地图尽量占满屏幕
     const el = this.renderer.domElement;
     const narrow = Boolean(el) && (el.clientWidth || 0) <= 820;
-    this.frameTo(this.regionBox, 0.7, narrow ? 0.92 : 1.08, 0, view);
+    // 与首屏取景一致：手机竖屏上「撑满屏幕」优先于「全部进屏」，
+    // 宽方向每边裁约 16%（只切舟山一角），地图放到约屏高 2/3。
+    this.frameTo(this.regionBox, 0.7, narrow ? 0.55 : 1.08, 0, view);
   }
 
   /** 省视角城市标记：去过 = 小红旗，收藏 = 粉心 */

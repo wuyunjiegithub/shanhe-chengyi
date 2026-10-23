@@ -291,6 +291,8 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
         </button>
       </header>
 
+      {/* 只有这一块滚动：键盘弹出时正文上滚，上面的「返回 / 保存」始终在 */}
+      <div className="note-editor-scroll">
       <input
         className="note-title-input"
         value={title}
@@ -354,6 +356,8 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
         onChange={setBody}
         onPickImage={() => {
           if (busy || images.length >= MAX_IMAGES) return;
+          // 先收起键盘再开选图面板：不然键盘一直浮在面板后面，很吵
+          editorRef.current?.blur();
           setLibOpen(true);
         }}
         imageFull={images.length >= MAX_IMAGES}
@@ -386,6 +390,7 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
           </button>
         </footer>
       )}
+      </div>
 
       {/* 照片库挑选器：列出该地点绑定目录下的照片，多选批量导入 */}
       {libOpen && (
