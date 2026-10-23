@@ -169,6 +169,8 @@ export async function drillIntoCity(cityId: string): Promise<void> {
     return;
   }
   if (!manager || !projection) return;
+  // 进入（或重新进入）任意城市时复位「城市面板收起」状态，保证面板会显示出来
+  useUi.getState().setCityPanelDismissed(false);
   if (loadingCityId === cityId) return;
 
   loadingCityId = cityId;
@@ -180,6 +182,8 @@ export async function drillIntoCity(cityId: string): Promise<void> {
     const geo = await loadDistrictGeo(cityId);
     if (loadingCityId !== cityId || !manager) return;
     useData.getState().registerDistrictNames(geo);
+    // 手机上进入城市即展开底部半屏详情，取景预留面板高度，让城市落在屏幕上半部分
+    manager.setPanelExpanded(true);
     manager.setDistrictPlates(projectFeatures(geo, projection));
     manager.setCityFocus(cityId);
     void refreshWeather();
@@ -200,8 +204,12 @@ export function backToRegion(): void {
   ui.closeDrawer();
   // 返回总览时城市面板会重新出现，全屏态必须清掉，否则一回去就被铺满的面板挡住地图
   ui.togglePanelFullscreen(false);
+  // 复位「城市面板收起」状态，保证回到区域总览后再次下钻能正常显示面板
+  ui.setCityPanelDismissed(false);
   ui.setSearchOpen(false);
   manager?.clearDistrictPlates();
+  // 复位取景预留（无面板），让区域总览按整屏取景
+  manager?.setPanelExpanded(false);
   manager?.resetView();
   void refreshWeather();
   useNavigation.getState().backToRegion();
@@ -265,6 +273,8 @@ export async function selectDistrictById(id: string, options?: { fly?: boolean }
   useUi.getState().openDrawer();
   manager?.selectDistrict(id);
   manager?.focusSpot(null);
+  // 手机上区县详情是底部半屏，取景预留面板高度，让区县落在屏幕上半部分
+  manager?.setPanelExpanded(true);
   if (options?.fly !== false) manager?.focusDistrict(id);
   manager?.setAnchor({
     id,

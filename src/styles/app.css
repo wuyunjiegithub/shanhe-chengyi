@@ -5704,7 +5704,7 @@ button.wall-stage-img {
     right: 0;
     bottom: 0;
     width: auto;
-    height: 52vh;
+    height: 60vh;
     border: none;
     border-radius: 16px 16px 0 0;
     /* 与 .hud 同为 z-index 30，而底栏在 DOM 里排得更靠后 —— 底栏的时间线 / 游记 / 返回
@@ -5735,7 +5735,7 @@ button.wall-stage-img {
     right: 0;
     bottom: 0;
     width: auto;
-    height: 52vh;
+    height: 60vh;
     border: none;
     border-radius: 16px 16px 0 0;
     transform: translateY(100%);
@@ -5915,6 +5915,20 @@ button.wall-stage-img {
     padding: 0 11px;
   }
 
+  /* ---- 顶栏按钮：手机上除「地形」外只留图标，避免四个按钮把「地形」挤掉 ---- */
+  .top-right .data-pill-label {
+    display: none;
+  }
+  .data-pill--terrain .data-pill-label {
+    display: inline;
+  }
+  .top-right {
+    gap: 7px;
+  }
+  .data-pill {
+    padding: 0 11px;
+  }
+
   /* ---- 半屏详情 / 城市概览展开时收起底栏 ----
    * 底栏的时间线 / 游记 / 返回浮在最下方，正好压住详情底部的收藏、写游记等按钮。
    * 手机上一屏只做一件事，收起底栏后这些操作全部可见。 */
@@ -5941,9 +5955,30 @@ button.wall-stage-img {
     min-height: 178px;
   }
 
+  /* ---- 封面图完整显示 ----
+   * 默认 object-fit: cover 会把横图上下裁掉，手机上「背景图显示不全」。
+   * 改为 contain：完整呈现整张图（两侧 / 上下留少量渐变边，无突兀裁切）。 */
+  .city-cover-img,
+  .drawer-cover-img {
+    object-fit: contain;
+  }
+
   /* ---- 数据面板：手机端不做导入 —— 手机上直接编辑保存，导入 JSON 是桌面才有的流程 ---- */
   .data-import-btn {
     display: none;
+  }
+
+  /* ---- 照片查看器关闭钮：手机上放大点击区、避开刘海安全区，避免难点到 ---- */
+  .pv-close {
+    top: max(14px, env(safe-area-inset-top, 0px));
+    right: 12px;
+    width: 46px;
+    height: 46px;
+    font-size: 24px;
+  }
+  .pv-nav {
+    width: 48px;
+    height: 48px;
   }
 }
 
@@ -6027,13 +6062,9 @@ button.wall-stage-img {
     padding: 0 10px;
   }
 
-  /* 手机上顶栏要塞下 区县 / 地形 / 总览 / 数据，地形只留图标 */
+  /* 手机上顶栏要塞下 区县 / 地形 / 总览 / 数据：除「地形」保留文字外，其余只留图标（见 ≤820 规则） */
   .data-pill--terrain {
     padding: 0 9px;
-  }
-
-  .data-pill--terrain .data-pill-label {
-    display: none;
   }
 
   .hud-bottom {

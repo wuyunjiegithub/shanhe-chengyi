@@ -140,8 +140,10 @@ export function Shell() {
   const tooltipLeft = Math.min(cursor.x + 16, window.innerWidth - 230);
   const tooltipTop = Math.min(cursor.y + 18, window.innerHeight - 80);
 
-  // 半屏面板展开时，手机端底栏会压在详情底部按钮上，这里给个状态类让 CSS 收起底栏
-  const panelOpen = drawerOpen || level === 'city';
+  // 半屏面板展开时，手机端底栏会压在详情底部按钮上，这里给个状态类让 CSS 收起底栏。
+  // 城市面板被用户收起（cityPanelDismissed）后视为无面板，底栏恢复可见。
+  const cityPanelDismissed = useUi((s) => s.cityPanelDismissed);
+  const panelOpen = drawerOpen || (level === 'city' && !cityPanelDismissed);
 
   return (
     <div className={`shell${panelOpen ? ' panel-open' : ''}`} onPointerMove={onPointerMove}>

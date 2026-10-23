@@ -46,7 +46,7 @@ export function TopBar({ ready }: { ready: boolean }) {
           title="选择城市 / 区县"
         >
           <span className="data-pill-icon">⌖</span>
-          区县
+          <span className="data-pill-label">区县</span>
         </button>
         {/* 地形开关放在顶栏：只藏在一级设置里没人找得到（手机端连设置入口都没有） */}
         <button
@@ -66,7 +66,7 @@ export function TopBar({ ready }: { ready: boolean }) {
           title="设置：照片库绑定 / 实时更新"
         >
           <span className="data-pill-icon">⚙</span>
-          设置
+          <span className="data-pill-label">设置</span>
           {photoLive && <i className="data-pill-live" title="实时更新中" />}
           {photoTotal > 0 && <b>{photoTotal}</b>}
         </button>
@@ -78,8 +78,8 @@ export function TopBar({ ready }: { ready: boolean }) {
           title="重置视角"
           aria-label="重置视角"
         >
-          <span className="data-pill-icon">⌖</span>
-          总览
+          <span className="data-pill-icon">⌂</span>
+          <span className="data-pill-label">总览</span>
         </button>
         <button
           className="data-pill"
@@ -87,7 +87,7 @@ export function TopBar({ ready }: { ready: boolean }) {
           title="编辑内容（本机保存）"
         >
           <span className="data-pill-icon">✎</span>
-          数据
+          <span className="data-pill-label">数据</span>
           {editedCount > 0 && <b>{editedCount}</b>}
         </button>
         <div className="telemetry-pill">

@@ -16,8 +16,8 @@ type Sheet = 'open' | 'peek';
 
 /** 收起后保留的可见高度占比（顶部这段仍显示标题栏 + 抓手） */
 const PEEK_VISIBLE = 0.18;
-/** 半屏面板高度占比（与 CSS 里 52vh 保持一致） */
-const SHEET_HEIGHT = 0.52;
+/** 半屏面板高度占比（与 CSS 里 60vh 保持一致） */
+const SHEET_HEIGHT = 0.6;
 
 export function useBottomSheet(open: boolean, isFull: boolean) {
   const [sheet, setSheet] = useState<Sheet>('open');

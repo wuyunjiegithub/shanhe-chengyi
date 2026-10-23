@@ -179,10 +179,20 @@ export class SceneManager {
   /** 最近一次 frameTo 的诊断信息（回归脚本用） */
   lastFrame: { sx: number; sz: number; dist: number } | null = null;
   private downXY: [number, number] | null = null;
+  /** 移动端底部详情面板占视口高度的比例：>0 时取景在窄屏预留底部空间，
+   *  让选中的市 / 区县落在屏幕上半部分（不被半屏面板盖住）。桌面与无面板时为 0。 */
+  private panelFrac = 0;
 
   onPick?: (info: PickInfo) => void;
   onHover?: (info: { id: string; name: string; province?: string; kind: string } | null) => void;
   onAnchorClick?: (districtId: string) => void;
+
+  /** 设置移动端底部面板是否展开：展开时（仅窄屏）预留面板高度，
+   *  让选中的市 / 区县框进屏幕上半部分；收起 / 桌面时复位。 */
+  setPanelExpanded(open: boolean): void {
+    // 0.62 略大于面板实际高度（60vh），在面板顶缘上方留出一点空隙
+    this.panelFrac = open && this.isNarrowViewport() ? 0.62 : 0;
+  }
 
   constructor() {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -362,7 +372,9 @@ export class SceneManager {
     this.controls.maxDistance = maxDim * 4;
     this.fitGroundToRegion(this.regionBox);
     this.updateProvinceLabels(shapes);
-    this.frameTo(this.regionBox, 0, 1.08, 0, this.usableView());
+    // 窄屏（手机）用更紧的留白系数，让首屏地图更大一些；与 resetView 的窄屏系数一致
+    const initialFactor = this.isNarrowViewport() ? 1.02 : 1.08;
+    this.frameTo(this.regionBox, 0, initialFactor, 0, this.usableView());
     this.updateLineResolutions();
     this.applyTerrain();
   }
@@ -498,7 +510,9 @@ export class SceneManager {
     // 多环区县（如淳安）要取所有碎岛的合集，否则只会框住其中一块
     const box = new THREE.Box3();
     for (const mesh of rec.meshes) box.expandByObject(mesh);
-    if (!box.isEmpty()) this.frameTo(box, 0.6, 1.75, 16);
+    if (!box.isEmpty())
+      // 带「可用视区」取景：手机上底部有半屏面板时，区县会被框进上半部分，不被盖住
+      this.frameTo(box, 0.6, 1.45, 12, this.usableView());
   }
 
   /** 回到全省总览：按当前可用视区取景，保证整幅地图完整进屏（手机竖屏尤其明显） */
@@ -1219,9 +1233,11 @@ export class SceneManager {
     // 手机（≤820px）：没有常驻侧栏，上下只有窄 HUD。
     // 这里必须按「几乎整屏」算，否则取景会按桌面的 240/372 边距去缩，
     // 地图被压到中间一小块、四周留黑；同时首次取景要保证整幅地图进屏。
+    // 若底部有半屏详情面板（panelFrac > 0），则额外预留其高度，
+    // 让选中的市 / 区县落在屏幕上半部分而非被面板盖住。
     if (W <= 820) {
       const top = 68;
-      const bottom = 58;
+      const bottom = this.panelFrac > 0 ? Math.max(58, this.panelFrac * H) : 58;
       return {
         x: 6,
         y: top,

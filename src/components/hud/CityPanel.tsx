@@ -3,7 +3,7 @@ import { useNavigation } from '../../stores/navigation';
 import { useUi } from '../../stores/ui';
 import { useCityStatus } from '../../stores/cityStatus';
 import { useData } from '../../stores/data';
-import { backToRegion, updateMarkers } from '../../app/sandbox';
+import { updateMarkers } from '../../app/sandbox';
 import { BgImage } from '../shared/BgImage';
 import { bgKey } from '../../stores/backgrounds';
 import { WeatherCard } from '../drawer/WeatherCard';
@@ -17,6 +17,8 @@ export function CityPanel() {
   const drawerOpen = useUi((s) => s.drawerOpen);
   const panelFullscreen = useUi((s) => s.panelFullscreen);
   const togglePanelFullscreen = useUi((s) => s.togglePanelFullscreen);
+  const cityPanelDismissed = useUi((s) => s.cityPanelDismissed);
+  const setCityPanelDismissed = useUi((s) => s.setCityPanelDismissed);
   const favorites = useUi((s) => s.favorites);
   const toggleFavorite = useUi((s) => s.toggleFavorite);
   const visited = useCityStatus((s) => s.visited);
@@ -51,7 +53,7 @@ export function CityPanel() {
     return [sum[0] / ds.length, sum[1] / ds.length];
   }, [allDistricts, cityName]);
 
-  if (level !== 'city' || !city || drawerOpen) return null;
+  if (level !== 'city' || !city || drawerOpen || cityPanelDismissed) return null;
 
   const isVisited = visited.includes(city.id);
   const isFav = favorites.cities.includes(city.id);
@@ -64,10 +66,11 @@ export function CityPanel() {
     toggleFavorite('city', city.id);
     updateMarkers();
   };
-  // 右上角 ×：与区县详情同一个位置、同一个动作语义 —— 关掉这个面板，回到江浙沪皖总览
+  // 右上角 ×：仅收起面板、保留当前下钻的城市视图（地图不飞回区域总览）。
+  // 真正复位由 ESC / 返回键 / 顶栏「总览」负责，符合「关闭详情不重置地图」的诉求。
   const onClose = () => {
     togglePanelFullscreen(false);
-    backToRegion();
+    setCityPanelDismissed(true);
   };
 
   return (

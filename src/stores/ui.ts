@@ -47,6 +47,12 @@ interface UiState {
    * 点面板上的「全屏」按钮才铺满，看完再点「退出全屏」回到半屏。
    */
   panelFullscreen: boolean;
+  /**
+   * 移动端城市概览被用户主动收起（点 × 关闭）。
+   * true 时城市面板隐藏，但地图仍停在当前下钻的城市视图、不飞回区域总览；
+   * 由 ESC / 返回键 / 顶栏「总览」负责真正复位。重新进入任意城市会清掉它。
+   */
+  cityPanelDismissed: boolean;
   /** 地图地形图层（山地 / 湖泊 / 江河）是否显示，默认开 */
   terrain: boolean;
   /** 天气图层（地图空中的雨 / 雪 / 晴 / 阴等）是否显示，默认开 */
@@ -72,6 +78,7 @@ interface UiState {
   toggleSettings: (open?: boolean) => void;
   setDistrictPickerOpen: (open: boolean) => void;
   togglePanelFullscreen: (open?: boolean) => void;
+  setCityPanelDismissed: (dismissed: boolean) => void;
   setTerrainOpen: (open?: boolean) => void;
   setWeatherOpen: (open?: boolean) => void;
   setVisitedStyle: (style: VisitedStyle) => void;
@@ -117,6 +124,7 @@ export const useUi = create<UiState>((set, get) => ({
   travelPrefill: null,
   districtPickerOpen: false,
   panelFullscreen: false,
+  cityPanelDismissed: false,
   terrain: true,
   weather: true,
   visitedStyle: readMarkerStyle(),
@@ -253,6 +261,8 @@ export const useUi = create<UiState>((set, get) => ({
 
   togglePanelFullscreen: (open) =>
     set((s) => ({ panelFullscreen: open ?? !s.panelFullscreen })),
+
+  setCityPanelDismissed: (dismissed) => set({ cityPanelDismissed: dismissed }),
 
   setTerrainOpen: (open) => set((s) => ({ terrain: open ?? !s.terrain })),
 
