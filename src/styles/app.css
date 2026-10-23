@@ -5843,13 +5843,15 @@ button.wall-stage-img {
     border-radius: 0;
   }
 
-  /* 全屏后：头部留出刘海安全区，滚动区底部留出手势区 */
+  /* 全屏后：头部留出刘海安全区，滚动区底部留出手势区。
+   * 用 max() 兜底：部分机型 / webview 不上报 safe-area-inset-top（视为 0），
+   * 此时仍保留 28px 顶部留白避开系统状态栏，否则 × / 标题会被状态栏压住（游记选图器即此问题）。 */
   .fav-head,
   .data-head,
   .wall-head,
   .np-head,
   .note-editor-head {
-    padding-top: calc(12px + env(safe-area-inset-top, 0px));
+    padding-top: max(28px, calc(12px + env(safe-area-inset-top, 0px)));
   }
 
   .fav-body,
