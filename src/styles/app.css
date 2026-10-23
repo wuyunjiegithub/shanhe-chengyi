@@ -3555,6 +3555,7 @@ a,
 .wall-bind,
 .wall-upload,
 .wall-manage-toggle,
+.wall-refresh,
 .wall-close {
   height: 28px;
   min-width: 28px;
@@ -3571,9 +3572,33 @@ a,
 .wall-bind:hover,
 .wall-upload:hover,
 .wall-manage-toggle:hover,
+.wall-refresh:hover,
 .wall-close:hover {
   color: var(--text-1);
   border-color: var(--border-active);
+}
+
+/* 刷新相册钮：独立一个图标钮，转圈表示正在重扫系统相册 */
+.wall-refresh {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.wall-refresh.is-busy {
+  color: var(--accent);
+  border-color: var(--border-active);
+  cursor: wait;
+}
+
+.wall-refresh.is-busy .wall-refresh-ico {
+  display: inline-block;
+  animation: wall-refresh-spin 0.9s linear infinite;
+}
+
+@keyframes wall-refresh-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .wall-upload {
@@ -4717,6 +4742,13 @@ button.wall-stage-img {
   max-height: 90vh;
 }
 
+/* 预览态：和编辑器同尺寸，正文（可能很长）在 .note-editor-scroll 里自己滚动 */
+.travel-panel--preview {
+  width: min(980px, 94vw);
+  height: min(90vh, 960px);
+  max-height: 90vh;
+}
+
 /* 窗口变高后，把多出来的高度全给正文：书写区自己滚动，
  * 下面的「图片 N/9」与删除钮被推到窗口底部，不会在中间留一大块空白。
  * 只在桌面生效——手机端是全屏 100vh，正文已按 52vh 铺满，别动它。 */
@@ -4785,6 +4817,25 @@ button.wall-stage-img {
 .note-editor-head .primary-btn {
   padding: 5px 14px;
   font-size: 12px;
+}
+
+/* 预览标题：像一篇文章的题目，比编辑器里的标题输入框大一号 */
+.note-preview-title {
+  margin: 2px 0 4px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #fff;
+}
+
+/* 只读正文：图片不可点、不加 pointer 光标；其余富文本样式完全复用 .rt-body */
+.rt-body--read {
+  cursor: default;
+}
+
+.rt-body--read img[data-img] {
+  cursor: default;
 }
 
 .note-title-input {
@@ -6035,6 +6086,19 @@ button.wall-stage-img {
     max-height: none;
     border: none;
     border-radius: 0;
+  }
+
+  /* 游记编辑器 / 预览用动态视口高度：配合 AndroidManifest 的 windowSoftInputMode=adjustResize，
+   * 键盘弹出时窗口收缩，100dvh 会跟着缩到键盘以上，工具栏（吸顶）不会被顶出屏幕。
+   * 先写 100vh 兜底（老 WebView 不认 dvh 时退回整屏，至少不至于塌成 auto 高度）。
+   * width/max-height 一并覆盖掉桌面态的 min(90vh,960px)/94vw，手机上跟列表一样铺满。 */
+  .travel-panel--editor,
+  .travel-panel--preview {
+    width: 100%;
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    max-height: none;
   }
 
   /* 全屏后：头部留出刘海安全区，滚动区底部留出手势区。

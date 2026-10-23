@@ -273,6 +273,10 @@ await page.click('.note-editor-head .primary-btn'); // 保存
 await page.waitForSelector('.note-list', { timeout: 6000 });
 await page.waitForTimeout(400);
 await page.click('.note-card');
+// v0.9.17 起点卡片进的是只读预览，不是编辑器：先点「编辑」进编辑态再验重开内容
+await page.waitForSelector('.note-preview', { timeout: 6000 });
+await page.click('.note-preview .primary-btn'); // 编辑
+await page.waitForSelector('.rt-wrap', { timeout: 6000 });
 await page.waitForSelector('.rt-body img[data-img]', { timeout: 6000 });
 await page.waitForTimeout(1200); // 等 hydrate 注入 src + load
 

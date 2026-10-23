@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useData } from '../../stores/data';
 import { useUi } from '../../stores/ui';
 import { useTravelNotes } from '../../stores/travelNotes';
 import type { NotePlaceKind, TravelNote } from '../../stores/travelNotes';
 import { deleteImage, imageUrl, saveImage } from '../../data/imageStore';
-import { noteHtmlToPlain, noteImageIds, toNoteHtml } from '../../data/noteBody';
+import { noteHtmlToPlain, noteImageIds, sanitizeNoteHtml, toNoteHtml } from '../../data/noteBody';
 import { NotePhotoPicker } from './NotePhotoPicker';
 import type { PickedPhoto } from './NotePhotoPicker';
 import { NoteRichEditor } from './NoteRichEditor';
@@ -402,6 +402,130 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
   );
 }
 
+/* ================= 预览（只读，全富文本） ================= */
+
+interface NotePreviewProps {
+  note: TravelNote;
+  onEdit: () => void;
+  onDelete: () => void;
+  onBack: () => void;
+  onClosePanel?: () => void;
+}
+
+/**
+ * 已保存游记的只读预览：正文按编辑器里一模一样的方式渲染（加粗 / 标题 / 引用 /
+ * 列表 / 段落对齐 / 字体 / 图片原尺寸与缩放全都兼容），所以预览就是最终样子，
+ * 点「编辑」才进入可编辑态。正文 HTML 存库时已清洗过，这里再 sanitize 一遍兜底旧数据。
+ */
+function NotePreview({ note, onEdit, onDelete, onBack, onClosePanel }: NotePreviewProps) {
+  const bodyRef = useRef<HTMLDivElement | null>(null);
+  const [urls, setUrls] = useState<Record<string, string>>({});
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  // 正文里的图片 id -> object URL（存库只有 data-img，没有 src，得现解析再填）
+  useEffect(() => {
+    let alive = true;
+    const created: string[] = [];
+    const ids = noteImageIds(note.body);
+    void Promise.all(ids.map((id) => imageUrl(id))).then((loaded) => {
+      if (!alive) {
+        loaded.forEach((u) => u && URL.revokeObjectURL(u));
+        return;
+      }
+      const map: Record<string, string> = {};
+      ids.forEach((id, i) => {
+        const u = loaded[i];
+        if (u) {
+          map[id] = u;
+          created.push(u);
+        }
+      });
+      setUrls(map);
+    });
+    return () => {
+      alive = false;
+      created.forEach((u) => URL.revokeObjectURL(u));
+    };
+  }, [note.id, note.body]);
+
+  // urls 就绪后把 src 填进 <img data-img>（和编辑器 hydrate 一个套路）
+  useLayoutEffect(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    el.querySelectorAll<HTMLImageElement>('img[data-img]').forEach((img) => {
+      const id = img.dataset.img ?? '';
+      const url = urls[id];
+      if (url && img.getAttribute('src') !== url) img.setAttribute('src', url);
+    });
+  }, [urls]);
+
+  const plain = noteHtmlToPlain(note.body);
+
+  return (
+    <div className="note-editor note-preview">
+      <header className="note-editor-head">
+        <button className="ghost-btn" onClick={onBack}>
+          ‹ 返回列表
+        </button>
+        <span className="note-editor-date">更新于 {fmtDate(note.updatedAt)}</span>
+        {onClosePanel && (
+          <button className="icon-btn" onClick={onClosePanel} title="关闭游记面板" aria-label="关闭">
+            ×
+          </button>
+        )}
+        <button className="primary-btn" onClick={onEdit}>
+          编辑
+        </button>
+      </header>
+
+      <div className="note-editor-scroll">
+        <h2 className="note-preview-title">{note.title || '（无标题）'}</h2>
+
+        {note.placeName && (
+          <div className="note-place">
+            <span className="note-place-chip">
+              <span className="note-place-pin">📍</span>
+              {note.placeName}
+            </span>
+          </div>
+        )}
+
+        {/* 只读正文：复用 .rt-body 样式，所有富文本效果与编辑器一致 */}
+        <div
+          ref={bodyRef}
+          className={`rt-body rt-body--read${plain ? '' : ' is-empty'}`}
+          data-ph="（正文为空）"
+          dangerouslySetInnerHTML={{ __html: sanitizeNoteHtml(note.body) }}
+        />
+
+        {note.images.length > 0 && (
+          <div className="rt-bar">
+            <span className="rt-count">
+              图片 <b>{note.images.length}</b> / {MAX_IMAGES}
+            </span>
+          </div>
+        )}
+
+        <footer className="note-editor-foot">
+          <button
+            className={`ghost-btn${confirmDelete ? ' is-danger' : ''}`}
+            onClick={() => {
+              if (!confirmDelete) {
+                setConfirmDelete(true);
+                window.setTimeout(() => setConfirmDelete(false), 4000);
+                return;
+              }
+              onDelete();
+            }}
+          >
+            {confirmDelete ? '确认删除这篇游记？' : '删除游记'}
+          </button>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
 /* ================= 列表面板 ================= */
 
 export function TravelNotesPanel() {
@@ -420,6 +544,8 @@ export function TravelNotesPanel() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  /** 正在只读预览的游记 id：点列表卡片进预览，预览里点「编辑」才进编辑态 */
+  const [previewId, setPreviewId] = useState<string | null>(null);
   const [pendingPlace, setPendingPlace] = useState<PlaceOption | null>(null);
   const [coverUrls, setCoverUrls] = useState<Record<string, string>>({});
   /** 新建游记被自动保存后拿到的 id：后续自动保存继续更新这篇，避免重复创建 */
@@ -499,11 +625,13 @@ export function TravelNotesPanel() {
     });
     setCreating(true);
     setEditingId(null);
+    setPreviewId(null);
     setPrefill(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, prefill]);
 
   const editing = editingId ? notes.find((n) => n.id === editingId) ?? null : null;
+  const previewing = previewId ? notes.find((n) => n.id === previewId) ?? null : null;
 
   /** 自动保存回调：编辑已有 → 更新它；新建且已自动创建 → 更新那篇；否则新建并记住 id */
   const handleAutoSave = (draft: {
@@ -519,12 +647,12 @@ export function TravelNotesPanel() {
     else autoIdRef.current = createNote(draft).id;
   };
 
-  // 关闭面板时重置编辑状态：否则 ESC 关闭后再次打开会停留在上一次的空白编辑器，
-  // 看起来像「刚写的游记没了」，还可能把已自动保存的内容覆盖掉。
+  // 关闭面板时重置编辑 / 预览状态：否则 ESC 关闭后再次打开会停留在上一次的编辑器 / 预览。
   useEffect(() => {
     if (open) return;
     setCreating(false);
     setEditingId(null);
+    setPreviewId(null);
     setPendingPlace(null);
     autoIdRef.current = null;
   }, [open]);
@@ -539,6 +667,41 @@ export function TravelNotesPanel() {
     setPendingPlace(null);
     autoIdRef.current = null;
   };
+
+  /** 编辑器「返回」：编辑已有游记 → 回到它的预览；新建 → 回列表 */
+  const backFromEdit = () => {
+    if (editing) {
+      setEditingId(null);
+      setPreviewId(editing.id);
+    } else {
+      exitEditor();
+    }
+  };
+
+  // 已保存游记：优先只读预览（全富文本），点「编辑」才进编辑态
+  if (previewing) {
+    return (
+      <div className="modal-backdrop" onPointerDown={() => close(false)}>
+        <section className="fav-panel travel-panel travel-panel--preview" onPointerDown={(e) => e.stopPropagation()}>
+          <NotePreview
+            key={previewing.id}
+            note={previewing}
+            onBack={() => setPreviewId(null)}
+            onEdit={() => {
+              setPreviewId(null);
+              setEditingId(previewing.id);
+            }}
+            onDelete={() => {
+              removeNote(previewing.id);
+              showToast('游记已删除');
+              setPreviewId(null);
+            }}
+            onClosePanel={() => close(false)}
+          />
+        </section>
+      </div>
+    );
+  }
 
   if (creating || editing) {
     const draftPlace = editing?.placeId
@@ -559,14 +722,15 @@ export function TravelNotesPanel() {
               if (editing) {
                 updateNote(editing.id, draft);
                 showToast('游记已更新');
-              } else if (autoIdRef.current) {
-                updateNote(autoIdRef.current, draft);
-                showToast('游记已保存');
+                // 编辑已有游记：保存后回到这篇的预览，直接看到改后的样子
+                setEditingId(null);
+                setPreviewId(editing.id);
               } else {
-                createNote(draft);
+                if (autoIdRef.current) updateNote(autoIdRef.current, draft);
+                else createNote(draft);
                 showToast('游记已保存');
+                exitEditor();
               }
-              exitEditor();
             }}
             onAutoSave={handleAutoSave}
             onDelete={
@@ -574,11 +738,12 @@ export function TravelNotesPanel() {
                 ? () => {
                     removeNote(editing.id);
                     showToast('游记已删除');
-                    exitEditor();
+                    setEditingId(null);
+                    setPreviewId(null);
                   }
                 : null
             }
-            onCancel={exitEditor}
+            onCancel={backFromEdit}
             onClosePanel={() => close(false)}
             showToast={showToast}
           />
@@ -619,7 +784,8 @@ export function TravelNotesPanel() {
                       className="note-card"
                       onClick={() => {
                         autoIdRef.current = null;
-                        setEditingId(n.id);
+                        // 点已保存游记：先进只读预览（所见即最终排版），预览里可再点「编辑」
+                        setPreviewId(n.id);
                       }}
                     >
                       <span className="note-card-cover">

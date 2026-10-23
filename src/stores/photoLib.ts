@@ -130,8 +130,8 @@ interface PhotoLibState {
   toggleLive: () => Promise<void>;
   /** 申请系统相册读取权限，并在拿到后重建相册索引 */
   requestMedia: () => Promise<void>;
-  /** 重新拉一次相册索引（权限弹窗回来后、切回前台时用） */
-  refreshMedia: () => Promise<void>;
+  /** 重新拉一次相册索引（权限弹窗回来后、切回前台、手动刷新时用；force 绕过节流） */
+  refreshMedia: (force?: boolean) => Promise<void>;
   /** 上传照片 / 视频到「省/市/区县」文件夹并入库 */
   uploadTo: (scope: 'city' | 'district', id: string, files: File[]) => Promise<UploadResult>;
   /** 删除本地照片（磁盘真实文件），返回删除数 */
@@ -307,10 +307,11 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
   let scanInflight: Promise<void> | null = null;
   /** 上一轮扫描的指纹，用于判断是否需要失效 blob URL 缓存 */
   let lastSignature = '';
-  /** 相册索引是否已就绪（避免每次 restore / visibilitychange 都重查 MediaStore） */
-  let mediaReady = false;
   /** 相册照片兜底读字节产生的 object URL（uri → url），解绑时统一回收 */
   const albumUrls = new Map<string, string>();
+  /** 上一次相册查询的时间戳：visibilitychange 可能频繁触发，节流避免重复查 MediaStore */
+  let lastMediaQueryAt = 0;
+  const MEDIA_QUERY_THROTTLE_MS = 2500;
 
   /** 读相册 + 建索引。没权限 / 不是手机端时静默返回。 */
   const loadMediaAlbums = async (): Promise<boolean> => {
@@ -325,7 +326,6 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
       if (albumIndex) {
         applyIndex(albumIndex);
         set({ index: albumIndex, status: 'bound', error: null, lastLiveAdded: 0 });
-        mediaReady = true;
         return true;
       }
     } catch {
@@ -541,8 +541,13 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
     if (get().mediaGranted) await loadMediaAlbums();
   },
 
-  refreshMedia: async () => {
-    if (!hasMediaBridge() || mediaReady) return;
+  refreshMedia: async (force = false) => {
+    if (!hasMediaBridge()) return;
+    // 相册改名 / 新建相册后要能重新匹配到：这里每次都真查一遍 MediaStore。
+    // 手动点「刷新相册」force=true 绕过节流；切回前台自动触发的才节流，避免频繁查询。
+    const now = Date.now();
+    if (!force && now - lastMediaQueryAt < MEDIA_QUERY_THROTTLE_MS) return;
+    lastMediaQueryAt = now;
     await loadMediaAlbums();
   },
 

@@ -288,6 +288,7 @@ export function PhotoWall() {
   const mediaGranted = usePhotoLib((s) => s.mediaGranted);
   const albums = usePhotoLib((s) => s.albums);
   const requestMedia = usePhotoLib((s) => s.requestMedia);
+  const refreshMedia = usePhotoLib((s) => s.refreshMedia);
   const captionMap = useCaptions((s) => s.map);
   const setCaption = useCaptions((s) => s.set);
   /** 自定义照片名（桌面端改名）覆盖表；订阅以便改名后即时重绘 */
@@ -324,6 +325,20 @@ export function PhotoWall() {
   const [busy, setBusy] = useState(false);
   /** 加载失败 / 根本没有图的条目 key：整条剔除，墙上不留占位 */
   const [failedKeys, setFailedKeys] = useState<Set<string>>(() => new Set());
+  /** 手机端「刷新相册」进行中（改相册名 / 新建相册后手动重扫） */
+  const [refreshing, setRefreshing] = useState(false);
+
+  /** 手动重扫系统相册：相册改名 / 新建相册后，索引是启动时建的，得手动刷一下才认新名字 */
+  const onRefreshAlbums = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await refreshMedia(true);
+      const total = usePhotoLib.getState().index?.total ?? 0;
+      showToast(total > 0 ? `已重新扫描系统相册（共 ${total} 张）` : '已重新扫描，暂未读到照片');
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshMedia, showToast]);
 
   const allItems = useMemo(
     () => (photoWall ? buildItems(photoWall.scope, photoWall.id) : []),
@@ -666,6 +681,18 @@ export function PhotoWall() {
                 {touring ? '⏸ 漫游' : '▶ 漫游'}
               </button>
             )}
+            {mobileShell && mediaBridge && (
+              <button
+                type="button"
+                className={`wall-refresh${refreshing ? ' is-busy' : ''}`}
+                onClick={() => void onRefreshAlbums()}
+                disabled={refreshing}
+                title="重新扫描系统相册：改了相册名 / 新建同名相册后点这里"
+                aria-label="刷新相册"
+              >
+                <span className="wall-refresh-ico">⟳</span>
+              </button>
+            )}
             <button className="wall-close" onClick={close} aria-label="关闭">
               ×
             </button>
@@ -763,6 +790,7 @@ export function PhotoWall() {
                           .map((a) => `${a.name}（${a.count}）`)
                           .join('、 ')}${albums.length > 12 ? '…' : ''}`
                       : '已连接系统相册，但还没有读到相册（新拍的照片过几秒再来看）。'}
+                    {' '}改了相册名或新建相册后，点右上角 <b>⟳</b> 刷新即可重新识别。
                   </p>
                 )}
               </div>

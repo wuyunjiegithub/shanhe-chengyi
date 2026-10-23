@@ -410,11 +410,13 @@ export function NoteRichEditor({
     } else {
       box.appendChild(anchor);
     }
+    const inserted: HTMLImageElement[] = [];
     for (const item of items) {
       const img = makeImg(item);
       anchor.parentNode?.insertBefore(img, anchor);
       // 原图尺寸进正文：宽超过正文才缩，高度按比例自动算
       fitImage(img);
+      inserted.push(img);
     }
     if (sel) {
       const r = document.createRange();
@@ -425,6 +427,18 @@ export function NoteRichEditor({
       lastRangeRef.current = r.cloneRange();
     }
     emit();
+    // 刚插入的图可能还没解码完：fitImage 对未加载图是挂 load 监听才写 width 的，
+    // 而 emit() 已经跑在加载之前 → 首张图存成「无 width」。虽能靠 reopen 时 hydrate
+    // 兜底重算，但自定义缩放的图不该留这段竞态。等这批图加载完再补发一次 emit。
+    const pending = inserted.filter((im) => !(im.complete && im.naturalWidth > 0));
+    if (pending.length > 0) {
+      let left = pending.length;
+      const flush = () => {
+        left -= 1;
+        if (left === 0) emit();
+      };
+      for (const im of pending) im.addEventListener('load', flush, { once: true });
+    }
     if (!wasFocused) el.blur();
   };
 
