@@ -4819,6 +4819,48 @@ button.wall-stage-img {
   font-size: 12px;
 }
 
+/* 头部右侧操作组：主操作（编辑 / 保存）→ 删除 → 关闭。
+ * 关闭 × 在最右（惯例位置），删除紧挨着它，不再丢在正文底部角落。
+ * flex:none 保证窄屏时不会被压缩变形。 */
+.note-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+.note-head-del {
+  flex: none;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 12px;
+  color: var(--text-2);
+  transition: all 0.15s;
+}
+
+.note-head-del:hover {
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.45);
+  background: rgba(248, 113, 113, 0.08);
+}
+
+/* 二次确认态：实心红，明确「再点一次就真删了」 */
+.note-head-del.is-danger {
+  color: #fff;
+  border-color: rgba(248, 113, 113, 0.8);
+  background: rgba(248, 113, 113, 0.82);
+}
+
+/* 窄屏（手机）：日期是次要信息，让位给操作按钮，避免头部挤成两行 */
+@media (max-width: 560px) {
+  .note-editor-date {
+    display: none;
+  }
+}
+
 /* 预览标题：像一篇文章的题目，比编辑器里的标题输入框大一号 */
 .note-preview-title {
   margin: 2px 0 4px;

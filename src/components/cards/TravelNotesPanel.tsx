@@ -25,6 +25,44 @@ interface PlaceOption {
   sub: string;
 }
 
+/* ================= 头部删除钮 ================= */
+
+/**
+ * 删除钮放在头部操作区（编辑 / 保存 旁边，× 的左边），不再丢在正文底部的角落里。
+ * 二次确认：点一次变「确认删除」，4 秒内再点才真删，避免误触删掉整篇。
+ */
+function NoteDeleteButton({ onDelete }: { onDelete: () => void }) {
+  const [confirm, setConfirm] = useState(false);
+  const timerRef = useRef(0);
+
+  useEffect(
+    () => () => {
+      window.clearTimeout(timerRef.current);
+    },
+    [],
+  );
+
+  return (
+    <button
+      type="button"
+      className={`note-head-del${confirm ? ' is-danger' : ''}`}
+      onClick={() => {
+        if (!confirm) {
+          setConfirm(true);
+          window.clearTimeout(timerRef.current);
+          timerRef.current = window.setTimeout(() => setConfirm(false), 4000);
+          return;
+        }
+        window.clearTimeout(timerRef.current);
+        onDelete();
+      }}
+      aria-label={confirm ? '再点一次确认删除这篇游记' : '删除这篇游记'}
+    >
+      {confirm ? '确认删除' : '删除'}
+    </button>
+  );
+}
+
 /* ================= 编辑器 ================= */
 
 interface NoteEditorProps {
@@ -95,10 +133,15 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
   const [placeQuery, setPlaceQuery] = useState('');
   const [placeOpen, setPlaceOpen] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const [libOpen, setLibOpen] = useState(false);
   /** 是否已经自动落过库：决定「返回列表」时能不能回收本次新写入的图片字节 */
   const autoSavedRef = useRef(false);
+  /**
+   * 是否已经「显式保存」过：保存后编辑器随即卸载，卸载时的自动保存兜底必须让路。
+   * 否则会再走一次 handleAutoSave，而此时 autoIdRef 已被 exitEditor 清掉，
+   * 于是又新建一篇同内容的游记（表现为「保存一次冒出两篇」）。
+   */
+  const savedRef = useRef(false);
 
   /* ---------- 自动保存 ----------
    * 编辑过程中按 500ms 防抖落库；卸载时若有未落库改动立即冲刷。
@@ -150,6 +193,8 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
 
   useEffect(
     () => () => {
+      // 已经显式保存过：卸载兜底不再落库（避免新建出第二篇）
+      if (savedRef.current) return;
       if (!dirtyRef.current) return;
       const d = draftRef.current;
       if (!d.title.trim() && !d.body.trim()) return;
@@ -258,6 +303,7 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
       showToast('写点什么再保存');
       return;
     }
+    savedRef.current = true;
     onSave(draftPayload());
     // 保存后：本次删掉的老图才真正回收字节（放弃编辑时不能删，见 onCancelEdit）
     const kept = new Set(images);
@@ -281,14 +327,18 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
           ‹ 返回列表
         </button>
         <span className="note-editor-date">{initial ? `创建于 ${fmtDate(initial.createdAt)}` : '新游记'}</span>
-        {onClosePanel && (
-          <button className="icon-btn" onClick={onClosePanel} title="关闭游记面板" aria-label="关闭">
-            ×
+        {/* 头部操作区：保存 → 删除 → 关闭（× 在最右，符合关闭钮的惯例） */}
+        <div className="note-head-actions">
+          <button className="primary-btn" onClick={onSaveClick} disabled={busy}>
+            保存
           </button>
-        )}
-        <button className="primary-btn" onClick={onSaveClick} disabled={busy}>
-          保存
-        </button>
+          {onDelete && <NoteDeleteButton onDelete={onDelete} />}
+          {onClosePanel && (
+            <button className="icon-btn" onClick={onClosePanel} aria-label="关闭">
+              ×
+            </button>
+          )}
+        </div>
       </header>
 
       {/* 只有这一块滚动：键盘弹出时正文上滚，上面的「返回 / 保存」始终在 */}
@@ -369,24 +419,6 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
           图片 <b>{images.length}</b> / {MAX_IMAGES}
         </span>
       </div>
-
-      {onDelete && (
-        <footer className="note-editor-foot">
-          <button
-            className={`ghost-btn${confirmDelete ? ' is-danger' : ''}`}
-            onClick={() => {
-              if (!confirmDelete) {
-                setConfirmDelete(true);
-                window.setTimeout(() => setConfirmDelete(false), 4000);
-                return;
-              }
-              onDelete();
-            }}
-          >
-            {confirmDelete ? '确认删除这篇游记？' : '删除游记'}
-          </button>
-        </footer>
-      )}
       </div>
 
       {/* 照片库挑选器：列出该地点绑定目录下的照片，多选批量导入 */}
@@ -420,7 +452,6 @@ interface NotePreviewProps {
 function NotePreview({ note, onEdit, onDelete, onBack, onClosePanel }: NotePreviewProps) {
   const bodyRef = useRef<HTMLDivElement | null>(null);
   const [urls, setUrls] = useState<Record<string, string>>({});
-  const [confirmDelete, setConfirmDelete] = useState(false);
 
   // 正文里的图片 id -> object URL（存库只有 data-img，没有 src，得现解析再填）
   useEffect(() => {
@@ -468,14 +499,18 @@ function NotePreview({ note, onEdit, onDelete, onBack, onClosePanel }: NotePrevi
           ‹ 返回列表
         </button>
         <span className="note-editor-date">更新于 {fmtDate(note.updatedAt)}</span>
-        {onClosePanel && (
-          <button className="icon-btn" onClick={onClosePanel} title="关闭游记面板" aria-label="关闭">
-            ×
+        {/* 头部操作区：编辑 → 删除 → 关闭（× 在最右） */}
+        <div className="note-head-actions">
+          <button className="primary-btn" onClick={onEdit}>
+            编辑
           </button>
-        )}
-        <button className="primary-btn" onClick={onEdit}>
-          编辑
-        </button>
+          <NoteDeleteButton onDelete={onDelete} />
+          {onClosePanel && (
+            <button className="icon-btn" onClick={onClosePanel} aria-label="关闭">
+              ×
+            </button>
+          )}
+        </div>
       </header>
 
       <div className="note-editor-scroll">
@@ -505,22 +540,6 @@ function NotePreview({ note, onEdit, onDelete, onBack, onClosePanel }: NotePrevi
             </span>
           </div>
         )}
-
-        <footer className="note-editor-foot">
-          <button
-            className={`ghost-btn${confirmDelete ? ' is-danger' : ''}`}
-            onClick={() => {
-              if (!confirmDelete) {
-                setConfirmDelete(true);
-                window.setTimeout(() => setConfirmDelete(false), 4000);
-                return;
-              }
-              onDelete();
-            }}
-          >
-            {confirmDelete ? '确认删除这篇游记？' : '删除游记'}
-          </button>
-        </footer>
       </div>
     </div>
   );
