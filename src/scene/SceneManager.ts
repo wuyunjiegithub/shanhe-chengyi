@@ -373,7 +373,7 @@ export class SceneManager {
     this.fitGroundToRegion(this.regionBox);
     this.updateProvinceLabels(shapes);
     // 窄屏（手机）用更紧的留白系数，让首屏地图更大一些；与 resetView 的窄屏系数一致
-    const initialFactor = this.isNarrowViewport() ? 1.02 : 1.08;
+    const initialFactor = this.isNarrowViewport() ? 0.92 : 1.08;
     this.frameTo(this.regionBox, 0, initialFactor, 0, this.usableView());
     this.updateLineResolutions();
     this.applyTerrain();
@@ -521,7 +521,7 @@ export class SceneManager {
     // 手机上留白余量收窄一点：既保证不出屏，又让地图尽量占满屏幕
     const el = this.renderer.domElement;
     const narrow = Boolean(el) && (el.clientWidth || 0) <= 820;
-    this.frameTo(this.regionBox, 0.7, narrow ? 1.02 : 1.08, 0, view);
+    this.frameTo(this.regionBox, 0.7, narrow ? 0.92 : 1.08, 0, view);
   }
 
   /** 省视角城市标记：去过 = 小红旗，收藏 = 粉心 */

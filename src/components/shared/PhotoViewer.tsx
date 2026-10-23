@@ -268,7 +268,8 @@ export function PhotoViewer({
           </div>
         </div>
 
-        <div className="pv-caption">
+        {((showName && onRename) || onCaption) && (
+          <div className="pv-caption">
           {showName && onRename && (
             editingName ? (
               <div className="pv-cap-edit">
@@ -351,7 +352,8 @@ export function PhotoViewer({
               )}
             </button>
           )}
-        </div>
+          </div>
+        )}
 
         {onPrev && (
           <button className="pv-nav pv-nav--prev" onClick={onPrev} aria-label="上一张">

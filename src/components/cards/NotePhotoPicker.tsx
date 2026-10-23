@@ -241,8 +241,8 @@ export function NotePhotoPicker({ place, room, onConfirm, onClose }: NotePhotoPi
         <footer className="np-foot">
           <span className="np-foot-tip">
             {pickedRows.length > 0
-              ? '点「插入正文」后，图片会落在正文光标所在的那一段'
-              : '先勾选照片，再点右侧「插入正文」'}
+              ? '图片会落在正文光标所在的那一段'
+              : '勾选照片后点右侧「插入」'}
           </span>
           <div className="np-foot-acts">
             <button type="button" className="ghost-btn" onClick={onClose}>
@@ -254,7 +254,7 @@ export function NotePhotoPicker({ place, room, onConfirm, onClose }: NotePhotoPi
               onClick={confirm}
               disabled={busy || pickedRows.length === 0}
             >
-              {busy ? '插入中…' : `插入正文 ${pickedRows.length} 张`}
+              {busy ? '插入中…' : `插入${pickedRows.length > 1 ? `（${pickedRows.length}）` : ''}`}
             </button>
           </div>
         </footer>

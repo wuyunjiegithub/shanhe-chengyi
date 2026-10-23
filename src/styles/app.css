@@ -2298,6 +2298,11 @@ a,
   color: var(--accent);
 }
 
+/* 手机端「选择内容」折叠条：桌面不显示（桌面左侧列表常驻） */
+.data-mobile-picker {
+  display: none;
+}
+
 .data-body {
   flex: 1;
   min-height: 0;
@@ -2932,18 +2937,52 @@ a,
 }
 
 @media (max-width: 820px) {
-  /* 手机端不再隐藏左侧「省市区」列表 —— 之前 display:none 导致内容编辑器里
-     根本选不到要编辑的市 / 区县。改为顶部可滚动的列表区（限高），下方才是编辑器。 */
+  /* 手机端内容编辑器：顶部的省市区列表不再常驻半屏。
+   * 默认收起成一个「选择内容」条，点开才展开列表（可搜索、可滚动），
+   * 选完自动收起 —— 把绝大部分高度让给右侧/下方的编辑区。 */
+  .data-mobile-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 14px;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-1);
+    font-size: 13px;
+    text-align: left;
+  }
+  .data-mobile-picker-label {
+    color: var(--text-3);
+    font-size: 11px;
+  }
+  .data-mobile-picker-current {
+    font-weight: 600;
+  }
+  .data-mobile-picker-caret {
+    margin-left: auto;
+    color: var(--text-3);
+    transition: transform 0.2s;
+  }
+  .data-mobile-picker.is-open .data-mobile-picker-caret {
+    transform: rotate(180deg);
+  }
+
   .data-body {
     display: flex;
     flex-direction: column;
   }
+  /* 收起的列表：不占位；展开时浮在编辑区上方 */
   .data-rail {
-    display: flex;
+    display: none;
     flex-direction: column;
     border-right: none;
     border-bottom: 1px solid var(--border);
-    max-height: 38vh;
+    max-height: 46vh;
+  }
+  .data-body.rail-open .data-rail {
+    display: flex;
   }
   .data-main {
     flex: 1;
@@ -5807,7 +5846,7 @@ button.wall-stage-img {
 
   .drawer-cover,
   .city-cover {
-    height: 118px;
+    height: 112px;
   }
 
   /* ---- 弹框：全屏 ----
@@ -5864,6 +5903,15 @@ button.wall-stage-img {
     padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
   }
 
+  /* ---- 游记正文：手机上把书写区放大 ----
+   * 全屏编辑器里正文是最重要的区域，之前 rows=12 在手机上偏矮。
+   * 用 vh 给足高度（约半屏），字体也放大一档，长时间写字不累。 */
+  .note-body-input {
+    min-height: 46vh;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
   /* 照片墙：网格降列 */
   .wall-modal {
     border-radius: 0;
@@ -5915,18 +5963,23 @@ button.wall-stage-img {
     padding: 0 11px;
   }
 
-  /* ---- 顶栏按钮：手机上除「地形」外只留图标，避免四个按钮把「地形」挤掉 ---- */
-  .top-right .data-pill-label {
-    display: none;
-  }
-  .data-pill--terrain .data-pill-label {
-    display: inline;
-  }
+  /* ---- 顶栏按钮：图标 + 文字一起显示 ----
+   * 之前为塞下四个按钮把文字全藏了，只剩图标不好认。现在文字保留，
+   * 靠收紧内距 / 字号 / 间距来腾地方；实在太窄时 .top-right 允许换行（伸缩）。 */
   .top-right {
-    gap: 7px;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    row-gap: 6px;
   }
   .data-pill {
-    padding: 0 11px;
+    height: 36px;
+    padding: 0 9px;
+    gap: 4px;
+    font-size: 11px;
+  }
+  .data-pill-icon {
+    font-size: 12px;
   }
 
   /* ---- 半屏详情 / 城市概览展开时收起底栏 ----
@@ -5947,12 +6000,12 @@ button.wall-stage-img {
     background: linear-gradient(180deg, rgba(12, 17, 28, 0) 0%, rgba(10, 14, 23, 0.97) 34%);
   }
 
-  /* ---- 城市封面放大 ----
-   * 手机上原来只有 118px，一眼看过去是块色带；放大到「城区」区块上方，
-   * 第一眼是城市的画面，往下才是文字信息。 */
+  /* ---- 城市封面：与区县封面同一量级 ----
+   * 30vh 太高，把「诗句」挤到首屏之外。收到 132px（略高于区县的 112px），
+   * 打开城市详情第一眼就能同时看到「背景图 + 一首诗」。 */
   .city-cover {
-    height: 30vh;
-    min-height: 178px;
+    height: 132px;
+    min-height: 132px;
   }
 
   /* ---- 封面图完整显示 ----
@@ -6058,13 +6111,18 @@ button.wall-stage-img {
     gap: 6px;
   }
 
+  /* 手机上顶栏要塞下 区县 / 地形 / 总览 / 数据：图标+文字，窄屏再收一档内距与字号 */
   .data-pill {
-    padding: 0 10px;
+    padding: 0 7px;
+    font-size: 10.5px;
+    gap: 3px;
+  }
+  .data-pill-icon {
+    font-size: 11px;
   }
 
-  /* 手机上顶栏要塞下 区县 / 地形 / 总览 / 数据：除「地形」保留文字外，其余只留图标（见 ≤820 规则） */
   .data-pill--terrain {
-    padding: 0 9px;
+    padding: 0 7px;
   }
 
   .hud-bottom {

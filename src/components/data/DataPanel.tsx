@@ -83,6 +83,8 @@ export function DataPanel() {
   const [confirmReset, setConfirmReset] = useState(false);
   const [confirmRemove, setConfirmRemove] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
+  /** 手机端：省市区列表默认收起，点「选择内容」才展开（把高度让给编辑区） */
+  const [railOpen, setRailOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const ordered = useMemo(() => {
@@ -166,6 +168,7 @@ export function DataPanel() {
       setConfirmReset(false);
       setConfirmRemove(false);
       setSavedAt(null);
+      setRailOpen(false);
     }
   }, [open]);
 
@@ -193,6 +196,7 @@ export function DataPanel() {
     setPending(null);
     setConfirmRemove(false);
     setSavedAt(null);
+    setRailOpen(false);
   }
 
   function loadCity(id: string) {
@@ -203,6 +207,7 @@ export function DataPanel() {
     setCityDraft(clone(c));
     setPending(null);
     setSavedAt(null);
+    setRailOpen(false);
   }
 
   function selectDistrict(id: string) {
@@ -386,7 +391,21 @@ export function DataPanel() {
           </button>
         </header>
 
-        <div className="data-body">
+        {/* 手机端：省市区列表折叠成一个选择条（桌面隐藏，左侧列表常驻） */}
+        <button
+          type="button"
+          className={`data-mobile-picker${railOpen ? ' is-open' : ''}`}
+          onClick={() => setRailOpen((v) => !v)}
+          aria-expanded={railOpen}
+        >
+          <span className="data-mobile-picker-label">选择内容</span>
+          <span className="data-mobile-picker-current">
+            {kind === 'city' ? cityDraft?.name ?? '城市' : draft?.name ?? '区县'}
+          </span>
+          <span className="data-mobile-picker-caret">▾</span>
+        </button>
+
+        <div className={`data-body${railOpen ? ' rail-open' : ''}`}>
           <aside className="data-rail">
             <div className="data-rail-head">
               <input

@@ -287,8 +287,9 @@ export function PhotoWall() {
   /** 自定义照片名（桌面端改名）覆盖表；订阅以便改名后即时重绘 */
   const photoNames = usePhotoNames((s) => s.map);
   const setPhotoName = usePhotoNames((s) => s.set);
-  /** 移动端（Android 套壳）不显示照片名、也不允许改名；其余环境为桌面 */
-  const showName = !isAndroidShell();
+  /** 移动端（Android 套壳）：只做「看照片 / 看视频动图」，不提供上传 / 管理 / 改名 / 删除 */
+  const mobileShell = isAndroidShell();
+  const showName = !mobileShell;
   /** 正在就地改名的展品 key（仅桌面） */
   const [renamingKey, setRenamingKey] = useState<string | null>(null);
   const [nameDraft, setNameDraft] = useState('');
@@ -608,34 +609,39 @@ export function PhotoWall() {
           </div>
 
           <div className="wall-head-actions">
-            <button
-              type="button"
-              className="wall-upload"
-              onClick={() => fileRef.current?.click()}
-              disabled={busy}
-              title="批量上传图片 / 视频：写入照片根目录下的「省/市/区县」文件夹（如 浙江省/杭州市/淳安县）"
-            >
-              {busy ? '上传中…' : '＋ 上传'}
-            </button>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*,video/*"
-              multiple
-              hidden
-              onChange={(e) => {
-                void onUploadFiles(e.target.files);
-                e.target.value = '';
-              }}
-            />
-            <button
-              type="button"
-              className={`wall-manage-toggle${manage ? ' is-on' : ''}`}
-              onClick={toggleManage}
-              title={manage ? '退出管理模式' : '管理模式：多选照片批量删除（删除的是磁盘文件）'}
-            >
-              {manage ? '完成' : '管理'}
-            </button>
+            {/* 手机端只要「看」：上传 / 管理（批量删除）都收在桌面端 */}
+            {!mobileShell && (
+              <>
+                <button
+                  type="button"
+                  className="wall-upload"
+                  onClick={() => fileRef.current?.click()}
+                  disabled={busy}
+                  title="批量上传图片 / 视频：写入照片根目录下的「省/市/区县」文件夹（如 浙江省/杭州市/淳安县）"
+                >
+                  {busy ? '上传中…' : '＋ 上传'}
+                </button>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*,video/*"
+                  multiple
+                  hidden
+                  onChange={(e) => {
+                    void onUploadFiles(e.target.files);
+                    e.target.value = '';
+                  }}
+                />
+                <button
+                  type="button"
+                  className={`wall-manage-toggle${manage ? ' is-on' : ''}`}
+                  onClick={toggleManage}
+                  title={manage ? '退出管理模式' : '管理模式：多选照片批量删除（删除的是磁盘文件）'}
+                >
+                  {manage ? '完成' : '管理'}
+                </button>
+              </>
+            )}
             {autoOk && items.length > 1 && (
               <button
                 className={`wall-play${playing ? ' is-on' : ''}`}
@@ -977,7 +983,7 @@ export function PhotoWall() {
             time={viewerItem.time}
             counter={`${(focus ?? 0) + 1} / ${items.length}`}
             caption={captionMap[viewerItem.key] ?? ''}
-            onCaption={(t) => setCaption(viewerItem.key, t)}
+            onCaption={mobileShell ? undefined : (t) => setCaption(viewerItem.key, t)}
             showName={showName}
             onRename={showName ? (t) => setPhotoName(viewerItem.key, t) : undefined}
             kind={viewerItem.kind === 'video' ? 'video' : 'image'}
@@ -985,7 +991,7 @@ export function PhotoWall() {
             onPrev={items.length > 1 ? () => step(-1) : undefined}
             onNext={items.length > 1 ? () => step(1) : undefined}
             onDelete={
-              viewerItem.photo
+              !mobileShell && viewerItem.photo
                 ? () => {
                     const path = viewerItem.photo!.path;
                     void (async () => {
