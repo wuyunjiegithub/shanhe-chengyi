@@ -16,7 +16,9 @@
     "tauri:build:debug": "tauri build --debug",
     "tauri:android:init": "tauri android init",
     "tauri:android:dev": "tauri android dev",
-    "tauri:android:build": "tauri android build"
+    "tauri:android:build": "tauri android build",
+    "android:so": "cd src-tauri && cargo ndk -t arm64-v8a --platform 24 build --release --features custom-protocol",
+    "android:verify": "node scripts/verify-android-so.mjs"
   },
   "dependencies": {
     "fuse.js": "^7.5.0",
