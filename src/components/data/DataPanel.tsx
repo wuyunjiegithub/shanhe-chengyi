@@ -725,11 +725,7 @@ export function DataPanel() {
 
         <footer className="data-foot">
           <div className="data-validation">
-            {errors.length > 0 ? (
-              <span className="is-err">✕ {errors.length} 项待修正</span>
-            ) : (
-              <span className="is-ok">✓ 校验通过</span>
-            )}
+            {errors.length > 0 && <span className="is-err">✕ {errors.length} 项待修正</span>}
             {warnings.length > 0 && <span className="is-warn">{warnings.length} 条建议</span>}
             {dirty && <span className="is-dirty">未保存</span>}
             {!dirty && savedAt && <span className="is-saved">已保存 {savedAt}</span>}

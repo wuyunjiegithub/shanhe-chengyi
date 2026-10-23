@@ -10,11 +10,13 @@ import { BgImage } from '../shared/BgImage';
 import { bgKey } from '../../stores/backgrounds';
 import { WeatherCard } from './WeatherCard';
 import { PlaceHeader, PhotoWallBlock, VisitLogSection, WriteNoteBar } from '../shared/PlaceBlocks';
+import { useBottomSheet } from '../shared/useBottomSheet';
 
 export function DistrictDrawer() {
   const open = useUi((s) => s.drawerOpen);
   const panelFullscreen = useUi((s) => s.panelFullscreen);
   const togglePanelFullscreen = useUi((s) => s.togglePanelFullscreen);
+  const sheet = useBottomSheet(open, panelFullscreen);
   const favorites = useUi((s) => s.favorites);
   const toggleFavorite = useUi((s) => s.toggleFavorite);
   const openLeaf = useUi((s) => s.openLeaf);
@@ -43,9 +45,11 @@ export function DistrictDrawer() {
     <aside
       className={`drawer${open && district ? ' is-open' : ''}${panelFullscreen ? ' is-full' : ''}`}
       aria-hidden={!open}
+      style={sheet.rootStyle}
     >
       {district && (
         <div className="drawer-inner">
+          <div className="sheet-grabber" {...sheet.bind} aria-hidden="true" />
           <PlaceHeader
             kicker={`${district.province} · ${district.city}`}
             name={district.name}

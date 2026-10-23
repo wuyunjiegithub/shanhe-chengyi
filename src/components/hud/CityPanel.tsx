@@ -8,6 +8,7 @@ import { BgImage } from '../shared/BgImage';
 import { bgKey } from '../../stores/backgrounds';
 import { WeatherCard } from '../drawer/WeatherCard';
 import { PlaceHeader, PhotoWallBlock, VisitLogSection, WriteNoteBar } from '../shared/PlaceBlocks';
+import { useBottomSheet } from '../shared/useBottomSheet';
 import type { City } from '../../data/types';
 
 export function CityPanel() {
@@ -21,6 +22,7 @@ export function CityPanel() {
   const visited = useCityStatus((s) => s.visited);
   const toggleVisited = useCityStatus((s) => s.toggleVisited);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sheet = useBottomSheet(level === 'city' && !!city && !drawerOpen, panelFullscreen);
   // 城市没有 District 实体，用其下各区县的质心（平均经纬度）作为天气定位点
   const allDistricts = useData((s) => s.districts);
   // 城市美食榜只显示城市自己编辑的那份（城市级信息统一在「内容编辑器」里改，
@@ -69,7 +71,11 @@ export function CityPanel() {
   };
 
   return (
-    <aside className={`city-panel hud${panelFullscreen ? ' is-full' : ''}`}>
+    <aside
+      className={`city-panel hud${panelFullscreen ? ' is-full' : ''}`}
+      style={sheet.rootStyle}
+    >
+      <div className="sheet-grabber" {...sheet.bind} aria-hidden="true" />
       <PlaceHeader
         kicker={city.province}
         name={city.name}
