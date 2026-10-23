@@ -4670,7 +4670,34 @@ button.wall-stage-img {
 
 /* ============ 游记面板（Travel Notes） ============ */
 .travel-panel {
-  width: 660px;
+  width: min(920px, 94vw);
+}
+
+/* 编辑器态：窗口拉高，正文有地方写（列表态仍按内容自适应，别留一大片空白） */
+.travel-panel--editor {
+  width: min(980px, 94vw);
+  height: min(90vh, 960px);
+  max-height: 90vh;
+}
+
+/* 窗口变高后，把多出来的高度全给正文：书写区自己滚动，
+ * 下面的「图片 N/9」与删除钮被推到窗口底部，不会在中间留一大块空白。
+ * 只在桌面生效——手机端是全屏 100vh，正文已按 52vh 铺满，别动它。 */
+@media (min-width: 821px) {
+  .travel-panel--editor .note-editor {
+    overflow: hidden;
+  }
+
+  .travel-panel--editor .rt-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .travel-panel--editor .rt-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
 }
 
 .travel-panel .fav-body {
@@ -4915,7 +4942,7 @@ button.wall-stage-img {
 
 /* 书写区：像一张纸，不要输入框那圈描边（描边交给上面的 wrap） */
 .rt-body {
-  min-height: 230px;
+  min-height: 320px;
   padding: 12px 14px 16px;
   font-size: 13.5px;
   line-height: 1.85;
@@ -5079,8 +5106,8 @@ button.wall-stage-img {
 .np-panel {
   display: flex;
   flex-direction: column;
-  width: min(640px, 94vw);
-  height: min(78vh, 780px);
+  width: min(820px, 94vw);
+  height: min(84vh, 860px);
   overflow: hidden;
   border: 1px solid var(--border-strong);
   border-radius: 16px;
@@ -5148,7 +5175,7 @@ button.wall-stage-img {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
   gap: 10px;
   padding: 14px 16px;
   align-content: start;

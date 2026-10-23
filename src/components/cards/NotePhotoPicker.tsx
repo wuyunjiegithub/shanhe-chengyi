@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useData } from '../../stores/data';
 import { usePhotoLib } from '../../stores/photoLib';
 import type { PhotoEntry } from '../../data/photoLibrary';
@@ -183,7 +184,14 @@ export function NotePhotoPicker({ place, room, onConfirm, onClose }: NotePhotoPi
     return () => window.removeEventListener('keydown', onKey, true);
   }, [onClose]);
 
-  return (
+  /**
+   * 必须挂到 body 上。
+   * 游记面板 `.fav-panel` 带 `transform: translateZ(0)`，会把自己变成 `position: fixed`
+   * 后代的包含块 —— 之前 `.np-backdrop` 的 `inset:0` 只铺满游记面板本身，而面板又
+   * `overflow:hidden`，于是 780px 高的选图面板被上下裁掉（照片截断、底部「插入」整条不见）。
+   * Portal 到 body 后 fixed 才真正相对视口，弹层居中且能滚到底。
+   */
+  return createPortal(
     <div className="np-backdrop" onPointerDown={onClose}>
       <section className="np-panel" onPointerDown={(e) => e.stopPropagation()}>
         <header className="np-head">
@@ -259,6 +267,7 @@ export function NotePhotoPicker({ place, room, onConfirm, onClose }: NotePhotoPi
           </div>
         </footer>
       </section>
-    </div>
+    </div>,
+    document.body,
   );
 }

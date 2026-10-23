@@ -544,7 +544,7 @@ export function TravelNotesPanel() {
       : pendingPlace;
     return (
       <div className="modal-backdrop" onPointerDown={() => close(false)}>
-        <section className="fav-panel travel-panel" onPointerDown={(e) => e.stopPropagation()}>
+        <section className="fav-panel travel-panel travel-panel--editor" onPointerDown={(e) => e.stopPropagation()}>
           <NoteEditor
             // key 带预置地点 id：面板开着时从别处再点「写游记」，编辑器要整体重来，
             // 否则 place state 留着旧地点（表现为「在城市打开的游记却关联到淳安」）
