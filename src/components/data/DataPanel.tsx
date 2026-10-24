@@ -435,9 +435,10 @@ export function DataPanel() {
                       <h3 className="data-editor-title">{cityDraft.name}</h3>
                     </div>
                     <div className="data-editor-meta">
-                      <span className={`data-badge${editedHere ? ' is-edited' : ''}`}>
-                        {editedHere ? '已编辑' : '静态内容'}
-                      </span>
+                      {/* 未编辑时不打「静态内容」标签：默认就是原始内容，标出来只添噪音 */}
+                      {editedHere && (
+                        <span className="data-badge is-edited">已编辑</span>
+                      )}
                       {dirty && <span className="data-badge is-dirty">未保存</span>}
                     </div>
                   </header>
@@ -544,9 +545,7 @@ export function DataPanel() {
                     <h3 className="data-editor-title">{draft.name}</h3>
                   </div>
                   <div className="data-editor-meta">
-                    <span className={`data-badge${editedHere ? ' is-edited' : ''}`}>
-                      {editedHere ? '已编辑' : '静态内容'}
-                    </span>
+                    {editedHere && <span className="data-badge is-edited">已编辑</span>}
                     {dirty && <span className="data-badge is-dirty">未保存</span>}
                   </div>
                 </header>

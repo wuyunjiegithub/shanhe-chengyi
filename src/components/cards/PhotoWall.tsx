@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { PointerEvent as ReactPointerEvent } from 'react';
 import { useData } from '../../stores/data';
 import { useUi } from '../../stores/ui';
 import { usePhotoLib } from '../../stores/photoLib';
@@ -36,6 +37,9 @@ const STYLES: { id: WallStyle; name: string; hint: string }[] = [
   { id: 'lightbox', name: '灯箱', hint: '灯箱独照：暗场聚光 + 展签' },
   { id: 'hall3d', name: '照片空间 · 3D', hint: '所有照片汇成一条旋臂星河：拖动环绕、滚轮缩放、点击居中放大' },
 ];
+
+/** 手机端可用的展览风格：3D 空间（WebGL 星海 + 手势环绕）在手机上又费电又难点准，直接去掉 */
+const stylesFor = (mobile: boolean) => (mobile ? STYLES.filter((s) => s.id !== 'hall3d') : STYLES);
 
 const SHAPE_FILTERS: { id: ShapeFilter; name: string }[] = [
   { id: 'all', name: '全部' },
@@ -582,6 +586,82 @@ export function PhotoWall() {
     [items.length],
   );
 
+  // ---------- 手机端：长廊 / 灯箱的舞台图左右滑切换 ----------
+  // 两侧箭头在手机上会压住画面，且边缘手势容易误触，改成整幅图横滑。
+  const stageTouch = useRef<{
+    id: number;
+    x: number;
+    y: number;
+    dx: number;
+    locked: boolean | null;
+  } | null>(null);
+  /** 本次手势已经滑过（用来吞掉松手后浏览器补发的 click，避免又弹查看器） */
+  const stageSlid = useRef(false);
+  const [stageDx, setStageDx] = useState(0);
+  const [stageGlide, setStageGlide] = useState(false);
+  const stageGlideTimer = useRef<number | null>(null);
+
+  const onStageDown = (e: ReactPointerEvent<HTMLElement>) => {
+    if (!mobileShell || e.pointerType !== 'touch' || items.length < 2) return;
+    if (stageGlideTimer.current) {
+      window.clearTimeout(stageGlideTimer.current);
+      stageGlideTimer.current = null;
+    }
+    setStageGlide(false);
+    stageSlid.current = false;
+    stageTouch.current = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, locked: null };
+  };
+
+  const onStageMove = (e: ReactPointerEvent<HTMLElement>) => {
+    const t = stageTouch.current;
+    if (!t || t.id !== e.pointerId) return;
+    const dx = e.clientX - t.x;
+    const dy = e.clientY - t.y;
+    if (t.locked === null) {
+      if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.15) t.locked = true;
+      else if (Math.abs(dy) > 14) t.locked = false;
+    }
+    if (t.locked) {
+      t.dx = dx;
+      stageSlid.current = true;
+      setStageDx(dx);
+    }
+  };
+
+  const onStageUp = (e: ReactPointerEvent<HTMLElement>) => {
+    const t = stageTouch.current;
+    if (!t || t.id !== e.pointerId) return;
+    stageTouch.current = null;
+    const width = e.currentTarget.getBoundingClientRect().width || 360;
+    const threshold = Math.max(48, width * 0.14);
+    const moved = t.locked ? t.dx : 0;
+    setStageGlide(true);
+    setStageDx(0);
+    stageGlideTimer.current = window.setTimeout(() => {
+      stageGlideTimer.current = null;
+      setStageGlide(false);
+    }, 220);
+    if (Math.abs(moved) >= threshold) {
+      stageSlid.current = true;
+      go(moved < 0 ? 1 : -1);
+    } else {
+      stageSlid.current = false;
+    }
+  };
+
+  /** 舞台图点击：滑过的那一下不进入查看器 */
+  const onStageClick = useCallback(() => {
+    if (stageSlid.current) {
+      stageSlid.current = false;
+      return;
+    }
+    openViewer(active);
+  }, [openViewer, active]);
+
+  useEffect(() => () => {
+    if (stageGlideTimer.current) window.clearTimeout(stageGlideTimer.current);
+  }, []);
+
   // 键盘：左右切换，Esc 关闭（聚焦态优先退出聚焦，由其捕获阶段监听器拦截）
   useEffect(() => {
     if (!photoWall) return;
@@ -657,7 +737,7 @@ export function PhotoWall() {
           </div>
 
           <div className="wall-styles" role="tablist" aria-label="展览风格">
-            {STYLES.map((s) => (
+            {stylesFor(mobileShell).map((s) => (
               <button
                 key={s.id}
                 role="tab"
@@ -782,31 +862,33 @@ export function PhotoWall() {
           ))}
         </div>
 
-        {/* 排序：默认顺序 / 名称 / 时间，点击当前项翻转升 / 降序 */}
-        <div className="wall-sorts">
-          <span className="wall-sorts-label">排序</span>
-          {SORTS.map((s) => {
-            const on = sort.key === s.id;
-            const arrow = s.id === 'default' ? '' : sort.desc ? '↓' : '↑';
-            return (
-              <button
-                key={s.id}
-                className={`wall-sort-chip${on ? ' is-active' : ''}`}
-                title={s.hint}
-                aria-pressed={on}
-                onClick={() => pickSort(s.id)}
-              >
-                {s.name}
-                {arrow && <em>{arrow}</em>}
-              </button>
-            );
-          })}
-          {sort.key === 'time' && (
-            <span className="wall-sorts-note">
-              {sort.desc ? '最新在前' : '最早在前'} · 无日期的封面图排在最后
-            </span>
-          )}
-        </div>
+        {/* 排序：只在桌面端出现。手机屏窄、照片量少，多一排只会把画面挤下去 */}
+        {!mobileShell && (
+          <div className="wall-sorts">
+            <span className="wall-sorts-label">排序</span>
+            {SORTS.map((s) => {
+              const on = sort.key === s.id;
+              const arrow = s.id === 'default' ? '' : sort.desc ? '↓' : '↑';
+              return (
+                <button
+                  key={s.id}
+                  className={`wall-sort-chip${on ? ' is-active' : ''}`}
+                  title={s.hint}
+                  aria-pressed={on}
+                  onClick={() => pickSort(s.id)}
+                >
+                  {s.name}
+                  {arrow && <em>{arrow}</em>}
+                </button>
+              );
+            })}
+            {sort.key === 'time' && (
+              <span className="wall-sorts-note">
+                {sort.desc ? '最新在前' : '最早在前'} · 无日期的封面图排在最后
+              </span>
+            )}
+          </div>
+        )}
 
         {items.length === 0 ? (
           <div className="wall-empty">
@@ -1026,12 +1108,22 @@ export function PhotoWall() {
                         {items.length > 1 && <WallMedia item={items[(active - 1 + items.length) % items.length]} onShape={onShape} onFail={onFail} enabled />}
                       </div>
                     )}
-                    <figure className="wall-stage-main">
+                    <figure
+                      className="wall-stage-main"
+                      style={{
+                        transform: stageDx ? `translateX(${stageDx}px)` : undefined,
+                        transition: stageGlide ? 'transform 0.2s ease-out' : undefined,
+                      }}
+                      onPointerDown={onStageDown}
+                      onPointerMove={onStageMove}
+                      onPointerUp={onStageUp}
+                      onPointerCancel={onStageUp}
+                    >
                       {/* 点击大图进入查看器：可缩放 / 旋转 / 平移细看 */}
                       <button
                         type="button"
                         className={`wall-stage-img${style === 'corridor' ? ' is-pan' : ''}`}
-                        onClick={() => openViewer(active)}
+                        onClick={onStageClick}
                         title="点击放大细看（支持缩放 / 旋转）"
                       >
                         <WallMedia item={current} onShape={onShape} onFail={onFail} autoplay enabled />
@@ -1051,7 +1143,8 @@ export function PhotoWall() {
                         {items.length > 1 && <WallMedia item={items[(active + 1) % items.length]} onShape={onShape} onFail={onFail} enabled />}
                       </div>
                     )}
-                    {style === 'lightbox' && (
+                    {/* 灯箱的两侧箭头只在桌面端：手机上是整幅图左右滑切换 */}
+                    {style === 'lightbox' && !mobileShell && (
                       <>
                         <button className="wall-nav wall-nav--prev" onClick={() => go(-1)} aria-label="上一张">
                           ‹

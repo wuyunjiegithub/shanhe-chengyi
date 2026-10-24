@@ -3979,6 +3979,11 @@ a,
   flex-direction: column;
   gap: 12px;
   margin: 0;
+  /* 手机端整幅图横滑切图：横向手势留给我们，纵向仍允许滚动 */
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 /* 大图容器本身是 <button>（点击进入查看器）：抹掉浏览器默认按钮样式 */

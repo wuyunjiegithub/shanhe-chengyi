@@ -28,6 +28,15 @@ export interface PhotoViewerProps {
 
 const MIN_SCALE = 0.15;
 const MAX_SCALE = 6;
+/** 触屏滑动切图：位移超过这个比例（或最小像素）才算一次切图 */
+const SWIPE_RATIO = 0.16;
+const SWIPE_MIN_PX = 52;
+
+/** 触屏设备：用横向滑动代替两侧箭头按钮 */
+function isCoarsePointer(): boolean {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia?.('(pointer: coarse)').matches ?? false;
+}
 
 function fmtTime(t?: number): string {
   if (!t) return '';
@@ -41,6 +50,7 @@ function fmtTime(t?: number): string {
  * - 按钮组：＋ － ↺ ↻ ⤾（复位） ×
  * - 滚轮缩放（以光标为中心）、双击在 1x ↔ 2.5x 间切换
  * - 单指 / 鼠标拖拽平移；双指捏合缩放
+ * - 触屏上 1x 状态左右滑动 = 切上 / 下一张（此时两侧箭头按钮隐藏，避免误触与遮挡画面）
  * - Esc 关闭；左右方向键切换上 / 下一张
  */
 export function PhotoViewer({
@@ -70,12 +80,18 @@ export function PhotoViewer({
   /** 改名编辑态 */
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
+  /** 触屏：横向滑动切换（1x 时单指左右滑），滑动中图片跟手位移 */
+  const coarse = useRef(isCoarsePointer()).current;
+  const [swipeDx, setSwipeDx] = useState(0);
+  const [swipeGlide, setSwipeGlide] = useState(false);
 
   // 换图（上/下一张）时复位变换与删除确认，避免沿用上一张的状态
   useEffect(() => {
     setScale(1);
     setRotation(0);
     setOffset({ x: 0, y: 0 });
+    setSwipeDx(0);
+    setSwipeGlide(false);
     setConfirmDelete(false);
     setEditingCap(false);
     setCapDraft('');
@@ -134,20 +150,39 @@ export function PhotoViewer({
     return () => window.removeEventListener('keydown', onKey, true);
   }, [onClose, onPrev, onNext]);
 
-  // ---------- 指针：拖拽平移 + 双指捏合 ----------
+  // ---------- 指针：拖拽平移 + 双指捏合 + 触屏横滑切图 ----------
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinch = useRef<{ dist: number; scale: number } | null>(null);
   const drag = useRef<{ x: number; y: number } | null>(null);
+  /** 触屏横滑手势：locked 为 null = 方向未定，true = 正在切图，false = 判定为纵向、放弃 */
+  const swipe = useRef<{ id: number; x: number; y: number; dx: number; locked: boolean | null } | null>(
+    null,
+  );
+  const glideTimer = useRef<number | null>(null);
 
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     e.currentTarget.setPointerCapture(e.pointerId);
+    if (glideTimer.current) {
+      window.clearTimeout(glideTimer.current);
+      glideTimer.current = null;
+    }
+    setSwipeGlide(false);
     if (pointers.current.size === 2) {
       const [a, b] = [...pointers.current.values()];
       pinch.current = { dist: Math.hypot(a.x - b.x, a.y - b.y), scale };
       drag.current = null;
+      // 双指 = 缩放，撤销可能已开始的切图手势
+      swipe.current = null;
+      setSwipeDx(0);
     } else if (pointers.current.size === 1) {
       drag.current = { x: e.clientX, y: e.clientY };
+      // 触屏且未放大：单指左右滑 = 切上 / 下一张。
+      // 视频要留出原生控件（进度条本身就是横向拖动），不接管。
+      const canSwipe = coarse && scale <= 1.001 && kind !== 'video' && Boolean(onPrev || onNext);
+      swipe.current = canSwipe
+        ? { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, locked: null }
+        : null;
     }
   };
 
@@ -165,6 +200,26 @@ export function PhotoViewer({
       }
       return;
     }
+
+    const sw = swipe.current;
+    if (sw && sw.id === e.pointerId) {
+      const dx = e.clientX - sw.x;
+      const dy = e.clientY - sw.y;
+      if (sw.locked === null) {
+        // 先看方向：横向占优才接管，纵向手势直接放过（1x 下本来也不做事）
+        if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.15) sw.locked = true;
+        else if (Math.abs(dy) > 14) sw.locked = false;
+      }
+      if (sw.locked) {
+        // 到头了（第一张还想往右 / 最后一张还想往左）加阻尼，给出「没有下一张」的手感
+        const blocked = (dx > 0 && !onPrev) || (dx < 0 && !onNext);
+        sw.dx = blocked ? dx * 0.3 : dx;
+        setSwipeDx(sw.dx);
+        return;
+      }
+      if (sw.locked === false) return;
+    }
+
     // 单指拖拽：只在已放大（scale>1）时才平移查看；1x 时图片固定不动，
     // 按住拖动不会把图拖走（满足「不用拖动、固定住、放大后才能拖动查看」）。
     if (drag.current && scale > 1.001) {
@@ -178,6 +233,26 @@ export function PhotoViewer({
   const endPointer = (e: ReactPointerEvent<HTMLDivElement>) => {
     pointers.current.delete(e.pointerId);
     if (pointers.current.size < 2) pinch.current = null;
+
+    const sw = swipe.current;
+    if (sw && sw.id === e.pointerId) {
+      const width = e.currentTarget.getBoundingClientRect().width || 360;
+      const threshold = Math.max(SWIPE_MIN_PX, width * SWIPE_RATIO);
+      const moved = sw.locked ? sw.dx : 0;
+      swipe.current = null;
+      // 松手：先回弹（带过渡），够阈值就切图
+      setSwipeGlide(true);
+      setSwipeDx(0);
+      glideTimer.current = window.setTimeout(() => {
+        glideTimer.current = null;
+        setSwipeGlide(false);
+      }, 260);
+      if (Math.abs(moved) >= threshold) {
+        if (moved < 0) onNext?.();
+        else onPrev?.();
+      }
+    }
+
     if (pointers.current.size === 0) {
       drag.current = null;
     } else if (pointers.current.size === 1) {
@@ -186,6 +261,13 @@ export function PhotoViewer({
       drag.current = { x: p.x, y: p.y };
     }
   };
+
+  useEffect(
+    () => () => {
+      if (glideTimer.current) window.clearTimeout(glideTimer.current);
+    },
+    [],
+  );
 
   /** 滚轮缩放：以光标位置为锚点，缩放后补偿偏移，视觉上「对着光标的那一点放大」 */
   const onWheel = (e: ReactWheelEvent<HTMLDivElement>) => {
@@ -209,7 +291,9 @@ export function PhotoViewer({
   };
 
   const mediaStyle: CSSProperties = {
-    transform: `translate(${offset.x}px, ${offset.y}px) rotate(${rotation}deg) scale(${scale})`,
+    transform: `translate(${offset.x + swipeDx}px, ${offset.y}px) rotate(${rotation}deg) scale(${scale})`,
+    // 滑动结束回弹时给过渡；拖动中 / 缩放中不加，避免跟手迟滞
+    transition: swipeGlide ? 'transform 0.22s cubic-bezier(0.22, 0.61, 0.36, 1)' : undefined,
   };
 
   return (
@@ -363,12 +447,13 @@ export function PhotoViewer({
           </div>
         )}
 
-        {onPrev && (
+        {/* 触屏上照片靠左右滑动切换，箭头会挡住画面；视频有原生控件、不接管手势，仍留箭头 */}
+        {onPrev && (!coarse || kind === 'video') && (
           <button className="pv-nav pv-nav--prev" onClick={onPrev} aria-label="上一张">
             ‹
           </button>
         )}
-        {onNext && (
+        {onNext && (!coarse || kind === 'video') && (
           <button className="pv-nav pv-nav--next" onClick={onNext} aria-label="下一张">
             ›
           </button>
