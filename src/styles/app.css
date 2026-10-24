@@ -7042,8 +7042,18 @@ button.wall-stage-img {
 
 .marker-style-head {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* 标题右侧显示当前选中的样式名（手机上扫一眼就知道现在是哪种标记） */
+.marker-style-head .marker-style-current {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--accent, #22d3ee);
+  white-space: nowrap;
 }
 
 .marker-style-head b {
@@ -7120,6 +7130,32 @@ button.wall-stage-img {
   line-height: 1.55;
   color: var(--text-3);
   min-height: 16px;
+}
+
+/* 紧凑版：放在「足迹与收藏」面板顶部（手机底栏可直接进），
+ * 手机顶栏放不下设置入口，这里是改标记样式的主入口。 */
+.marker-style--compact {
+  gap: 8px;
+  padding: 10px 12px 10px;
+  margin-bottom: 2px;
+}
+
+.marker-style--compact .marker-style-grid {
+  gap: 6px;
+}
+
+.marker-style--compact .marker-style-opt {
+  padding: 7px 2px 6px;
+  gap: 4px;
+}
+
+.marker-style--compact .marker-style-art {
+  height: 32px;
+}
+
+.marker-style--compact .marker-style-note {
+  font-size: 10px;
+  min-height: 0;
 }
 
 @media (max-width: 560px) {

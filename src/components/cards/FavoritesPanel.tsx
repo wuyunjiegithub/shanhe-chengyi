@@ -11,6 +11,7 @@ import {
 } from '../../app/sandbox';
 import { VisitedMark } from '../shared/VisitedMark';
 import { HeartMark } from '../shared/HeartMark';
+import { MarkerStylePicker } from '../shared/MarkerStylePicker';
 
 interface Row {
   key: string;
@@ -146,7 +147,7 @@ export function FavoritesPanel() {
     {
       title: '去过的区县',
       rows: visitedDistrictRows,
-      empty: '还没有标记去过的区县。打开区县抽屉，点小红旗即可记录。',
+      empty: '还没有标记去过的区县。打开区县抽屉，点右上角的「去过」图标即可记录（样式可在上方切换）。',
     },
     {
       title: '收藏的区县',
@@ -209,6 +210,10 @@ export function FavoritesPanel() {
         </header>
 
         <div className="fav-body">
+          {/* 「去过」标记样式：手机端顶栏藏了设置入口，这里必须能改，
+              否则真机上根本找不到小旗子 / 图钉的切换（用户反馈过）。 */}
+          <MarkerStylePicker compact className="fav-marker-style" />
+
           {sections.map((sec) => (
             <div className="fav-section" key={sec.title}>
               <h3 className="block-title">

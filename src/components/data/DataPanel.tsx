@@ -81,7 +81,6 @@ export function DataPanel() {
   const [query, setQuery] = useState('');
   const [pending, setPending] = useState<{ kind: 'district' | 'city'; id: string } | null>(null);
   const [confirmReset, setConfirmReset] = useState(false);
-  const [confirmRemove, setConfirmRemove] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   /** 手机端：省市区列表默认收起，点「选择内容」才展开（把高度让给编辑区） */
   const [railOpen, setRailOpen] = useState(false);
@@ -166,7 +165,6 @@ export function DataPanel() {
     if (!open) {
       setPending(null);
       setConfirmReset(false);
-      setConfirmRemove(false);
       setSavedAt(null);
       setRailOpen(false);
     }
@@ -178,12 +176,6 @@ export function DataPanel() {
     return () => window.clearTimeout(timer);
   }, [confirmReset]);
 
-  useEffect(() => {
-    if (!confirmRemove) return;
-    const timer = window.setTimeout(() => setConfirmRemove(false), 4000);
-    return () => window.clearTimeout(timer);
-  }, [confirmRemove]);
-
   if (!open) return null;
 
   function loadDistrict(id: string) {
@@ -194,7 +186,6 @@ export function DataPanel() {
     setDraft(clone(d));
     setDraftSpots(clone(spotsByDistrict[id] ?? []));
     setPending(null);
-    setConfirmRemove(false);
     setSavedAt(null);
     setRailOpen(false);
   }
@@ -309,32 +300,6 @@ export function DataPanel() {
       setDraftSpots(clone(useData.getState().spotsByDistrict[id] ?? []));
     }
     setSavedAt(null);
-  }
-
-  async function handleRemoveDistrict() {
-    if (!draft) return;
-    if (!confirmRemove) {
-      setConfirmRemove(true);
-      return;
-    }
-    const name = draft.name;
-    const removedId = draft.id;
-    await useData.getState().removeDistrictContent(removedId);
-    const fresh = useData.getState().districts;
-    const next = Object.values(fresh).find((d) => d.id !== removedId);
-    if (next) {
-      setSelectedId(next.id);
-      setDraft(clone(next));
-      setDraftSpots(clone(useData.getState().spotsByDistrict[next.id] ?? []));
-    } else {
-      setSelectedId(null);
-      setDraft(null);
-      setDraftSpots([]);
-    }
-    setConfirmRemove(false);
-    refreshPins();
-    updateMarkers();
-    toast(`${name} 的内容已移除，板块回到「未录入」`);
   }
 
   async function handleReset() {
@@ -583,12 +548,6 @@ export function DataPanel() {
                       {editedHere ? '已编辑' : '静态内容'}
                     </span>
                     {dirty && <span className="data-badge is-dirty">未保存</span>}
-                    <button
-                      className={`data-danger-link${confirmRemove ? ' is-danger' : ''}`}
-                      onClick={handleRemoveDistrict}
-                    >
-                      {confirmRemove ? '确认移除该区县内容？' : '移除该区县内容'}
-                    </button>
                   </div>
                 </header>
 

@@ -29,7 +29,7 @@ export function PlaceStatusActions({
   favTitleOn = '取消收藏',
   favTitleOff = '收藏',
   visitedTitleOn = '取消「去过」标记',
-  visitedTitleOff = '标记去过（插小红旗）',
+  visitedTitleOff = '标记去过',
 }: {
   favored: boolean;
   visited: boolean;
@@ -78,7 +78,7 @@ export function PlaceHeader({
   favTitleOn = '取消收藏',
   favTitleOff = '收藏',
   visitedTitleOn = '取消「去过」标记',
-  visitedTitleOff = '标记去过（插小红旗）',
+  visitedTitleOff = '标记去过',
   closeTitle = '关闭',
 }: {
   /** 名字上方的小字（城市写省份、区县写「省 · 市」） */

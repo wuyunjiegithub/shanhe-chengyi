@@ -6,6 +6,8 @@ import type { VisitedStyle } from '../scene/markerArt';
 
 const RECENT_KEY = 'ds.recent.v1';
 const MARKER_STYLE_KEY = 'ds.markerStyle.v1';
+/** 地图图层开关（地形 / 天气）——用户明确要求「切换后下次打开 App 还是上次的设置」 */
+const LAYERS_KEY = 'ds.layers.v1';
 
 export type LeafCard =
   | { kind: 'spot'; id: string }
@@ -106,7 +108,36 @@ function readRecent(): string[] {
   }
 }
 
+/**
+ * 读取图层开关。读不到 / 读坏了一律回默认「都开」，
+ * 不能因为一条脏数据就让地形或天气整块消失。
+ */
+function readLayers(): { terrain: boolean; weather: boolean } {
+  try {
+    const raw = localStorage.getItem(LAYERS_KEY);
+    if (!raw) return { terrain: true, weather: true };
+    const p = JSON.parse(raw) as { terrain?: unknown; weather?: unknown };
+    return {
+      terrain: typeof p.terrain === 'boolean' ? p.terrain : true,
+      weather: typeof p.weather === 'boolean' ? p.weather : true,
+    };
+  } catch {
+    return { terrain: true, weather: true };
+  }
+}
+
+function writeLayers(next: { terrain: boolean; weather: boolean }): void {
+  try {
+    localStorage.setItem(LAYERS_KEY, JSON.stringify(next));
+  } catch {
+    /* 存储不可用就只在本次会话生效 */
+  }
+}
+
 let toastTimer: number | null = null;
+
+/** 图层开关只读一次盘，别在 state 初始化的两个字段里各解析一遍 */
+const initialLayers = readLayers();
 
 export const useUi = create<UiState>((set, get) => ({
   drawerOpen: false,
@@ -125,8 +156,8 @@ export const useUi = create<UiState>((set, get) => ({
   districtPickerOpen: false,
   panelFullscreen: false,
   cityPanelDismissed: false,
-  terrain: true,
-  weather: true,
+  terrain: initialLayers.terrain,
+  weather: initialLayers.weather,
   visitedStyle: readMarkerStyle(),
 
   openDrawer: () => set({ drawerOpen: true, favoritesOpen: false }),
@@ -264,9 +295,19 @@ export const useUi = create<UiState>((set, get) => ({
 
   setCityPanelDismissed: (dismissed) => set({ cityPanelDismissed: dismissed }),
 
-  setTerrainOpen: (open) => set((s) => ({ terrain: open ?? !s.terrain })),
+  setTerrainOpen: (open) =>
+    set((s) => {
+      const terrain = open ?? !s.terrain;
+      writeLayers({ terrain, weather: s.weather });
+      return { terrain };
+    }),
 
-  setWeatherOpen: (open) => set((s) => ({ weather: open ?? !s.weather })),
+  setWeatherOpen: (open) =>
+    set((s) => {
+      const weather = open ?? !s.weather;
+      writeLayers({ terrain: s.terrain, weather });
+      return { weather };
+    }),
 
   setVisitedStyle: (visitedStyle) => {
     set({ visitedStyle });
