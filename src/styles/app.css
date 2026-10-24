@@ -3688,6 +3688,13 @@ a,
   overflow: auto;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  /* 关键：行高用 min-content 而不是默认的 auto。
+   * auto 行按「内容的 max-content 高度」估算，而瓦片里的图片比例盒（aspect-ratio / padding-top）
+   * 在横向宽度「不确定」的 max-content 阶段会被算成 0 —— 整行塌成只剩展签的 9px 细条，
+   * 31 张图全挤进一屏（既难看，又让基于 IntersectionObserver 的懒加载全部命中）。
+   * min-content 会先按确定的列宽结算比例盒，行高恢复正常（手机上 1 列约 275px 高），
+   * 画廊恢复可滚动，懒加载才能真正只取视口附近的图。 */
+  grid-auto-rows: min-content;
   gap: 16px;
   padding: 20px 22px 24px;
   align-content: start;
@@ -3720,9 +3727,19 @@ a,
 
 .wall-tile-img {
   position: relative;
-  aspect-ratio: 4 / 3;
+  /* 用 padding-top 撑出 4:3 比例（而非 aspect-ratio）—— aspect-ratio 在 CSS Grid 的
+   * max-content 行高计算里会把「百分比宽度 + 比例」算成 0，导致整行塌成只剩展签的细条，
+   * 31 张图全部挤进一屏（既难看又让懒加载失效）。padding-top 百分比是相对【确定】的
+   * 列宽结算的，任何布局上下文都稳定。 */
+  padding-top: 75%;
   overflow: hidden;
   background: #0b1220;
+}
+
+/* padding-top 撑出的比例盒里，媒体层绝对定位铺满（避免 height:100% 在 padding 盒子里塌成 0） */
+.wall-tile-img > .wall-media {
+  position: absolute;
+  inset: 0;
 }
 
 .wall-tile-img .smart-img {
@@ -5014,17 +5031,21 @@ button.wall-stage-img {
 
 /* ---- 富文本正文编辑器（所见即所得） ----
  * 不再有「编辑框 + 正文效果预览」两栏：写的时候就是最终排版，
- * 加粗 / 标题 / 引用 / 列表 / 图片都在同一块区域里即时生效。 */
+ * 加粗 / 标题 / 引用 / 列表 / 图片都在同一块区域里即时生效。
+ *
+ * 布局要点（手机 / 桌面一致）：.rt-wrap 撑满编辑区，工具栏是顶部的「不滚动」横条，
+ * 只有下面的 .rt-body 自己滚动。这样无论键盘怎么弹、正文怎么滚，工具栏都钉在
+ * 编辑区顶部，永远点得到 —— 不再依赖 position:sticky（Android WebView 在键盘
+ * 自动滚动到光标时经常让 sticky 失效，导致工具条被推到屏幕外、一个点不到）。 */
 .rt-wrap {
   position: relative;
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.035);
-  /* 注意：不要在这里加 overflow:hidden —— 它会把 position:sticky 的工具栏
-   * 困在 .rt-wrap 自己身上（sticky 的包含块变成最近的有溢出滚动的祖先），
-   * 手机键盘一弹、正文滚动，工具栏就跟着跑了。圆角由子元素各自承担。 */
 }
 
 .rt-wrap:focus-within {
@@ -5033,11 +5054,9 @@ button.wall-stage-img {
 }
 
 .rt-toolbar {
-  /* 吸顶：手机键盘弹出后正文会滚动，工具栏钉在编辑区顶部不跟着跑，
-   * 否则「加粗 / 标题 / ＋图片」被推到屏幕外，一个都点不到。 */
-  position: sticky;
-  top: 0;
-  z-index: 6;
+  /* 工具栏是 .rt-wrap 顶部的不滚动横条：下面只有 .rt-body 滚动，
+   * 所以工具栏天然钉在编辑区顶部，键盘弹出也点得到（不依赖 sticky）。 */
+  flex: none;
   display: flex;
   align-items: center;
   gap: 3px;
@@ -5045,7 +5064,6 @@ button.wall-stage-img {
   border-bottom: 1px solid var(--border);
   border-radius: 11px 11px 0 0;
   background: rgba(16, 22, 34, 0.92);
-  backdrop-filter: blur(8px);
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -5110,7 +5128,9 @@ button.wall-stage-img {
 
 /* 书写区：像一张纸，不要输入框那圈描边（描边交给上面的 wrap） */
 .rt-body {
-  min-height: 320px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
   padding: 12px 14px 16px;
   font-size: 13.5px;
   line-height: 1.85;
@@ -6076,9 +6096,18 @@ button.wall-stage-img {
     color: rgba(255, 255, 255, 0.88);
   }
 
+  /* 头部内边距：半屏底部抽屉的顶边在屏幕中部，根本不需要避让状态栏。
+   * 之前对所有手机态都加 env(safe-area-inset-top)，刘海机型会变成「14px + 44px」
+   * 一大截空白，标题被顶得很低（区县 / 市区详情都有此问题）。
+   * 只有全屏态（.is-full，面板顶到屏幕最上方）才需要补 safe-area-inset-top。 */
   .drawer-head,
   .place-head {
-    padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 12px;
+    padding: 12px 16px 12px;
+  }
+
+  .drawer.is-full .place-head,
+  .city-panel.is-full .place-head {
+    padding-top: calc(12px + env(safe-area-inset-top, 0px));
   }
 
   .drawer-scroll {
@@ -6171,10 +6200,18 @@ button.wall-stage-img {
     padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
   }
 
+  /* 手机端：外层 .note-editor-scroll 不再滚动，滚动交给 .rt-body 自己。
+   * 这样工具栏（.rt-wrap 顶部的横条）是结构上的「不滚动」元素，键盘弹出、
+   * 正文内部滚动时它都钉在编辑区顶部 —— 不依赖 position:sticky（Android WebView
+   * 在键盘自动滚到光标时经常让 sticky 失效，工具条被顶出屏幕）。 */
+  .note-editor-scroll {
+    overflow: hidden;
+  }
+
   /* ---- 游记正文：手机上把书写区放大 ----
-   * 全屏编辑器里正文是最重要的区域，用 vh 给足高度，字体放大一档。 */
+   * 全屏编辑器里正文是最重要的区域，字体放大一档；高度由 .rt-wrap(flex:1) 撑满，
+   * 正文自己在 .rt-body 内滚动，不再用 min-height:52vh（会和 flex:1 打架）。 */
   .rt-body {
-    min-height: 52vh;
     font-size: 15px;
     line-height: 1.9;
   }

@@ -592,5 +592,8 @@ if (typeof window !== 'undefined') {
     lastFrame: () => manager?.lastFrame ?? null,
     openPhotoWall: (arg: { scope: 'city' | 'district'; id: string; title: string }) =>
       useUi.getState().openPhotoWall(arg),
+    /** 打开游记编辑器（带预置地点），供回归脚本核对富文本工具栏是否被正文滚动带走 */
+    openTravelEditor: (prefill: { kind: 'city' | 'district'; id: string; name: string }) =>
+      useUi.getState().openTravelWithPlace(prefill),
   };
 }
