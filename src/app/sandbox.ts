@@ -607,6 +607,8 @@ if (typeof window !== 'undefined') {
     /** 当前相机下区域包围盒在屏幕上的像素范围，核对取景是否落在可用区里 */
     screenExtent: () => manager?.screenExtent() ?? null,
     debugCamera: () => manager?.debugCamera() ?? null,
+    /** 每个标记底边与脚下地表的屏幕间距（px），诊断「旗子 / 爱心悬空」 */
+    markerProbe: () => manager?.markerProbe() ?? [],
     openPhotoWall: (arg: { scope: 'city' | 'district'; id: string; title: string }) =>
       useUi.getState().openPhotoWall(arg),
     /** 打开游记编辑器（带预置地点），供回归脚本核对富文本工具栏是否被正文滚动带走 */

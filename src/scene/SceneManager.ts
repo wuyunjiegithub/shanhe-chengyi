@@ -233,6 +233,76 @@ export class SceneManager {
       }
     return { x0: +x0.toFixed(1), y0: +y0.toFixed(1), x1: +x1.toFixed(1), y1: +y1.toFixed(1) };
   }
+
+  /**
+   * 临时诊断：量每个标记「底边」与它脚下地表的屏幕间距（px，正数 = 悬空）。
+   * 标记是 Sprite（center=(0.5,0)，底边对齐 position.y），所以
+   * 世界底边 = 标记组.position.y + marker.position.y；地表取板块顶面（含抬升），
+   * 开地形时再取地形表面。两个都投影到屏幕，差值就是肉眼看到的「悬空」。
+   */
+  markerProbe(): unknown[] {
+    const el = this.renderer.domElement;
+    if (!el) return [];
+    const W = el.clientWidth || 1;
+    const H = el.clientHeight || 1;
+    const cam = this.camera.clone() as THREE.PerspectiveCamera;
+    cam.aspect = W / H;
+    cam.updateMatrixWorld(true);
+    cam.updateProjectionMatrix();
+    const sy = (x: number, y: number, z: number) =>
+      (-new THREE.Vector3(x, y, z).project(cam).y * 0.5 + 0.5) * H;
+    const out: unknown[] = [];
+    const layers: [THREE.Group, Map<string, PlateRecord>, THREE.Group][] = [
+      [this.cityMarkerGroup, this.cities, this.cityGroup],
+      [this.districtMarkerGroup, this.districts, this.districtGroup],
+    ];
+    for (const [group, map, plateGroup] of layers) {
+      if (!group.visible) continue;
+      for (const m of group.children) {
+        const rec = map.get(m.userData.plateId as string);
+        if (!rec) continue;
+        const wx = m.position.x;
+        const wz = m.position.z;
+        const bottomWorld = group.position.y + m.position.y;
+        const lift = rec.meshes[0].position.y;
+        const plateTop = plateGroup.position.y + lift + rec.height;
+        const terrainY =
+          this.terrain && this.terrainOn ? this.terrain.heightAt(wx, wz) : plateTop;
+        // 肉眼看到的地表 = 板顶与地形里更高的那个
+        const surfaceY = Math.max(plateTop, terrainY);
+        // 脚下到底有没有实体：从底边垂直向下打一条射线，看多远能碰到板块。
+        // 标记若被错开到了板块之外（悬在背景上），这里就是 null。
+        const rc = new THREE.Raycaster(
+          new THREE.Vector3(wx, bottomWorld + 0.02, wz),
+          new THREE.Vector3(0, -1, 0),
+          0,
+          6,
+        );
+        // 只打板块本体（Mesh）：轮廓线是 Line2，它的 raycast 依赖 material.resolution，
+        // 探针里没设会抛错
+        const meshes: THREE.Object3D[] = [];
+        for (const r of this.cities.values()) meshes.push(...r.meshes);
+        for (const r of this.districts.values()) meshes.push(...r.meshes);
+        const hits = rc.intersectObjects(meshes, false);
+        const hit = hits.length ? +hits[0].distance.toFixed(3) : null;
+        out.push({
+          id: m.userData.plateId,
+          kind: m.userData.kind,
+          layer: this.layer,
+          bottomWorld: +bottomWorld.toFixed(3),
+          plateTop: +plateTop.toFixed(3),
+          terrainY: +terrainY.toFixed(3),
+          gapPlatePx: +(sy(wx, plateTop, wz) - sy(wx, bottomWorld, wz)).toFixed(1),
+          gapTerrainPx: +(sy(wx, terrainY, wz) - sy(wx, bottomWorld, wz)).toFixed(1),
+          gapSurfacePx: +(sy(wx, surfaceY, wz) - sy(wx, bottomWorld, wz)).toFixed(1),
+          downHit: hit,
+          sx: Math.round((new THREE.Vector3(wx, bottomWorld, wz).project(cam).x * 0.5 + 0.5) * W),
+          sy: Math.round(sy(wx, bottomWorld, wz)),
+        });
+      }
+    }
+    return out;
+  }
   private downXY: [number, number] | null = null;
   /** 移动端底部详情面板占视口高度的比例：>0 时取景在窄屏预留底部空间，
    *  让选中的市 / 区县落在屏幕上半部分（不被半屏面板盖住）。桌面与无面板时为 0。 */
@@ -444,10 +514,11 @@ export class SceneManager {
     // 只切到舟山一角，沪宁杭甬苏温都在屏内）；与 resetView 的窄屏系数保持一致。
     // 0.59 是「取景改按真实投影计算」之后回标的值：同样 0.55 在新算法下会多放大约 8%，
     // 上海市标签被顶到右边缘（x≈378 / 屏宽 390），所以回退到 0.59 保持原观感。
-    // 桌面端首屏：区域图（102×120，竖长）在横屏上是**高度**先撑满，
-    // 所以这里给 1.0（贴着可用区取景，不再留 8% 空白）+ 上下 HUD 预留也收紧一档，
-    // 换来首屏地图比原来大约 16%（用户反馈「初始化的地图太小」）。
-    const initialFactor = this.isNarrowViewport() ? 0.59 : 1.0;
+    // 桌面端首屏：区域图（102×120，竖长）在横屏上是**高度**先撑满。
+    // 0.96 = 贴着可用区取景后再压 4%（用户反馈「视角还是想再拉近一点」）：
+    // 江浙沪皖的极边（苏北一角、浙南一角、安徽西缘）允许各被裁掉约 1 屏的 2%，
+    // 换整幅地图再大 4%。这是「撑满」与「全部进屏」之间取的折中，手机端同理。
+    const initialFactor = this.isNarrowViewport() ? 0.59 : 0.96;
     this.frameTo(this.regionBox, 0, initialFactor, 0, this.usableView());
     this.updateLineResolutions();
     this.applyTerrain();
@@ -597,7 +668,7 @@ export class SceneManager {
     const narrow = Boolean(el) && (el.clientWidth || 0) <= 820;
     // 与首屏取景一致：手机竖屏上「撑满屏幕」优先于「全部进屏」，
     // 宽方向每边裁一些（只切舟山一角），地图放到约屏高 55%。
-    this.frameTo(this.regionBox, 0.7, narrow ? 0.59 : 1.0, 0, view);
+    this.frameTo(this.regionBox, 0.7, narrow ? 0.59 : 0.96, 0, view);
   }
 
   /** 省视角城市标记：去过 = 小红旗，收藏 = 粉心 */
@@ -840,7 +911,7 @@ export class SceneManager {
       const cx = rec.centroid[0];
       const cz = -rec.centroid[1];
       // 只抬 0.03（约 0.2~1px）：贴片本来就关了深度测试，抬多了就是肉眼可见的「悬空」
-      const baseY = this.markerGroundY(cx + ox, cz + oz, rec.height) + 0.03;
+      const baseY = this.markerGroundY(cx + ox, cz + oz, rec.height, this.layerBase(group)) + 0.03;
       obj.position.set(cx + ox, baseY, cz + oz);
       obj.userData.baseY = baseY;
       obj.userData.plateId = item.id;
@@ -854,10 +925,18 @@ export class SceneManager {
     }
   }
 
-  /** 标记落点的地表高度：地形开启时取地形表面，否则用板块顶面 */
-  private markerGroundY(x: number, z: number, plateTop: number): number {
+  /**
+   * 标记落点的地表高度，**单位是「标记所在组」的局部坐标**。
+   *
+   * 关键：地形 `heightAt` 给的是绝对世界高度（地表基准 2.68 起算），而
+   * `plateTop` 是板块的局部厚度（城市 2.6 / 区县 1.0）。省视角标记组 y=0，
+   * 两者恰好重合，看不出问题；区县视角标记组被整体抬到 DISTRICT_BASE_Y（2.63），
+   * 再直接加绝对地形高度就会**多抬一整个层高**——这就是「区县收藏的旗子 / 爱心
+   * 悬空很高，回全局视角又正常」的根因。这里统一减掉层基准，两组坐标才对得上。
+   */
+  private markerGroundY(x: number, z: number, plateTop: number, layerBase: number): number {
     if (!this.terrain || !this.terrainOn) return plateTop;
-    return Math.max(plateTop, this.terrain.heightAt(x, z));
+    return Math.max(plateTop, this.terrain.heightAt(x, z) - layerBase);
   }
 
   /**
@@ -874,8 +953,29 @@ export class SceneManager {
       const off = marker.userData.offX as number;
       const offZ = marker.userData.offZ as number;
       marker.userData.baseY =
-        this.markerGroundY(x + off, z + offZ, rec.height) + 0.03;
+        this.markerGroundY(x + off, z + offZ, rec.height, this.layerBase(this.cityMarkerGroup)) +
+        0.03;
     }
+    for (const marker of this.districtMarkerGroup.children) {
+      const rec = this.districts.get(marker.userData.plateId as string);
+      if (!rec) continue;
+      const x = marker.userData.anchorX as number;
+      const z = marker.userData.anchorZ as number;
+      const off = marker.userData.offX as number;
+      const offZ = marker.userData.offZ as number;
+      marker.userData.baseY =
+        this.markerGroundY(
+          x + off,
+          z + offZ,
+          rec.height,
+          this.layerBase(this.districtMarkerGroup),
+        ) + 0.03;
+    }
+  }
+
+  /** 标记组的层基准：区县层整体抬到 DISTRICT_BASE_Y，省视角为 0 */
+  private layerBase(group: THREE.Group): number {
+    return group === this.districtMarkerGroup ? DISTRICT_BASE_Y : 0;
   }
 
   /**
@@ -1390,13 +1490,14 @@ export class SceneManager {
       };
     }
 
-    const left = 240; // 左侧索引
+    // 左侧索引面板实际占 16 + 214 = 230，原来的 240 多留了 10px
+    const left = W <= 1280 ? 202 : 234;
     // 右侧只在面板真的打开时才让位；否则整幅地图可以用到几乎满屏（启动时明显更大）
-    const right = this.sidePanelOpen ? 372 : 28;
+    const right = this.sidePanelOpen ? 372 : 18;
     // 顶栏 / 底栏实际只占 16 + 36~44，原来的 88 / 76 多留了近 30px，
     // 首屏地图是按高度定距离的，这里各收紧一档，地图就能再大一点
-    const top = 76; // 顶栏
-    const bottom = 68; // 底栏
+    const top = 70; // 顶栏（16 + 44 + 10 呼吸）
+    const bottom = 64; // 底栏
     return {
       x: left,
       y: top,
@@ -1699,7 +1800,12 @@ export class SceneManager {
     const dist = Math.max(this.camera.position.distanceTo(this.controls.target), 0.001);
     const fov = (this.camera.fov * Math.PI) / 180;
     const pxPerUnit = h / (2 * Math.tan(fov / 2) * dist);
-    for (const group of [this.cityMarkerGroup, this.districtMarkerGroup]) {
+    const layers: [THREE.Group, Map<string, PlateRecord>][] = [
+      [this.cityMarkerGroup, this.cities],
+      [this.districtMarkerGroup, this.districts],
+    ];
+    for (const [group, records] of layers) {
+      const layerBase = this.layerBase(group);
       for (const marker of group.children) {
         const kind = (marker.userData.kind as MarkerKind) ?? 'favorite';
         // 贴片：屏幕高度反算世界高度，宽度按画布比例，不再有缩放上限。
@@ -1709,9 +1815,6 @@ export class SceneManager {
         const worldH = pxH / pxPerUnit;
         const worldW = worldH * MARKER_ASPECT;
         marker.scale.set(worldW, worldH, 1);
-        // 贴片底边对齐锚点：地表高度 + 所属板块的抬升量
-        marker.position.y =
-          ((marker.userData.baseY as number) || 0) + ((marker.userData.lift as number) || 0);
         // 同一地点的多个标记按自身宽度错开，远看不会叠成一团
         const ax = marker.userData.anchorX as number | undefined;
         const az = marker.userData.anchorZ as number | undefined;
@@ -1719,6 +1822,17 @@ export class SceneManager {
           marker.position.x = ax + ((marker.userData.offX as number) || 0) * worldW * 0.42;
           marker.position.z = az + ((marker.userData.offZ as number) || 0) * worldW * 0.42;
         }
+        // 贴片底边贴地表：落点随缩放后的实际坐标重新取一次。
+        // 错开的偏移量是按 worldW 算的（随缩放变化），若沿用建标记时的取样点，
+        // 缩放后标记会飘到别处、脚下高度对不上（省视角的爱心离地约 2.5px 就是这么来的）。
+        const rec = records.get(marker.userData.plateId as string);
+        const ground = rec
+          ? this.markerGroundY(marker.position.x, marker.position.z, rec.height, layerBase)
+          : (marker.userData.baseY as number) || 0;
+        if (rec) marker.userData.baseY = ground + 0.03;
+        // 只抬 0.03（约 0.2~1px）：贴片本来就关了深度测试，抬多了就是肉眼可见的「悬空」
+        marker.position.y =
+          ground + 0.03 + ((marker.userData.lift as number) || 0);
       }
     }
   }
