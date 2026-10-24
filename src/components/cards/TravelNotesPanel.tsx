@@ -9,6 +9,8 @@ import { NotePhotoPicker } from './NotePhotoPicker';
 import type { PickedPhoto } from './NotePhotoPicker';
 import { NoteRichEditor } from './NoteRichEditor';
 import type { NoteRichEditorHandle } from './NoteRichEditor';
+import { isAndroidShell } from '../../data/photoDisk';
+import { useVisualViewportRect } from '../../hooks/useVisualViewportRect';
 
 const MAX_IMAGES = 9;
 
@@ -587,6 +589,14 @@ export function TravelNotesPanel() {
     return list;
   }, [cities, districts, districtNames]);
 
+  // 安卓套壳下：把编辑 / 预览面板锚定到 visualViewport 可见矩形。
+  // 全屏沉浸 WebView 的软键盘会走 adjustPan 把整层上推、顶走富文本工具栏，
+  // 锚定后面板始终贴在可见区，工具栏稳在顶部。桌面端 / 非安卓不走这条（保持居中弹窗）。
+  const vvRect = useVisualViewportRect(isAndroidShell());
+  const anchoredStyle = vvRect
+    ? { position: 'fixed' as const, top: vvRect.top, left: 0, right: 0, height: vvRect.height }
+    : undefined;
+
   // 列表封面图：取每篇第一篇图
   useEffect(() => {
     if (!open) return;
@@ -701,7 +711,11 @@ export function TravelNotesPanel() {
   if (previewing) {
     return (
       <div className="modal-backdrop" onPointerDown={() => close(false)}>
-        <section className="fav-panel travel-panel travel-panel--preview" onPointerDown={(e) => e.stopPropagation()}>
+        <section
+          className="fav-panel travel-panel travel-panel--preview"
+          style={anchoredStyle}
+          onPointerDown={(e) => e.stopPropagation()}
+        >
           <NotePreview
             key={previewing.id}
             note={previewing}
@@ -728,7 +742,11 @@ export function TravelNotesPanel() {
       : pendingPlace;
     return (
       <div className="modal-backdrop" onPointerDown={() => close(false)}>
-        <section className="fav-panel travel-panel travel-panel--editor" onPointerDown={(e) => e.stopPropagation()}>
+        <section
+          className="fav-panel travel-panel travel-panel--editor"
+          style={anchoredStyle}
+          onPointerDown={(e) => e.stopPropagation()}
+        >
           <NoteEditor
             // key 带预置地点 id：面板开着时从别处再点「写游记」，编辑器要整体重来，
             // 否则 place state 留着旧地点（表现为「在城市打开的游记却关联到淳安」）

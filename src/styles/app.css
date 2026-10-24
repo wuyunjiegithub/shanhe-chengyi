@@ -6138,6 +6138,7 @@ button.wall-stage-img {
    * 统一改成 100dvh 全屏：一屏一件事，也不会露背后地图导致误触。 */
   .leaf-backdrop,
   .modal-backdrop,
+  .modal-backdrop,
   .np-backdrop,
   .wall-backdrop {
     padding: 0;
@@ -6780,7 +6781,8 @@ button.wall-stage-img {
 
 .pv-close {
   position: absolute;
-  top: 12px;
+  /* 刘海屏：光 top:12px 会压在状态栏/挖孔区，点不到。补安全区把它下移到可点区域。 */
+  top: calc(12px + env(safe-area-inset-top, 0px));
   right: 14px;
   width: 36px;
   height: 36px;

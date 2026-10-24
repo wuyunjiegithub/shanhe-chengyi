@@ -165,7 +165,9 @@ export function PhotoViewer({
       }
       return;
     }
-    if (drag.current) {
+    // 单指拖拽：只在已放大（scale>1）时才平移查看；1x 时图片固定不动，
+    // 按住拖动不会把图拖走（满足「不用拖动、固定住、放大后才能拖动查看」）。
+    if (drag.current && scale > 1.001) {
       const dx = e.clientX - drag.current.x;
       const dy = e.clientY - drag.current.y;
       drag.current = { x: e.clientX, y: e.clientY };
@@ -176,7 +178,13 @@ export function PhotoViewer({
   const endPointer = (e: ReactPointerEvent<HTMLDivElement>) => {
     pointers.current.delete(e.pointerId);
     if (pointers.current.size < 2) pinch.current = null;
-    if (pointers.current.size === 0) drag.current = null;
+    if (pointers.current.size === 0) {
+      drag.current = null;
+    } else if (pointers.current.size === 1) {
+      // 双指捏合结束、尚剩一指：把它当作新的拖拽起点，放大后可直接接单指平移
+      const [p] = [...pointers.current.values()];
+      drag.current = { x: p.x, y: p.y };
+    }
   };
 
   /** 滚轮缩放：以光标位置为锚点，缩放后补偿偏移，视觉上「对着光标的那一点放大」 */
