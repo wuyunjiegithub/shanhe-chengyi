@@ -8,7 +8,7 @@
     "content": "node scripts/build-content.mjs",
     "terrain": "node scripts/build-terrain.mjs",
     "validate": "node scripts/validate-content.mjs",
-    "build": "node scripts/build-content.mjs && node scripts/validate-content.mjs && tsc && vite build",
+    "build": "node scripts/clean-dist.mjs && node scripts/build-content.mjs && node scripts/validate-content.mjs && tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
