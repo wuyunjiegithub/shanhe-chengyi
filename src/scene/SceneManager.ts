@@ -178,10 +178,68 @@ export class SceneManager {
   private paused = false;
   /** 最近一次 frameTo 的诊断信息（回归脚本用） */
   lastFrame: { sx: number; sz: number; dist: number } | null = null;
+  /** 最近一次取景的包围盒：screenExtent 按它投影，才能核对城市 / 区县级的取景 */
+  private framedBox: THREE.Box3 | null = null;
+
+  /** 临时诊断：相机与包围盒的真实状态 */
+  debugCamera(): unknown {
+    const el = this.renderer.domElement;
+    const tl = this.controls.target.clone();
+    return {
+      pos: this.camera.position.toArray().map((v) => +v.toFixed(2)),
+      target: tl.toArray().map((v) => +v.toFixed(2)),
+      dist: +this.camera.position.distanceTo(tl).toFixed(2),
+      fov: this.camera.fov,
+      aspect: +this.camera.aspect.toFixed(4),
+      elAspect: +(((el?.clientWidth || 1) / (el?.clientHeight || 1)) as number).toFixed(4),
+      box: {
+        x: [+this.regionBox.min.x.toFixed(2), +this.regionBox.max.x.toFixed(2)],
+        y: [+this.regionBox.min.y.toFixed(2), +this.regionBox.max.y.toFixed(2)],
+        z: [+this.regionBox.min.z.toFixed(2), +this.regionBox.max.z.toFixed(2)],
+      },
+      lastFrame: this.lastFrame,
+      panel: { side: this.sidePanelOpen, frac: this.panelFrac },
+      flying: Boolean(this.fly),
+    };
+  }
+
+  /** 用当前相机把区域包围盒的地面 4 角投影到屏幕，返回 CSS 像素包围盒。
+   *  回归脚本靠它判断「地图是否真的完整落在可用区里」——比拿世界尺寸乘一个
+   *  粗略的 px/单位 准得多（俯视 50° + 透视会同时压缩远端、放大近端）。 */
+  screenExtent(): { x0: number; y0: number; x1: number; y1: number } | null {
+    const el = this.renderer.domElement;
+    if (!el) return null;
+    const box = this.framedBox ?? this.regionBox;
+    if (box.isEmpty()) return null;
+    const W = el.clientWidth || 1;
+    const H = el.clientHeight || 1;
+    const cam = this.camera.clone() as THREE.PerspectiveCamera;
+    cam.aspect = W / H;
+    cam.updateMatrixWorld(true);
+    cam.updateProjectionMatrix();
+    let x0 = Infinity;
+    let y0 = Infinity;
+    let x1 = -Infinity;
+    let y1 = -Infinity;
+    for (const cx of [box.min.x, box.max.x])
+      for (const cz of [box.min.z, box.max.z]) {
+        const q = new THREE.Vector3(cx, box.min.y, cz).project(cam);
+        const px = (q.x * 0.5 + 0.5) * W;
+        const py = (-q.y * 0.5 + 0.5) * H;
+        x0 = Math.min(x0, px);
+        x1 = Math.max(x1, px);
+        y0 = Math.min(y0, py);
+        y1 = Math.max(y1, py);
+      }
+    return { x0: +x0.toFixed(1), y0: +y0.toFixed(1), x1: +x1.toFixed(1), y1: +y1.toFixed(1) };
+  }
   private downXY: [number, number] | null = null;
   /** 移动端底部详情面板占视口高度的比例：>0 时取景在窄屏预留底部空间，
    *  让选中的市 / 区县落在屏幕上半部分（不被半屏面板盖住）。桌面与无面板时为 0。 */
   private panelFrac = 0;
+  /** 桌面端右侧详情面板（城市面板 / 区县抽屉）是否打开：只有打开时才为它留位。
+   *  之前无论开没开都扣掉 372px，导致刚启动时整幅地图被压在中间一小块（用户反馈「太小」）。 */
+  private sidePanelOpen = false;
 
   onPick?: (info: PickInfo) => void;
   onHover?: (info: { id: string; name: string; province?: string; kind: string } | null) => void;
@@ -192,6 +250,14 @@ export class SceneManager {
   setPanelExpanded(open: boolean): void {
     // 0.62 略大于面板实际高度（60vh），在面板顶缘上方留出一点空隙
     this.panelFrac = open && this.isNarrowViewport() ? 0.62 : 0;
+  }
+
+  /**
+   * 桌面端右侧面板开合：取景时按「面板是否真的在」决定要不要让出右侧 372px。
+   * 下钻城市 / 打开区县抽屉时置 true，回到总览时置 false。
+   */
+  setSidePanel(open: boolean): void {
+    this.sidePanelOpen = open;
   }
 
   constructor() {
@@ -374,9 +440,14 @@ export class SceneManager {
     this.updateProvinceLabels(shapes);
     // 窄屏（手机）首屏取景：用户要求「地图撑满屏幕、不需要全部看见」。
     // 区域图（约 102×120，宽高比 0.85）在竖屏手机上若按 contain 取景只能占屏高约 4 成，
-    // 上下大片留白。这里用 0.55 的收紧系数把地图放到约屏高 2/3（宽方向每边裁约 16%，
+    // 上下大片留白。这里用 0.59 的收紧系数把地图放到约屏高 55%（宽方向每边裁一些，
     // 只切到舟山一角，沪宁杭甬苏温都在屏内）；与 resetView 的窄屏系数保持一致。
-    const initialFactor = this.isNarrowViewport() ? 0.55 : 1.08;
+    // 0.59 是「取景改按真实投影计算」之后回标的值：同样 0.55 在新算法下会多放大约 8%，
+    // 上海市标签被顶到右边缘（x≈378 / 屏宽 390），所以回退到 0.59 保持原观感。
+    // 桌面端首屏：区域图（102×120，竖长）在横屏上是**高度**先撑满，
+    // 所以这里给 1.0（贴着可用区取景，不再留 8% 空白）+ 上下 HUD 预留也收紧一档，
+    // 换来首屏地图比原来大约 16%（用户反馈「初始化的地图太小」）。
+    const initialFactor = this.isNarrowViewport() ? 0.59 : 1.0;
     this.frameTo(this.regionBox, 0, initialFactor, 0, this.usableView());
     this.updateLineResolutions();
     this.applyTerrain();
@@ -525,8 +596,8 @@ export class SceneManager {
     const el = this.renderer.domElement;
     const narrow = Boolean(el) && (el.clientWidth || 0) <= 820;
     // 与首屏取景一致：手机竖屏上「撑满屏幕」优先于「全部进屏」，
-    // 宽方向每边裁约 16%（只切舟山一角），地图放到约屏高 2/3。
-    this.frameTo(this.regionBox, 0.7, narrow ? 0.55 : 1.08, 0, view);
+    // 宽方向每边裁一些（只切舟山一角），地图放到约屏高 55%。
+    this.frameTo(this.regionBox, 0.7, narrow ? 0.59 : 1.0, 0, view);
   }
 
   /** 省视角城市标记：去过 = 小红旗，收藏 = 粉心 */
@@ -768,7 +839,8 @@ export class SceneManager {
       // 否则山地里的标记会被山体埋掉一半（用户反馈「有了地形之后红旗和爱心看不见」）。
       const cx = rec.centroid[0];
       const cz = -rec.centroid[1];
-      const baseY = this.markerGroundY(cx + ox, cz + oz, rec.height) + 0.06;
+      // 只抬 0.03（约 0.2~1px）：贴片本来就关了深度测试，抬多了就是肉眼可见的「悬空」
+      const baseY = this.markerGroundY(cx + ox, cz + oz, rec.height) + 0.03;
       obj.position.set(cx + ox, baseY, cz + oz);
       obj.userData.baseY = baseY;
       obj.userData.plateId = item.id;
@@ -802,7 +874,7 @@ export class SceneManager {
       const off = marker.userData.offX as number;
       const offZ = marker.userData.offZ as number;
       marker.userData.baseY =
-        this.markerGroundY(x + off, z + offZ, rec.height) + 0.06;
+        this.markerGroundY(x + off, z + offZ, rec.height) + 0.03;
     }
   }
 
@@ -1145,6 +1217,7 @@ export class SceneManager {
     view?: { x: number; y: number; w: number; h: number },
   ): void {
     if (box.isEmpty()) return;
+    this.framedBox = box.clone();
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.z);
@@ -1181,9 +1254,24 @@ export class SceneManager {
       const corners: THREE.Vector3[] = [];
       for (const cx of [box.min.x, box.max.x])
         for (const cz of [box.min.z, box.max.z]) corners.push(new THREE.Vector3(cx, box.min.y, cz));
-      for (let i = 0; i < 4; i++) {
-        probe.position.set(center.x, center.y + Math.sin(elev) * dist, center.z + Math.cos(elev) * dist);
-        probe.lookAt(center);
+      // 相机基向量：俯视方位角恒为 0（frameTo 每次都按标准机位重算），
+      // 所以 right / up 可以直接解析给出。
+      // 不能从 `camera.matrixWorld` 里取——首屏取景时它还没被渲染循环更新过，
+      // 取到的是单位矩阵，up 被当成世界 +Y，平移就沿「竖直」方向走而不是沿屏幕纵向：
+      // 整幅地图被推得偏离可用区中心，还因为顺带拉近了地面而被放大。
+      const camRight = new THREE.Vector3(1, 0, 0);
+      const camUp = new THREE.Vector3(0, Math.cos(elev), -Math.sin(elev));
+      const _look = new THREE.Vector3();
+      const _q = new THREE.Vector3();
+      const _o = new THREE.Vector3();
+      let off = new THREE.Vector3();
+
+      /** 在给定距离 + 平移量下，用探针相机把地面 4 角投影成屏幕像素包围盒 */
+      const projectBox = (d: number, o: THREE.Vector3) => {
+        probe.position
+          .set(center.x, center.y + Math.sin(elev) * d, center.z + Math.cos(elev) * d)
+          .add(o);
+        probe.lookAt(_look.copy(center).add(o));
         probe.updateMatrixWorld(true);
         probe.updateProjectionMatrix();
         let minX = Infinity;
@@ -1191,29 +1279,80 @@ export class SceneManager {
         let minY = Infinity;
         let maxY = -Infinity;
         for (const c of corners) {
-          const q = c.clone().project(probe);
+          const q = _q.copy(c).project(probe);
           const px = (q.x * 0.5 + 0.5) * W;
           const py = (-q.y * 0.5 + 0.5) * H;
-          minX = Math.min(minX, px);
-          maxX = Math.max(maxX, px);
-          minY = Math.min(minY, py);
-          maxY = Math.max(maxY, py);
+          if (px < minX) minX = px;
+          if (px > maxX) maxX = px;
+          if (py < minY) minY = py;
+          if (py > maxY) maxY = py;
         }
-        const pw = Math.max(maxX - minX, 1);
-        const ph = Math.max(maxY - minY, 1);
-        // 只后退、不前进：宁可小一点，也不能让内容溢出到面板底下
-        const k = Math.max((pw * factor) / view.w, (ph * factor) / view.h, 1);
-        if (!Number.isFinite(k) || k < 1.005) break;
+        return {
+          cx: (minX + maxX) / 2,
+          cy: (minY + maxY) / 2,
+          w: Math.max(maxX - minX, 1),
+          h: Math.max(maxY - minY, 1),
+        };
+      };
+
+      /** 把投影包围盒中心对到可用区中心（牛顿步）。
+       *  近端 / 远端的像素位移并不等于「请求的位移」—— 俯视下近端被放大，
+       *  直接按残差平移会过冲、甚至来回震荡把整幅地图甩出屏幕，
+       *  所以先用探针量出实际增益（每请求 1px 实际走多少 px）再决定这一步走多少。 */
+      const recenter = (d: number, o: THREE.Vector3): THREE.Vector3 => {
+        const wpp = (2 * d * t) / H;
+        const STEP = 40;
+        let cur = o;
+        for (let j = 0; j < 3; j++) {
+          const b = projectBox(d, cur);
+          const dx = view.x + view.w / 2 - b.cx;
+          const dy = view.y + view.h / 2 - b.cy;
+          if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) break;
+          const gx =
+            (projectBox(d, _o.copy(cur).addScaledVector(camRight, -STEP * wpp)).cx - b.cx) / STEP ||
+            1;
+          const gy =
+            (projectBox(d, _o.copy(cur).addScaledVector(camUp, STEP * wpp)).cy - b.cy) / STEP || 1;
+          cur = cur
+            .clone()
+            .addScaledVector(camRight, (-dx / gx) * wpp)
+            .addScaledVector(camUp, (dy / gy) * wpp);
+        }
+        return cur;
+      };
+
+      // 距离与居中要一起迭代：居中后近端会再被放大一圈，距离又得重新收一次。
+      for (let i = 0; i < 8; i++) {
+        let b = projectBox(dist, off);
+        // 俯视 50° 会把地面纵向压缩成约 0.77 倍，而上面的粗估按 1 倍算，
+        // 估出来的距离偏大、地图就缩在屏幕中间一小块（「初始化的地图太小」的根因）。
+        // 对「贴合取景」（factor ≤ 1.1，如首屏 / 总览 / 城市）允许按探针的真实投影往里收，
+        // 让内容真正填满可用区；带余量的取景（区县 1.45）仍然只后退、不前进，
+        // 否则那点刻意留的余量会被吃掉。
+        const k = Math.max((b.w * factor) / view.w, (b.h * factor) / view.h, 0.001);
+        if (!Number.isFinite(k)) break;
+        if (factor > 1.1 && k < 1) break;
+        const rx = view.x + view.w / 2 - b.cx;
+        const ry = view.y + view.h / 2 - b.cy;
+        if (Math.abs(k - 1) < 0.004 && Math.abs(rx) < 1 && Math.abs(ry) < 1) break;
         dist *= k;
+        off = recenter(dist, off);
       }
 
-      // 内容需要平移的像素（可用区中心 − 屏幕中心）
-      const worldPerPx = (2 * dist * t) / H;
-      const dxPx = view.x + view.w / 2 - W / 2;
-      const dyPx = view.y + view.h / 2 - H / 2;
-      const right = new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld, 0);
-      const up = new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld, 1);
-      offset = right.multiplyScalar(-dxPx * worldPerPx).add(up.multiplyScalar(dyPx * worldPerPx));
+      // 距离可能因「带余量取景只后退不前进」而一次都没调整（如区县 factor 1.45），
+      // 但居中无论如何都要做一次，否则内容会被摆在整屏中心、钻到右侧面板底下。
+      off = recenter(dist, off);
+
+      // 收尾：居中会让近端再放大一点，最后补几轮「只后退」的校正，
+      // 保证最终投影一定落在可用区里（上面的循环允许往里收，可能刚好卡在边界外几像素）
+      for (let i = 0; i < 4; i++) {
+        const b = projectBox(dist, off);
+        const k = Math.max((b.w * factor) / view.w, (b.h * factor) / view.h);
+        if (!Number.isFinite(k) || k <= 1.002) break;
+        dist *= k;
+        off = recenter(dist, off);
+      }
+      offset = off;
     }
 
     // 调试用：记录最近一次取景的尺寸与距离，便于回归脚本定位取景问题
@@ -1252,9 +1391,12 @@ export class SceneManager {
     }
 
     const left = 240; // 左侧索引
-    const right = 372; // 右侧城市面板 + 边距
-    const top = 88; // 顶栏
-    const bottom = 76; // 底栏
+    // 右侧只在面板真的打开时才让位；否则整幅地图可以用到几乎满屏（启动时明显更大）
+    const right = this.sidePanelOpen ? 372 : 28;
+    // 顶栏 / 底栏实际只占 16 + 36~44，原来的 88 / 76 多留了近 30px，
+    // 首屏地图是按高度定距离的，这里各收紧一档，地图就能再大一点
+    const top = 76; // 顶栏
+    const bottom = 68; // 底栏
     return {
       x: left,
       y: top,

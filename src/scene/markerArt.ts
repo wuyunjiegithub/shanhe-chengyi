@@ -44,7 +44,7 @@ export const VISITED_SCREEN_PX: Record<VisitedStyle, number> = {
   footprint: 44,
 };
 
-export const FAVORITE_SCREEN_PX = 36;
+export const FAVORITE_SCREEN_PX = 42;
 
 /** 去过标记的主色（与收藏的玫红明确区分） */
 const RED = 0xff4d5e;
@@ -52,6 +52,30 @@ const RED = 0xff4d5e;
 const PINK = 0xf43f7e;
 
 const INK = 'rgba(9,14,22,0.58)';
+
+/**
+ * 落地投影：标记是屏幕对齐的贴片，50° 俯角下光秃秃地立在地面上，
+ * 底边与地面之间那几像素会被看成「悬空」。在落点画一枚扁椭圆阴影，
+ * 视觉上把标记「按」进地面。x 允许指定（旗子的落点是旗杆而不是画布中线）。
+ */
+function paintShadow(ctx: CanvasRenderingContext2D, x = MARKER_W / 2): void {
+  const cy = MARKER_H - 7;
+  const rx = 30;
+  const ry = 7;
+  const g = ctx.createRadialGradient(x, cy, 0, x, cy, rx);
+  g.addColorStop(0, 'rgba(6,10,16,0.45)');
+  g.addColorStop(0.5, 'rgba(6,10,16,0.24)');
+  g.addColorStop(1, 'rgba(6,10,16,0)');
+  ctx.save();
+  ctx.translate(x, cy);
+  ctx.scale(1, ry / rx);
+  ctx.translate(-x, -cy);
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(x, cy, rx, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
 
 function shade(hex: number, k = 1): string {
   const ch = (v: number) => Math.max(0, Math.min(255, Math.round(v)));
@@ -79,7 +103,10 @@ export function paintVisited(
 function paintFlag(ctx: CanvasRenderingContext2D): void {
   const poleX = 34;
   const topY = 20;
-  const botY = MARKER_H - 6;
+  // 杆底直接压到画布下沿：落点 = 旗杆底端，不留缝（留缝就是「悬空」）
+  const botY = MARKER_H - 2;
+
+  paintShadow(ctx, poleX);
 
   // 杆：先描深色底，再压亮色
   ctx.strokeStyle = INK;
@@ -129,9 +156,11 @@ function paintPin(ctx: CanvasRenderingContext2D): void {
   const cx = MARKER_W / 2;
   const cy = 66;
   const r = 44;
-  const tipY = MARKER_H - 5;
+  const tipY = MARKER_H - 2;
   // 两肩的角度（canvas 里 0 = 右、+π/2 = 下）
   const shoulder = 0.92;
+
+  paintShadow(ctx);
 
   const body = () => {
     ctx.beginPath();
@@ -173,10 +202,12 @@ function paintPin(ctx: CanvasRenderingContext2D): void {
  */
 function paintStamp(ctx: CanvasRenderingContext2D): void {
   const cx = MARKER_W / 2;
-  // 圆心压到 106、半径 54：圆的下沿正好贴住画布底部（160/168），
-  // 上沿到 52 —— 和旗子 / 图钉一样顶满画布，屏幕上看起来才一样重。
-  const cy = 106;
+  // 圆心压到 109、半径 54：圆的下沿贴住画布底部（163/168），
+  // 和旗子 / 图钉一样顶满画布，屏幕上看起来才一样重。
+  const cy = 109;
   const r = 54;
+
+  paintShadow(ctx);
 
   // 盘面：奶白底，压住深色地形
   ctx.beginPath();
@@ -229,8 +260,9 @@ function paintStamp(ctx: CanvasRenderingContext2D): void {
  * 描边用「放大后再填一遍」的写法，得到一个整体剪影，内部不会出现黑线。
  */
 function paintFootprint(ctx: CanvasRenderingContext2D): void {
+  paintShadow(ctx);
   ctx.save();
-  ctx.translate(MARKER_W / 2, 96);
+  ctx.translate(MARKER_W / 2, 91);
   ctx.scale(1.3, 1.3);
   // 略向前倾，比正着摆更有「踩下去」的感觉
   ctx.rotate(-0.08);
@@ -288,8 +320,12 @@ export function paintFavorite(ctx: CanvasRenderingContext2D): void {
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
   const cx = MARKER_W / 2;
-  const cy = MARKER_H / 2 + 8;
-  const s = 46;
+  // s=70 是画布宽度能吃下的上限（横向约 119 / 128），再大两瓣会被裁掉
+  const s = 70;
+  // 尖端压到画布下沿上方 6px：爱心以前画在中线（cy = 92）且只有 s=46，
+  // 下方空掉 21%、整体又比旗子小一半 —— 屏幕上就是「爱心悬空、飘着」，是那次反馈的根因。
+  const cy = MARKER_H - 6 - s * 0.82;
+  paintShadow(ctx);
   ctx.beginPath();
   ctx.moveTo(cx, cy + s * 0.82);
   ctx.bezierCurveTo(cx - s * 1.5, cy - s * 0.28, cx - s * 0.72, cy - s * 1.32, cx, cy - s * 0.42);

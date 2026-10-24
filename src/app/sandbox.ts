@@ -76,6 +76,16 @@ export async function initSandbox(container: HTMLElement): Promise<void> {
     }),
   );
 
+  // 桌面端右侧面板（城市面板 / 区县抽屉）开合：只在它真的占着屏幕时才为它让出右侧宽度，
+  // 否则刚启动（什么面板都没有）整幅地图就被凭空压窄一圈。
+  unsubscribers.push(
+    useUi.subscribe((s, prev) => {
+      if (s.drawerOpen === prev.drawerOpen && s.cityPanelDismissed === prev.cityPanelDismissed) return;
+      const inCity = useNavigation.getState().level === 'city';
+      manager?.setSidePanel(s.drawerOpen || (inCity && !s.cityPanelDismissed));
+    }),
+  );
+
   // 天气缓存变化（联网返回 / 每小时刷新）后，重新把天气画到地图上
   unsubscribers.push(
     useWeather.subscribe((s, prev) => {
@@ -184,6 +194,8 @@ export async function drillIntoCity(cityId: string): Promise<void> {
     useData.getState().registerDistrictNames(geo);
     // 手机上进入城市即展开底部半屏详情，取景预留面板高度，让城市落在屏幕上半部分
     manager.setPanelExpanded(true);
+    // 桌面端城市面板此刻会出现在右侧，取景为它让位；回到总览时复位置 false
+    manager.setSidePanel(true);
     manager.setDistrictPlates(projectFeatures(geo, projection));
     manager.setCityFocus(cityId);
     void refreshWeather();
@@ -210,6 +222,7 @@ export function backToRegion(): void {
   manager?.clearDistrictPlates();
   // 复位取景预留（无面板），让区域总览按整屏取景
   manager?.setPanelExpanded(false);
+  manager?.setSidePanel(false);
   manager?.resetView();
   void refreshWeather();
   useNavigation.getState().backToRegion();
@@ -271,6 +284,7 @@ export async function selectDistrictById(id: string, options?: { fly?: boolean }
 
   useNavigation.getState().selectDistrict(id);
   useUi.getState().openDrawer();
+  manager?.setSidePanel(true);
   manager?.selectDistrict(id);
   manager?.focusSpot(null);
   // 手机上区县详情是底部半屏，取景预留面板高度，让区县落在屏幕上半部分
@@ -590,6 +604,9 @@ if (typeof window !== 'undefined') {
     resetCamera: () => manager?.resetView(),
     /** 最近一次取景的尺寸 / 距离，供回归脚本核对「地图是否完整进屏」 */
     lastFrame: () => manager?.lastFrame ?? null,
+    /** 当前相机下区域包围盒在屏幕上的像素范围，核对取景是否落在可用区里 */
+    screenExtent: () => manager?.screenExtent() ?? null,
+    debugCamera: () => manager?.debugCamera() ?? null,
     openPhotoWall: (arg: { scope: 'city' | 'district'; id: string; title: string }) =>
       useUi.getState().openPhotoWall(arg),
     /** 打开游记编辑器（带预置地点），供回归脚本核对富文本工具栏是否被正文滚动带走 */
