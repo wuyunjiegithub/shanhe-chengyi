@@ -4854,10 +4854,17 @@ button.wall-stage-img {
   background: rgba(248, 113, 113, 0.82);
 }
 
-/* 窄屏（手机）：日期是次要信息，让位给操作按钮，避免头部挤成两行 */
+/* 窄屏（手机）：日期是次要信息，让位给操作按钮，避免头部挤成两行。
+ * 注意：原先是 .note-editor-date 带 margin-left:auto 把右侧操作组推到右边的，
+ * 日期一隐藏，操作组就缩到左边了。这里把自动外距交给 .note-head-actions 自己，
+ * 这样无论在不在窄屏，「保存 / 删除 / ×」始终贴右上角。 */
 @media (max-width: 560px) {
   .note-editor-date {
     display: none;
+  }
+
+  .note-head-actions {
+    margin-left: auto;
   }
 }
 
@@ -6258,11 +6265,14 @@ button.wall-stage-img {
     height: 0;
   }
 
-  /* 关闭钮在手机上按得舒服点（原来只有 28px，太难点） */
-  .wall-close {
+  /* 关闭钮 / 刷新相册钮：手机上都放大到 44×44，样式统一（都是圆角图标钮，
+   * 不再一个 44 一个 28 看着像两套控件） */
+  .wall-close,
+  .wall-refresh {
     width: 44px;
     height: 44px;
     font-size: 22px;
+    border-radius: 9px;
   }
 
   .wall-title {

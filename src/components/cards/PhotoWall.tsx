@@ -146,13 +146,16 @@ function StaticPhoto({
   item,
   onShape,
   onFail,
+  enabled = true,
 }: {
   item: WallItem;
   onShape: (key: string, shape: PhotoShape) => void;
   /** 图片确实取不到（地址失效）：上报给父层整体剔除，而不是留在墙上当裂图 */
   onFail?: (key: string) => void;
+  /** 懒加载：未进入视口前不取流（见 useItemSrc） */
+  enabled?: boolean;
 }) {
-  const src = useItemSrc(item);
+  const src = useItemSrc(item, enabled);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -176,6 +179,7 @@ function StaticPhoto({
       src={src}
       alt={item.title}
       draggable={false}
+      decoding="async"
       onLoad={(e) => {
         const img = e.currentTarget;
         if (item.photo) {
@@ -217,14 +221,19 @@ function LocalVideo({ item, autoplay }: { item: WallItem; autoplay: boolean }) {
 /**
  * 解析一个展品的可播放地址：本地照片走照片库（内存 File → IndexedDB 缓存 →
  * 目录句柄 / Tauri 文件流），内置占位图直接用静态 src。供网格 / 舞台 / 查看器共用。
+ *
+ * @param enabled 懒加载开关。照片墙网格里一次性把几十张本地照片（每张都是数 MB 的
+ *   全尺寸字节，且要走 JNI 读系统相册）全加载进内存，手机端会直接卡死 / ANR。
+ *   所以网格里的展品默认 enabled=false，靠 IntersectionObserver 等滚到视口附近才取流；
+ *   舞台主图 / 查看器是单张且一定可见，传 true 立即加载。
  */
-function useItemSrc(item: WallItem | null): string | null {
+function useItemSrc(item: WallItem | null, enabled = true): string | null {
   const photoUrl = usePhotoLib((s) => s.photoUrl);
   const [src, setSrc] = useState<string | null>(item?.photo ? null : (item?.src ?? null));
 
   useEffect(() => {
-    if (!item) {
-      setSrc(null);
+    if (!item || !enabled) {
+      if (!item) setSrc(null);
       return;
     }
     if (!item.photo) {
@@ -238,7 +247,7 @@ function useItemSrc(item: WallItem | null): string | null {
     return () => {
       alive = false;
     };
-  }, [item, photoUrl]);
+  }, [item, photoUrl, enabled]);
 
   return src;
 }
@@ -248,15 +257,51 @@ function WallMedia({
   onShape,
   onFail,
   autoplay = false,
+  enabled = false,
 }: {
   item: WallItem;
   onShape: (key: string, shape: PhotoShape) => void;
   onFail?: (key: string) => void;
   autoplay?: boolean;
+  /** 懒加载开关：网格默认 false（滚到视口才取流），舞台主图等单张可见的传 true */
+  enabled?: boolean;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(enabled);
+
+  // 网格里几十张本地照片若一次性全取流（JNI 读系统相册的全尺寸字节），手机端会卡死。
+  // 用 IntersectionObserver 只让滚到（或接近）视口的展品去取流；取过一次后断开观察，
+  // 之后即使滚出视口也保持已加载，避免来回滚动反复取流。
+  useEffect(() => {
+    if (enabled) {
+      setInView(true);
+      return;
+    }
+    const el = ref.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      setInView(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            setInView(true);
+            io.disconnect();
+            break;
+          }
+        }
+      },
+      { rootMargin: '300px 0px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [enabled]);
+
   if (item.kind === 'video' && item.photo) {
     return (
-      <div className="wall-media wall-media--video">
+      <div className="wall-media wall-media--video" ref={ref}>
         <LocalVideo item={item} autoplay={autoplay} />
         <span className="wall-media-badge" title="视频">
           ▶
@@ -265,8 +310,8 @@ function WallMedia({
     );
   }
   return (
-    <div className="wall-media">
-      <StaticPhoto item={item} onShape={onShape} onFail={onFail} />
+    <div className="wall-media" ref={ref}>
+      <StaticPhoto item={item} onShape={onShape} onFail={onFail} enabled={inView} />
       {item.kind === 'animated' && (
         <span className="wall-media-badge" title="动图">
           GIF
@@ -978,7 +1023,7 @@ export function PhotoWall() {
                   <div className="wall-stage">
                     {style === 'corridor' && (
                       <div className="wall-stage-peek wall-stage-peek--prev" aria-hidden="true">
-                        {items.length > 1 && <WallMedia item={items[(active - 1 + items.length) % items.length]} onShape={onShape} onFail={onFail} />}
+                        {items.length > 1 && <WallMedia item={items[(active - 1 + items.length) % items.length]} onShape={onShape} onFail={onFail} enabled />}
                       </div>
                     )}
                     <figure className="wall-stage-main">
@@ -989,7 +1034,7 @@ export function PhotoWall() {
                         onClick={() => openViewer(active)}
                         title="点击放大细看（支持缩放 / 旋转）"
                       >
-                        <WallMedia item={current} onShape={onShape} onFail={onFail} autoplay />
+                        <WallMedia item={current} onShape={onShape} onFail={onFail} autoplay enabled />
                       </button>
                       <figcaption className="wall-stage-cap">
                         {showName && <b>{current.title}</b>}
@@ -1003,7 +1048,7 @@ export function PhotoWall() {
                     </figure>
                     {style === 'corridor' && (
                       <div className="wall-stage-peek wall-stage-peek--next" aria-hidden="true">
-                        {items.length > 1 && <WallMedia item={items[(active + 1) % items.length]} onShape={onShape} onFail={onFail} />}
+                        {items.length > 1 && <WallMedia item={items[(active + 1) % items.length]} onShape={onShape} onFail={onFail} enabled />}
                       </div>
                     )}
                     {style === 'lightbox' && (
