@@ -1,7 +1,10 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useData } from '../../stores/data';
 import { useUi } from '../../stores/ui';
-import { useTravelNotes } from '../../stores/travelNotes';
+import { useTravelNotes, UNTITLED_NOTE_TITLE } from '../../stores/travelNotes';
+import { bgKey, useBgUrl } from '../../stores/backgrounds';
+import { usePhotoLib } from '../../stores/photoLib';
+import { SmartImage } from '../shared/SmartImage';
 import type { NotePlaceKind, TravelNote } from '../../stores/travelNotes';
 import { deleteImage, imageUrl, saveImage } from '../../data/imageStore';
 import { noteHtmlToPlain, noteImageIds, sanitizeNoteHtml, toNoteHtml } from '../../data/noteBody';
@@ -98,6 +101,16 @@ interface NoteEditorProps {
   showToast: (msg: string) => void;
 }
 
+/**
+ * 标题输入框里「空」的唯一表示。
+ * 库里空标题会存成标准默认值「无题游记」，但那是显示用的兜底、不是用户写的内容，
+ * 进编辑器时要还原成空串 + 占位提示；判断「有无改动」的快照也必须走这里，
+ * 否则一打开编辑器就会因为「'' vs 无题游记」的差异被判成有改动、白白刷新 updatedAt。
+ */
+function titleForInput(t: string | undefined): string {
+  return t && t !== UNTITLED_NOTE_TITLE ? t : '';
+}
+
 function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, onSave, onAutoSave, onDelete, onCancel, onClosePanel, showToast }: NoteEditorProps) {
   /**
    * 正文是富文本 HTML。旧游记是纯文本 + `{{图:id}}`，这里统一转成 HTML；
@@ -108,7 +121,7 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialImages = useMemo(() => initial?.images ?? [], [initial?.id]);
 
-  const [title, setTitle] = useState(initial?.title ?? '');
+  const [title, setTitle] = useState(titleForInput(initial?.title));
   const [body, setBody] = useState(initialHtml);
   /** 笔记拥有的图片 = 正文里出现的 data-img（按顺序去重），不再单独维护一份列表 */
   const images = useMemo(() => noteImageIds(body), [body]);
@@ -157,7 +170,7 @@ function NoteEditor({ initial, initialPlace = null, lockPlace = false, places, o
   // 初始快照：与当前值一致时不触发保存（避免「打开编辑器即改动 updatedAt」）
   const initSigRef = useRef(
     JSON.stringify({
-      title: initial?.title ?? '',
+      title: titleForInput(initial?.title),
       body: initialHtml,
       placeKind: initial?.placeKind ?? initialPlace?.kind ?? null,
       placeId: initial?.placeId ?? initialPlace?.id ?? null,
@@ -516,7 +529,7 @@ function NotePreview({ note, onEdit, onDelete, onBack, onClosePanel }: NotePrevi
       </header>
 
       <div className="note-editor-scroll">
-        <h2 className="note-preview-title">{note.title || '（无标题）'}</h2>
+        <h2 className="note-preview-title">{note.title || UNTITLED_NOTE_TITLE}</h2>
 
         {note.placeName && (
           <div className="note-place">
@@ -544,6 +557,103 @@ function NotePreview({ note, onEdit, onDelete, onBack, onClosePanel }: NotePrevi
         )}
       </div>
     </div>
+  );
+}
+
+/* ================= 列表封面 ================= */
+
+/**
+ * 游记列表封面。取值优先级：
+ *   ① 本篇自己带的图（images[0] 解出来的 blob URL）
+ *   ② 该地点的自定义背景（用户在详情页「换图」换过的）
+ *   ③ 该地点在本地照片库里的第一张（用户绑定的省/市/区县照片目录）
+ *   ④ 该地点的内容主图（区县 image / 城市 banner，缺省按约定路径推导）
+ *   ⑤ 都没有 → 渐变占位块
+ *
+ * 以前只认 ①，纯文字游记一律是灰块。而本项目 /assets 下暂时没有实体图片，
+ * 所以「该地方的主图」实际主要来自 ③：用户自己绑的照片库。
+ * ③ 必须按视口懒加载 —— 手机上一张原图数 MB 且要走 JNI 读相册，
+ * 游记一多全量取就是之前照片墙卡死的老路。
+ */
+function NoteCover({ note, url }: { note: TravelNote; url?: string }) {
+  const cities = useData((s) => s.cities);
+  const districts = useData((s) => s.districts);
+  const libIndex = usePhotoLib((s) => s.index);
+  const photosFor = usePhotoLib((s) => s.photosFor);
+  const photoUrl = usePhotoLib((s) => s.photoUrl);
+
+  const kind = note.placeKind;
+  const id = note.placeId;
+  const hasOwn = note.images.length > 0;
+  const override = useBgUrl(kind && id ? bgKey(kind, id) : undefined);
+
+  // 内容自带的主图（真图缺失时 SmartImage 会降级成带地名的渐变）
+  const placeSrc = useMemo(() => {
+    if (!kind || !id) return undefined;
+    if (kind === 'district') return districts[id]?.image ?? `/assets/districts/${id}.jpg`;
+    return cities.find((c) => c.id === id)?.banner ?? `/assets/cities/${id}/banner.jpg`;
+  }, [kind, id, districts, cities]);
+
+  const boxRef = useRef<HTMLSpanElement | null>(null);
+  const [inView, setInView] = useState(false);
+  const [libSrc, setLibSrc] = useState<string | undefined>(undefined);
+
+  // 只有真的需要照片库兜底时才进视口观察（本篇有图 / 换过背景就不用）
+  const needLib = Boolean(kind && id) && !hasOwn && !override;
+  useEffect(() => {
+    if (!needLib) return;
+    const el = boxRef.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      setInView(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setInView(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '240px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [needLib]);
+
+  useEffect(() => {
+    if (!inView || !needLib || !kind || !id) return;
+    const entry = photosFor(kind, id)[0];
+    if (!entry) return;
+    let alive = true;
+    void photoUrl(entry)
+      .then((u) => {
+        if (alive && u) setLibSrc(u);
+      })
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+    // libIndex 变化（照片库刚扫描完 / 重新绑定）要重试一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView, needLib, kind, id, libIndex]);
+
+  // 本篇自己就有图时不回落：否则会先闪一下地方图、等 blob 读完再跳成本篇图
+  const src = hasOwn ? url : override ?? libSrc ?? placeSrc;
+
+  return (
+    <span className="note-card-cover" ref={boxRef}>
+      {src ? (
+        <SmartImage
+          src={src}
+          alt={note.placeName || '游记封面'}
+          label={note.placeName || note.title}
+          className="note-card-cover-img"
+        />
+      ) : (
+        <span className="note-card-cover-ph" />
+      )}
+    </span>
   );
 }
 
@@ -825,11 +935,9 @@ export function TravelNotesPanel() {
                         setPreviewId(n.id);
                       }}
                     >
-                      <span className="note-card-cover">
-                        {cover ? <img src={cover} alt="" loading="lazy" /> : <span className="note-card-cover-ph" />}
-                      </span>
+                      <NoteCover note={n} url={cover} />
                       <span className="note-card-body">
-                        <span className="note-card-title">{n.title}</span>
+                        <span className="note-card-title">{n.title || UNTITLED_NOTE_TITLE}</span>
                         {n.placeName && <span className="note-card-place">{n.placeName}</span>}
                         <span className="note-card-excerpt">
                           {noteHtmlToPlain(n.body).slice(0, 60) || (n.images.length > 0 ? '（纯图记录）' : '（正文为空）')}

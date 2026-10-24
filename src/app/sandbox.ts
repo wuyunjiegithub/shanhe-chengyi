@@ -595,5 +595,7 @@ if (typeof window !== 'undefined') {
     /** 打开游记编辑器（带预置地点），供回归脚本核对富文本工具栏是否被正文滚动带走 */
     openTravelEditor: (prefill: { kind: 'city' | 'district'; id: string; name: string }) =>
       useUi.getState().openTravelWithPlace(prefill),
+    /** 只打开游记列表（不带预置地点），供回归脚本核对列表封面与标题口径 */
+    openTravelList: () => useUi.getState().toggleTravelPanel(true),
   };
 }

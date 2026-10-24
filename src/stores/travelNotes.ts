@@ -38,21 +38,36 @@ interface TravelNotesState {
   removeNote: (id: string) => void;
 }
 
+/**
+ * 游记默认标题：全应用唯一标准。
+ * 之前 createNote 写「无题游记」、updateNote 不兜底、预览显示「（无标题）」，
+ * 于是同一篇空标题游记在不同位置显示成两种说法。现在统一到这里。
+ */
+export const UNTITLED_NOTE_TITLE = '无题游记';
+
+/** 空 / 纯空白标题一律归到这个标准值，保证各处显示一致 */
+function normalizeTitle(title: string): string {
+  return title.trim() || UNTITLED_NOTE_TITLE;
+}
+
 function read(): TravelNote[] {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return [];
     const p = JSON.parse(raw) as unknown;
     if (!Array.isArray(p)) return [];
-    return p.filter(
-      (n): n is TravelNote =>
-        typeof n === 'object' &&
-        n !== null &&
-        typeof (n as TravelNote).id === 'string' &&
-        typeof (n as TravelNote).title === 'string' &&
-        typeof (n as TravelNote).body === 'string' &&
-        Array.isArray((n as TravelNote).images),
-    );
+    return p
+      .filter(
+        (n): n is TravelNote =>
+          typeof n === 'object' &&
+          n !== null &&
+          typeof (n as TravelNote).id === 'string' &&
+          typeof (n as TravelNote).title === 'string' &&
+          typeof (n as TravelNote).body === 'string' &&
+          Array.isArray((n as TravelNote).images),
+      )
+      // 迁移旧数据：历史上被写成空串的标题，读入时统一成标准默认值
+      .map((n) => ({ ...n, title: normalizeTitle(n.title) }));
   } catch {
     return [];
   }
@@ -81,7 +96,7 @@ export const useTravelNotes = create<TravelNotesState>((set) => ({
     const now = Date.now();
     const note: TravelNote = {
       id: nextId(),
-      title: draft.title.trim() || '无题游记',
+      title: normalizeTitle(draft.title),
       body: draft.body,
       placeKind: draft.placeKind,
       placeId: draft.placeId,
@@ -100,7 +115,10 @@ export const useTravelNotes = create<TravelNotesState>((set) => ({
 
   updateNote: (id, patch) =>
     set((s) => {
-      const next = s.notes.map((n) => (n.id === id ? { ...n, ...patch, updatedAt: Date.now() } : n));
+      // 自动保存会把「用户清空标题」的 '' 直接写回；若不兜底，
+      // 列表/预览就会退回各自的历史默认文案，出现「一会无标题、一会无题游记」。
+      const safe = patch.title !== undefined ? { ...patch, title: normalizeTitle(patch.title) } : patch;
+      const next = s.notes.map((n) => (n.id === id ? { ...n, ...safe, updatedAt: Date.now() } : n));
       write(next);
       return { notes: next };
     }),
