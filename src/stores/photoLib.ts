@@ -120,6 +120,8 @@ interface PhotoLibState {
   albums: AndroidAlbum[];
   /** 是否已授权读系统相册 */
   mediaGranted: boolean;
+  /** 扫描进度（绑定 / 重新扫描时更新）；total=0 表示总数未知（不确定进度条） */
+  scanProgress: { done: number; total: number; scanning: boolean };
   restore: () => Promise<void>;
   /** 选择本地照片根目录并扫描（换绑也走这里） */
   bind: () => Promise<void>;
@@ -213,11 +215,13 @@ async function scanAndApply(
   disk: ReturnType<typeof getDisk>,
   set: (partial: Partial<PhotoLibState>) => void,
 ): Promise<void> {
-  const result = await scanDisk(disk, mapsFromContent());
+  set({ scanProgress: { done: 0, total: 0, scanning: true } });
+  const result = await scanDisk(disk, mapsFromContent(), (done, total) =>
+    set({ scanProgress: { done, total, scanning: true } }),
+  );
   clearPhotoUrlCache();
-  void cachePhotoFiles(result.files);
   applyIndex(result.index);
-  set({ index: result.index, status: 'bound', error: null, lastLiveAdded: 0 });
+  set({ index: result.index, status: 'bound', error: null, lastLiveAdded: 0, scanProgress: { done: result.index.total, total: result.index.total, scanning: false } });
 }
 
 /**
@@ -349,7 +353,10 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
       return;
     }
     try {
-      const next = await scanDisk(disk, mapsFromContent());
+      set({ scanProgress: { done: 0, total: 0, scanning: true } });
+      const next = await scanDisk(disk, mapsFromContent(), (done, total) =>
+        set({ scanProgress: { done, total, scanning: true } }),
+      );
       // 只有磁盘上真有增删才失效缓存。无条件清的话，实时模式每 20s 就会 revoke 掉
       // 正在使用的 blob URL：列表重新「加载中」闪烁、正在播放的视频直接断流。
       const sig = indexSignature(next.index);
@@ -357,7 +364,6 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
         clearPhotoUrlCache();
         lastSignature = sig;
       }
-      void cachePhotoFiles(next.files);
       // 实时模式 / 上传后刷新都走增量合并：保留旧顺序，只把新照片标出来，剔除已删除的
       const prev = get().index;
       const merged = prev && prev.persistent ? mergeIndexes(prev, next.index) : next.index;
@@ -368,12 +374,14 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
         status: 'bound',
         error: null,
         lastLiveAdded: added > 0 ? added : 0,
+        scanProgress: { done: merged.total, total: merged.total, scanning: false },
       });
     } catch (err) {
       const msg = message(err);
       set({
         status: 'error',
         error: /permission|authoriz|not allowed|security/i.test(msg) ? '目录授权已失效，请重新绑定' : msg,
+        scanProgress: { done: 0, total: 0, scanning: false },
       });
     }
   };
@@ -387,6 +395,7 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
   diskKind: 'none',
   albums: [],
   mediaGranted: false,
+  scanProgress: { done: 0, total: 0, scanning: false },
 
   restore: async () => {
     const disk = getDisk();

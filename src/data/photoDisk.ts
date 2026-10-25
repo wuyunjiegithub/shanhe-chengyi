@@ -54,8 +54,8 @@ export interface PhotoDisk {
   writeFiles(relDir: string, files: File[]): Promise<string[]>;
   /** 删除相对路径对应的真实文件，返回成功删除数 */
   deleteFiles(paths: string[]): Promise<number>;
-  /** 递归扫描根目录（最多 4 层，跳过点号开头目录） */
-  scan(): Promise<DiskHit[]>;
+  /** 递归扫描根目录（最多 4 层，跳过点号开头目录）。onProgress(done,total) 中 total=0 表示总数未知（不确定进度） */
+  scan(onProgress?: (done: number, total: number) => void): Promise<DiskHit[]>;
   /** 直接可播放的地址（Tauri 用 convertFileSrc；其余返回 null，走照片库解析） */
   directUrl(path: string): string | null;
   /** 读单张照片的字节（供把本地照片复制进游记图片库等需要 Blob 的场景） */
@@ -97,22 +97,6 @@ function uniqueName(name: string, taken: Set<string>): string {
     if (!taken.has(candidate)) return candidate;
   }
   return `${stem} (${Date.now()})${ext}`;
-}
-
-/** 受限并发执行（Tauri 扫描读图片字节用，避免同时铺满内存） */
-async function pooled<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
-  const out: R[] = new Array(items.length);
-  let cursor = 0;
-  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
-    for (;;) {
-      const i = cursor;
-      cursor += 1;
-      if (i >= items.length) return;
-      out[i] = await fn(items[i]);
-    }
-  });
-  await Promise.all(workers);
-  return out;
 }
 
 /* ---------------- File System Access API（桌面浏览器） ---------------- */
@@ -219,7 +203,7 @@ class FsaDisk implements PhotoDisk {
     return removed;
   }
 
-  async scan(): Promise<DiskHit[]> {
+  async scan(onProgress?: (done: number, total: number) => void): Promise<DiskHit[]> {
     const root = await getStoredHandle();
     if (!root) throw new Error('未绑定照片目录');
     const hits: DiskHit[] = [];
@@ -232,12 +216,14 @@ class FsaDisk implements PhotoDisk {
           const path = prefix ? `${prefix}/${name}` : name;
           const file = await (handle as FileSystemFileHandle).getFile();
           hits.push({ path, name, file, mtime: file.lastModified || 0 });
+          onProgress?.(hits.length, 0);
         } else if (handle.kind === 'directory') {
           await walk(handle as FileSystemDirectoryHandle, prefix ? `${prefix}/${name}` : name, depth + 1);
         }
       }
     };
     await walk(root, '', 1);
+    onProgress?.(hits.length, hits.length);
     return hits;
   }
 
@@ -397,7 +383,7 @@ class TauriDisk implements PhotoDisk {
     return removed;
   }
 
-  async scan(): Promise<DiskHit[]> {
+  async scan(onProgress?: (done: number, total: number) => void): Promise<DiskHit[]> {
     if (!this.root) throw new Error('未选择照片目录');
     const hits: DiskHit[] = [];
     const walk = async (dir: string, prefix: string, depth: number): Promise<void> => {
@@ -412,20 +398,16 @@ class TauriDisk implements PhotoDisk {
         if (e.name.startsWith('.')) continue;
         const path = prefix ? `${prefix}/${e.name}` : e.name;
         if (e.isDirectory) await walk(joinTauri(dir, e.name), path, depth + 1);
-        else if (e.isFile && isMediaName(e.name)) hits.push({ path, name: e.name, file: null, mtime: 0 });
+        else if (e.isFile && isMediaName(e.name)) {
+          // 轻扫描：只登记路径与文件名，不读取任何图片字节（显示走 directUrl 流式，画幅渲染时懒探测）
+          hits.push({ path, name: e.name, file: null, mtime: 0 });
+          onProgress?.(hits.length, 0);
+        }
       }
     };
     await walk(this.root, '', 1);
-    // 图片读字节（画幅探测 + IndexedDB 缓存用）；视频只登记，播放走 directUrl
-    return pooled(hits, 8, async (h) => {
-      if (kindOfName(h.name) === 'video') return h;
-      try {
-        const bytes = await tauriReadFile(joinTauri(this.root!, h.path));
-        return { ...h, file: new File([bytes], h.name, { type: mimeOf(h.name) }) };
-      } catch {
-        return h;
-      }
-    });
+    onProgress?.(hits.length, hits.length);
+    return hits;
   }
 
   directUrl(path: string): string | null {
@@ -478,7 +460,7 @@ class NoneDisk implements PhotoDisk {
     throw new Error('当前环境不支持删除本地文件');
   }
 
-  async scan(): Promise<DiskHit[]> {
+  async scan(_onProgress?: (done: number, total: number) => void): Promise<DiskHit[]> {
     throw new Error('当前环境不支持访问本地目录');
   }
 
