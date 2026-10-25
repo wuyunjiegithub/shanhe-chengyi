@@ -42,6 +42,7 @@ function Panel({ onClose }: { onClose: () => void }) {
   const weatherOn = useUi((s) => s.weather);
   const setWeatherOpen = useUi((s) => s.setWeatherOpen);
   const diskKind = usePhotoLib((s) => s.diskKind);
+  const scanProgress = usePhotoLib((s) => s.scanProgress);
   const uploadTo = usePhotoLib((s) => s.uploadTo);
   const showToast = useUi((s) => s.showToast);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -190,6 +191,27 @@ function Panel({ onClose }: { onClose: () => void }) {
               </>
             )}
           </div>
+
+          {/* 扫描进度：绑定 / 重新扫描期间实时反馈，避免「点了没反应 / 卡住」的错觉 */}
+          {scanProgress.scanning && (
+            <div className="photo-lib-scan">
+              <div className="photo-lib-scan-bar">
+                <i
+                  style={
+                    scanProgress.total > 0
+                      ? { width: `${Math.min(100, Math.round((scanProgress.done / scanProgress.total) * 100))}%` }
+                      : undefined
+                  }
+                  className={scanProgress.total > 0 ? '' : 'is-indeterminate'}
+                />
+              </div>
+              <span className="photo-lib-scan-text">
+                {scanProgress.total > 0
+                  ? `正在扫描照片… ${scanProgress.done} / ${scanProgress.total}`
+                  : `正在扫描照片… 已发现 ${scanProgress.done} 张`}
+              </span>
+            </div>
+          )}
 
           {/* 实时模式：定时重扫目录，新放入的照片自动上墙 */}
           <div className="photo-lib-live">

@@ -199,161 +199,6 @@ export function classifyShape(width: number, height: number): PhotoShape {
   return 'other';
 }
 
-/* ---------------- 文件头探测（不解码，只读前若干字节） ---------------- */
-
-const PROBE_BYTES = 320 * 1024;
-
-function u16be(b: Uint8Array, o: number): number {
-  return (b[o] << 8) | b[o + 1];
-}
-function u32be(b: Uint8Array, o: number): number {
-  return ((b[o] << 24) | (b[o + 1] << 16) | (b[o + 2] << 8) | b[o + 3]) >>> 0;
-}
-function u32le(b: Uint8Array, o: number): number {
-  return ((b[o + 3] << 24) | (b[o + 2] << 16) | (b[o + 1] << 8) | b[o]) >>> 0;
-}
-
-function matchAt(b: Uint8Array, o: number, sig: number[]): boolean {
-  if (o + sig.length > b.length) return false;
-  for (let i = 0; i < sig.length; i++) if (b[o + i] !== sig[i]) return false;
-  return true;
-}
-
-/** JPEG：遍历标记段找 SOFn */
-function probeJpeg(b: Uint8Array): [number, number] | null {
-  let o = 2;
-  while (o + 9 < b.length) {
-    if (b[o] !== 0xff) {
-      o += 1;
-      continue;
-    }
-    const marker = b[o + 1];
-    if (marker === 0xd8 || marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) {
-      o += 2;
-      continue;
-    }
-    if (marker === 0xda || marker === 0xd9) break; // 扫描数据开始 / 结束
-    const len = u16be(b, o + 1);
-    // SOF0~SOF15（排除 DHT/JPG/DAC）
-    if (
-      (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc)
-    ) {
-      const height = u16be(b, o + 5);
-      const width = u16be(b, o + 7);
-      if (width > 0 && height > 0) return [width, height];
-      return null;
-    }
-    o += 2 + len;
-  }
-  return null;
-}
-
-/** WebP：VP8（有损）/ VP8L（无损）/ VP8X（扩展）三种容器 */
-function probeWebp(b: Uint8Array): [number, number] | null {
-  // RIFF????WEBP
-  if (!matchAt(b, 0, [0x52, 0x49, 0x46, 0x46]) || !matchAt(b, 8, [0x57, 0x45, 0x42, 0x50])) return null;
-  const chunk = String.fromCharCode(b[12], b[13], b[14], b[15]);
-  if (chunk === 'VP8 ') {
-    // 有损：帧头在 chunk 数据 +10 处，宽高各 14 位
-    const w = (b[26] | (b[27] << 8)) & 0x3fff;
-    const h = (b[28] | (b[29] << 8)) & 0x3fff;
-    return w > 0 && h > 0 ? [w, h] : null;
-  }
-  if (chunk === 'VP8L') {
-    const bits = u32le(b, 21);
-    const w = (bits & 0x3fff) + 1;
-    const h = ((bits >> 14) & 0x3fff) + 1;
-    return w > 0 && h > 0 ? [w, h] : null;
-  }
-  if (chunk === 'VP8X') {
-    const w = (u32le(b, 24) & 0xffffff) + 1;
-    const h = (u32le(b, 27) & 0xffffff) + 1;
-    return w > 0 && h > 0 ? [w, h] : null;
-  }
-  return null;
-}
-
-/** AVIF/HEIF：找 ispe 盒（image spatial extents） */
-function probeIsobmff(b: Uint8Array): [number, number] | null {
-  const sig = [0x69, 0x73, 0x70, 0x65]; // 'ispe'
-  for (let o = 0; o + 20 <= b.length; o++) {
-    if (matchAt(b, o, sig)) {
-      const w = u32be(b, o + 8);
-      const h = u32be(b, o + 12);
-      if (w > 0 && h > 0 && w < 100000 && h < 100000) return [w, h];
-    }
-  }
-  return null;
-}
-
-/** MP4/MOV：找 tkhd 盒，按版本解析轨道宽高（16.16 定点） */
-function probeMp4(b: Uint8Array): [number, number] | null {
-  const sig = [0x74, 0x6b, 0x68, 0x64]; // 'tkhd'
-  for (let o = 0; o + 100 <= b.length; o++) {
-    if (!matchAt(b, o, sig)) continue;
-    const version = b[o + 4];
-    // version 0: ...+80/+84；version 1: ...+88/+92（多 8 字节时间字段）
-    const base = version === 1 ? o + 4 + 8 + 8 + 4 + 8 + 8 + 2 + 2 + 2 + 2 + 36 : o + 4 + 4 + 4 + 4 + 4 + 8 + 2 + 2 + 2 + 2 + 36;
-    const w = u32be(b, base) >> 16;
-    const h = u32be(b, base + 4) >> 16;
-    if (w > 0 && h > 0 && w < 100000 && h < 100000) return [w, h];
-    return null;
-  }
-  return null;
-}
-
-/** 由文件头推断尺寸；识别不了返回 null（交由渲染时懒探测） */
-async function probeFileSize(file: File): Promise<[number, number] | null> {
-  let b: Uint8Array;
-  try {
-    const buf = await file.slice(0, PROBE_BYTES).arrayBuffer();
-    b = new Uint8Array(buf);
-  } catch {
-    return null;
-  }
-  if (b.length < 16) return null;
-  // PNG
-  if (matchAt(b, 0, [0x89, 0x50, 0x4e, 0x47])) {
-    const w = u32be(b, 16);
-    const h = u32be(b, 20);
-    return w > 0 && h > 0 ? [w, h] : null;
-  }
-  // JPEG
-  if (matchAt(b, 0, [0xff, 0xd8, 0xff])) return probeJpeg(b);
-  // GIF（逻辑屏幕尺寸在小端序 6..10）
-  if (matchAt(b, 0, [0x47, 0x49, 0x46, 0x38])) {
-    const w = b[6] | (b[7] << 8);
-    const h = b[8] | (b[9] << 8);
-    return w > 0 && h > 0 ? [w, h] : null;
-  }
-  // WebP
-  if (matchAt(b, 0, [0x52, 0x49, 0x46, 0x46]) && matchAt(b, 8, [0x57, 0x45, 0x42, 0x50])) {
-    return probeWebp(b);
-  }
-  // BMP（DIB 头，小端序 18..26）
-  if (matchAt(b, 0, [0x42, 0x4d])) {
-    const w = u32le(b, 18);
-    const h = u32le(b, 22);
-    return w > 0 && h > 0 ? [w, h] : null;
-  }
-  // AVIF / HEIF
-  if (matchAt(b, 4, [0x66, 0x74, 0x79, 0x70])) return probeIsobmff(b);
-  // MP4 / MOV（ftyp 或 moov/mdat 起头）
-  if (matchAt(b, 4, [0x66, 0x74, 0x79, 0x70]) || matchAt(b, 4, [0x6d, 0x6f, 0x6f, 0x76])) {
-    return probeMp4(b);
-  }
-  return null;
-}
-
-/** 扫描期为单个文件推断类型与画幅 */
-async function probeEntry(fileName: string, file: File | null): Promise<{ kind: PhotoKind; shape: PhotoShape }> {
-  const kind = kindOf(fileName);
-  if (kind === 'animated') return { kind, shape: 'unknown' }; // 动图画幅渲染时再定
-  if (!file) return { kind, shape: 'unknown' };
-  const size = await probeFileSize(file);
-  return { kind, shape: size ? classifyShape(size[0], size[1]) : 'unknown' };
-}
-
 /* ---------------- 扫描 ---------------- */
 
 interface RawHit {
@@ -363,16 +208,6 @@ interface RawHit {
   mtime: number;
   districtId: string | null;
   cityId: string | null;
-}
-
-/** 并发受限地推断类型 / 画幅 */
-async function probeAll(hits: RawHit[], batch = 16): Promise<{ kind: PhotoKind; shape: PhotoShape }[]> {
-  const out: { kind: PhotoKind; shape: PhotoShape }[] = [];
-  for (let i = 0; i < hits.length; i += batch) {
-    const slice = hits.slice(i, i + batch);
-    out.push(...(await Promise.all(slice.map((h) => probeEntry(h.name, h.file)))));
-  }
-  return out;
 }
 
 /** 把原始命中装配为索引（保持「省/市/区县」归属与单区县上限） */
@@ -388,10 +223,8 @@ function buildIndex(
   let total = 0;
   const push = (bucket: Record<string, PhotoEntry[]>, key: string, entry: PhotoEntry) => {
     const list = bucket[key] ?? (bucket[key] = []);
-    if (list.length < 60) {
-      list.push(entry);
-      total += 1;
-    }
+    list.push(entry);
+    total += 1;
   };
   hits.forEach((h, i) => {
     const entry: PhotoEntry = {
@@ -426,10 +259,15 @@ function placeHit(segs: string[], maps: NameMaps): { districtId: string | null; 
  * 经磁盘后端扫描整棵照片目录（FSA 句柄或 Tauri 路径，由 photoDisk 适配），
  * 按「省 / 市 / 区县」文件夹名归属到行政区，产出索引与字节缓存。
  */
-export async function scanDisk(disk: PhotoDisk, maps: NameMaps): Promise<ScanResult> {
-  const hits = await disk.scan();
+export async function scanDisk(
+  disk: PhotoDisk,
+  maps: NameMaps,
+  onProgress?: (done: number, total: number) => void,
+): Promise<ScanResult> {
+  const hits = await disk.scan(onProgress);
   const raw: RawHit[] = hits.map((h) => ({ ...h, ...placeHit(h.path.split('/'), maps) }));
-  const probed = await probeAll(raw);
+  // 轻扫描：不在此阶段探测尺寸（需读文件头），画幅交由照片墙渲染时懒回填（refineShape）
+  const probed = raw.map((h) => ({ kind: kindOf(h.name), shape: 'unknown' as PhotoShape }));
   const label = await disk.rootLabel();
   memoryFiles.clear();
   const files = new Map<string, File>();

@@ -4646,6 +4646,49 @@ button.wall-stage-img {
   color: var(--text-1);
 }
 
+/* 扫描进度（绑定 / 重新扫描期间） */
+.photo-lib-scan {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-2);
+}
+
+.photo-lib-scan-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.photo-lib-scan-bar > i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.18s ease;
+}
+
+.photo-lib-scan-bar > i.is-indeterminate {
+  width: 38% !important;
+  animation: scan-indeterminate 1.1s ease-in-out infinite;
+}
+
+@keyframes scan-indeterminate {
+  0% { margin-left: -38%; }
+  100% { margin-left: 100%; }
+}
+
+.photo-lib-scan-text {
+  display: block;
+  margin-top: 7px;
+  font-size: 11px;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+}
+
 /* 手动上传管理（按地点分组） */
 .photo-lib-uploads {
   margin-top: 18px;
