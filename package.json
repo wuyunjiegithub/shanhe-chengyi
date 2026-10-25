@@ -3,6 +3,13 @@
   "private": true,
   "version": "0.9.26",
   "type": "module",
+  "license": "MIT",
+  "author": "wuyunjiegithub",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wuyunjiegithub/shanhe-chengyi.git"
+  },
+  "homepage": "https://github.com/wuyunjiegithub/shanhe-chengyi#readme",
   "scripts": {
     "dev": "vite",
     "content": "node scripts/build-content.mjs",
