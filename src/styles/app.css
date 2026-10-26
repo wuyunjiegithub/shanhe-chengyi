@@ -7215,3 +7215,88 @@ button.wall-stage-img {
     font-size: 10.5px;
   }
 }
+
+/* ============================================================
+   横屏适配（手机 / 小平板横放，宽 ≤1080）
+   ------------------------------------------------------------
+   竖屏的「底部 60vh 半屏」在横屏高度只剩 ~360-420px 时会吃光纵向空间、
+   还会跟底栏打架。因此横屏统一改为「右侧停靠侧栏」（与桌面端一致），
+   并关闭下滑收起手势（useBottomSheet 横屏下不再注入 translateY）。
+   旋转本身安卓清单未锁方向（configChanges 含 orientation），跟随系统即可。
+   ============================================================ */
+@media (orientation: landscape) and (max-width: 1080px) {
+  /* 区县详情：右停靠侧栏 */
+  .drawer {
+    position: fixed;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    left: auto;
+    width: min(46vw, 460px);
+    max-width: 460px;
+    height: auto;
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    transform: translateX(calc(100% + 20px));
+    opacity: 0;
+    pointer-events: none;
+    z-index: 45;
+  }
+  .drawer.is-open {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .drawer.is-full {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    max-width: none;
+    height: auto;
+    border: none;
+    border-radius: 0;
+  }
+
+  /* 城市概览：右停靠侧栏 */
+  .city-panel {
+    position: fixed;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    left: auto;
+    width: min(46vw, 460px);
+    max-width: 460px;
+    height: auto;
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    z-index: 45;
+  }
+  .city-panel.is-full {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    max-width: none;
+    height: auto;
+    border: none;
+    border-radius: 0;
+  }
+
+  /* 横屏无下滑手势：隐藏抓手（useBottomSheet 也不再绑定指针事件） */
+  .sheet-grabber {
+    display: none !important;
+  }
+
+  /* 横屏顶栏保持单行，避免搜索框独占一行吃掉纵向空间 */
+  .hud-top {
+    flex-wrap: nowrap;
+  }
+  .search-console {
+    order: 0;
+    flex: 1 1 auto;
+    max-width: 360px;
+  }
+}
