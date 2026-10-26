@@ -367,6 +367,13 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
   };
 
   const doRescan = async (): Promise<void> => {
+    // 安卓系统相册路径：照片墙内容来自 MediaStore（按相册名匹配区县），而不是「绑定文件夹」。
+    // 若仍去扫绑定文件夹（通常为空），下面的 mergeIndexes 会把相册索引里 prev 独有的区县全清掉，
+    // 等于开启实时更新 / 上传 / 删除后照片墙被瞬间清空。这里统一改成重建相册索引。
+    if (isAndroidShell() && hasMediaBridge()) {
+      await loadMediaAlbums();
+      return;
+    }
     const disk = getDisk();
     set({ diskKind: disk.kind });
     if (disk.kind === 'none') {
