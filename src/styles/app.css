@@ -3758,7 +3758,17 @@ button.is-disabled {
   transition: transform 0.4s ease;
 }
 
-.wall-tile:hover .wall-tile-img .smart-img {
+/* 网格缩略图：用 contain 而非 cover——cover 会把竖图裁成 4:3 横条，
+ * 导致「横图 / 竖图看着一个样、竖图只露中间一小块」。contain 在 4:3 暗框里
+ * 完整呈现原图（竖图显瘦长、横图显宽扁），两者一眼可分。 */
+.wall-tile-img .wall-media-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.wall-tile:hover .wall-tile-img .smart-img,
+.wall-tile:hover .wall-tile-img .wall-media-img {
   transform: scale(1.06);
 }
 
@@ -5470,14 +5480,15 @@ button.wall-stage-img {
 
 .np-toolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   padding: 10px 16px;
   border-bottom: 1px solid var(--border);
 }
 
 .np-toolbar .ghost-btn {
-  padding: 4px 10px;
+  padding: 5px 12px;
   font-size: 11px;
 }
 
@@ -5640,7 +5651,7 @@ button.wall-stage-img {
 
 .np-foot-acts {
   display: flex;
-  gap: 8px;
+  gap: 12px;
 }
 
 .np-foot-acts .primary-btn {
@@ -6733,7 +6744,9 @@ button.wall-stage-img {
   right: 0;
   bottom: calc(70px + env(safe-area-inset-bottom, 0px));
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   padding: 0 16px;
   pointer-events: none;
   z-index: 5;

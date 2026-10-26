@@ -122,9 +122,17 @@ function LibThumb({
       title={`${row.entry.name}${row.sub ? ` · ${row.sub}` : ''}（双击直接插入）`}
     >
       <span className="np-cell-img">
-        {src ? <img src={src} alt={row.entry.name} loading="lazy" draggable={false} /> : null}
+        {src ? (
+          <img
+            src={src}
+            alt={row.entry.name}
+            decoding="async"
+            draggable={false}
+            onError={() => setFailed(true)}
+          />
+        ) : null}
         {!src && !failed && <span className="np-cell-loading">…</span>}
-        {failed && <span className="np-cell-failed">读取失败</span>}
+        {failed && <span className="np-cell-failed">无法预览</span>}
         <span className="np-cell-check">{selected ? '✓' : ''}</span>
       </span>
       <span className="np-cell-name">{row.entry.name}</span>
