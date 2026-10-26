@@ -142,7 +142,17 @@ export function NoteRichEditor({
   });
   /** 当前点中的图片：浮出删除钮 + 右下角缩放手柄 */
   const imgElRef = useRef<HTMLImageElement | null>(null);
-  const [imgBox, setImgBox] = useState<{ top: number; left: number; w: number; h: number } | null>(null);
+  /** 手柄的定位基准（.rt-wrap，position:relative）：必须用它算坐标，见 syncImgBox */
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [imgBox, setImgBox] = useState<{
+    top: number;
+    left: number;
+    w: number;
+    h: number;
+    /** 缩放手柄的实际坐标（右下角被夹进可视区后的位置） */
+    handleTop: number;
+    handleLeft: number;
+  } | null>(null);
   /** 缩放手柄的拖动状态（pointer capture 在柄上，移动/抬起都走柄自身的事件） */
   const dragRef = useRef<{ pointerId: number; startX: number; startW: number } | null>(null);
 
@@ -155,8 +165,37 @@ export function NoteRichEditor({
     return Math.max(80, el.clientWidth - pad);
   };
 
+  /**
+   * 手柄坐标：**必须用 getBoundingClientRect 相对 .rt-wrap 算差值**。
+   *
+   * 原来写的是 `img.offsetTop / offsetLeft`，那是布局坐标、不含滚动量；
+   * 而图片在 .rt-body（overflow-y:auto 的滚动容器）里面，手柄却挂在
+   * .rt-body 外面的 .rt-wrap 上。图片一改成按正文宽满铺，高度常常超过
+   * 一屏，往下滚之后手柄还停在「没滚动时」的旧位置、跑出可视区，
+   * 拖起来就完全没反应 —— 表现就是「不能手动调整大小了」。
+   * 用视口矩形差值算，滚动、缩放、换行都不会错位。
+   */
   const syncImgBox = (img: HTMLImageElement) => {
-    setImgBox({ top: img.offsetTop, left: img.offsetLeft, w: img.offsetWidth, h: img.offsetHeight });
+    const host = wrapRef.current;
+    if (!host) return;
+    const r = img.getBoundingClientRect();
+    const hr = host.getBoundingClientRect();
+    const left = r.left - hr.left;
+    const top = r.top - hr.top;
+    const w = r.width;
+    const h = r.height;
+    // 手柄本来钉在图片右下角；图片比正文可视区高时（整宽图很常见），
+    // 右下角可能滚到可视区之外，夹到可视区底边，保证任何时候都够得着。
+    let handleTop = top + h - 13;
+    let handleLeft = left + w - 13;
+    const body = bodyRef.current?.getBoundingClientRect();
+    if (body) {
+      const bTop = body.top - hr.top;
+      const bBottom = body.bottom - hr.top;
+      handleTop = Math.max(bTop + 4, Math.min(handleTop, bBottom - 30));
+      handleLeft = Math.max(4, Math.min(handleLeft, hr.width - 30));
+    }
+    setImgBox({ top, left, w, h, handleTop, handleLeft });
   };
 
   /**
@@ -203,6 +242,9 @@ export function NoteRichEditor({
     if (!el) return;
     setEmpty(isEmptyEl(el));
     onChange(sanitizeNoteHtml(el.innerHTML));
+    // 打字会让上面的内容变高/变矮，图片位置跟着挪，手柄得跟上
+    const im = imgElRef.current;
+    if (im) syncImgBox(im);
   };
 
   /* 挂载：注入初始 HTML + 设定编辑器的段落行为（只做一次） */
@@ -447,6 +489,8 @@ export function NoteRichEditor({
     if (img) {
       img.classList.add('is-sel');
       syncImgBox(img);
+      // 图还没解码完时高度算 0，手柄会贴在图片顶上；等它出来再校正一次
+      if (!img.complete) img.addEventListener('load', () => syncImgBox(img), { once: true });
     } else {
       setImgBox(null);
     }
@@ -500,6 +544,22 @@ export function NoteRichEditor({
     emit(); // 落库这次改的宽度
   };
 
+  /* 面板尺寸变化（窗口缩放 / 手机键盘弹出 / 旋转屏幕）后手柄会错位，重算一次 */
+  useEffect(() => {
+    const sync = () => {
+      const im = imgElRef.current;
+      if (im) syncImgBox(im);
+    };
+    window.addEventListener('resize', sync);
+    window.visualViewport?.addEventListener('resize', sync);
+    return () => {
+      window.removeEventListener('resize', sync);
+      window.visualViewport?.removeEventListener('resize', sync);
+    };
+    // syncImgBox 只读 ref，挂载一次即可
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const btn = (
     label: string,
     cmd: string,
@@ -517,7 +577,7 @@ export function NoteRichEditor({
   );
 
   return (
-    <div className="rt-wrap">
+    <div className="rt-wrap" ref={wrapRef}>
       {/* 工具栏不挂 title 悬浮提示：手机上没有 hover，长按还会弹系统浮层挡按钮 */}
       <div className="rt-toolbar">
         <button
@@ -622,6 +682,11 @@ export function NoteRichEditor({
         aria-multiline="true"
         data-ph={placeholder}
         onInput={emit}
+        /* 正文是滚动容器：滚动手柄要跟着图片走，否则会停在旧位置（拖不到） */
+        onScroll={() => {
+          const im = imgElRef.current;
+          if (im) syncImgBox(im);
+        }}
         onBlur={(e) => {
           // 失焦时如果是空编辑器，浏览器可能留下 <br>，清掉才能显示占位提示。
           // 注意：不要把 lastRangeRef 清空 —— 点下方「插入照片」按钮会先失焦，
@@ -662,7 +727,7 @@ export function NoteRichEditor({
             role="slider"
             aria-label="拖动调整图片大小"
             aria-valuenow={imgBox.w}
-            style={{ top: imgBox.top + imgBox.h - 13, left: imgBox.left + imgBox.w - 13 }}
+            style={{ top: imgBox.handleTop, left: imgBox.handleLeft }}
             onPointerDown={onResizeStart}
             onPointerMove={onResizeMove}
             onPointerUp={onResizeEnd}

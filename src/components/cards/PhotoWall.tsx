@@ -35,7 +35,7 @@ const STYLES: { id: WallStyle; name: string; hint: string }[] = [
   { id: 'gallery', name: '展厅', hint: '展墙网格：均匀挂画 + 展签' },
   { id: 'corridor', name: '长廊', hint: '长廊移步：单幅大字 + 两侧窥视' },
   { id: 'lightbox', name: '灯箱', hint: '灯箱独照：暗场聚光 + 展签' },
-  { id: 'hall3d', name: '照片空间 · 3D', hint: '所有照片汇成一条旋臂星河：拖动环绕、滚轮缩放、点击居中放大' },
+  { id: 'hall3d', name: '照片空间 · 3D', hint: '照片铺满一整个立体空间：拖动环绕、滚轮拉近钻进去 / 拉远看全貌、点击居中放大' },
 ];
 
 /** 手机端可用的展览风格：3D 空间（WebGL 星海 + 手势环绕）在手机上又费电又难点准，直接去掉 */

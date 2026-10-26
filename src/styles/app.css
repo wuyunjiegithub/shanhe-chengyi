@@ -5363,6 +5363,13 @@ button.wall-stage-img {
   touch-action: none;
 }
 
+/* 触控热区放大：视觉上仍是 26px 的小圆，手指（和鼠标）更容易按中 */
+.rt-img-resize::after {
+  content: '';
+  position: absolute;
+  inset: -9px;
+}
+
 /* 工具栏字体下拉：和按钮同高同风格 */
 .rt-font {
   flex: 0 0 auto;
