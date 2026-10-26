@@ -378,7 +378,7 @@ export function PhotoViewer({
                   }}
                 />
                 <div className="pv-cap-actions">
-                  <button type="button" className="ghost-btn" onClick={saveName}>
+                  <button type="button" className="primary-btn" onClick={saveName}>
                     保存
                   </button>
                   <button
@@ -415,7 +415,7 @@ export function PhotoViewer({
                 }}
               />
               <div className="pv-cap-actions">
-                <button type="button" className="ghost-btn" onClick={saveCap}>
+                <button type="button" className="primary-btn" onClick={saveCap}>
                   保存
                 </button>
                 {caption && (
