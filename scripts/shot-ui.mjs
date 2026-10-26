@@ -1,43 +1,43 @@
 import pw from 'file:///C:/Users/user/.workbuddy/binaries/node/workspace/node_modules/playwright-core/index.js';
 const { chromium } = pw;
-const browser = await chromium.launch({
-  executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe',
-  headless: true,
-  args: ['--no-sandbox', '--use-gl=swiftshader', '--enable-unsafe-swiftshader'],
-});
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-await page.goto('http://127.0.0.1:1421/', { waitUntil: 'networkidle', timeout: 30000 });
-await page.waitForSelector('.hud-top', { timeout: 15000 });
-await page.waitForTimeout(2600);
-await page.screenshot({ path: 'regression-shots/ui-region-bottom.png', clip: { x: 0, y: 760, width: 1440, height: 140 } });
+import path from 'node:path';
 
-await page.evaluate(() => window.__sandboxApp.focusCityById('330100'));
-await page.waitForTimeout(2400);
-const acts = await page.evaluate(() =>
-  [...document.querySelectorAll('.city-actions .city-act')].map((b) => b.textContent.trim()),
-);
-const panelBox = await page.evaluate(() => {
-  const el = document.querySelector('.city-panel');
-  if (!el) return null;
-  const r = el.getBoundingClientRect();
-  return { x: Math.round(r.x), y: Math.round(r.y), width: Math.round(r.width), height: Math.round(r.height) };
-});
-console.log('ACTS', JSON.stringify(acts), 'BOX', JSON.stringify(panelBox));
-if (panelBox) {
-  await page.screenshot({ path: 'regression-shots/ui-city-panel.png', clip: panelBox });
+for (const k of ['HTTP_PROXY', 'http_proxy', 'HTTPS_PROXY', 'https_proxy', 'ALL_PROXY', 'all_proxy']) delete process.env[k];
+
+const URL = 'http://[::1]:1420/';
+const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const OUT = path.resolve('regression-shots');
+const W = 1440, H = 900;
+
+const browser = await chromium.launch({ executablePath: CHROME });
+const page = await browser.newPage({ viewport: { width: W, height: H } });
+await page.goto(URL, { waitUntil: 'domcontentloaded' });
+await page.waitForSelector('.index-group-title', { timeout: 30000 });
+await page.waitForTimeout(2500);
+await page.screenshot({ path: path.join(OUT, 'ui-overview.png') });
+
+// 城市下钻：北京
+await page.evaluate(() => window.__sandboxApp.focusCityById('110000'));
+await page.waitForTimeout(3000);
+await page.screenshot({ path: path.join(OUT, 'ui-beijing.png') });
+
+// 区县 3D 视图：东城区
+await page.evaluate(() => window.__sandboxApp.selectDistrictById('110101'));
+await page.waitForTimeout(3500);
+await page.screenshot({ path: path.join(OUT, 'ui-district.png') });
+
+// 手机竖屏总览
+await page.evaluate(() => window.__sandboxApp.backToRegion());
+await page.waitForTimeout(2500);
+const mb = await browser.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+await mb.goto(URL, { waitUntil: 'domcontentloaded' });
+try {
+  await mb.waitForSelector('.hud-top', { timeout: 25000 });
+} catch {
+  console.log('mobile: .hud-top 未出现，直接截图');
 }
+await mb.waitForTimeout(3500);
+await mb.screenshot({ path: path.join(OUT, 'ui-mobile.png') });
 
-await page.evaluate(() => {
-  const b = [...document.querySelectorAll('.bottom-right button')].find((x) => x.textContent.includes('时间线'));
-  b && b.click();
-});
-await page.waitForTimeout(700);
-const tlBox = await page.evaluate(() => {
-  const el = document.querySelector('.timeline-panel');
-  if (!el) return null;
-  const r = el.getBoundingClientRect();
-  return { x: Math.round(r.x), y: Math.round(r.y), width: Math.round(r.width), height: Math.round(r.height) };
-});
-if (tlBox) await page.screenshot({ path: 'regression-shots/ui-timeline.png', clip: tlBox });
-console.log('TL', JSON.stringify(tlBox));
 await browser.close();
+console.log('shots done:', ['ui-overview', 'ui-beijing', 'ui-district', 'ui-mobile'].join(', '));
