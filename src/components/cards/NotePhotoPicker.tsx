@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useData } from '../../stores/data';
 import { usePhotoLib } from '../../stores/photoLib';
@@ -97,8 +97,33 @@ function LibThumb({
   const photoUrl = usePhotoLib((s) => s.photoUrl);
   const [src, setSrc] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  /** 进入视口才解析地址：一次上百张全解析会同时读上百个文件，手机端直接 OOM */
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    const el = btnRef.current;
+    if (!el || visible) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      setVisible(true);
+      return;
+    }
+    const root = el.closest('.np-grid');
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setVisible(true);
+          io.disconnect();
+        }
+      },
+      { root: root instanceof HTMLElement ? root : null, rootMargin: '320px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [visible]);
+
+  useEffect(() => {
+    if (!visible) return;
     let alive = true;
     setSrc(null);
     setFailed(false);
@@ -110,11 +135,12 @@ function LibThumb({
     return () => {
       alive = false;
     };
-  }, [row, photoUrl]);
+  }, [row, photoUrl, visible]);
 
   return (
     <button
       type="button"
+      ref={btnRef}
       className={`np-cell${selected ? ' is-on' : ''}${disabled ? ' is-disabled' : ''}`}
       onClick={onToggle}
       onDoubleClick={onDouble}

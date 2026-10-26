@@ -5509,6 +5509,10 @@ button.wall-stage-img {
   gap: 10px;
   padding: 14px 16px;
   align-content: start;
+  /* 行高必须由内容决定：默认 auto 行会按「最小内容高度」计算，
+     而缩略图的高度/百分比 padding 不计入最小内容高度，会被压成几像素的一条。 */
+  grid-auto-rows: max-content;
+  align-items: start;
 }
 
 .np-cell {
@@ -5544,10 +5548,20 @@ button.wall-stage-img {
   position: relative;
   display: block;
   width: 100%;
-  /* 用 padding 撑出正方形：老版本安卓 WebView 不认 aspect-ratio，
-     会让这个 flex 子项高度塌成 0、缩略图被压成细条（只剩右上角勾选圈）。 */
-  padding-top: 100%;
+  /* 用 aspect-ratio 给这个盒子一个「真实的内在高度」：栅格行高、flex 伸缩
+     都依赖内在高度计算，纯 padding 撑高在栅格里会被当成 0，整格塌成细条。 */
+  aspect-ratio: 1 / 1;
+  flex: none;
+  overflow: hidden;
   background: #0b1220;
+}
+
+/* 极老 WebView 不认 aspect-ratio，退回 padding 撑正方形 */
+@supports not (aspect-ratio: 1 / 1) {
+  .np-cell-img {
+    height: 0;
+    padding-top: 100%;
+  }
 }
 
 .np-cell-img img {
@@ -6635,7 +6649,14 @@ button.wall-stage-img {
 }
 
 .pv-media {
-  max-width: min(92vw, 1500px);
+  /* 用绝对定位 + margin:auto 居中，尺寸交给 max-* 约束：
+     画布（.pv-canvas）是 flex 项，给子元素设 height:100% 时百分比在部分内核里
+     解析不出来，竖图就会按原始尺寸铺开、只露左上角一小块。
+     绝对定位的包含块是画布的 padding box，尺寸确定，max-* 一定生效。 */
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  max-width: 100%;
   max-height: 100%;
   object-fit: contain;
   user-select: none;
