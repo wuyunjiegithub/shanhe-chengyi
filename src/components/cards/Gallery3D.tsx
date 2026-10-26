@@ -125,6 +125,10 @@ interface PhotoNode {
   /** 聚焦混合（0 = 在旋臂原位，1 = 飞抵中央展示） */
   focus: number;
   index: number;
+  /** 这张照片的可取地址（聚焦时用它补一版高清纹理） */
+  url?: string;
+  /** 是否已经是高清纹理 */
+  hd?: boolean;
 }
 
 /**
@@ -345,8 +349,80 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       setLoaded(done);
     };
 
-    const loader = new THREE.TextureLoader();
-    loader.setCrossOrigin('anonymous');
+    /**
+     * ---------- 渐进式上画 ----------
+     * 以前是把 items 里每张图同时 `TextureLoader.load(url)`：220 张原图一起
+     * 解码（手机上是 2000~4000px 的 JPEG）+ 一起上传显存，解码线程被占满、
+     * 显存暴涨，弹层打开就直接卡死甚至丢 WebGL 上下文。
+     * 现在三件事：
+     * 1) 限量并发（手机上 3、桌面 4），排队的图慢慢上，界面立刻可用；
+     * 2) 先缩成小纹理再上传（星系里一张照片在屏幕上就一两百像素，
+     *    512 边长足够；手机 384），显存占用降到原来的几十分之一；
+     * 3) 用户点开放大看的那张，再单独补一版高清（见 tick 里的 hd 逻辑）。
+     */
+    const TEX_MAX = IS_MOBILE ? 384 : 512;
+    const TEX_MAX_HD = IS_MOBILE ? 1024 : 1536;
+    const CONCURRENCY = IS_MOBILE ? 3 : 4;
+
+    /** 把 <img> 画进缩略画布并生成纹理：返回纹理与原始画幅 */
+    const rasterize = (img: HTMLImageElement, maxEdge: number) => {
+      const nw = img.naturalWidth || 0;
+      const nh = img.naturalHeight || 0;
+      if (!nw || !nh) return null;
+      const k = Math.min(1, maxEdge / Math.max(nw, nh));
+      const c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(nw * k));
+      c.height = Math.max(1, Math.round(nh * k));
+      const g = c.getContext('2d');
+      if (!g) return null;
+      g.drawImage(img, 0, 0, c.width, c.height);
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.anisotropy = 4;
+      return { tex, aspect: nw / nh };
+    };
+
+    const loadImg = (url: string) =>
+      new Promise<HTMLImageElement | null>((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.decoding = 'async';
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = url;
+      });
+
+    /** 换纹理：顺手把旧纹理还给显存 */
+    const applyTexture = (node: PhotoNode, tex: THREE.Texture, aspect: number) => {
+      const mat = node.plane.material as THREE.MeshBasicMaterial;
+      const old = mat.map;
+      mat.map = tex;
+      mat.color.set(0xffffff);
+      mat.needsUpdate = true;
+      fitPlane(node, aspect);
+      if (old && old !== tex) {
+        const i = disposables.indexOf(old);
+        if (i >= 0) disposables.splice(i, 1);
+        old.dispose();
+      }
+      disposables.push(tex);
+    };
+
+    const queue: (() => Promise<void>)[] = [];
+    let running = 0;
+    const pump = () => {
+      if (!alive) return;
+      while (running < CONCURRENCY && queue.length > 0) {
+        const task = queue.shift() as () => Promise<void>;
+        running += 1;
+        void task()
+          .catch(() => undefined)
+          .then(() => {
+            running -= 1;
+            pump();
+          });
+      }
+    };
 
     /** 图片到齐后按真实画幅重设画框，绝不裁切、绝不变形 */
     const fitPlane = (node: PhotoNode, aspect: number) => {
@@ -409,64 +485,66 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       };
       nodes.push(node);
 
-      // ---------- 异步上画 ----------
+      // ---------- 排队上画（限量并发，见上面的 TEX_MAX / CONCURRENCY） ----------
       const mediaKind = item.photo?.kind ?? (item.photo ? undefined : item.kind);
       if (mediaKind === 'video' && item.photo) {
-        void usePhotoLib.getState().photoUrl(item.photo).then((url) => {
-            if (!url) return;
-            if (!alive) return; // 已卸载：别再建解码中的 video
-            const video = document.createElement('video');
-            video.src = url;
-            video.muted = true;
-            video.loop = true;
-            video.playsInline = true;
-            video.crossOrigin = 'anonymous';
-            void video.play().catch(() => undefined);
-            const tex = new THREE.VideoTexture(video);
-            tex.colorSpace = THREE.SRGBColorSpace;
-            videoTextures.push({ texture: tex, video });
-            const apply = () => {
-              planeMat.map = tex;
-              planeMat.color.set(0xffffff);
-              planeMat.needsUpdate = true;
-              fitPlane(node, (video.videoWidth || 16) / (video.videoHeight || 9));
-            };
-            if (video.videoWidth) apply();
-            else video.addEventListener('loadedmetadata', apply, { once: true });
+        const photo = item.photo;
+        queue.push(async () => {
+          const url = await usePhotoLib.getState().photoUrl(photo);
+          if (!url || !alive) {
             bump();
-          });
+            return;
+          }
+          const video = document.createElement('video');
+          video.src = url;
+          video.muted = true;
+          video.loop = true;
+          video.playsInline = true;
+          video.crossOrigin = 'anonymous';
+          void video.play().catch(() => undefined);
+          const tex = new THREE.VideoTexture(video);
+          tex.colorSpace = THREE.SRGBColorSpace;
+          videoTextures.push({ texture: tex, video });
+          node.url = url;
+          node.hd = true; // 视频按原分辨率播放，不再走高清补帧
+          const apply = () => {
+            applyTexture(node, tex, (video.videoWidth || 16) / (video.videoHeight || 9));
+            bump();
+          };
+          if (video.videoWidth) apply();
+          else video.addEventListener('loadedmetadata', apply, { once: true });
+        });
       } else {
-        const loadImage = (url: string) => {
-          loader.load(
-            url,
-            (tex) => {
-              if (!alive) {
-                // 已卸载：这张纹理永远不会进清理列表，就地释放
-                tex.dispose();
-                return;
-              }
-              tex.colorSpace = THREE.SRGBColorSpace;
-              tex.anisotropy = 4;
-              planeMat.map = tex;
-              planeMat.color.set(0xffffff);
-              planeMat.needsUpdate = true;
-              fitPlane(node, tex.image.width / tex.image.height);
-              disposables.push(tex);
-              bump();
-            },
-            undefined,
-            () => bump(),
-          );
+        const paint = async (url: string) => {
+          const img = await loadImg(url);
+          if (!alive) return;
+          const painted = img ? rasterize(img, TEX_MAX) : null;
+          // 已经补过高清就别再被低清盖回去（队列慢、用户先点开了这张）
+          if (painted && !node.hd) applyTexture(node, painted.tex, painted.aspect);
+          bump();
         };
         if (item.src && !item.photo) {
-          loadImage(item.src);
+          node.url = item.src;
+          queue.push(() => paint(item.src as string));
         } else if (item.photo) {
-          void usePhotoLib.getState().photoUrl(item.photo).then((u) => (u ? loadImage(u) : bump()));
+          const photo = item.photo;
+          queue.push(async () => {
+            const url = await usePhotoLib.getState().photoUrl(photo);
+            if (!url) {
+              bump();
+              return;
+            }
+            node.url = url;
+            await paint(url);
+          });
         } else {
           bump();
         }
       }
     }
+
+    // 队列排好，开始按并发上限逐张上画
+    pump();
 
     // 供自动化回归读取空间内的照片数与相框颜色、漂浮冻结状态
     (window as unknown as Record<string, unknown>).__hall3d = {
@@ -558,6 +636,10 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     let elapsed = 0;
     const lerp = THREE.MathUtils.lerp;
 
+    /** 聚焦补高清的一次性状态：上次补的是哪张、当前是否正在补 */
+    let hdIndex: number | null = null;
+    let hdBusy = false;
+
     /** 整体调暗 / 调亮某张照片的相框、图片与光晕（三件套同进退） */
     const setNodeOpacity = (node: PhotoNode, op: number) => {
       (node.plane.material as THREE.Material).opacity = op;
@@ -577,6 +659,25 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       // 聚焦环境：有选中照片时朝 1 收敛（其余照片淡出），退出时朝 0 回归
       const fActive = focusRef.current !== null;
       focusEnv = Math.min(1, Math.max(0, focusEnv + (fActive ? dt * 3 : -dt * 3)));
+
+      // 点开的那张补一版高清纹理：星系里只有 512，放大后会糊。
+      // 只给当前这张补、补完就停，不碰其它照片的内存。
+      if (focusRef.current !== hdIndex) {
+        hdIndex = focusRef.current;
+        const hn = hdIndex === null ? null : nodes[hdIndex];
+        if (hn && hn.url && !hn.hd && !hdBusy) {
+          hdBusy = true;
+          const target = hn;
+          void loadImg(hn.url).then((img) => {
+            hdBusy = false;
+            if (!alive || !img) return;
+            const painted = rasterize(img, TEX_MAX_HD);
+            if (!painted) return;
+            target.hd = true;
+            applyTexture(target, painted.tex, painted.aspect);
+          });
+        }
+      }
 
       // 聚焦照片停在相机正前方的固定距离上（沿相机→星系中心轴线），
       // 所以永远居中、且不论星系多大呈现大小都恒定；其余照片沿旋臂归位并淡出。

@@ -48,7 +48,7 @@ function fmtTime(t?: number): string {
 /**
  * 照片查看器：放大 / 缩小 / 旋转 / 拖拽平移的基础看图工具。
  * - 按钮组：＋ － ↺ ↻ ⤾（复位） ×
- * - 滚轮缩放（以光标为中心）、双击在 1x ↔ 2.5x 间切换
+ * - 滚轮缩放（以画面正中为锚点）、双击在 1x ↔ 2.5x 间切换
  * - 单指 / 鼠标拖拽平移；双指捏合缩放
  * - 触屏上 1x 状态左右滑动 = 切上 / 下一张（此时两侧箭头按钮隐藏，避免误触与遮挡画面）
  * - Esc 关闭；左右方向键切换上 / 下一张
@@ -196,7 +196,10 @@ export function PhotoViewer({
       const dist = Math.hypot(a.x - b.x, a.y - b.y);
       if (pinch.current.dist > 0) {
         const next = (pinch.current.scale * dist) / pinch.current.dist;
-        setScale(Math.min(MAX_SCALE, Math.max(MIN_SCALE, next)));
+        const clamped = Math.min(MAX_SCALE, Math.max(MIN_SCALE, next));
+        // 缩回 1x 以内就把平移量归零，让照片重新落在画面正中
+        if (clamped <= 1.001) setOffset({ x: 0, y: 0 });
+        setScale(clamped);
       }
       return;
     }
@@ -269,16 +272,17 @@ export function PhotoViewer({
     [],
   );
 
-  /** 滚轮缩放：以光标位置为锚点，缩放后补偿偏移，视觉上「对着光标的那一点放大」 */
+  /**
+   * 滚轮缩放：以「画面正中」为锚点原地放大 / 缩小。
+   * 以前是以光标为锚点（缩放时补偏移），鼠标稍微偏一点图就往那边跑掉，
+   * 和「照片在页面正中放大」的直觉不符；现在偏移不参与缩放，
+   * 只有缩小回 1x 时才把平移量归零，保证图像回到正中。
+   */
   const onWheel = (e: ReactWheelEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const rect = e.currentTarget.getBoundingClientRect();
-    const cx = e.clientX - rect.left - rect.width / 2;
-    const cy = e.clientY - rect.top - rect.height / 2;
     setScale((s) => {
       const next = Math.min(MAX_SCALE, Math.max(MIN_SCALE, s * (1 - e.deltaY * 0.0015)));
-      const k = next / s;
-      setOffset((o) => ({ x: cx - (cx - o.x) * k, y: cy - (cy - o.y) * k }));
+      if (next <= 1.001) setOffset({ x: 0, y: 0 });
       return next;
     });
   };

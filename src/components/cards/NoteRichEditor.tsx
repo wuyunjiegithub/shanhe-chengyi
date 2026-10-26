@@ -159,21 +159,18 @@ export function NoteRichEditor({
     setImgBox({ top: img.offsetTop, left: img.offsetLeft, w: img.offsetWidth, h: img.offsetHeight });
   };
 
-  /** 把图片摆到「原图尺寸」：超过正文宽度才缩；同时刷新选中框位置 */
-  const fitImage = (img: HTMLImageElement) => {
-    const apply = () => {
-      const nat = img.naturalWidth || 0;
-      if (nat <= 0) return;
-      // 注意：不能写 `if (img.width !== w)` —— 没有 width 属性时 img.width 读的是
-      // 「渲染宽度」，原尺寸恰好等于渲染宽时会被跳过，属性永远写不上。
-      img.width = Math.max(48, Math.min(nat, contentWidth()));
-      if (imgElRef.current === img) syncImgBox(img);
-    };
-    if (img.complete && img.naturalWidth > 0) apply();
-    else if (img.dataset.fitted !== '1') {
-      img.dataset.fitted = '1';
-      img.addEventListener('load', apply, { once: true });
-    }
+  /**
+   * 图片尺寸交给 CSS：`.rt-body img[data-img]` 是 `max-width:100%; height:auto`，
+   * 天然实现「宽图等比缩到正文宽、小图保持原尺寸不放大、比例永不变形」。
+   *
+   * 这里**不再往 img 上写 width 属性**。老做法是插入时写
+   * `<img width="min(原图宽, 正文宽)">`，再叠加当时 CSS 里的 max-height:480px ——
+   * Chromium 遇到「已指定宽度 + max-height」只压高度、不按比例回算宽度，
+   * 结果所有大图都渲染成同一个 692×480，竖图直接被压成横图。
+   * 只有用户手动拖过缩放手柄的图才保留 width 属性（那是刻意选择，见 onResizeMove）。
+   */
+  const syncBox = (img: HTMLImageElement) => {
+    if (imgElRef.current === img) syncImgBox(img);
   };
 
   /**
@@ -195,8 +192,8 @@ export function NoteRichEditor({
       const id = img.dataset.img ?? '';
       const url = urlsRef.current[id];
       if (url && img.getAttribute('src') !== url) img.setAttribute('src', url);
-      // 老游记里的图没有 width：按原图尺寸补一次（只改显示，不影响已存内容）
-      if (!img.getAttribute('width')) fitImage(img);
+      // 尺寸完全由 CSS 决定（见 syncBox 注释），文案里不再往图上写 width
+      syncBox(img);
     });
     normalizeAlign(root);
   };
@@ -410,13 +407,9 @@ export function NoteRichEditor({
     } else {
       box.appendChild(anchor);
     }
-    const inserted: HTMLImageElement[] = [];
     for (const item of items) {
-      const img = makeImg(item);
-      anchor.parentNode?.insertBefore(img, anchor);
-      // 原图尺寸进正文：宽超过正文才缩，高度按比例自动算
-      fitImage(img);
-      inserted.push(img);
+      // 不写 width：尺寸交给 CSS 等比缩到正文宽（超宽才缩、小图不放大、比例不变）
+      anchor.parentNode?.insertBefore(makeImg(item), anchor);
     }
     if (sel) {
       const r = document.createRange();
@@ -427,18 +420,6 @@ export function NoteRichEditor({
       lastRangeRef.current = r.cloneRange();
     }
     emit();
-    // 刚插入的图可能还没解码完：fitImage 对未加载图是挂 load 监听才写 width 的，
-    // 而 emit() 已经跑在加载之前 → 首张图存成「无 width」。虽能靠 reopen 时 hydrate
-    // 兜底重算，但自定义缩放的图不该留这段竞态。等这批图加载完再补发一次 emit。
-    const pending = inserted.filter((im) => !(im.complete && im.naturalWidth > 0));
-    if (pending.length > 0) {
-      let left = pending.length;
-      const flush = () => {
-        left -= 1;
-        if (left === 0) emit();
-      };
-      for (const im of pending) im.addEventListener('load', flush, { once: true });
-    }
     if (!wasFocused) el.blur();
   };
 

@@ -5289,14 +5289,16 @@ button.wall-stage-img {
   text-decoration: underline;
 }
 
-/* 正文里的图片：按原图尺寸显示（width 属性由插入/拖动写入，CSS 不写死宽度），
- * 点一下浮出删除钮 + 右下角缩放手柄 */
+/* 正文里的图片：等比自适应正文宽度 —— max-width:100% 保证「宽图缩到正文宽、
+ * 小图保持原尺寸不放大」，height:auto 保证比例永远不变。
+ * 【坑】这里曾经有一条 max-height:480px：配合插入时写进 <img width="正文宽">，
+ * Chromium 只把高度压到 480、并不会按比例回算宽度，结果所有大图都被渲染成
+ * 同一个 692×480 —— 4:3 横图和 3:4 竖图长得一模一样，竖图还被压扁。
+ * 所以正文图片不再设 max-height，高度完全由宽度和原始画幅推出来。 */
 .rt-body img[data-img] {
   display: block;
   max-width: 100%;
   height: auto;
-  /* 只兜「超高」：竖长图超过这个高度才按比例缩，宽仍以 width 属性为准 */
-  max-height: 480px;
   margin: 12px 0;
   border-radius: 10px;
   border: 1px solid var(--border);
