@@ -9,7 +9,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { cityMeta } from './content/cities.mjs';
+import { cityMeta as handCityMeta } from './content/cities.mjs';
 
 const slug = (s) =>
   String(s)
@@ -39,6 +39,17 @@ for (const file of readdirSync(CONTENT_DIR).sort()) {
   sources.push(...list);
   console.log(`· 载入 ${file}：${list.length} 区县`);
 }
+
+// 自动生成的最小城市元信息：未人工录入的城市也有一条 intro（下辖 N 个区县），
+// 人工录入的 cityMeta 优先覆盖它。
+let autoCityMeta = {};
+try {
+  autoCityMeta =
+    (await import(pathToFileURL(join(CONTENT_DIR, 'auto-city-meta.mjs')).href)).cityMeta ?? {};
+} catch {
+  /* 尚未生成基线内容 */
+}
+const cityMeta = { ...autoCityMeta, ...handCityMeta };
 
 const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
 const cityGeo = readJson(join(GEO_DIR, 'cities.geojson'));
@@ -191,7 +202,8 @@ for (const d of sources) {
     })),
     spots: spotIds,
     center: [lng, lat],
-    source: '公开资料整理 · 待人工复核',
+    baseline: Boolean(d.baseline),
+    source: d.baseline ? '行政区划基线 · 待人工补充' : '公开资料整理 · 待人工复核',
     updatedAt: TODAY,
   });
 }

@@ -54,8 +54,12 @@ for (const d of districts) {
   if (!d.name?.trim()) err(`区县 ${d.id} 缺少名称`);
   if (!d.oneLiner?.trim()) err(`区县 ${d.name ?? d.id} 缺少一句话推荐`);
   if (!DATE_RE.test(d.updatedAt ?? '')) err(`区县 ${d.name} updatedAt 格式错误：${d.updatedAt}`);
-  if (!Array.isArray(d.tags) || d.tags.length === 0) err(`区县 ${d.name} 缺少标签`);
-  for (const t of d.tags ?? []) if (!TAGS.has(t)) err(`区县 ${d.name} 含未知标签：${t}`);
+  // 自动生成的基线条目（baseline）：只有真实行政区信息，人文 / 景点待补。
+  // 不要求标签——硬给 2840 个区县编一个白名单标签等于编造数据。
+  if (!d.baseline) {
+    if (!Array.isArray(d.tags) || d.tags.length === 0) err(`区县 ${d.name} 缺少标签`);
+    for (const t of d.tags ?? []) if (!TAGS.has(t)) err(`区县 ${d.name} 含未知标签：${t}`);
+  }
   if (!Array.isArray(d.spots)) err(`区县 ${d.name} 的 spots 不是数组`);
   if (!Array.isArray(d.center) || d.center.length !== 2) {
     warn(`区县 ${d.name} 缺少 center，新增景点会落到默认坐标`);
