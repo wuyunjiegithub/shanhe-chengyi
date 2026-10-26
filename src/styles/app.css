@@ -4,6 +4,15 @@ button,
 a,
 [role='button'] {
   -webkit-tap-highlight-color: transparent;
+  /* 所有可点击元素统一手型指针，避免浏览器对 <button> 默认的箭头光标 */
+  cursor: pointer;
+}
+
+/* 禁用态统一禁用光标（覆盖上面的 pointer） */
+button:disabled,
+button[aria-disabled='true'],
+button.is-disabled {
+  cursor: not-allowed;
 }
 
 /* ============ Shell / canvas ============ */
@@ -5523,11 +5532,16 @@ button.wall-stage-img {
 .np-cell-img {
   position: relative;
   display: block;
-  aspect-ratio: 1;
+  width: 100%;
+  /* 用 padding 撑出正方形：老版本安卓 WebView 不认 aspect-ratio，
+     会让这个 flex 子项高度塌成 0、缩略图被压成细条（只剩右上角勾选圈）。 */
+  padding-top: 100%;
   background: #0b1220;
 }
 
 .np-cell-img img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -6730,14 +6744,20 @@ button.wall-stage-img {
   max-width: min(560px, 92%);
   padding: 7px 14px;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 10px;
   background: rgba(8, 12, 20, 0.78);
   backdrop-filter: blur(8px);
   color: var(--text-1);
   font-size: 13px;
   line-height: 1.5;
-  cursor: text;
+  cursor: pointer;
   text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.pv-cap-line:hover {
+  border-color: var(--border-active);
+  background: rgba(8, 12, 20, 0.92);
 }
 
 .pv-cap-placeholder {
@@ -6793,6 +6813,24 @@ button.wall-stage-img {
   display: flex;
   gap: 8px;
   justify-content: flex-end;
+}
+
+/* 图注 / 改名编辑态的按钮：与 .pv-cap-line 同一套圆角与高度，视觉统一 */
+.pv-cap-actions .ghost-btn {
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+/* 「保存」是这组里的主行动，用 accent 强调，和 ghost 的「取消 / 删除 / 恢复原名」拉开层级 */
+.pv-cap-actions .primary-btn {
+  flex: 0 0 auto;
+  height: 32px;
+  padding: 0 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .pv-nav {
@@ -7213,5 +7251,90 @@ button.wall-stage-img {
 
   .marker-style-opt b {
     font-size: 10.5px;
+  }
+}
+
+/* ============================================================
+   横屏适配（手机 / 小平板横放，宽 ≤1080）
+   ------------------------------------------------------------
+   竖屏的「底部 60vh 半屏」在横屏高度只剩 ~360-420px 时会吃光纵向空间、
+   还会跟底栏打架。因此横屏统一改为「右侧停靠侧栏」（与桌面端一致），
+   并关闭下滑收起手势（useBottomSheet 横屏下不再注入 translateY）。
+   旋转本身安卓清单未锁方向（configChanges 含 orientation），跟随系统即可。
+   ============================================================ */
+@media (orientation: landscape) and (max-width: 1080px) {
+  /* 区县详情：右停靠侧栏 */
+  .drawer {
+    position: fixed;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    left: auto;
+    width: min(46vw, 460px);
+    max-width: 460px;
+    height: auto;
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    transform: translateX(calc(100% + 20px));
+    opacity: 0;
+    pointer-events: none;
+    z-index: 45;
+  }
+  .drawer.is-open {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .drawer.is-full {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    max-width: none;
+    height: auto;
+    border: none;
+    border-radius: 0;
+  }
+
+  /* 城市概览：右停靠侧栏 */
+  .city-panel {
+    position: fixed;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    left: auto;
+    width: min(46vw, 460px);
+    max-width: 460px;
+    height: auto;
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    z-index: 45;
+  }
+  .city-panel.is-full {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    max-width: none;
+    height: auto;
+    border: none;
+    border-radius: 0;
+  }
+
+  /* 横屏无下滑手势：隐藏抓手（useBottomSheet 也不再绑定指针事件） */
+  .sheet-grabber {
+    display: none !important;
+  }
+
+  /* 横屏顶栏保持单行，避免搜索框独占一行吃掉纵向空间 */
+  .hud-top {
+    flex-wrap: nowrap;
+  }
+  .search-console {
+    order: 0;
+    flex: 1 1 auto;
+    max-width: 360px;
   }
 }

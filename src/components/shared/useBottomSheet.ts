@@ -19,7 +19,28 @@ const PEEK_VISIBLE = 0.18;
 /** 半屏面板高度占比（与 CSS 里 60vh 保持一致） */
 const SHEET_HEIGHT = 0.6;
 
+/**
+ * 横屏判定：手机 / 小平板横放时，面板应改为右侧停靠侧栏，不再做「下滑收起」手势。
+ * 跟随系统旋转（安卓清单未锁方向），这里只用于决定要不要注入底部半屏的 transform。
+ */
+function useIsLandscape(): boolean {
+  const [landscape, setLandscape] = useState<boolean>(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(orientation: landscape)').matches
+      : false,
+  );
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(orientation: landscape)');
+    const on = () => setLandscape(mq.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
+  return landscape;
+}
+
 export function useBottomSheet(open: boolean, isFull: boolean) {
+  const landscape = useIsLandscape();
   const [sheet, setSheet] = useState<Sheet>('open');
   const [dragY, setDragY] = useState<number | null>(null);
   const [peekOffset, setPeekOffset] = useState(0);
@@ -48,15 +69,17 @@ export function useBottomSheet(open: boolean, isFull: boolean) {
 
   const restingY = sheet === 'peek' ? peekOffset : 0;
 
-  const rootStyle: React.CSSProperties | undefined = !open || isFull
-    ? undefined
-    : {
-        transform: `translateY(${(dragY ?? restingY)}px)`,
-        transition: dragY !== null ? 'none' : 'transform 0.28s cubic-bezier(0.22,0.8,0.28,1)',
-      };
+  // 横屏 / 关闭 / 全屏：不注入底部半屏 transform（定位交给 CSS 横屏块）
+  const rootStyle: React.CSSProperties | undefined =
+    !open || isFull || landscape
+      ? undefined
+      : {
+          transform: `translateY(${(dragY ?? restingY)}px)`,
+          transition: dragY !== null ? 'none' : 'transform 0.28s cubic-bezier(0.22,0.8,0.28,1)',
+        };
 
   const onPointerDown = (e: React.PointerEvent) => {
-    if (!open || isFull) return;
+    if (!open || isFull || landscape) return;
     (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
     startRef.current = { y: e.clientY, base: dragY ?? restingY };
     movedRef.current = 0;
@@ -92,12 +115,15 @@ export function useBottomSheet(open: boolean, isFull: boolean) {
     }
   };
 
-  const bind = {
-    onPointerDown,
-    onPointerMove,
-    onPointerUp,
-    onPointerCancel: onPointerUp,
-  };
+  // 横屏下不绑定下滑手势（抓手也已被 CSS 隐藏）
+  const bind = landscape
+    ? {}
+    : {
+        onPointerDown,
+        onPointerMove,
+        onPointerUp,
+        onPointerCancel: onPointerUp,
+      };
 
   return { sheet, rootStyle, bind, peekOffset };
 }

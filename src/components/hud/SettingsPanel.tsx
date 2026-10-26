@@ -47,6 +47,20 @@ function Panel({ onClose }: { onClose: () => void }) {
   const showToast = useUi((s) => s.showToast);
   const fileRef = useRef<HTMLInputElement>(null);
   const [confirmUnbind, setConfirmUnbind] = useState(false);
+  /**
+   * 进度条延迟显示：开启「实时更新」会立刻触发一次重扫，而这次扫描往往飞快结束
+   * （没新照片 / 目录较小），若立即把进度条挂上再卸下就是「闪一下」。
+   * 只有持续扫描超过 250ms（真正的重新扫描 / 大目录）才显示反馈，飞快扫完的不挂条。
+   */
+  const [showScan, setShowScan] = useState(false);
+  useEffect(() => {
+    if (!scanProgress.scanning) {
+      setShowScan(false);
+      return;
+    }
+    const t = window.setTimeout(() => setShowScan(true), 250);
+    return () => window.clearTimeout(t);
+  }, [scanProgress.scanning]);
   /** 旧版藏在 IndexedDB 里的上传（v1.1 起改为写磁盘文件夹） */
   const [legacy, setLegacy] = useState<LegacyUpload[] | null>(null);
   const [migrating, setMigrating] = useState(false);
@@ -193,7 +207,7 @@ function Panel({ onClose }: { onClose: () => void }) {
           </div>
 
           {/* 扫描进度：绑定 / 重新扫描期间实时反馈，避免「点了没反应 / 卡住」的错觉 */}
-          {scanProgress.scanning && (
+          {showScan && (
             <div className="photo-lib-scan">
               <div className="photo-lib-scan-bar">
                 <i
@@ -315,7 +329,7 @@ function Panel({ onClose }: { onClose: () => void }) {
             <pre className="photo-lib-tree">{TREE}</pre>
             <ul>
               <li>照片墙里的「＋ 上传」也会写进这套结构（如上传到淳安县 → 浙江省/杭州市/淳安县/）；</li>
-              <li>支持 jpg / jpeg / png / webp / gif（动图）/ avif，视频支持 mp4 / webm / mov；</li>
+              <li>支持 jpg / jpeg / png / webp / gif（动图）/ avif / heic / heif（iPhone 实况等动态照片的静帧），视频支持 mp4 / webm / mov；</li>
               <li>照片按画幅分为横屏 / 竖屏 / 其他三类，「其他」为非常规比例（多为裁切或修改过）；</li>
               <li>单个区县最多取前 60 个媒体；文件夹名写全称或简称都可以（「淳安县」或「淳安」均可识别）；</li>
               <li>照片只在本机读取，不会上传；绑定信息保存在本机。</li>

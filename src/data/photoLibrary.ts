@@ -21,7 +21,7 @@ const DB_STORE = 'handles';
 const HANDLE_KEY = 'root';
 const INDEX_KEY = 'ds.photoLib.index.v1';
 
-const IMAGE_EXT = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'bmp']);
+const IMAGE_EXT = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'bmp', 'heic', 'heif']);
 const VIDEO_EXT = new Set(['mp4', 'webm', 'mov', 'm4v']);
 
 /** 媒体类型：静态图 / 视频 / 动图（gif 归为动图） */
@@ -199,6 +199,47 @@ export function classifyShape(width: number, height: number): PhotoShape {
   return 'other';
 }
 
+/* ---------------- 实况 / 动态照片配对去重 ---------------- */
+
+/**
+ * iPhone 实况照片导出是一对「同名.HEIC + 同名.MOV」：静帧 + 内嵌短视频段。
+ * 安卓 Motion Photo 在系统相册里是单张 JPEG（不用处理），但一旦实况照片被拷进
+ * 绑定目录 / 落到某相册，就会变成「一张静帧图 + 一段同名视频」两条目——同一瞬间
+ * 既显示静帧又显示那段短视频，看着像重复。这里把「与同级目录某张静帧同名的视频」
+ * 判为配对视频并剔除，只留静帧（仍以普通图片身份进照片墙）。
+ *
+ * 注意：仅当同目录 / 同相册确实存在一张同名静帧才剔除，独立视频（不会恰好与某张
+ * 图片同名）不受影响。
+ */
+function dedupeLiveCompanions(hits: RawHit[]): RawHit[] {
+  const byDir = new Map<string, RawHit[]>();
+  for (const h of hits) {
+    const dir = h.path.split('/').slice(0, -1).join('/');
+    const list = byDir.get(dir);
+    if (list) list.push(h);
+    else byDir.set(dir, [h]);
+  }
+  const kept: RawHit[] = [];
+  for (const list of byDir.values()) {
+    const stillStems = new Set<string>();
+    for (const h of list) {
+      const dot = h.name.lastIndexOf('.');
+      if (dot > 0 && IMAGE_EXT.has(h.name.slice(dot + 1).toLowerCase())) {
+        stillStems.add(h.name.slice(0, dot));
+      }
+    }
+    for (const h of list) {
+      const dot = h.name.lastIndexOf('.');
+      if (dot > 0) {
+        const ext = h.name.slice(dot + 1).toLowerCase();
+        if (VIDEO_EXT.has(ext) && stillStems.has(h.name.slice(0, dot))) continue; // 配对视频，跳过
+      }
+      kept.push(h);
+    }
+  }
+  return kept;
+}
+
 /* ---------------- 扫描 ---------------- */
 
 interface RawHit {
@@ -265,7 +306,9 @@ export async function scanDisk(
   onProgress?: (done: number, total: number) => void,
 ): Promise<ScanResult> {
   const hits = await disk.scan(onProgress);
-  const raw: RawHit[] = hits.map((h) => ({ ...h, ...placeHit(h.path.split('/'), maps) }));
+  const rawAll: RawHit[] = hits.map((h) => ({ ...h, ...placeHit(h.path.split('/'), maps) }));
+  // 去掉实况照片的配对视频（与静帧同名的 .mov/.mp4 等），避免同一瞬间重复出现
+  const raw = dedupeLiveCompanions(rawAll);
   // 轻扫描：不在此阶段探测尺寸（需读文件头），画幅交由照片墙渲染时懒回填（refineShape）
   const probed = raw.map((h) => ({ kind: kindOf(h.name), shape: 'unknown' as PhotoShape }));
   const label = await disk.rootLabel();
@@ -300,8 +343,10 @@ function scanFileList(files: FileList, maps: NameMaps): { index: PhotoIndex; fil
 
   // webkitdirectory 拿得到 File 本体，同步做不了异步探测；用轻量同步路径：
   // 图片类型可直接由扩展名判定，画幅统一渲染时懒探测补齐。
-  const probed = hits.map((h) => ({ kind: kindOf(h.name), shape: 'unknown' as PhotoShape }));
-  return { index: buildIndex('本地照片', false, hits, probed), files: store };
+  // 去掉实况照片的配对视频（与静帧同名的 .mov/.mp4 等），避免同一瞬间重复出现
+  const kept = dedupeLiveCompanions(hits);
+  const probed = kept.map((h) => ({ kind: kindOf(h.name), shape: 'unknown' as PhotoShape }));
+  return { index: buildIndex('本地照片', false, kept, probed), files: store };
 }
 
 /* ---------------- 索引持久化 ---------------- */

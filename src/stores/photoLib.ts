@@ -17,7 +17,7 @@ import {
   scanDisk,
   scanFiles,
 } from '../data/photoLibrary';
-import type { PhotoEntry, PhotoIndex } from '../data/photoLibrary';
+import type { PhotoEntry, PhotoIndex, PhotoKind } from '../data/photoLibrary';
 import { getDisk, isAndroidShell, isMediaName } from '../data/photoDisk';
 import type { DiskKind } from '../data/photoDisk';
 import {
@@ -252,7 +252,27 @@ async function buildAlbumIndex(): Promise<PhotoIndex | null> {
   const byDistrict: Record<string, PhotoEntry[]> = {};
   const byCity: Record<string, PhotoEntry[]> = {};
   const others: Record<string, PhotoEntry[]> = {};
+
+  // 实况 / 动态照片配对去重：同一相册里，和某张静帧同名的视频段（iPhone 实况传到安卓
+  // 会拆成「同名.HEIC + 同名.MOV」两条 MediaStore 记录）应被跳过，只留静帧，避免同一
+  // 瞬间既显示静帧又显示短视频、造成重复。
+  const stillStemsByBucket = new Map<string, Set<string>>();
   for (const p of photos) {
+    if (androidKind(p) === 'image') {
+      const stem = p.name.replace(/\.[^.]+$/, '');
+      const set = stillStemsByBucket.get(p.bucket);
+      if (set) set.add(stem);
+      else stillStemsByBucket.set(p.bucket, new Set([stem]));
+    }
+  }
+  const isCompanion = (p: AndroidPhoto): boolean => {
+    if (androidKind(p) !== 'video') return false;
+    const stem = p.name.replace(/\.[^.]+$/, '');
+    return stillStemsByBucket.get(p.bucket)?.has(stem) ?? false;
+  };
+
+  for (const p of photos) {
+    if (isCompanion(p)) continue; // 实况配对视频，跳过
     const entry = albumEntry(p);
     const districtId = districtByName.get(p.bucket) ?? districtByNorm.get(p.bucket);
     if (districtId) {
@@ -283,13 +303,21 @@ async function buildAlbumIndex(): Promise<PhotoIndex | null> {
   };
 }
 
+/** 相册条目类型：按 MIME 判定（系统相册里 .mov 是视频、.gif 是动图，其余是图） */
+function androidKind(p: AndroidPhoto): PhotoKind {
+  const m = (p.mime || '').toLowerCase();
+  if (m.startsWith('video/')) return 'video';
+  if (m === 'image/gif') return 'animated';
+  return 'image';
+}
+
 /** 相册照片 → 索引条目；path 用绝对路径，photoUrl 据此走 convertFileSrc */
 function albumEntry(p: AndroidPhoto): PhotoEntry {
   const shape = p.width > 0 && p.height > 0 ? classifyShape(p.width, p.height) : 'unknown';
   return {
     path: p.path,
     name: p.name || p.path.split('/').pop() || '照片',
-    kind: 'image',
+    kind: androidKind(p),
     shape,
     mtime: p.mtime || undefined,
     uri: p.uri,
@@ -339,6 +367,13 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
   };
 
   const doRescan = async (): Promise<void> => {
+    // 安卓系统相册路径：照片墙内容来自 MediaStore（按相册名匹配区县），而不是「绑定文件夹」。
+    // 若仍去扫绑定文件夹（通常为空），下面的 mergeIndexes 会把相册索引里 prev 独有的区县全清掉，
+    // 等于开启实时更新 / 上传 / 删除后照片墙被瞬间清空。这里统一改成重建相册索引。
+    if (isAndroidShell() && hasMediaBridge()) {
+      await loadMediaAlbums();
+      return;
+    }
     const disk = getDisk();
     set({ diskKind: disk.kind });
     if (disk.kind === 'none') {
@@ -579,7 +614,7 @@ export const usePhotoLib = create<PhotoLibState>((set, get) => {
       return {
         added: 0,
         skipped,
-        error: skipped > 0 ? '没有受支持的图片或视频（jpg / png / webp / gif / mp4 / webm / mov）' : undefined,
+        error: skipped > 0 ? '没有受支持的图片或视频（jpg / png / webp / gif / avif / heic / mp4 / webm / mov）' : undefined,
       };
     }
 
