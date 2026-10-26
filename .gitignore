@@ -34,3 +34,6 @@ src-tauri/*.keystore
 regression-shots/
 shots/
 *.log
+
+# WorkBuddy 应用卡片临时文件
+.wbapp_*.genie

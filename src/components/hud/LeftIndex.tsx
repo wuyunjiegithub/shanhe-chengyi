@@ -2,18 +2,12 @@ import { useData } from '../../stores/data';
 import { useNavigation } from '../../stores/navigation';
 import { useUi } from '../../stores/ui';
 import { backToRegion, focusCityById, selectDistrictById } from '../../app/sandbox';
-import type { Province } from '../../data/types';
-
-const PROVINCE_ORDER: Province[] = ['上海市', '江苏省', '浙江省', '安徽省'];
-const PROVINCE_CLASS: Record<Province, string> = {
-  上海市: 'prov-sh',
-  江苏省: 'prov-js',
-  浙江省: 'prov-zj',
-  安徽省: 'prov-ah',
-};
+import type { GeoFeature } from '../../data/types';
+import { provColor, provBg, NATIONAL_PROVINCE_ORDER } from '../../components/shared/meta';
 
 export function LeftIndex() {
   const cities = useData((s) => s.cities);
+  const cityGeo = useData((s) => s.cityGeo);
   const districts = useData((s) => s.districts);
   const spotsByDistrict = useData((s) => s.spotsByDistrict);
   const districtNames = useData((s) => s.districtNames);
@@ -24,52 +18,14 @@ export function LeftIndex() {
   const showToast = useUi((s) => s.showToast);
 
   if (level === 'city' && currentCity) {
-    const indexedDistricts = currentCity.districts.filter((id) => districts[id]);
-    const featured = (currentCity.featuredDistricts ?? [])
-      .filter((id) => districts[id])
-      .slice(0, 3);
-    const citySpotCount = currentCity.districts.reduce(
-      (sum, id) => sum + (spotsByDistrict[id]?.length ?? 0),
-      0,
-    );
     return (
       <aside className="hud left-index">
         <div className="index-head">
           <button className="index-back" onClick={backToRegion}>
-            ← 江浙沪皖
+            ← 全国
           </button>
           <span className="index-count">{currentCity.districts.length} 区县</span>
         </div>
-        <div className="index-city">{currentCity.name}</div>
-
-        <div className="city-brief">
-          <p className="city-brief-intro">
-            {currentCity.intro || '按区县逐级浏览历史、人文与可玩地点。'}
-          </p>
-          <div className="city-brief-stats">
-            <span>
-              <b>{indexedDistricts.length}</b>/{currentCity.districts.length} 区县已录入
-            </span>
-            <span>
-              <b>{citySpotCount}</b> 触点
-            </span>
-          </div>
-          {featured.length > 0 && (
-            <div className="city-brief-hot">
-              <span className="city-brief-label">热门区县</span>
-              {featured.map((id) => (
-                <button
-                  key={id}
-                  className="city-hot-chip"
-                  onClick={() => void selectDistrictById(id)}
-                >
-                  {districts[id].name}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
         <div className="index-scroll">
           {currentCity.districts.map((id) => {
             const district = districts[id];
@@ -98,33 +54,56 @@ export function LeftIndex() {
     );
   }
 
+  // 区域总览：列出全国所有城市（来自 cityGeo），按省份动态分组、动态配色
+  const contentById = new Map(cities.map((c) => [c.id, c]));
+  const byProvince = new Map<string, GeoFeature[]>();
+  for (const g of cityGeo) {
+    const p = g.province ?? '其他';
+    if (!byProvince.has(p)) byProvince.set(p, []);
+    byProvince.get(p)!.push(g);
+  }
+  const provinces = [...byProvince.keys()].sort((a, b) => {
+    const ia = NATIONAL_PROVINCE_ORDER.indexOf(a);
+    const ib = NATIONAL_PROVINCE_ORDER.indexOf(b);
+    return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib);
+  });
+
   return (
     <aside className="hud left-index">
       <div className="index-head">
-        <span className="index-title">区域索引 // {cities.length} 市</span>
-        <span className="index-count">江浙沪皖</span>
+        <span className="index-title">区域索引 // {cityGeo.length} 市</span>
+        <span className="index-count">全国</span>
       </div>
       <div className="index-scroll">
-        {PROVINCE_ORDER.map((province) => {
-          const list = cities.filter((c) => c.province === province);
-          if (!list.length) return null;
+        {provinces.map((province) => {
+          const list = byProvince.get(province)!;
           return (
             <div className="index-group" key={province}>
-              <div className={`index-group-title ${PROVINCE_CLASS[province]}`}>
+              <div
+                className="index-group-title"
+                style={{
+                  color: provColor(province),
+                  borderColor: provColor(province),
+                  background: provBg(province),
+                }}
+              >
                 <span>{province}</span>
                 <span className="index-group-count">{list.length} 市</span>
               </div>
-              {list.map((city) => {
-                const isHover = hovered?.id === city.id;
+              {list.map((g) => {
+                const cc = contentById.get(g.id);
+                const indexed = cc?.indexed ?? g.indexed;
+                const districtCount = cc?.districts.length ?? 0;
+                const isHover = hovered?.id === g.id;
                 return (
                   <button
-                    key={city.id}
-                    className={`index-row${isHover ? ' is-hover' : ''}${city.indexed ? '' : ' is-empty'}`}
-                    onClick={() => void focusCityById(city.id)}
+                    key={g.id}
+                    className={`index-row${isHover ? ' is-hover' : ''}${indexed ? '' : ' is-empty'}`}
+                    onClick={() => void focusCityById(g.id)}
                   >
-                    <span className="index-name">{city.name}</span>
+                    <span className="index-name">{g.name}</span>
                     <span className="index-meta">
-                      {city.indexed ? `${city.districts.length} 区县` : '待录入'}
+                      {indexed ? `${districtCount} 区县` : '待录入'}
                     </span>
                   </button>
                 );

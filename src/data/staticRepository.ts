@@ -110,10 +110,14 @@ export const staticRepository: SandboxRepository = {
   },
 
   async listDistrictGeo(cityId: string): Promise<GeoFeature[]> {
-    const [fc, { districts }] = await Promise.all([
-      loadJson<{ features: RawFeature[] }>(`/geo/districts/${cityId}.geojson`),
+    const [res, { districts }] = await Promise.all([
+      fetch(`/geo/districts/${cityId}.geojson`),
       loadContent(),
     ]);
+    // 该省内容尚未录入时不会有区县边界文件（404），返回空数组而非抛错，
+    // 上层据此提示「内容待录入」，不会让选择无内容省份时崩溃
+    if (!res.ok) return [];
+    const fc = (await res.json()) as { features: RawFeature[] };
     const indexed = new Set(districts.map((d) => d.id));
     return (fc.features ?? []).map((f) => toGeoFeature(f, indexed.has(String(f.properties.id ?? f.properties.adcode))));
   },

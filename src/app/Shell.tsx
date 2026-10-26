@@ -179,7 +179,7 @@ export function Shell() {
         <div className="boot-screen">
           <div className="boot-mark" />
           <div className="boot-title">山河城邑</div>
-          <div className="boot-sub">正在加载江浙沪皖边界与内容…</div>
+          <div className="boot-sub">正在加载全国边界与内容…</div>
         </div>
       )}
 

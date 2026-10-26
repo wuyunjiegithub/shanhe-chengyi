@@ -90,7 +90,7 @@ export function CityPanel() {
         favTitleOff="收藏这座城市"
         favTitleOn="取消收藏这座城市"
         visitedTitleOff="标记去过这座城市"
-        closeTitle="关闭城市概览，返回江浙沪皖总览"
+        closeTitle="关闭城市概览，返回全国总览"
       />
 
       <div className="city-panel-scroll" ref={scrollRef}>

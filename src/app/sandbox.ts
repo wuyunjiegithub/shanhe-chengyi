@@ -172,7 +172,20 @@ export function teardownSandbox(): void {
 
 /** 区域总览 → 城市视图 */
 export async function drillIntoCity(cityId: string): Promise<void> {
-  const city = useData.getState().cities.find((c) => c.id === cityId);
+  let city = useData.getState().cities.find((c) => c.id === cityId);
+  if (!city) {
+    // 纯地理城市（尚未录入内容）：构造最小 City，命中后弹「待录入」而非无反应
+    const g = useData.getState().cityGeo.find((f) => f.id === cityId);
+    if (g) {
+      city = {
+        id: g.id,
+        name: g.name,
+        province: g.province ?? '',
+        districts: [],
+        indexed: g.indexed,
+      };
+    }
+  }
   if (!city) return;
   if (!city.indexed) {
     useUi.getState().showToast(`${city.name} · 内容尚未录入，后续批次开放`);
@@ -479,8 +492,13 @@ export function updateMarkers(): void {
 
 export function cityIdOfDistrict(districtId: string, province: string): string {
   // 区县码前 4 位即所属地级市：330127（淳安）→ 330100（杭州）
-  // 直辖市没有地级市这一层，上海 310101 → 310000（按码前 2 位兜底，未录入区县也能推）
-  if (province === '上海市' || districtId.startsWith('31')) return '310000';
+  // 4 个直辖市（京 11 / 津 12 / 沪 31 / 渝 50）没有地级市这一层，
+  // 区县码前 2 位即市本级：110101（东城）→ 110000（北京）、310101（黄浦）→ 310000
+  const prefix = districtId.slice(0, 2);
+  if (prefix === '11' || prefix === '12' || prefix === '31' || prefix === '50') {
+    return prefix + '0000';
+  }
+  if (province === '上海市' || districtId.startsWith('31')) return '310000'; // 兼容旧逻辑
   return districtId.slice(0, 4) + '00';
 }
 

@@ -1,4 +1,5 @@
-export type Province = '江苏省' | '上海市' | '浙江省' | '安徽省';
+// 全国化：省份改为开放式 string（全国 34 个省级行政区，不再写死 4 省）
+export type Province = string;
 
 export type Tag =
   | '古镇'

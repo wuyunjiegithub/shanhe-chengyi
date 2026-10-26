@@ -6446,6 +6446,980 @@
     "updatedAt": "2026-10-19"
   },
   {
+    "id": "bj-gugong",
+    "name": "故宫博物院",
+    "districtId": "110101",
+    "lng": 116.397,
+    "lat": 39.918,
+    "summary": "明清两代二十四位皇帝的宫城，九千余间殿宇沿中轴线展开，世界现存最大的木结构宫殿群。",
+    "tags": [
+      "历史文化",
+      "博物馆",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-tiantan",
+    "name": "天坛",
+    "districtId": "110101",
+    "lng": 116.406,
+    "lat": 39.882,
+    "summary": "明清皇帝祭天祈谷之所，祈年殿的蓝瓦金顶是北京城的天际符号。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-yonghe",
+    "name": "雍和宫",
+    "districtId": "110101",
+    "lng": 116.417,
+    "lat": 39.947,
+    "summary": "雍正潜邸改成的藏传佛教寺院，万福阁内十八米檀木大佛为镇寺之宝。",
+    "tags": [
+      "寺庙",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-nanluo",
+    "name": "南锣鼓巷",
+    "districtId": "110101",
+    "lng": 116.403,
+    "lat": 39.937,
+    "summary": "元大都遗留的胡同肌理，八条棋盘巷子里挤满文创小店与四合院。",
+    "tags": [
+      "拍照",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-beihai",
+    "name": "北海公园",
+    "districtId": "110102",
+    "lng": 116.389,
+    "lat": 39.925,
+    "summary": "中国现存最古老的皇家园林之一，琼华岛白塔倒映太液池，永安桥连着团城。",
+    "tags": [
+      "山水",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-gongwang",
+    "name": "恭王府",
+    "districtId": "110102",
+    "lng": 116.383,
+    "lat": 39.937,
+    "summary": "和珅旧宅，花园西洋门与福字碑藏着清中期权臣的奢华想象。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-shichahai",
+    "name": "什刹海",
+    "districtId": "110102",
+    "lng": 116.39,
+    "lat": 39.94,
+    "summary": "由前海后海西海连成的水岸片区，银锭桥看西山、烟袋斜街逛胡同。",
+    "tags": [
+      "拍照",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-zoo",
+    "name": "北京动物园",
+    "districtId": "110102",
+    "lng": 116.34,
+    "lat": 39.94,
+    "summary": "始建于清光绪年间的万牲园，熊猫馆与狮虎山是几代北京孩子的春游记忆。",
+    "tags": [
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-798",
+    "name": "798艺术区",
+    "districtId": "110105",
+    "lng": 116.495,
+    "lat": 39.984,
+    "summary": "由建国初期电子厂房改造的当代艺术集群，涂鸦墙与画廊、咖啡馆昼夜不息。",
+    "tags": [
+      "拍照",
+      "博物馆"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-sanlitun",
+    "name": "三里屯",
+    "districtId": "110105",
+    "lng": 116.455,
+    "lat": 39.937,
+    "summary": "使馆区旁的潮流枢纽，太古里玻璃幕墙下聚着京城最密的品牌与酒吧。",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-birdnest",
+    "name": "鸟巢·水立方",
+    "districtId": "110105",
+    "lng": 116.39,
+    "lat": 39.99,
+    "summary": "2008 夏奥主场馆与游泳中心，钢结构巨巢与膜结构水立方夜景交映。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-chaoyangpark",
+    "name": "朝阳公园",
+    "districtId": "110105",
+    "lng": 116.47,
+    "lat": 39.95,
+    "summary": "北京最大的城市公园之一，草坪、湖面与游乐设施是周末家庭去处。",
+    "tags": [
+      "亲子",
+      "山水"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-yiheyuan",
+    "name": "颐和园",
+    "districtId": "110108",
+    "lng": 116.275,
+    "lat": 39.99,
+    "summary": "乾隆为母祝寿建的清漪园，昆明湖与万寿山、长廊与石舫，是保存最完整的皇家园林。",
+    "tags": [
+      "山水",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-yuanmingyuan",
+    "name": "圆明园",
+    "districtId": "110108",
+    "lng": 116.298,
+    "lat": 40.007,
+    "summary": "曾称万园之园，1860 年遭焚毁，西洋楼残柱是民族记忆的伤痕地标。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-xiangshan",
+    "name": "香山",
+    "districtId": "110108",
+    "lng": 116.19,
+    "lat": 39.99,
+    "summary": "西山峰峦间的皇家园林，十月红叶漫山，双清别墅是进京赶考的落脚点。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-zhongguancun",
+    "name": "中关村",
+    "districtId": "110108",
+    "lng": 116.32,
+    "lat": 39.98,
+    "summary": "从电子一条街到中国硅谷，创新创业的图腾式街区。",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-lugou",
+    "name": "卢沟桥·宛平城",
+    "districtId": "110106",
+    "lng": 116.22,
+    "lat": 39.85,
+    "summary": "金代石桥上的四百石狮见证历史，1937 年在此打响全面抗战第一枪。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-yuanboyuan",
+    "name": "园博园",
+    "districtId": "110106",
+    "lng": 116.2,
+    "lat": 39.85,
+    "summary": "永定河畔集纳各省园林的博览园，锦绣谷由采石坑再生而成。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-worldpark",
+    "name": "世界公园",
+    "districtId": "110106",
+    "lng": 116.29,
+    "lat": 39.84,
+    "summary": "微缩埃菲尔铁塔、金字塔等环球地标，老牌亲子打卡地。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-badachu",
+    "name": "八大处公园",
+    "districtId": "110107",
+    "lng": 116.2,
+    "lat": 39.96,
+    "summary": "西山余脉间八座古刹次第而建，三山环抱、二水相绕，秋来红叶满坡。",
+    "tags": [
+      "寺庙",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-shougang",
+    "name": "首钢园",
+    "districtId": "110107",
+    "lng": 116.18,
+    "lat": 39.92,
+    "summary": "工业遗存改造的冬奥园区，滑雪大跳台与三高炉是硬核工业风地标。",
+    "tags": [
+      "拍照",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-fahai",
+    "name": "法海寺",
+    "districtId": "110107",
+    "lng": 116.18,
+    "lat": 39.95,
+    "summary": "明代正统年间的汉藏风格壁画真迹，大雄宝殿藻井与祥云沥粉贴金。",
+    "tags": [
+      "寺庙",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-tanzhe",
+    "name": "潭柘寺",
+    "districtId": "110109",
+    "lng": 116.02,
+    "lat": 39.91,
+    "summary": "始建于西晋的京西名刹，殿宇依宝珠峰而建，银杏与帝王树名动京师。",
+    "tags": [
+      "寺庙",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-jietai",
+    "name": "戒台寺",
+    "districtId": "110109",
+    "lng": 116.07,
+    "lat": 39.89,
+    "summary": "以全国最大的佛教戒坛著称，古松奇绝，辽代戒坛保存完好。",
+    "tags": [
+      "寺庙",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-cuandixia",
+    "name": "爨底下村",
+    "districtId": "110109",
+    "lng": 116.1,
+    "lat": 39.74,
+    "summary": "明清古山村，七十座单体四合院沿山坡层叠，电影取景地。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-miaofeng",
+    "name": "妙峰山",
+    "districtId": "110109",
+    "lng": 116.03,
+    "lat": 40.04,
+    "summary": "主峰玫瑰谷与娘娘庙，农历庙会香客如织，俯瞰永定河川。",
+    "tags": [
+      "徒步",
+      "山水"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-zhoukoudian",
+    "name": "周口店北京人遗址",
+    "districtId": "110111",
+    "lng": 115.93,
+    "lat": 39.69,
+    "summary": "龙骨山洞穴出土直立人与山顶洞人化石，世界文化遗产、人类溯源圣地。",
+    "tags": [
+      "历史文化",
+      "博物馆"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-shidu",
+    "name": "十渡",
+    "districtId": "110111",
+    "lng": 115.6,
+    "lat": 39.62,
+    "summary": "拒马河在太行北段切出十道渡口，孤峰碧水、竹筏漂流与玻璃栈道。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-yunju",
+    "name": "云居寺",
+    "districtId": "110111",
+    "lng": 115.78,
+    "lat": 39.63,
+    "summary": "石经山藏隋至明镌刻石经万余块，千年不毁，有「石经长城」之誉。",
+    "tags": [
+      "寺庙",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-grandcanal",
+    "name": "大运河森林公园",
+    "districtId": "110112",
+    "lng": 116.67,
+    "lat": 39.89,
+    "summary": "北运河两岸的绿廊，骑行步道、湿地芦苇与观景台串联副中心水岸。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-ranleng",
+    "name": "燃灯塔",
+    "districtId": "110112",
+    "lng": 116.66,
+    "lat": 39.91,
+    "summary": "三十九米砖木楼阁式塔，通州地标，「无恙蒲帆新雨后，一支塔影认通州」。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-songzhuang",
+    "name": "宋庄艺术区",
+    "districtId": "110112",
+    "lng": 116.78,
+    "lat": 39.99,
+    "summary": "聚集上万名艺术家的画家村，美术馆与工作室散布乡野。",
+    "tags": [
+      "拍照",
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-hanshiqiao",
+    "name": "汉石桥湿地",
+    "districtId": "110113",
+    "lng": 116.78,
+    "lat": 40.15,
+    "summary": "北京平原唯一的原生芦苇沼泽，观鸟木栈道与苇荡水禽。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-jiaozhuanghu",
+    "name": "焦庄户地道战遗址",
+    "districtId": "110113",
+    "lng": 116.9,
+    "lat": 40.19,
+    "summary": "抗战时期民兵挖掘的网状地道，可钻行体验「地下长城」。",
+    "tags": [
+      "历史文化",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-shi3ling",
+    "name": "明十三陵",
+    "districtId": "110114",
+    "lng": 116.22,
+    "lat": 40.25,
+    "summary": "天寿山南麓的明代皇陵群，长陵祾恩殿、定陵地宫与神道石像生。",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-juyongguan",
+    "name": "居庸关长城",
+    "districtId": "110114",
+    "lng": 116.07,
+    "lat": 40.28,
+    "summary": "太行八陉之军都陉，长城雄关与「居庸叠翠」云台券门。",
+    "tags": [
+      "历史文化",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-daxingairport",
+    "name": "大兴国际机场",
+    "districtId": "110115",
+    "lng": 116.41,
+    "lat": 39.51,
+    "summary": "凤凰展翅的巨型枢纽，世界最大单体航站楼，顶棚 C 形柱如流动的羽翼。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-nanhaizi",
+    "name": "南海子公园",
+    "districtId": "110115",
+    "lng": 116.42,
+    "lat": 39.79,
+    "summary": "北京最大湿地公园，麋鹿苑重引入四不像，苇荡与观鹿台。",
+    "tags": [
+      "亲子",
+      "山水"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-wildzoo",
+    "name": "北京野生动物园",
+    "districtId": "110115",
+    "lng": 116.27,
+    "lat": 39.63,
+    "summary": "散养与自驾区结合，长颈鹿、白虎与步行区近距离互动。",
+    "tags": [
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-mutianyu",
+    "name": "慕田峪长城",
+    "districtId": "110116",
+    "lng": 116.57,
+    "lat": 40.43,
+    "summary": "保存完好的明代长城，敌楼密集、植被丰茂，正关台三座敌楼并峙。",
+    "tags": [
+      "历史文化",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-yanqi",
+    "name": "雁栖湖",
+    "districtId": "110116",
+    "lng": 116.63,
+    "lat": 40.37,
+    "summary": "燕山脚下的水库，APEC 会址与日出东方酒店倒映湖面。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-hongluo",
+    "name": "红螺寺",
+    "districtId": "110116",
+    "lng": 116.61,
+    "lat": 40.41,
+    "summary": "京北巨刹，御竹林、雌雄银杏与紫藤寄松并称三绝。",
+    "tags": [
+      "寺庙",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-jinhaihu",
+    "name": "金海湖",
+    "districtId": "110117",
+    "lng": 117.12,
+    "lat": 40.16,
+    "summary": "北京第三大水库，湖光与盘山余脉相映，游船与水上运动。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-shilinxa",
+    "name": "石林峡",
+    "districtId": "110117",
+    "lng": 117.1,
+    "lat": 40.22,
+    "summary": "燕山石英砂岩峰林，钛合金 U 盘悬于崖间，玻璃栈道俯深谷。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-yajishan",
+    "name": "丫髻山",
+    "districtId": "110117",
+    "lng": 117.05,
+    "lat": 40.12,
+    "summary": "双峰如髻的道教名山，四月庙会人潮与碧霞元君信仰。",
+    "tags": [
+      "历史文化",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-gubei",
+    "name": "古北水镇",
+    "districtId": "110118",
+    "lng": 117.17,
+    "lat": 40.65,
+    "summary": "鸳鸯湖畔复建的北方水乡，夜游司马台长城与灯影摇红的水巷。",
+    "tags": [
+      "拍照",
+      "历史文化",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-simatai",
+    "name": "司马台长城",
+    "districtId": "110118",
+    "lng": 117.17,
+    "lat": 40.68,
+    "summary": "以「险、密、奇」著称，单边墙与天梯段惊险，唯一可夜游的长城段。",
+    "tags": [
+      "历史文化",
+      "徒步",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-miyunreservoir",
+    "name": "密云水库",
+    "districtId": "110118",
+    "lng": 116.85,
+    "lat": 40.45,
+    "summary": "北京最大地表水源，白河堡与潮河汇流，环库观景台远眺碧波。",
+    "tags": [
+      "山水"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-badaling",
+    "name": "八达岭长城",
+    "districtId": "110119",
+    "lng": 116.02,
+    "lat": 40.36,
+    "summary": "万里长城最具代表性的段落，雄踞军都陉，北门锁钥、好汉坡名扬天下。",
+    "tags": [
+      "历史文化",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-longqingxia",
+    "name": "龙庆峡",
+    "districtId": "110119",
+    "lng": 116.13,
+    "lat": 40.46,
+    "summary": "古城水库切出的峡谷，乘船入「小漓江」，冬有冰灯夏有漂。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "bj-yeyahu",
+    "name": "野鸭湖湿地",
+    "districtId": "110119",
+    "lng": 115.87,
+    "lat": 40.45,
+    "summary": "官厅水库畔的鸟类天堂，候鸟迁徙驿站，木栈道观芦荡水禽。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
     "id": "sc-hefang",
     "name": "清河坊历史文化街区",
     "districtId": "330102",

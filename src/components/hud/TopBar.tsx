@@ -30,7 +30,7 @@ export function TopBar({ ready }: { ready: boolean }) {
         <span className="brand-name">山河城邑</span>
         <span className="brand-sep">/</span>
         <span className="brand-crumb">
-          {level === 'city' && currentCity ? currentCity.name : '江浙沪皖'}
+          {level === 'city' && currentCity ? currentCity.name : '全国'}
         </span>
         {level === 'city' && currentCity && <span className="brand-sub">{currentCity.province}</span>}
       </div>

@@ -1,4 +1,4 @@
-import type { Province, Tag, WeatherCache, WeatherKind } from '../../data/types';
+import type { Tag, WeatherCache, WeatherKind } from '../../data/types';
 
 export const TAGS: Tag[] = ['古镇', '山水', '博物馆', '寺庙', '亲子', '拍照', '徒步', '历史文化'];
 
@@ -24,19 +24,31 @@ export const TAG_STYLE: Record<Tag, { color: string; bg: string; border: string 
   ]),
 ) as Record<Tag, { color: string; bg: string; border: string }>;
 
-export const PROVINCE_LABEL: Record<Province, string> = {
-  上海市: '上海市',
-  江苏省: '江苏省',
-  浙江省: '浙江省',
-  安徽省: '安徽省',
-};
+/**
+ * 省份配色：全国化后不再写死 4 省，改为「省份名 → 稳定色相」动态推导，
+ * 保证 34 个省级行政区各有可区分的颜色，且不依赖 34 个 CSS 变量。
+ */
+export function provHue(name: string): number {
+  let h = 0;
+  for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) % 360;
+  return h;
+}
+export function provColor(name: string): string {
+  return `hsl(${provHue(name)} 68% 62%)`;
+}
+export function provBg(name: string): string {
+  return `hsl(${provHue(name)} 68% 62% / 0.16)`;
+}
 
-export const PROVINCE_VAR: Record<Province, string> = {
-  上海市: 'var(--prov-sh)',
-  江苏省: 'var(--prov-js)',
-  浙江省: 'var(--prov-zj)',
-  安徽省: 'var(--prov-ah)',
-};
+/** 全国省份顺序（左索引分组用），按地理/惯例排序；未在表内的省份排到末尾 */
+export const NATIONAL_PROVINCE_ORDER: string[] = [
+  '北京市', '天津市', '河北省', '山西省', '内蒙古自治区', '辽宁省', '吉林省', '黑龙江省',
+  '上海市', '江苏省', '浙江省', '安徽省', '福建省', '江西省', '山东省',
+  '河南省', '湖北省', '湖南省', '广东省', '广西壮族自治区', '海南省',
+  '重庆市', '四川省', '贵州省', '云南省', '西藏自治区',
+  '陕西省', '甘肃省', '青海省', '宁夏回族自治区', '新疆维吾尔自治区',
+  '台湾省', '香港特别行政区', '澳门特别行政区',
+];
 
 const WEATHER_MAP: Record<number, { label: string; icon: string }> = {
   0: { label: '晴', icon: '☀' },

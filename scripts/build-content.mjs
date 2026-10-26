@@ -17,8 +17,12 @@ const slug = (s) =>
     .replace(/^-+|-+$/g, '')
     .toLowerCase();
 
+// 区县码前 4 位即所属地级市；4 个直辖市（京11/津12/沪31/渝50）前 2 位即市本级
+const MUNI_PREFIX = new Set(['11', '12', '31', '50']);
 const cityIdOfDistrict = (districtId, province) =>
-  province === '上海市' ? '310000' : districtId.slice(0, 4) + '00';
+  MUNI_PREFIX.has(districtId.slice(0, 2))
+    ? districtId.slice(0, 2) + '0000'
+    : districtId.slice(0, 4) + '00';
 
 const ROOT = process.cwd();
 const GEO_DIR = join(ROOT, 'public/geo');
