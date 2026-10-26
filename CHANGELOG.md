@@ -3,6 +3,15 @@
 本项目所有版本变更记录于此。格式参考 [Keep a Changelog](https://keepachangelog.com/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.9.30] - 2026-10-26
+
+> 修掉两处「容器高度解析失败」导致的显示塌陷（缩略图只剩一条、竖图预览只露一角）。
+
+### 修复
+- **游记选图器缩略图被压成一排细条（真正的根因）**：`.np-grid` 行高用默认 `auto`，按「内容最小高度」估算，而缩略图盒子只靠 `padding-top:100%` 撑高——百分比 padding 不计入内在高度，于是整行被压到约 7px，一格只露出照片顶部薄薄一条（看上去像一排白色横条），文件名和区县名也被裁掉。改为 `grid-auto-rows: max-content` + `align-items: start`，缩略图盒子改用 `aspect-ratio: 1/1` 提供真实内在高度（老 WebView 用 `@supports` 兜底 padding 写法）。
+- **竖图预览只显示一小部分**：`.pv-media` 只写了 `max-height:100%`，而 `.pv-canvas` 是 flex 项，部分内核下百分比高度解析不出来 → 竖图以原始尺寸铺开、只露左上角。改为绝对定位 + `inset:0` + `margin:auto`，尺寸交给 `max-width/max-height` 约束（包含块是画布 padding box，尺寸确定），任何画幅都能完整缩进可视区。
+- **选图器缩略图改为懒加载**：改用 `IntersectionObserver`（root = 网格，预取 320px），不再一次性解析上百张图，避免手机内存被吃光。
+
 ## [0.9.29] - 2026-10-26
 
 > 照片墙 / 游记选图器的显示问题修复。
