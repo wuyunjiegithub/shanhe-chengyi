@@ -144,6 +144,10 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
   const [loaded, setLoaded] = useState(0);
   const focusRef = useRef<number | null>(focus);
   focusRef.current = focus;
+  // 自动漫游开关走 ref：如果放进下面 effect 的依赖里，每点一次「漫游」都会
+  // 重建整个 WebGL 场景 + 重载全部照片纹理（220 张），表现为闪一下再重新上画。
+  const touringRef = useRef(touring);
+  touringRef.current = touring;
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -654,7 +658,7 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       elapsed += dt;
 
       // 有聚焦时停止自动漫游；其余时间按设定巡航
-      controls.autoRotate = touring && focusRef.current === null;
+      controls.autoRotate = touringRef.current && focusRef.current === null;
 
       // 聚焦环境：有选中照片时朝 1 收敛（其余照片淡出），退出时朝 0 回归
       const fActive = focusRef.current !== null;
@@ -755,7 +759,7 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       renderer.forceContextLoss?.();
       if (dom.parentElement === mount) dom.remove();
     };
-  }, [items, onFocus, touring]);
+  }, [items, onFocus]);
 
   return (
     <div className="hall3d" ref={mountRef}>
