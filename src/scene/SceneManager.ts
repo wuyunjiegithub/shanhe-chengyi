@@ -34,6 +34,13 @@ const PROVINCE_COLOR: Record<Province, number> = {
   安徽省: 0xfbbf24,
 };
 
+/**
+ * 「老家视图」= 江浙沪皖四省。
+ * 全国化之后底图是 369 城，若按整幅中国取景，江浙沪皖只占中间一小块、观感很空。
+ * 首屏与「重置视角」都按这四省取景（与全国化之前完全一致），其余省份靠拖动 / 缩放去看。
+ */
+const HOME_PROVINCES: readonly string[] = ['江苏省', '浙江省', '上海市', '安徽省'];
+
 const ACTIVE_EMISSIVE = 0x22d3ee;
 const SELECTED_FACE = 0x2b3e59;
 const FACE_INDEXED = 0x1c2839;
@@ -117,6 +124,12 @@ export class SceneManager {
   /** 区县 id → 该区县的光点：板块抬升时同步顶起光点，避免被埋进板里 */
   private pinsByDistrict = new Map<string, PinRecord[]>();
   private regionBox = new THREE.Box3();
+  /**
+   * 「老家视图」包围盒：全国化之后 regionBox 是整个中国（369 城），
+   * 照它取景会把地图缩成一小条、观感很空。首屏 / 重置视角都按江浙沪皖这块
+   * 取景（与全国化之前的四省视图一致），用户拖动或缩放即可去看其他省份。
+   */
+  private homeBox = new THREE.Box3();
   private stars: THREE.Points | null = null;
   private ground: THREE.Mesh | null = null;
   private grid: THREE.GridHelper | null = null;
@@ -196,6 +209,11 @@ export class SceneManager {
         x: [+this.regionBox.min.x.toFixed(2), +this.regionBox.max.x.toFixed(2)],
         y: [+this.regionBox.min.y.toFixed(2), +this.regionBox.max.y.toFixed(2)],
         z: [+this.regionBox.min.z.toFixed(2), +this.regionBox.max.z.toFixed(2)],
+      },
+      home: {
+        x: [+this.homeBox.min.x.toFixed(2), +this.homeBox.max.x.toFixed(2)],
+        y: [+this.homeBox.min.y.toFixed(2), +this.homeBox.max.y.toFixed(2)],
+        z: [+this.homeBox.min.z.toFixed(2), +this.homeBox.max.z.toFixed(2)],
       },
       lastFrame: this.lastFrame,
       panel: { side: this.sidePanelOpen, frac: this.panelFrac },
@@ -506,6 +524,9 @@ export class SceneManager {
     const maxDim = Math.max(size.x, size.z);
     this.controls.minDistance = maxDim * 0.05;
     this.controls.maxDistance = maxDim * 4;
+    // 老家视图（江浙沪皖）：从城市板块里挑出这四省求包围盒。
+    // 取不到（比如内容被裁掉）就退回整幅中国，保证不会取到空盒导致首屏不取景。
+    this.homeBox = this.boxOfProvinces(shapes, HOME_PROVINCES) ?? this.regionBox.clone();
     this.fitGroundToRegion(this.regionBox);
     this.updateProvinceLabels(shapes);
     // 窄屏（手机）首屏取景：用户要求「地图撑满屏幕、不需要全部看见」。
@@ -519,9 +540,24 @@ export class SceneManager {
     // 江浙沪皖的极边（苏北一角、浙南一角、安徽西缘）允许各被裁掉约 1 屏的 2%，
     // 换整幅地图再大 4%。这是「撑满」与「全部进屏」之间取的折中，手机端同理。
     const initialFactor = this.isNarrowViewport() ? 0.59 : 0.96;
-    this.frameTo(this.regionBox, 0, initialFactor, 0, this.usableView());
+    this.frameTo(this.homeBox, 0, initialFactor, 0, this.usableView());
     this.updateLineResolutions();
     this.applyTerrain();
+  }
+
+  /** 求「指定省份」那批城市板块的包围盒；一个都没有时返回 null */
+  private boxOfProvinces(shapes: ProjectedShape[], provinces: readonly string[]): THREE.Box3 | null {
+    const want = new Set(provinces);
+    const box = new THREE.Box3();
+    let hit = 0;
+    for (const s of shapes) {
+      if (!s.province || !want.has(s.province)) continue;
+      const rec = this.cities.get(s.id);
+      if (!rec) continue;
+      for (const mesh of rec.meshes) box.expandByObject(mesh);
+      hit++;
+    }
+    return hit > 0 && !box.isEmpty() ? box : null;
   }
 
   setDistrictPlates(shapes: ProjectedShape[]): void {
@@ -668,7 +704,9 @@ export class SceneManager {
     const narrow = Boolean(el) && (el.clientWidth || 0) <= 820;
     // 与首屏取景一致：手机竖屏上「撑满屏幕」优先于「全部进屏」，
     // 宽方向每边裁一些（只切舟山一角），地图放到约屏高 55%。
-    this.frameTo(this.regionBox, 0.7, narrow ? 0.59 : 0.96, 0, view);
+    // 老家视图 = 江浙沪皖（不是整幅中国）：全国化后 regionBox 是 369 城，
+    // 按它取景地图会缩成一小条；四省范围才是用户熟悉的总览视角，其他省份拖动去看。
+    this.frameTo(this.homeBox, 0.7, narrow ? 0.59 : 0.96, 0, view);
   }
 
   /** 省视角城市标记：去过 = 小红旗，收藏 = 粉心 */
@@ -1115,7 +1153,10 @@ export class SceneManager {
       el.className = 'geo-label';
       el.textContent = name;
       const obj = new CSS2DObject(el);
-      obj.position.set(acc.x / acc.n, 10, acc.z / acc.n);
+      // 标签贴在「城市板块顶面」而不是一个固定高度：
+      // 原先写死 y=10，整幅中国取景（dist≈130）时看不出问题；全国化后首屏按江浙沪皖
+      // 取景（dist≈17），10 个单位被透视放大，标签整排飞到屏幕上方看不见了。
+      obj.position.set(acc.x / acc.n, CITY_HEIGHT + 0.05, acc.z / acc.n);
       this.provinceLabelGroup.add(obj);
       this.provinceLabels.push(obj);
     }

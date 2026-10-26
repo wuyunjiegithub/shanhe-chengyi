@@ -64,8 +64,11 @@ const PROVINCES = [
   { adcode: '820000', name: '澳门特别行政区', short: '澳' },
 ];
 
-// 仅给「已录入内容」的省份抓取区县边界
-const CONTENT_PROVINCES = new Set(['310000', '320000', '330000', '340000', '110000']);
+// 仅给「已录入内容」的省份抓取区县边界（避免离线包被全国 ~2900 个区县撑爆）。
+// FETCH_ALL_DISTRICTS=1 时放开到全部省份：全国化录入完成后用它一次抓全。
+const CONTENT_PROVINCES = process.env.FETCH_ALL_DISTRICTS
+  ? new Set(PROVINCES.map((p) => p.adcode))
+  : new Set(['310000', '320000', '330000', '340000', '110000']);
 
 // 直辖市 / 特别行政区：市本级即地级市，区县直接从本省 _full 取
 const MUNICIPALITIES = new Set(['110000', '120000', '310000', '500000', '810000', '820000']);
