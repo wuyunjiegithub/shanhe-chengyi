@@ -4501,13 +4501,16 @@ button.wall-stage-img {
 
 .hall3d-hint {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 4px 8px;
   padding: 9px 12px;
   border-top: 1px solid var(--border);
   font-family: var(--font-mono);
   font-size: 10.5px;
+  line-height: 1.6;
+  text-align: center;
   color: var(--text-3);
 }
 

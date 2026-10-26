@@ -42,20 +42,50 @@ export function PlaceStatusActions({
 }) {
   return (
     <>
-      <button
-        className={`icon-btn icon-btn--fav${favored ? ' is-on' : ''}`}
-        title={favored ? favTitleOn : favTitleOff}
-        onClick={onToggleFav}
-      >
-        <HeartMark on={favored} />
-      </button>
-      <button
-        className={`icon-btn icon-btn--visited${visited ? ' is-on' : ''}`}
-        title={visited ? visitedTitleOn : visitedTitleOff}
-        onClick={onToggleVisited}
-      >
-        <VisitedMark on={visited} />
-      </button>
+      {STATUS_ORDER.map((k) =>
+        k === 'fav' ? (
+          <button
+            key={k}
+            className={`icon-btn icon-btn--fav${favored ? ' is-on' : ''}`}
+            title={favored ? favTitleOn : favTitleOff}
+            onClick={onToggleFav}
+          >
+            <HeartMark on={favored} />
+          </button>
+        ) : (
+          <button
+            key={k}
+            className={`icon-btn icon-btn--visited${visited ? ' is-on' : ''}`}
+            title={visited ? visitedTitleOn : visitedTitleOff}
+            onClick={onToggleVisited}
+          >
+            <VisitedMark on={visited} />
+          </button>
+        ),
+      )}
+    </>
+  );
+}
+
+/**
+ * 标题前的两枚小标记（「名字」左侧）。
+ *
+ * **顺序必须与右上角按钮组一致：收藏（心）→ 去过（旗）**。
+ * 之前这里写的是「旗 → 心」，和按钮组正好相反，同一个面板里两个顺序互相打脸。
+ * 现在按钮组与标记组都从 STATUS_ORDER 生成，改一处两边一起动，不会再反。
+ */
+const STATUS_ORDER = ['fav', 'visited'] as const;
+
+export function PlaceStatusMarks({ favored, visited }: { favored: boolean; visited: boolean }) {
+  return (
+    <>
+      {STATUS_ORDER.map((k) =>
+        k === 'fav' ? (
+          <HeartMark key={k} on={favored} />
+        ) : (
+          <VisitedMark key={k} on={visited} />
+        ),
+      )}
     </>
   );
 }
@@ -101,8 +131,7 @@ export function PlaceHeader({
         <div className="place-kicker">{kicker}</div>
         <h2 className="place-title">
           <span className="place-title-marks" aria-hidden="true">
-            <VisitedMark on={visited} />
-            <HeartMark on={favored} />
+            <PlaceStatusMarks favored={favored} visited={visited} />
           </span>
           {name}
         </h2>

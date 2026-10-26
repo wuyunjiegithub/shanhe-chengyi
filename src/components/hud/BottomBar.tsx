@@ -57,8 +57,8 @@ export function BottomBar() {
           title="查看去过与收藏"
         >
           <span className="fav-pair">
-            <VisitedMark on size={14} />
             <HeartMark on size={12} />
+            <VisitedMark on size={14} />
           </span>
           {trackCount > 0 ? `${trackCount} 条足迹` : '足迹收藏'}
         </button>

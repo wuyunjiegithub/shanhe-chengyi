@@ -35,7 +35,7 @@ const STYLES: { id: WallStyle; name: string; hint: string }[] = [
   { id: 'gallery', name: '展厅', hint: '展墙网格：均匀挂画 + 展签' },
   { id: 'corridor', name: '长廊', hint: '长廊移步：单幅大字 + 两侧窥视' },
   { id: 'lightbox', name: '灯箱', hint: '灯箱独照：暗场聚光 + 展签' },
-  { id: 'hall3d', name: '照片空间 · 3D', hint: '照片铺满一整个立体空间：拖动环绕、滚轮拉近钻进去 / 拉远看全貌、点击居中放大' },
+  { id: 'hall3d', name: '照片空间 · 3D', hint: '照片铺满一整个立体空间：上下左右拖动转视角、右键 / 双指拖平移、滚轮拉近钻进去、点击居中放大' },
 ];
 
 /** 手机端可用的展览风格：3D 空间（WebGL 星海 + 手势环绕）在手机上又费电又难点准，直接去掉 */
@@ -935,7 +935,7 @@ export function PhotoWall() {
               <div className="hall3d-wrap" ref={hall3dRef}>
                 <Gallery3D items={hallItems} focus={focus} onFocus={setFocus} touring={touring} />
                 <div className="hall3d-hint">
-                  拖动环绕 · 滚轮缩放 · 点击照片居中放大 · 点空白处退出 · Esc 关闭
+                  上下左右拖动转视角 · 右键 / 双指拖平移 · 滚轮缩放 · 点击照片居中放大 · 点空白处退出 · Esc 关闭
                   {items.length > HALL_SLOTS && <b>（空间内铺前 {HALL_SLOTS} 张，共 {items.length} 张）</b>}
                 </div>
                 <button

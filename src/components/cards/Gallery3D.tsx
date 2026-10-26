@@ -87,7 +87,10 @@ interface PhotoNode {
  * - 照片按分层球壳铺满三维空间（内层少、外层多，面密度一致），不是排成一条线或一个平面；
  * - 整片缓缓自转，中心一团呼吸光晕，四周撒着星云与星尘，远近有雾做纵深；
  * - 每张照片始终朝向相机（billboard），从任何角度都看得清、不会看到背面；
- * - 拖动环绕 / 滚轮缩放 / 点击照片飞抵近看 / 点空白处退出聚焦。
+ * - 拖动**上下左右都能转**（俯仰 ±82°，上层和下层照片都能转到眼前）、
+ *   右键 / 双指拖平移（走进照片世界的前后左右）、滚轮 / 捏合缩放、
+ *   点击照片飞抵近看、点空白处退出聚焦；
+ * - 自动漫游是三维慢飞：绕行 + 俯仰起伏 + 远近呼吸，不是只在一个水平面上转。
  */
 export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -147,7 +150,15 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     controls.dampingFactor = 0.08;
     controls.minDistance = 2.2;
     controls.maxDistance = R * 2.8;
-    controls.autoRotateSpeed = 0.45;
+    // 上下自由的边界：留 8° 不贴到正上/正下方，避免跨极点时画面翻滚（不是限制你看不到顶和底）
+    controls.minPolarAngle = 0.14;
+    controls.maxPolarAngle = Math.PI - 0.14;
+    // 拖动手感：默认 1 太灵敏，340px 就转过 150°，一拖就冲到边界像是「转不动」
+    controls.rotateSpeed = 0.62;
+    // 平移沿屏幕方向（右键 / 双指拖）：这是「前后左右走进去」的那一维，
+    // 原来每帧把 target 钉回原点，等于把平移这一维整个抹掉了
+    controls.screenSpacePanning = true;
+    controls.panSpeed = 0.85;
 
     // 远景雾：越远的照片越暗、渐渐融进深空，形成真实的纵深层次，
     // 而不是把上百张照片糊成一堵亮度相同的墙。密度随相机距离动态调，
@@ -514,6 +525,30 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       radius: R,
       shells: shellLayout(n, R).length,
       maxDistance: controls.maxDistance,
+      /** 相机姿态探针：回归用来确认「上下也能拖」（polar 会变）而不是只能水平转 */
+      cam: () => ({
+        x: +camera.position.x.toFixed(3),
+        y: +camera.position.y.toFixed(3),
+        z: +camera.position.z.toFixed(3),
+        dist: +camera.position.distanceTo(controls.target).toFixed(3),
+        polar: +controls.getPolarAngle().toFixed(3),
+        azimuth: +controls.getAzimuthalAngle().toFixed(3),
+        tx: +controls.target.x.toFixed(3),
+        ty: +controls.target.y.toFixed(3),
+        tz: +controls.target.z.toFixed(3),
+      }),
+      polarLimits: [controls.minPolarAngle, +controls.maxPolarAngle.toFixed(3)],
+      /** 聚焦照片在屏幕上的投影坐标（回归用来确认「飞抵后居中」，z<0 表示跑到镜头后面） */
+      focusScreen: () => {
+        const idx = focusRef.current;
+        if (idx === null || !nodes[idx]) return null;
+        const v = nodes[idx].group.position.clone().project(camera);
+        return {
+          x: +(((v.x + 1) / 2) * renderer.domElement.clientWidth).toFixed(1),
+          y: +(((-v.y + 1) / 2) * renderer.domElement.clientHeight).toFixed(1),
+          z: +v.z.toFixed(3),
+        };
+      },
       spread: (() => {
         // 三轴跨度：球形分布下 y 轴跨度应该和 x/z 同量级；盘状布局 y 会接近 0
         const xs = nodes.map((nd) => nd.dir.x * nd.radius);
@@ -529,7 +564,17 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     const pointer = new THREE.Vector2();
     let downXY: [number, number] | null = null;
 
+    // 自动漫游是「自己开飞机」的：用户一动手就先让出操控权 1.8 秒，
+    // 否则手拖一下立刻被漫游的下一帧覆盖，感觉像拖不动。
+    let tourLastInput = -1e9;
+    const markInput = () => {
+      tourLastInput = performance.now();
+    };
+
     const onDown = (e: PointerEvent) => {
+      markInput();
+      // 只有左键算「点击」：右键是平移，松开时不该顺手把照片点开
+      if (e.button !== 0) return;
       downXY = [e.clientX, e.clientY];
     };
     /** 取第一张可见照片：淡出的照片（聚焦态）不挡点击，点空白才能退出聚焦 */
@@ -584,6 +629,7 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     dom.addEventListener('pointerup', onUp);
     dom.addEventListener('pointermove', onMove);
     dom.addEventListener('pointerleave', onLeave);
+    dom.addEventListener('wheel', markInput, { passive: true });
 
     // ---------- 聚焦：把选中的照片飞到中央展示，其余淡出 ----------
     let focusEnv = 0;
@@ -611,6 +657,16 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
     let hdIndex: number | null = null;
     let hdBusy = false;
 
+    /* ---------- 漫游（自动飞行）状态 ---------- */
+    let tourT = 0;
+    let tourPhi0 = Math.PI / 2;
+    let tourR0 = R + 9;
+    let tourDriving = false;
+    const _v = new THREE.Vector3();
+    const _sph = new THREE.Spherical();
+    /** 相机 → 目标点 的单位轴（聚焦时照片落在这条线上的正前方） */
+    const _axis = new THREE.Vector3();
+
     /** 整体调暗 / 调亮某张照片的相框、图片与光晕（三件套同进退） */
     const setNodeOpacity = (node: PhotoNode, op: number) => {
       (node.plane.material as THREE.Material).opacity = op;
@@ -624,8 +680,8 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       last = now;
       elapsed += dt;
 
-      // 有聚焦时停止自动漫游；其余时间按设定巡航
-      controls.autoRotate = touringRef.current && focusRef.current === null;
+      // 聚焦时不自动漫游；漫游本身不再用 autoRotate（那只能水平绕），
+      // 见本帧末尾的三维飞行驱动。
 
       // 聚焦环境：有选中照片时朝 1 收敛（其余照片淡出），退出时朝 0 回归
       const fActive = focusRef.current !== null;
@@ -650,10 +706,15 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
         }
       }
 
-      // 聚焦照片停在相机正前方的固定距离上（沿相机→星系中心轴线），
-      // 所以永远居中、且不论星系多大呈现大小都恒定；其余照片沿旋臂归位并淡出。
-      const camLen = camera.position.length() || 1;
-      const fk = 1 - FOCUS_DIST / camLen;
+      // 聚焦照片停在相机正前方的固定距离上（沿「相机 → 目标点」轴线），
+      // 所以永远居中、且不论星系多大呈现大小都恒定；其余照片沿球壳归位并淡出。
+      // 注意不能再用 camera.position 归一化：目标点被平移走后，那条轴线就不再穿过原点。
+      _axis.copy(controls.target).sub(camera.position);
+      const camLen = _axis.length() || 1;
+      _axis.divideScalar(camLen);
+      const fpX = camera.position.x + _axis.x * FOCUS_DIST;
+      const fpY = camera.position.y + _axis.y * FOCUS_DIST;
+      const fpZ = camera.position.z + _axis.z * FOCUS_DIST;
 
       // 漂浮 + 聚焦：选中照片飞抵中央放大，其余淡出；平时整组缓慢自转
       for (const node of nodes) {
@@ -665,9 +726,9 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
         const sx = node.dir.x * node.radius;
         const sy = node.dir.y * node.radius + bobY;
         const sz = node.dir.z * node.radius;
-        const tx = on ? camera.position.x * fk : sx;
-        const ty = on ? camera.position.y * fk : sy;
-        const tz = on ? camera.position.z * fk : sz;
+        const tx = on ? fpX : sx;
+        const ty = on ? fpY : sy;
+        const tz = on ? fpZ : sz;
         node.group.position.set(lerp(sx, tx, f), lerp(sy, ty, f), lerp(sz, tz, f));
         node.group.scale.setScalar(lerp(1, FOCUS_SCALE, f));
         node.group.lookAt(camera.position);
@@ -691,11 +752,47 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       }
       stars.rotation.y -= dt * 0.004;
 
-      controls.target.set(0, 0, 0);
+      /**
+       * ---------- 自动漫游：三维慢飞，不是只水平绕 ----------
+       * 以前用 controls.autoRotate（OrbitControls 只会改方位角），镜头永远在同一水平面上，
+       * 于是「上面和下面」那一层照片永远走不到眼前。现在每帧自己算球坐标：
+       *   θ 持续前进（环绕）→ φ 绕基准俯仰做 ±19° 起伏（抬头看上层 / 低头看下层）
+       *   → 半径做 ±15% 呼吸（钻进照片世界里、再退出来看全貌）
+       * 用户一拖一滚就暂停 1.8s，恢复时把当前俯仰/距离当作新基准，镜头不会跳。
+       */
+      const wantTour = touringRef.current && focusRef.current === null;
+      if (wantTour && performance.now() - tourLastInput > 1800) {
+        _sph.setFromVector3(_v.copy(camera.position).sub(controls.target));
+        if (!tourDriving) {
+          tourDriving = true;
+          tourPhi0 = _sph.phi;
+          tourR0 = _sph.radius;
+          tourT = 0;
+        }
+        tourT += dt;
+        _sph.theta += dt * 0.085;
+        _sph.phi = THREE.MathUtils.clamp(
+          tourPhi0 + 0.34 * Math.sin(tourT * 0.3),
+          0.5,
+          Math.PI - 0.5,
+        );
+        _sph.radius = THREE.MathUtils.clamp(
+          tourR0 * (1 + 0.15 * Math.sin(tourT * 0.17 + 0.6)),
+          controls.minDistance,
+          controls.maxDistance,
+        );
+        camera.position.copy(controls.target).add(_v.setFromSpherical(_sph));
+      } else {
+        tourDriving = false;
+      }
+
+      // 目标点不再每帧钉回原点（那会把平移整维抹掉，等于只能原地转）；
+      // 只把漂移夹在照片世界内部，免得一路平移出去只剩空星空。
+      if (controls.target.lengthSq() > (R * 0.9) ** 2) controls.target.setLength(R * 0.9);
       controls.update();
-      // 雾密度跟着相机距离走：拉远看全貌时远处的照片不会被雾吃掉（否则一眼全黑），
+      // 雾密度跟着相机与目标的距离走：拉远看全貌时远处的照片不会被雾吃掉（否则一眼全黑），
       // 拉近钻进去时近处清晰、远处沉入深空 —— 纵深层次始终成立
-      const camDist = camera.position.length() || R;
+      const camDist = camera.position.distanceTo(controls.target) || R;
       if (scene.fog) (scene.fog as THREE.FogExp2).density = 0.8 / (camDist + R);
       renderer.render(scene, camera);
       raf = requestAnimationFrame(tick);
@@ -711,6 +808,7 @@ export function Gallery3D({ items, focus, onFocus, touring }: Gallery3DProps) {
       dom.removeEventListener('pointerup', onUp);
       dom.removeEventListener('pointermove', onMove);
       dom.removeEventListener('pointerleave', onLeave);
+      dom.removeEventListener('wheel', markInput);
       controls.dispose();
       for (const v of videoTextures) {
         v.video.pause();
