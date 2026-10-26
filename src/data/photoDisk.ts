@@ -78,6 +78,8 @@ function mimeOf(name: string): string {
     gif: 'image/gif',
     avif: 'image/avif',
     bmp: 'image/bmp',
+    heic: 'image/heic',
+    heif: 'image/heif',
     mp4: 'video/mp4',
     webm: 'video/webm',
     mov: 'video/quicktime',
@@ -492,7 +494,7 @@ export function isMediaName(name: string): boolean {
   if (dot < 0) return false;
   const ext = name.slice(dot + 1).toLowerCase();
   return (
-    ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'bmp'].includes(ext) ||
+    ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'bmp', 'heic', 'heif'].includes(ext) ||
     ['mp4', 'webm', 'mov', 'm4v'].includes(ext)
   );
 }

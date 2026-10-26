@@ -315,7 +315,7 @@ function Panel({ onClose }: { onClose: () => void }) {
             <pre className="photo-lib-tree">{TREE}</pre>
             <ul>
               <li>照片墙里的「＋ 上传」也会写进这套结构（如上传到淳安县 → 浙江省/杭州市/淳安县/）；</li>
-              <li>支持 jpg / jpeg / png / webp / gif（动图）/ avif，视频支持 mp4 / webm / mov；</li>
+              <li>支持 jpg / jpeg / png / webp / gif（动图）/ avif / heic / heif（iPhone 实况等动态照片的静帧），视频支持 mp4 / webm / mov；</li>
               <li>照片按画幅分为横屏 / 竖屏 / 其他三类，「其他」为非常规比例（多为裁切或修改过）；</li>
               <li>单个区县最多取前 60 个媒体；文件夹名写全称或简称都可以（「淳安县」或「淳安」均可识别）；</li>
               <li>照片只在本机读取，不会上传；绑定信息保存在本机。</li>
