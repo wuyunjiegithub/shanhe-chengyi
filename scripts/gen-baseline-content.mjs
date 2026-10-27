@@ -18,6 +18,8 @@
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { PROVINCE_FOODS, PROVINCE_LANDMARKS } from './content/seed-travel.mjs';
+import { PROVINCE_LANDMARKS_EXTRA } from './content/seed-landmarks-extra.mjs';
 
 const ROOT = process.cwd();
 const GEO_DIR = join(ROOT, 'public/geo');
@@ -74,8 +76,33 @@ for (const f of cityGeo.features ?? []) {
   cityById.set(String(f.properties.id), {
     name: f.properties.name,
     province: f.properties.province,
+    center: f.properties?.centroid ?? f.properties?.center ?? null,
   });
 }
+
+/* ---------- 主城区 + 省代表景点索引（用于注入城市级内容） ---------- */
+// 每市 districts geojson 的第一个要素即主城区（市政府所在区/县），景点挂这里
+const capitalOfCity = new Map();
+for (const file of readdirSync(join(GEO_DIR, 'districts')).sort()) {
+  if (!file.endsWith('.geojson')) continue;
+  const cityId = file.replace('.geojson', '');
+  const fc = readJson(join(GEO_DIR, 'districts', file));
+  const feats = fc.features ?? [];
+  if (feats.length) {
+    const fid = String(feats[0].properties?.id ?? feats[0].properties?.adcode ?? '');
+    if (fid) capitalOfCity.set(cityId, fid);
+  }
+}
+// 城市名 → 省代表景点（PROVINCE_LANDMARKS + EXTRA 按省组织，展开成「城市名」索引便于匹配）
+const landmarksByCity = new Map();
+for (const list of [...Object.values(PROVINCE_LANDMARKS), ...Object.values(PROVINCE_LANDMARKS_EXTRA)]) {
+  for (const lm of list) {
+    const cityName = lm[0];
+    if (!landmarksByCity.has(cityName)) landmarksByCity.set(cityName, []);
+    landmarksByCity.get(cityName).push(lm);
+  }
+}
+const round4 = (n) => Math.round(n * 1e4) / 1e4;
 
 /* ---------- 逐市生成 ---------- */
 const out = [];
@@ -108,6 +135,17 @@ for (const file of readdirSync(join(GEO_DIR, 'districts')).sort()) {
     const area = geomArea(f.geometry);
     const areaText = area > 0 ? `，面积约 ${Math.round(area)} 平方公里` : '';
     const where = province === city.name ? city.name : `${province}${city.name}`;
+    // 主城区注入该市的省代表景点（让全国每座城市地图都有真实景点点）
+    let spots = [];
+    if (capitalOfCity.get(cityId) === id && center) {
+      const lms = landmarksByCity.get(city.name) ?? [];
+      spots = lms.map((lm, i) => {
+        const [, lmName, summary, tags, hot, suitableFor, duration] = lm;
+        const lng = (center[0] ?? 0) + (i - (lms.length - 1) / 2) * 0.03;
+        const lat = (center[1] ?? 0) + (i % 2 === 0 ? 0.02 : -0.02);
+        return [`lm-${id}-${i}`, lmName, round4(lng), round4(lat), summary, tags, hot, suitableFor, duration];
+      });
+    }
     out.push({
       id,
       name,
@@ -121,7 +159,7 @@ for (const file of readdirSync(join(GEO_DIR, 'districts')).sort()) {
       features: [],
       specialties: [],
       foods: [],
-      spots: [],
+      spots,
       baseline: true,
     });
     added++;
@@ -129,7 +167,8 @@ for (const file of readdirSync(join(GEO_DIR, 'districts')).sort()) {
 
   if (added > 0 && !cityMetaExtra[cityId]) {
     cityMetaExtra[cityId] = {
-      intro: `${provinceLabel(city)}下辖 ${feats.length} 个区县。详细城市介绍与美食榜待补充。`,
+      intro: `${provinceLabel(city)}下辖 ${feats.length} 个区县。`,
+      foods: PROVINCE_FOODS[city.province] ?? [],
     };
   }
 }

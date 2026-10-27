@@ -17,7 +17,58 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-120101-0",
+        "五大道",
+        117.1662,
+        39.139,
+        "万国建筑博览，近代洋楼荟萃。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ],
+      [
+        "lm-120101-1",
+        "天津之眼",
+        117.1962,
+        39.099,
+        "横跨海河的巨型摩天轮。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "1小时"
+      ],
+      [
+        "lm-120101-2",
+        "古文化街",
+        117.2262,
+        39.139,
+        "津味民俗与老字号聚集地。",
+        [
+          "古镇",
+          "拍照"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -273,7 +324,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-130102-0",
+        "正定古城",
+        114.5835,
+        38.1006,
+        "隆兴寺与四塔并峙的千年古县。",
+        [
+          "历史文化",
+          "寺庙",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -625,7 +694,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-130202-0",
+        "清东陵",
+        118.1988,
+        39.5858,
+        "清代皇家陵寝群，世界文化遗产。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -849,7 +935,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-130302-0",
+        "山海关",
+        119.5861,
+        40.0927,
+        "天下第一关，长城入海处。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -961,7 +1064,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-130402-0",
+        "娲皇宫",
+        114.4827,
+        36.5237,
+        "太行崖壁上的悬空古建筑。",
+        [
+          "历史文化",
+          "拍照",
+          "寺庙"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -1249,7 +1370,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-130502-0",
+        "崆山白云洞",
+        114.5617,
+        37.1082,
+        "喀斯特溶洞奇观。",
+        [
+          "山水",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -1537,7 +1675,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-130602-0",
+        "白洋淀",
+        115.4211,
+        38.9178,
+        "华北明珠，芦苇荡与水乡风光。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -1921,7 +2078,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-130702-0",
+        "大境门",
+        115.0492,
+        40.7788,
+        "长城关隘与草原天路起点。",
+        [
+          "历史文化",
+          "拍照",
+          "徒步"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -2177,7 +2352,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-130802-0",
+        "避暑山庄",
+        117.9747,
+        40.9485,
+        "清代皇家园林，世界文化遗产。",
+        [
+          "山水",
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -2353,7 +2547,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-130902-0",
+        "铁狮子",
+        116.9061,
+        38.3297,
+        "千年铸铁巨狮。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "1小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -2609,7 +2820,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-131002-0",
+        "天下第一城",
+        116.7586,
+        39.3633,
+        "仿古都城微缩景观。",
+        [
+          "古镇",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -2769,7 +2999,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-131102-0",
+        "衡水湖",
+        115.6633,
+        37.7386,
+        "华北湿地与候鸟栖息地。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -2945,7 +3194,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-140105-0",
+        "晋祠",
+        112.5661,
+        37.7338,
+        "北宋彩塑与难老泉名园。",
+        [
+          "历史文化",
+          "拍照",
+          "寺庙"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -3105,7 +3372,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-140212-0",
+        "云冈石窟",
+        113.1827,
+        40.2831,
+        "北魏皇家开凿的佛教石窟群。",
+        [
+          "历史文化",
+          "博物馆",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -3265,7 +3550,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-140302-0",
+        "娘子关",
+        113.5976,
+        37.8717,
+        "长城关隘与瀑布泉。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -3345,7 +3647,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-140403-0",
+        "太行山大峡谷",
+        113.0974,
+        36.2776,
+        "八泉峡与红豆峡。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        false,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -3537,7 +3858,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-140502-0",
+        "皇城相府",
+        112.848,
+        35.5361,
+        "清代大学士陈廷敬故居。",
+        [
+          "历史文化",
+          "拍照",
+          "古镇"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -3729,7 +4068,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-140702-0",
+        "平遥古城",
+        112.837,
+        37.6628,
+        "保存完整的明清县城，票号发源。",
+        [
+          "古镇",
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -3905,7 +4262,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-140802-0",
+        "解州关帝庙",
+        110.9561,
+        35.0767,
+        "武庙之冠，关公故里。",
+        [
+          "历史文化",
+          "寺庙",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -4113,7 +4488,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-140902-0",
+        "五台山",
+        112.5999,
+        38.4518,
+        "四大佛教名山之首，显通寺林立。",
+        [
+          "寺庙",
+          "历史文化",
+          "徒步"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -4337,7 +4731,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-141002-0",
+        "壶口瀑布",
+        111.4697,
+        36.1397,
+        "黄河咆哮的金色瀑布。",
+        [
+          "山水",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -4609,7 +5020,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-141102-0",
+        "北武当山",
+        111.308,
+        37.5636,
+        "道教名山与石林。",
+        [
+          "山水",
+          "寺庙",
+          "徒步"
+        ],
+        false,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -4817,7 +5247,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-150102-0",
+        "大召寺",
+        111.8443,
+        40.9881,
+        "漠南第一召，银佛龙雕精美。",
+        [
+          "寺庙",
+          "历史文化"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -4961,7 +5408,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-150202-0",
+        "五当召",
+        110.2073,
+        40.596,
+        "藏传佛教召庙。",
+        [
+          "寺庙",
+          "历史文化",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -5153,7 +5618,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-150402-0",
+        "乌兰布统",
+        118.9841,
+        42.2094,
+        "草原与影视拍摄地。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -5473,7 +5956,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-150602-0",
+        "响沙湾",
+        109.7502,
+        39.8485,
+        "沙漠中的鸣沙与游乐。",
+        [
+          "山水",
+          "亲子",
+          "拍照"
+        ],
+        true,
+        [
+          "亲子"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -5617,7 +6118,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-150702-0",
+        "呼伦贝尔大草原",
+        120.0124,
+        49.2765,
+        "水草丰美的天然草场。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -5953,7 +6473,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-150902-0",
+        "辉腾锡勒",
+        113.1719,
+        41.0893,
+        "高山草甸与风车阵。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -6129,7 +6667,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-152201-0",
+        "阿尔山",
+        122.4179,
+        46.0394,
+        "火山温泉与林海。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -6225,7 +6781,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-152501-0",
+        "草原",
+        112.0353,
+        43.4352,
+        "典型草原牧区风光。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -6417,7 +6992,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-152921-0",
+        "额济纳胡杨林",
+        105.0306,
+        39.559,
+        "金秋胡杨与弱水河。",
+        [
+          "山水",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -6465,7 +7057,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-210102-0",
+        "沈阳故宫",
+        123.389,
+        41.766,
+        "清初皇宫，关外宫殿代表。",
+        [
+          "历史文化",
+          "博物馆",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -6673,7 +7283,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-210202-0",
+        "星海广场",
+        121.6733,
+        38.9201,
+        "滨海地标与跨海大桥。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -6833,7 +7461,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-210302-0",
+        "千山",
+        123.0813,
+        41.0663,
+        "辽东名山，寺庙与奇峰。",
+        [
+          "山水",
+          "寺庙",
+          "徒步"
+        ],
+        false,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -6945,7 +7592,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-210402-0",
+        "赫图阿拉",
+        123.9367,
+        41.8323,
+        "满族发祥地古城。",
+        [
+          "历史文化",
+          "古镇",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -7057,7 +7722,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-210502-0",
+        "本溪水洞",
+        123.7014,
+        41.2408,
+        "世界最长充水溶洞。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -7153,7 +7837,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-210602-0",
+        "鸭绿江",
+        124.3236,
+        40.1988,
+        "中朝界河与断桥。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -7249,7 +7950,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-210702-0",
+        "笔架山",
+        121.0786,
+        41.1737,
+        "天桥连通的海上奇山。",
+        [
+          "山水",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -7681,7 +8399,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-211102-0",
+        "红海滩",
+        122.0139,
+        41.2151,
+        "碱蓬草染红的湿地。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -8065,7 +8801,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-220102-0",
+        "伪满皇宫",
+        125.4123,
+        43.7453,
+        "末代皇帝居所，近代史见证。",
+        [
+          "历史文化",
+          "博物馆"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -8241,7 +8994,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-220202-0",
+        "松花湖",
+        126.2832,
+        44.0568,
+        "青山碧水的巨大人工湖。",
+        [
+          "山水",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -8385,7 +9155,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-220302-0",
+        "叶赫那拉城",
+        124.3637,
+        43.2444,
+        "满族古城遗址。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -8529,7 +9316,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-220502-0",
+        "集安高句丽",
+        125.9727,
+        41.6923,
+        "世界遗产古墓群。",
+        [
+          "历史文化",
+          "博物馆",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -8737,7 +9542,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-220702-0",
+        "查干湖",
+        124.8604,
+        45.306,
+        "冬捕渔猎的淡水湖。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -8817,7 +9640,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-220802-0",
+        "向海",
+        122.842,
+        45.661,
+        "丹顶鹤湿地保护区。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -8897,7 +9738,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-222401-0",
+        "长白山",
+        129.3323,
+        43.1202,
+        "天池坐落的中朝界山。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -9025,7 +9885,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-230102-0",
+        "中央大街",
+        126.3733,
+        45.6887,
+        "百年欧式建筑步行街。",
+        [
+          "历史文化",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -9313,7 +10191,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-230202-0",
+        "扎龙",
+        123.922,
+        47.2891,
+        "丹顶鹤国家级自然保护区。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -9969,7 +10865,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-230602-0",
+        "铁人纪念馆",
+        125.0616,
+        46.7278,
+        "大庆精神纪念地。",
+        [
+          "博物馆",
+          "历史文化"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -10113,7 +11026,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-230717-0",
+        "五营森林公园",
+        129.2712,
+        47.7773,
+        "红松林海的天然氧吧。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        false,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -10273,7 +11205,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-230803-0",
+        "同江",
+        130.3598,
+        46.8383,
+        "三江交汇与赫哲风情。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -10497,7 +11447,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-231002-0",
+        "镜泊湖",
+        129.8349,
+        44.4056,
+        "火山堰塞湖与吊水楼瀑布。",
+        [
+          "山水",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -10657,7 +11624,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-231102-0",
+        "五大连池",
+        126.7333,
+        50.2454,
+        "火山堰塞湖群。",
+        [
+          "山水",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -10913,7 +11897,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-232701-0",
+        "北极村",
+        122.7083,
+        52.96,
+        "中国最北端的极光与雪乡。",
+        [
+          "拍照",
+          "山水"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -10977,7 +11978,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-350102-0",
+        "三坊七巷",
+        119.2835,
+        26.1123,
+        "明清坊巷里走出无数名人。",
+        [
+          "古镇",
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -11185,7 +12204,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-350203-0",
+        "鼓浪屿",
+        118.1333,
+        24.4827,
+        "万国建筑与钢琴之岛。",
+        [
+          "拍照",
+          "古镇",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -11281,7 +12319,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-350302-0",
+        "湄洲岛",
+        118.9334,
+        25.4327,
+        "妈祖文化发源地。",
+        [
+          "寺庙",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -11361,7 +12417,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-350403-0",
+        "泰宁",
+        117.5616,
+        26.2396,
+        "丹霞水上的古城。",
+        [
+          "山水",
+          "拍照",
+          "古镇"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -11537,7 +12611,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-350502-0",
+        "开元寺",
+        118.5487,
+        24.9247,
+        "双塔擎天的千年古刹。",
+        [
+          "寺庙",
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -11729,7 +12821,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-350602-0",
+        "南靖土楼",
+        117.6156,
+        24.6171,
+        "田螺坑的客家土楼群。",
+        [
+          "古镇",
+          "拍照",
+          "历史文化"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -11905,7 +13015,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-350702-0",
+        "武夷山",
+        118.2472,
+        26.6048,
+        "丹霞碧水与岩茶之乡。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -12065,7 +13194,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-350802-0",
+        "永定土楼",
+        117.0797,
+        25.2368,
+        "振成楼的环形客家楼。",
+        [
+          "古镇",
+          "拍照",
+          "历史文化"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -12177,7 +13324,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-350902-0",
+        "太姥山",
+        119.4493,
+        26.7769,
+        "海上仙都的奇石峰林。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -12321,7 +13486,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-360102-0",
+        "滕王阁",
+        115.9201,
+        28.7471,
+        "落霞与孤鹜的江南名楼。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -12465,7 +13647,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-360202-0",
+        "古窑民俗博览区",
+        117.1119,
+        29.2421,
+        "千年瓷都的活态工坊。",
+        [
+          "历史文化",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -12529,7 +13730,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-360302-0",
+        "武功山",
+        113.8839,
+        27.6512,
+        "高山草甸与云海日出。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -12609,7 +13829,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-360402-0",
+        "庐山",
+        116.0495,
+        29.685,
+        "云雾缭绕的避暑名山。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -12849,7 +14088,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-360602-0",
+        "龙虎山",
+        117.0504,
+        28.2609,
+        "丹霞碧水的道教祖庭。",
+        [
+          "山水",
+          "寺庙",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -12897,7 +14154,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-360702-0",
+        "通天岩",
+        114.9199,
+        25.8347,
+        "江南第一石窟与宋城。",
+        [
+          "历史文化",
+          "拍照",
+          "寺庙"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -13185,7 +14460,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-360802-0",
+        "井冈山",
+        114.9406,
+        27.1707,
+        "中国革命的摇篮。",
+        [
+          "历史文化",
+          "山水",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -13393,7 +14686,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-360902-0",
+        "明月山",
+        114.2836,
+        27.8539,
+        "温泉与高山草甸。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -13553,7 +14864,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-361002-0",
+        "大觉山",
+        116.354,
+        27.9383,
+        "峡谷漂流与禅寺。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -13729,7 +15058,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-361102-0",
+        "三清山",
+        118.0523,
+        28.5101,
+        "花岗岩峰林与云海。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -13921,7 +15269,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-370102-0",
+        "趵突泉",
+        117.0972,
+        36.6752,
+        "天下第一泉，三股水腾涌。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -14113,7 +15480,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-370202-0",
+        "栈桥",
+        120.3645,
+        36.0857,
+        "伸入海湾的百年长桥。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "1小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -14273,7 +15658,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-370302-0",
+        "周村古商城",
+        118.0217,
+        36.5961,
+        "旱码头的北方商埠。",
+        [
+          "古镇",
+          "拍照",
+          "历史文化"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -14401,7 +15804,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-370402-0",
+        "台儿庄古城",
+        117.5991,
+        34.8845,
+        "运河边的抗战名镇。",
+        [
+          "古镇",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -14577,7 +15998,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-370602-0",
+        "蓬莱阁",
+        121.358,
+        37.5439,
+        "海市蜃楼传说的仙阁。",
+        [
+          "历史文化",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -14753,7 +16192,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-370702-0",
+        "青州古城",
+        119.0274,
+        36.7168,
+        "明清民居与偶园。",
+        [
+          "古镇",
+          "拍照",
+          "历史文化"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -14945,7 +16402,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-370811-0",
+        "微山湖",
+        116.568,
+        35.3962,
+        "铁道游击队的万亩荷塘。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -15121,7 +16596,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-370902-0",
+        "泰山",
+        117.1767,
+        36.2295,
+        "五岳之首，登顶看日出。",
+        [
+          "山水",
+          "徒步",
+          "历史文化"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -15217,7 +16711,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-371002-0",
+        "刘公岛",
+        122.1141,
+        37.3973,
+        "北洋海军与甲午故地。",
+        [
+          "历史文化",
+          "博物馆",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -15281,7 +16793,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-371102-0",
+        "海滨",
+        119.3748,
+        35.4713,
+        "黄海日出与金沙滩。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -15345,7 +16875,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-371302-0",
+        "蒙山",
+        118.2846,
+        35.22,
+        "岱宗之亚的沂蒙主峰。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        false,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -16097,7 +17646,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-410102-0",
+        "少林寺",
+        113.5469,
+        34.8008,
+        "禅宗祖庭与少林功夫。",
+        [
+          "寺庙",
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -16289,7 +17856,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-410202-0",
+        "清明上河园",
+        114.2792,
+        34.8438,
+        "按画卷复活的宋韵汴京。",
+        [
+          "古镇",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -16433,7 +18019,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-410302-0",
+        "龙门石窟",
+        112.4438,
+        34.7346,
+        "伊河两岸的石窟造像。",
+        [
+          "历史文化",
+          "博物馆",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -16657,7 +18261,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-410402-0",
+        "尧山",
+        113.1821,
+        33.7855,
+        "中原大佛与温泉。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -16817,7 +18439,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-410502-0",
+        "殷墟",
+        114.4183,
+        36.0543,
+        "商代晚期都城的甲骨文出土地。",
+        [
+          "历史文化",
+          "博物馆"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -17041,7 +18680,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-410702-0",
+        "郭亮村",
+        113.9651,
+        35.2955,
+        "绝壁上的挂壁公路。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -17233,7 +18890,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-410802-0",
+        "云台山",
+        113.2131,
+        35.2556,
+        "红石峡与瀑布群。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -17665,7 +19340,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-411202-0",
+        "函谷关",
+        111.2751,
+        34.786,
+        "道家之源的雄关古道。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -17761,7 +19453,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-411302-0",
+        "卧龙岗",
+        112.6319,
+        32.9253,
+        "诸葛亮躬耕的武侯祠。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -17969,7 +19678,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-411402-0",
+        "芒砀山",
+        115.598,
+        34.4971,
+        "汉梁王陵与大汉雄风。",
+        [
+          "历史文化",
+          "博物馆",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -18113,7 +19840,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-411502-0",
+        "鸡公山",
+        113.9616,
+        32.0658,
+        "万国建筑与避暑名山。",
+        [
+          "山水",
+          "拍照",
+          "历史文化"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -18273,7 +20018,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-411602-0",
+        "太昊陵",
+        114.7199,
+        33.6411,
+        "伏羲故都的人祖祭坛。",
+        [
+          "历史文化",
+          "寺庙",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -18593,7 +20356,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-420102-0",
+        "黄鹤楼",
+        114.3209,
+        30.6627,
+        "长江之畔的江南名楼。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -18897,7 +20677,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-420302-0",
+        "武当山",
+        110.7873,
+        32.5384,
+        "道教圣地与明代宫观。",
+        [
+          "寺庙",
+          "历史文化",
+          "徒步"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -19025,7 +20824,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-420502-0",
+        "三峡大坝",
+        111.3187,
+        30.7399,
+        "世界最大水利枢纽。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -19233,7 +21050,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-420602-0",
+        "古隆中",
+        112.0591,
+        31.9671,
+        "三顾茅庐的卧龙岗。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -19425,7 +21259,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-420802-0",
+        "明显陵",
+        112.099,
+        31.1916,
+        "明代帝陵与显陵。",
+        [
+          "历史文化",
+          "拍照",
+          "博物馆"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -19505,7 +21357,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-420902-0",
+        "双峰山",
+        114.0096,
+        30.9589,
+        "孝文化名山与森林。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -19617,7 +21487,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-421002-0",
+        "荆州古城",
+        112.3902,
+        30.3397,
+        "楚文化与三国名城。",
+        [
+          "历史文化",
+          "拍照",
+          "古镇"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -19745,7 +21633,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-421102-0",
+        "东坡赤壁",
+        114.9421,
+        30.5299,
+        "大江东去的怀古之地。",
+        [
+          "历史文化",
+          "山水",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -19905,7 +21811,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-421202-0",
+        "九宫山",
+        114.3854,
+        29.8686,
+        "云中湖与避暑胜地。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -20049,7 +21973,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-422801-0",
+        "恩施大峡谷",
+        109.5108,
+        30.3232,
+        "喀斯特绝壁与地缝。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -20177,7 +22120,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-430102-0",
+        "岳麓山",
+        113.0493,
+        28.2178,
+        "书院枫红与爱晚亭。",
+        [
+          "山水",
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -20321,7 +22282,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-430202-0",
+        "炎帝陵",
+        113.2195,
+        27.921,
+        "中华民族始祖陵寝。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -20465,7 +22443,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-430302-0",
+        "韶山",
+        112.8509,
+        27.9461,
+        "毛泽东故居与纪念馆。",
+        [
+          "历史文化",
+          "博物馆"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -20545,7 +22540,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-430405-0",
+        "南岳衡山",
+        112.6711,
+        26.8968,
+        "五岳之秀，香火鼎盛。",
+        [
+          "山水",
+          "寺庙",
+          "徒步"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -20737,7 +22751,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-430502-0",
+        "崀山",
+        111.5464,
+        27.2618,
+        "丹霞峰林的八角寨。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -20929,7 +22961,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-430602-0",
+        "岳阳楼",
+        113.2145,
+        29.3557,
+        "洞庭天下水的江南名楼。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -21073,7 +23122,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-430702-0",
+        "桃花源",
+        111.7051,
+        29.0348,
+        "陶渊明笔下的世外桃源。",
+        [
+          "古镇",
+          "山水",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -21217,7 +23284,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-430802-0",
+        "武陵源",
+        110.4615,
+        29.139,
+        "石英砂岩峰林奇观。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -21377,7 +23463,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-431002-0",
+        "东江湖",
+        112.8899,
+        25.6768,
+        "雾漫小东江的雾景。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -21921,7 +24025,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-431302-0",
+        "紫鹊界",
+        112.0088,
+        27.7383,
+        "梯田与梅山文化。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -22001,7 +24123,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-433101-0",
+        "凤凰古城",
+        109.7625,
+        28.33,
+        "沱江吊脚楼的苗乡古镇。",
+        [
+          "古镇",
+          "拍照",
+          "历史文化"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -22129,7 +24269,42 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-440103-0",
+        "广州塔",
+        113.2128,
+        23.108,
+        "珠江畔的纤纤小蛮腰。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ],
+      [
+        "lm-440103-1",
+        "陈家祠",
+        113.2428,
+        23.068,
+        "岭南建筑装饰三雕两塑。",
+        [
+          "历史文化",
+          "拍照",
+          "博物馆"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -22305,7 +24480,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-440203-0",
+        "丹霞山",
+        113.3804,
+        24.7295,
+        "丹霞地貌命名地。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -22465,7 +24659,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-440303-0",
+        "世界之窗",
+        114.1482,
+        22.5949,
+        "微缩世界地标的主题乐园。",
+        [
+          "亲子",
+          "拍照"
+        ],
+        true,
+        [
+          "亲子"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -22609,7 +24820,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-440402-0",
+        "情侣路",
+        113.5347,
+        22.2773,
+        "滨海观澳的长堤。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -22657,7 +24886,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-440507-0",
+        "南澳岛",
+        116.7606,
+        23.4106,
+        "闽粤之交的海岛风光。",
+        [
+          "拍照",
+          "亲子",
+          "山水"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -22769,7 +25016,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-440604-0",
+        "祖庙",
+        113.0637,
+        23.0179,
+        "岭南武术与北帝庙。",
+        [
+          "历史文化",
+          "拍照",
+          "寺庙"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -22849,7 +25114,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-440703-0",
+        "开平碉楼",
+        113.0539,
+        22.6737,
+        "世界遗产的华侨楼群。",
+        [
+          "历史文化",
+          "拍照",
+          "古镇"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -22961,7 +25244,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-440802-0",
+        "湖光岩",
+        110.3778,
+        21.2978,
+        "玛珥火山湖。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -23185,7 +25486,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-441202-0",
+        "七星岩",
+        112.4706,
+        23.1165,
+        "湖中七峰的岭南奇观。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -23313,7 +25632,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-441302-0",
+        "西湖",
+        114.48,
+        23.1779,
+        "东坡寓惠的岭南名湖。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -23393,7 +25730,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-441402-0",
+        "叶剑英故居",
+        116.1723,
+        24.2818,
+        "客家围屋与将帅故里。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -23745,7 +26099,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-441802-0",
+        "古龙峡",
+        113.137,
+        23.6918,
+        "漂流与玻璃峡谷。",
+        [
+          "拍照",
+          "亲子",
+          "山水"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -23873,7 +26246,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-445102-0",
+        "广济桥",
+        116.7115,
+        23.6903,
+        "十八梭船廿四洲。",
+        [
+          "历史文化",
+          "拍照",
+          "古镇"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -24081,7 +26472,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-450102-0",
+        "青秀山",
+        108.5452,
+        22.9788,
+        "城市绿肺与观音禅寺。",
+        [
+          "山水",
+          "寺庙",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -24273,7 +26682,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-450202-0",
+        "柳侯公园",
+        109.4649,
+        24.3831,
+        "纪念柳宗元的城市园林。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -24433,7 +26859,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-450302-0",
+        "漓江",
+        110.2622,
+        25.3016,
+        "桂林山水甲天下的画卷。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -24705,7 +27150,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-450403-0",
+        "骑楼城",
+        111.3164,
+        23.5886,
+        "岭南骑楼老街。",
+        [
+          "古镇",
+          "拍照",
+          "历史文化"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -24817,7 +27280,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-450502-0",
+        "银滩",
+        109.1459,
+        21.5217,
+        "细白沙滩与北部湾日落。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -24945,7 +27426,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-450702-0",
+        "三娘湾",
+        108.7611,
+        21.9124,
+        "中华白海豚栖息地。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -25089,7 +27588,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-450902-0",
+        "云天文化城",
+        110.1527,
+        22.6815,
+        "巨型木雕文化建筑。",
+        [
+          "拍照",
+          "历史文化"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -25201,7 +27717,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-451002-0",
+        "乐业天坑",
+        106.4983,
+        23.9573,
+        "世界最大天坑群。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        false,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -25393,7 +27928,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-451102-0",
+        "黄姚古镇",
+        111.7769,
+        24.3514,
+        "明清石板巷的千年古镇。",
+        [
+          "古镇",
+          "拍照",
+          "历史文化"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -25473,7 +28026,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-451202-0",
+        "巴马",
+        107.8646,
+        24.6739,
+        "长寿之乡与盘阳河。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -25745,7 +28316,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-451402-0",
+        "德天瀑布",
+        107.4562,
+        22.5439,
+        "跨国飞瀑与明仕田园。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -25857,7 +28446,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-460105-0",
+        "骑楼老街",
+        110.2292,
+        19.9273,
+        "南洋风情的近代商住街区。",
+        [
+          "古镇",
+          "拍照",
+          "历史文化"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -25921,7 +28528,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-460202-0",
+        "亚龙湾",
+        109.7322,
+        18.3859,
+        "椰风海韵的度假沙滩。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -26017,7 +28642,60 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-500101-0",
+        "洪崖洞",
+        108.3768,
+        30.7241,
+        "魔幻山城的吊脚楼夜景。",
+        [
+          "拍照",
+          "古镇",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ],
+      [
+        "lm-500101-1",
+        "磁器口古镇",
+        108.4068,
+        30.6841,
+        "嘉陵江畔的千年码头镇。",
+        [
+          "古镇",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ],
+      [
+        "lm-500101-2",
+        "大足石刻",
+        108.4368,
+        30.7241,
+        "唐宋石窟造像群。",
+        [
+          "历史文化",
+          "博物馆",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -26625,7 +29303,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-510104-0",
+        "宽窄巷子",
+        104.1151,
+        30.6212,
+        "清代古街区里的茶馆与变脸。",
+        [
+          "古镇",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -26945,7 +29642,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-510302-0",
+        "恐龙博物馆",
+        104.7023,
+        29.2929,
+        "恐龙化石宝库。",
+        [
+          "博物馆",
+          "亲子",
+          "拍照"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -27121,7 +29837,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-510502-0",
+        "老窖池",
+        105.4051,
+        28.8726,
+        "国宝窖池与酒文化。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -27233,7 +29966,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-510603-0",
+        "三星堆",
+        104.4085,
+        31.1934,
+        "青铜神树与古蜀文明。",
+        [
+          "历史文化",
+          "博物馆",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -27329,7 +30080,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-510703-0",
+        "北川",
+        104.684,
+        31.4377,
+        "羌城与地震遗址纪念。",
+        [
+          "历史文化",
+          "拍照",
+          "博物馆"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -27473,7 +30242,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-510802-0",
+        "剑门关",
+        105.7599,
+        32.4649,
+        "一夫当关的蜀道雄关。",
+        [
+          "历史文化",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -27745,7 +30532,43 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-511102-0",
+        "乐山大佛",
+        103.7765,
+        29.6268,
+        "依崖凿就的弥勒坐佛。",
+        [
+          "历史文化",
+          "拍照",
+          "寺庙"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ],
+      [
+        "lm-511102-1",
+        "峨眉山",
+        103.8065,
+        29.5868,
+        "金顶云海与猴群的佛教名山。",
+        [
+          "山水",
+          "寺庙",
+          "徒步"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -27921,7 +30744,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-511302-0",
+        "阆中古城",
+        106.1009,
+        30.9644,
+        "风水格局完整的古城。",
+        [
+          "古镇",
+          "拍照",
+          "历史文化"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -28065,7 +30906,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-511402-0",
+        "三苏祠",
+        103.7422,
+        30.07,
+        "苏洵苏轼苏辙故居。",
+        [
+          "历史文化",
+          "拍照",
+          "博物馆"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -28161,7 +31020,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-511502-0",
+        "蜀南竹海",
+        104.6606,
+        28.9238,
+        "万亩翠竹的绿野仙踪。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -28529,7 +31406,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-511802-0",
+        "碧峰峡",
+        103.0316,
+        29.9416,
+        "熊猫基地与峡谷瀑布。",
+        [
+          "山水",
+          "亲子",
+          "拍照"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -28785,7 +31681,42 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-513201-0",
+        "九寨沟",
+        102.0002,
+        32.0334,
+        "彩林海子的童话世界。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "1天"
+      ],
+      [
+        "lm-513201-1",
+        "黄龙",
+        102.0302,
+        31.9934,
+        "钙化彩池铺陈的雪山秘境。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -28993,7 +31924,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-513301-0",
+        "稻城亚丁",
+        101.7475,
+        29.9781,
+        "三神山的香格里拉。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -29281,7 +32230,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-513401-0",
+        "邛海",
+        102.1364,
+        27.8785,
+        "西昌的高原湖泊。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -29553,7 +32520,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-520102-0",
+        "黔灵山",
+        106.7824,
+        26.5639,
+        "城市公园与放养猕猴。",
+        [
+          "山水",
+          "亲子",
+          "拍照"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -29713,7 +32699,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-520201-0",
+        "乌蒙大草原",
+        104.9039,
+        26.7329,
+        "贵州屋脊的高山草甸。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -29777,7 +32781,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-520302-0",
+        "会议会址",
+        107.1033,
+        27.732,
+        "红色转折的历史地标。",
+        [
+          "历史文化",
+          "博物馆"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -30001,7 +33022,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-520402-0",
+        "黄果树瀑布",
+        106.0476,
+        26.2105,
+        "亚洲第一大瀑布。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -30097,7 +33136,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-520502-0",
+        "织金洞",
+        105.3268,
+        27.4226,
+        "岩溶博物馆的地下宫殿。",
+        [
+          "山水",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -30225,7 +33281,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-520602-0",
+        "梵净山",
+        109.209,
+        27.7362,
+        "云上金顶的佛教名山。",
+        [
+          "山水",
+          "寺庙",
+          "徒步"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -30385,7 +33460,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-522301-0",
+        "万峰林",
+        104.8513,
+        25.0166,
+        "锥状喀斯特峰林。",
+        [
+          "山水",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -30513,7 +33605,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-522601-0",
+        "西江千户苗寨",
+        107.9069,
+        26.6291,
+        "依山而建的苗乡吊脚楼群。",
+        [
+          "古镇",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -30769,7 +33879,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-522701-0",
+        "荔波小七孔",
+        107.4714,
+        26.166,
+        "地球绿宝石的水上森林。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -30961,7 +34089,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-530102-0",
+        "石林",
+        102.6688,
+        25.1849,
+        "喀斯特剑峰奇观。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -31185,7 +34331,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-530302-0",
+        "罗平",
+        103.9075,
+        25.3768,
+        "油菜花海与九龙瀑。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -31329,7 +34493,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-530402-0",
+        "抚仙湖",
+        102.4932,
+        24.3837,
+        "最深淡水湖的蓝。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -31473,7 +34655,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-530502-0",
+        "和顺古镇",
+        99.0645,
+        25.22,
+        "侨乡与火山热海。",
+        [
+          "古镇",
+          "拍照",
+          "历史文化"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -31729,7 +34929,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-530702-0",
+        "丽江古城",
+        100.3242,
+        26.8846,
+        "小桥流水的纳西古镇。",
+        [
+          "古镇",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -32097,7 +35315,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-532301-0",
+        "彝人古镇",
+        101.3219,
+        24.8942,
+        "彝族风情的旅游古镇。",
+        [
+          "古镇",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -32257,7 +35493,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-532501-0",
+        "元阳梯田",
+        103.129,
+        23.3393,
+        "云上梯田的镜面水光。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -32465,7 +35719,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-532601-0",
+        "普者黑",
+        104.0838,
+        23.4147,
+        "荷花与喀斯特田园。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -32593,7 +35865,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-532801-0",
+        "热带植物园",
+        100.9192,
+        22.1261,
+        "北回归线上的绿洲。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -32641,7 +35931,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-532901-0",
+        "洱海",
+        100.2107,
+        25.7627,
+        "苍山脚下的高原湖泊。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -32977,7 +36286,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-533401-0",
+        "玉龙雪山",
+        99.8224,
+        27.9223,
+        "终年积雪的纳西神山。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -33025,7 +36353,42 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-540102-0",
+        "布达拉宫",
+        91.1469,
+        29.6806,
+        "红白宫殿俯瞰高原圣城。",
+        [
+          "历史文化",
+          "寺庙",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ],
+      [
+        "lm-540102-1",
+        "大昭寺",
+        91.1769,
+        29.6406,
+        "藏传佛教信仰中心。",
+        [
+          "寺庙",
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -33153,7 +36516,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-540202-0",
+        "扎什伦布寺",
+        88.9512,
+        29.2816,
+        "班禅驻锡的格鲁派大寺。",
+        [
+          "寺庙",
+          "历史文化"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -33441,7 +36821,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-540302-0",
+        "然乌湖",
+        97.238,
+        31.4626,
+        "雪山倒映的冰湖。",
+        [
+          "山水",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -33617,7 +37014,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-540402-0",
+        "雅鲁藏布大峡谷",
+        94.3754,
+        29.7965,
+        "南迦巴瓦下的深邃峡谷。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -33729,7 +37144,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-540502-0",
+        "羊卓雍错",
+        91.821,
+        29.2313,
+        "珊瑚般的高原蓝湖。",
+        [
+          "山水",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -33921,7 +37353,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-540602-0",
+        "纳木错",
+        92.0279,
+        31.2668,
+        "天湖与念青唐古拉。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -34209,7 +37659,42 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-610102-0",
+        "兵马俑",
+        108.9767,
+        34.2919,
+        "秦始皇陵的千军俑阵。",
+        [
+          "历史文化",
+          "博物馆",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ],
+      [
+        "lm-610102-1",
+        "大雁塔",
+        109.0067,
+        34.2519,
+        "玄奘译经的唐代古塔。",
+        [
+          "历史文化",
+          "拍照",
+          "寺庙"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -34481,7 +37966,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-610302-0",
+        "法门寺",
+        107.1116,
+        34.3022,
+        "佛指舍利地宫。",
+        [
+          "寺庙",
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -34673,7 +38176,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-610402-0",
+        "乾陵",
+        108.6694,
+        34.3753,
+        "唐高宗与武则天的合葬陵。",
+        [
+          "历史文化",
+          "拍照",
+          "博物馆"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -34897,7 +38418,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-610502-0",
+        "华山",
+        109.5579,
+        34.5684,
+        "奇险天下的西岳。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "徒步",
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -35073,7 +38613,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-610602-0",
+        "宝塔山",
+        109.6428,
+        36.591,
+        "革命圣地的地标。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -35281,7 +38838,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-610702-0",
+        "武侯祠",
+        107.0382,
+        33.2031,
+        "诸葛武侯的祭祀之地。",
+        [
+          "历史文化",
+          "寺庙",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -35457,7 +39032,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-610802-0",
+        "镇北台",
+        109.6425,
+        38.404,
+        "长城第一台与红碱淖。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -35649,7 +39241,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-610902-0",
+        "南宫山",
+        108.8888,
+        32.833,
+        "巴山深处的宗教名山。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -35921,7 +39531,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-620102-0",
+        "黄河风情线",
+        103.8763,
+        36.0935,
+        "穿城而过的黄河与铁桥。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -36161,7 +39789,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-620502-0",
+        "麦积山",
+        105.6267,
+        34.4152,
+        "悬崖上的石窟泥塑。",
+        [
+          "历史文化",
+          "博物馆",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -36273,7 +39919,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-620602-0",
+        "雷台汉墓",
+        102.7532,
+        37.9322,
+        "马踏飞燕的出土地。",
+        [
+          "历史文化",
+          "博物馆",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -36337,7 +40001,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-620702-0",
+        "七彩丹霞",
+        100.5073,
+        39.0244,
+        "斑斓如画的彩色丘陵。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -36433,7 +40115,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-620802-0",
+        "崆峒山",
+        106.742,
+        35.5306,
+        "道教名山与丹霞。",
+        [
+          "山水",
+          "寺庙",
+          "徒步"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -36545,7 +40245,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-620902-0",
+        "莫高窟",
+        98.7931,
+        39.6236,
+        "丝路壁画的千年宝库。",
+        [
+          "历史文化",
+          "博物馆",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -36785,7 +40503,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-621102-0",
+        "贵清山",
+        104.632,
+        35.6586,
+        "陇中避暑的森林公园。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -37041,7 +40777,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-622901-0",
+        "炳灵寺",
+        103.1873,
+        35.5947,
+        "黄河岸边的石窟。",
+        [
+          "历史文化",
+          "拍照",
+          "博物馆"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -37169,7 +40923,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-623001-0",
+        "拉卜楞寺",
+        103.081,
+        35.0125,
+        "世界藏学府与转经廊。",
+        [
+          "寺庙",
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -37297,7 +41069,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-630102-0",
+        "塔尔寺",
+        101.8409,
+        36.6031,
+        "宗喀巴诞生地的格鲁派大寺。",
+        [
+          "寺庙",
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -37409,7 +41199,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-630202-0",
+        "互助土族故土园",
+        102.4308,
+        36.5063,
+        "土族风情与轮子秋。",
+        [
+          "历史文化",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -37505,7 +41314,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-632221-0",
+        "祁连山",
+        101.7322,
+        37.4752,
+        "雪峰草甸与卓尔山。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -37569,7 +41396,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-632301-0",
+        "坎布拉",
+        102.0776,
+        35.4426,
+        "丹霞与森林相映。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -37633,7 +41478,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-632521-0",
+        "青海湖",
+        100.0337,
+        36.4842,
+        "中国最大咸水湖与油菜花海。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -37809,7 +41672,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-632701-0",
+        "三江源",
+        96.66,
+        32.9342,
+        "中华水塔与通天河源。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -37905,7 +41786,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-632801-0",
+        "茶卡盐湖",
+        91.2802,
+        33.9219,
+        "天空之镜的盐湖。",
+        [
+          "山水",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -38017,7 +41915,41 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-640104-0",
+        "镇北堡西部影城",
+        106.4766,
+        38.4859,
+        "大话西游取景的黄土影视城。",
+        [
+          "拍照",
+          "历史文化",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ],
+      [
+        "lm-640104-1",
+        "西夏王陵",
+        106.5066,
+        38.4459,
+        "沉睡贺兰山下的西夏帝陵。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -38113,7 +42045,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-640202-0",
+        "沙湖",
+        106.3303,
+        39.1025,
+        "沙与水相拥的湿地。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -38161,7 +42111,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-640302-0",
+        "中华黄河楼",
+        106.2625,
+        37.756,
+        "黄河岸边的观河楼。",
+        [
+          "拍照",
+          "历史文化"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -38241,7 +42208,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-640402-0",
+        "六盘山",
+        106.2594,
+        36.1464,
+        "红军翻越的红色高山。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -38321,7 +42306,26 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-640502-0",
+        "沙坡头",
+        105.1378,
+        37.3079,
+        "黄河与腾格里沙漠相遇处。",
+        [
+          "山水",
+          "亲子",
+          "拍照"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -38369,7 +42373,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-650102-0",
+        "天山天池",
+        87.6301,
+        43.7326,
+        "雪峰倒映的高山湖泊。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -38497,7 +42519,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-650202-0",
+        "魔鬼城",
+        84.8926,
+        44.3106,
+        "风蚀雅丹的鬼斧神工。",
+        [
+          "山水",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -38561,7 +42600,41 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-650402-0",
+        "火焰山",
+        89.2486,
+        42.6918,
+        "西游记里的红色山峦。",
+        [
+          "拍照",
+          "山水"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ],
+      [
+        "lm-650402-1",
+        "葡萄沟",
+        89.2786,
+        42.6518,
+        "火焰山下的绿荫沟谷。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -38609,7 +42682,24 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-650502-0",
+        "哈密魔鬼城",
+        93.5134,
+        42.37,
+        "雅丹与回王墓。",
+        [
+          "山水",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -38657,7 +42747,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-652301-0",
+        "天山天池",
+        87.0683,
+        44.1878,
+        "博格达峰下的高山湖。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -38833,7 +42941,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-652801-0",
+        "博斯腾湖",
+        85.7253,
+        41.593,
+        "西域最大的内陆淡水湖。",
+        [
+          "山水",
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -38977,7 +43103,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-652901-0",
+        "库车大峡谷",
+        80.2629,
+        41.1913,
+        "红层峡谷的神秘通道。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -39185,7 +43329,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-653101-0",
+        "喀什老城",
+        76.1818,
+        39.5409,
+        "生土民居与巴扎的西域古城。",
+        [
+          "古镇",
+          "拍照",
+          "历史文化"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "半天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -39377,7 +43539,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-653201-0",
+        "玉龙喀什河",
+        79.9532,
+        37.169,
+        "采玉人与昆仑古道。",
+        [
+          "山水",
+          "拍照",
+          "历史文化"
+        ],
+        false,
+        [
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -39505,7 +43685,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-654002-0",
+        "那拉提草原",
+        81.2783,
+        44.0286,
+        "雪山下的空中草原。",
+        [
+          "山水",
+          "拍照",
+          "徒步"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -39793,7 +43991,25 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-654301-0",
+        "喀纳斯",
+        87.9178,
+        47.9047,
+        "湖怪传说的童话湖泊。",
+        [
+          "山水",
+          "徒步",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "1天"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -39905,7 +44121,58 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-810001-0",
+        "太平山顶",
+        114.1223,
+        22.2942,
+        "俯瞰维港的观景台。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ],
+      [
+        "lm-810001-1",
+        "迪士尼乐园",
+        114.1523,
+        22.2542,
+        "海边童话主题乐园。",
+        [
+          "亲子",
+          "拍照"
+        ],
+        true,
+        [
+          "亲子"
+        ],
+        "1天"
+      ],
+      [
+        "lm-810001-2",
+        "维多利亚港",
+        114.1823,
+        22.2942,
+        "两岸霓虹的璀璨海港。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        true,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {
@@ -40193,7 +44460,58 @@ export const districts = [
     "features": [],
     "specialties": [],
     "foods": [],
-    "spots": [],
+    "spots": [
+      [
+        "lm-820001-0",
+        "大三巴牌坊",
+        113.5314,
+        22.222,
+        "圣保禄教堂的石砌前壁。",
+        [
+          "历史文化",
+          "拍照"
+        ],
+        true,
+        [
+          "拍照"
+        ],
+        "1小时"
+      ],
+      [
+        "lm-820001-1",
+        "澳门旅游塔",
+        113.5614,
+        22.182,
+        "俯瞰珠江口的观光塔。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "1小时"
+      ],
+      [
+        "lm-820001-2",
+        "路环",
+        113.5914,
+        22.222,
+        "渔村风情与黑沙海滩。",
+        [
+          "拍照",
+          "亲子"
+        ],
+        false,
+        [
+          "亲子",
+          "拍照"
+        ],
+        "2小时"
+      ]
+    ],
     "baseline": true
   },
   {

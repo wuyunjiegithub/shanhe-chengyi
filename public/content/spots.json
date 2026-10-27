@@ -6446,6 +6446,4821 @@
     "updatedAt": "2026-10-19"
   },
   {
+    "id": "lm-120101-0",
+    "name": "五大道",
+    "districtId": "120101",
+    "lng": 117.1662,
+    "lat": 39.139,
+    "summary": "万国建筑博览，近代洋楼荟萃。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-120101-1",
+    "name": "天津之眼",
+    "districtId": "120101",
+    "lng": 117.1962,
+    "lat": 39.099,
+    "summary": "横跨海河的巨型摩天轮。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "1小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-120101-2",
+    "name": "古文化街",
+    "districtId": "120101",
+    "lng": 117.2262,
+    "lat": 39.139,
+    "summary": "津味民俗与老字号聚集地。",
+    "tags": [
+      "古镇",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-130102-0",
+    "name": "正定古城",
+    "districtId": "130102",
+    "lng": 114.5835,
+    "lat": 38.1006,
+    "summary": "隆兴寺与四塔并峙的千年古县。",
+    "tags": [
+      "历史文化",
+      "寺庙",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-130202-0",
+    "name": "清东陵",
+    "districtId": "130202",
+    "lng": 118.1988,
+    "lat": 39.5858,
+    "summary": "清代皇家陵寝群，世界文化遗产。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-130302-0",
+    "name": "山海关",
+    "districtId": "130302",
+    "lng": 119.5861,
+    "lat": 40.0927,
+    "summary": "天下第一关，长城入海处。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-130402-0",
+    "name": "娲皇宫",
+    "districtId": "130402",
+    "lng": 114.4827,
+    "lat": 36.5237,
+    "summary": "太行崖壁上的悬空古建筑。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "寺庙"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-130502-0",
+    "name": "崆山白云洞",
+    "districtId": "130502",
+    "lng": 114.5617,
+    "lat": 37.1082,
+    "summary": "喀斯特溶洞奇观。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-130602-0",
+    "name": "白洋淀",
+    "districtId": "130602",
+    "lng": 115.4211,
+    "lat": 38.9178,
+    "summary": "华北明珠，芦苇荡与水乡风光。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-130702-0",
+    "name": "大境门",
+    "districtId": "130702",
+    "lng": 115.0492,
+    "lat": 40.7788,
+    "summary": "长城关隘与草原天路起点。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-130802-0",
+    "name": "避暑山庄",
+    "districtId": "130802",
+    "lng": 117.9747,
+    "lat": 40.9485,
+    "summary": "清代皇家园林，世界文化遗产。",
+    "tags": [
+      "山水",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-130902-0",
+    "name": "铁狮子",
+    "districtId": "130902",
+    "lng": 116.9061,
+    "lat": 38.3297,
+    "summary": "千年铸铁巨狮。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-131002-0",
+    "name": "天下第一城",
+    "districtId": "131002",
+    "lng": 116.7586,
+    "lat": 39.3633,
+    "summary": "仿古都城微缩景观。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-131102-0",
+    "name": "衡水湖",
+    "districtId": "131102",
+    "lng": 115.6633,
+    "lat": 37.7386,
+    "summary": "华北湿地与候鸟栖息地。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-140105-0",
+    "name": "晋祠",
+    "districtId": "140105",
+    "lng": 112.5661,
+    "lat": 37.7338,
+    "summary": "北宋彩塑与难老泉名园。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "寺庙"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-140212-0",
+    "name": "云冈石窟",
+    "districtId": "140212",
+    "lng": 113.1827,
+    "lat": 40.2831,
+    "summary": "北魏皇家开凿的佛教石窟群。",
+    "tags": [
+      "历史文化",
+      "博物馆",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-140302-0",
+    "name": "娘子关",
+    "districtId": "140302",
+    "lng": 113.5976,
+    "lat": 37.8717,
+    "summary": "长城关隘与瀑布泉。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-140403-0",
+    "name": "太行山大峡谷",
+    "districtId": "140403",
+    "lng": 113.0974,
+    "lat": 36.2776,
+    "summary": "八泉峡与红豆峡。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-140502-0",
+    "name": "皇城相府",
+    "districtId": "140502",
+    "lng": 112.848,
+    "lat": 35.5361,
+    "summary": "清代大学士陈廷敬故居。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "古镇"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-140702-0",
+    "name": "平遥古城",
+    "districtId": "140702",
+    "lng": 112.837,
+    "lat": 37.6628,
+    "summary": "保存完整的明清县城，票号发源。",
+    "tags": [
+      "古镇",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-140802-0",
+    "name": "解州关帝庙",
+    "districtId": "140802",
+    "lng": 110.9561,
+    "lat": 35.0767,
+    "summary": "武庙之冠，关公故里。",
+    "tags": [
+      "历史文化",
+      "寺庙",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-140902-0",
+    "name": "五台山",
+    "districtId": "140902",
+    "lng": 112.5999,
+    "lat": 38.4518,
+    "summary": "四大佛教名山之首，显通寺林立。",
+    "tags": [
+      "寺庙",
+      "历史文化",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-141002-0",
+    "name": "壶口瀑布",
+    "districtId": "141002",
+    "lng": 111.4697,
+    "lat": 36.1397,
+    "summary": "黄河咆哮的金色瀑布。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-141102-0",
+    "name": "北武当山",
+    "districtId": "141102",
+    "lng": 111.308,
+    "lat": 37.5636,
+    "summary": "道教名山与石林。",
+    "tags": [
+      "山水",
+      "寺庙",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-150102-0",
+    "name": "大召寺",
+    "districtId": "150102",
+    "lng": 111.8443,
+    "lat": 40.9881,
+    "summary": "漠南第一召，银佛龙雕精美。",
+    "tags": [
+      "寺庙",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-150202-0",
+    "name": "五当召",
+    "districtId": "150202",
+    "lng": 110.2073,
+    "lat": 40.596,
+    "summary": "藏传佛教召庙。",
+    "tags": [
+      "寺庙",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-150402-0",
+    "name": "乌兰布统",
+    "districtId": "150402",
+    "lng": 118.9841,
+    "lat": 42.2094,
+    "summary": "草原与影视拍摄地。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-150602-0",
+    "name": "响沙湾",
+    "districtId": "150602",
+    "lng": 109.7502,
+    "lat": 39.8485,
+    "summary": "沙漠中的鸣沙与游乐。",
+    "tags": [
+      "山水",
+      "亲子",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-150702-0",
+    "name": "呼伦贝尔大草原",
+    "districtId": "150702",
+    "lng": 120.0124,
+    "lat": 49.2765,
+    "summary": "水草丰美的天然草场。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-150902-0",
+    "name": "辉腾锡勒",
+    "districtId": "150902",
+    "lng": 113.1719,
+    "lat": 41.0893,
+    "summary": "高山草甸与风车阵。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-152201-0",
+    "name": "阿尔山",
+    "districtId": "152201",
+    "lng": 122.4179,
+    "lat": 46.0394,
+    "summary": "火山温泉与林海。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-152501-0",
+    "name": "草原",
+    "districtId": "152501",
+    "lng": 112.0353,
+    "lat": 43.4352,
+    "summary": "典型草原牧区风光。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-152921-0",
+    "name": "额济纳胡杨林",
+    "districtId": "152921",
+    "lng": 105.0306,
+    "lat": 39.559,
+    "summary": "金秋胡杨与弱水河。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-210102-0",
+    "name": "沈阳故宫",
+    "districtId": "210102",
+    "lng": 123.389,
+    "lat": 41.766,
+    "summary": "清初皇宫，关外宫殿代表。",
+    "tags": [
+      "历史文化",
+      "博物馆",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-210202-0",
+    "name": "星海广场",
+    "districtId": "210202",
+    "lng": 121.6733,
+    "lat": 38.9201,
+    "summary": "滨海地标与跨海大桥。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-210302-0",
+    "name": "千山",
+    "districtId": "210302",
+    "lng": 123.0813,
+    "lat": 41.0663,
+    "summary": "辽东名山，寺庙与奇峰。",
+    "tags": [
+      "山水",
+      "寺庙",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-210402-0",
+    "name": "赫图阿拉",
+    "districtId": "210402",
+    "lng": 123.9367,
+    "lat": 41.8323,
+    "summary": "满族发祥地古城。",
+    "tags": [
+      "历史文化",
+      "古镇",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-210502-0",
+    "name": "本溪水洞",
+    "districtId": "210502",
+    "lng": 123.7014,
+    "lat": 41.2408,
+    "summary": "世界最长充水溶洞。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-210602-0",
+    "name": "鸭绿江",
+    "districtId": "210602",
+    "lng": 124.3236,
+    "lat": 40.1988,
+    "summary": "中朝界河与断桥。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-210702-0",
+    "name": "笔架山",
+    "districtId": "210702",
+    "lng": 121.0786,
+    "lat": 41.1737,
+    "summary": "天桥连通的海上奇山。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-211102-0",
+    "name": "红海滩",
+    "districtId": "211102",
+    "lng": 122.0139,
+    "lat": 41.2151,
+    "summary": "碱蓬草染红的湿地。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-220102-0",
+    "name": "伪满皇宫",
+    "districtId": "220102",
+    "lng": 125.4123,
+    "lat": 43.7453,
+    "summary": "末代皇帝居所，近代史见证。",
+    "tags": [
+      "历史文化",
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-220202-0",
+    "name": "松花湖",
+    "districtId": "220202",
+    "lng": 126.2832,
+    "lat": 44.0568,
+    "summary": "青山碧水的巨大人工湖。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-220302-0",
+    "name": "叶赫那拉城",
+    "districtId": "220302",
+    "lng": 124.3637,
+    "lat": 43.2444,
+    "summary": "满族古城遗址。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-220502-0",
+    "name": "集安高句丽",
+    "districtId": "220502",
+    "lng": 125.9727,
+    "lat": 41.6923,
+    "summary": "世界遗产古墓群。",
+    "tags": [
+      "历史文化",
+      "博物馆",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-220702-0",
+    "name": "查干湖",
+    "districtId": "220702",
+    "lng": 124.8604,
+    "lat": 45.306,
+    "summary": "冬捕渔猎的淡水湖。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-220802-0",
+    "name": "向海",
+    "districtId": "220802",
+    "lng": 122.842,
+    "lat": 45.661,
+    "summary": "丹顶鹤湿地保护区。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-222401-0",
+    "name": "长白山",
+    "districtId": "222401",
+    "lng": 129.3323,
+    "lat": 43.1202,
+    "summary": "天池坐落的中朝界山。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-230102-0",
+    "name": "中央大街",
+    "districtId": "230102",
+    "lng": 126.3733,
+    "lat": 45.6887,
+    "summary": "百年欧式建筑步行街。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-230202-0",
+    "name": "扎龙",
+    "districtId": "230202",
+    "lng": 123.922,
+    "lat": 47.2891,
+    "summary": "丹顶鹤国家级自然保护区。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-230602-0",
+    "name": "铁人纪念馆",
+    "districtId": "230602",
+    "lng": 125.0616,
+    "lat": 46.7278,
+    "summary": "大庆精神纪念地。",
+    "tags": [
+      "博物馆",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-230717-0",
+    "name": "五营森林公园",
+    "districtId": "230717",
+    "lng": 129.2712,
+    "lat": 47.7773,
+    "summary": "红松林海的天然氧吧。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-230803-0",
+    "name": "同江",
+    "districtId": "230803",
+    "lng": 130.3598,
+    "lat": 46.8383,
+    "summary": "三江交汇与赫哲风情。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-231002-0",
+    "name": "镜泊湖",
+    "districtId": "231002",
+    "lng": 129.8349,
+    "lat": 44.4056,
+    "summary": "火山堰塞湖与吊水楼瀑布。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-231102-0",
+    "name": "五大连池",
+    "districtId": "231102",
+    "lng": 126.7333,
+    "lat": 50.2454,
+    "summary": "火山堰塞湖群。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-232701-0",
+    "name": "北极村",
+    "districtId": "232701",
+    "lng": 122.7083,
+    "lat": 52.96,
+    "summary": "中国最北端的极光与雪乡。",
+    "tags": [
+      "拍照",
+      "山水"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-350102-0",
+    "name": "三坊七巷",
+    "districtId": "350102",
+    "lng": 119.2835,
+    "lat": 26.1123,
+    "summary": "明清坊巷里走出无数名人。",
+    "tags": [
+      "古镇",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-350203-0",
+    "name": "鼓浪屿",
+    "districtId": "350203",
+    "lng": 118.1333,
+    "lat": 24.4827,
+    "summary": "万国建筑与钢琴之岛。",
+    "tags": [
+      "拍照",
+      "古镇",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-350302-0",
+    "name": "湄洲岛",
+    "districtId": "350302",
+    "lng": 118.9334,
+    "lat": 25.4327,
+    "summary": "妈祖文化发源地。",
+    "tags": [
+      "寺庙",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-350403-0",
+    "name": "泰宁",
+    "districtId": "350403",
+    "lng": 117.5616,
+    "lat": 26.2396,
+    "summary": "丹霞水上的古城。",
+    "tags": [
+      "山水",
+      "拍照",
+      "古镇"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-350502-0",
+    "name": "开元寺",
+    "districtId": "350502",
+    "lng": 118.5487,
+    "lat": 24.9247,
+    "summary": "双塔擎天的千年古刹。",
+    "tags": [
+      "寺庙",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-350602-0",
+    "name": "南靖土楼",
+    "districtId": "350602",
+    "lng": 117.6156,
+    "lat": 24.6171,
+    "summary": "田螺坑的客家土楼群。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-350702-0",
+    "name": "武夷山",
+    "districtId": "350702",
+    "lng": 118.2472,
+    "lat": 26.6048,
+    "summary": "丹霞碧水与岩茶之乡。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-350802-0",
+    "name": "永定土楼",
+    "districtId": "350802",
+    "lng": 117.0797,
+    "lat": 25.2368,
+    "summary": "振成楼的环形客家楼。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-350902-0",
+    "name": "太姥山",
+    "districtId": "350902",
+    "lng": 119.4493,
+    "lat": 26.7769,
+    "summary": "海上仙都的奇石峰林。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-360102-0",
+    "name": "滕王阁",
+    "districtId": "360102",
+    "lng": 115.9201,
+    "lat": 28.7471,
+    "summary": "落霞与孤鹜的江南名楼。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-360202-0",
+    "name": "古窑民俗博览区",
+    "districtId": "360202",
+    "lng": 117.1119,
+    "lat": 29.2421,
+    "summary": "千年瓷都的活态工坊。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-360302-0",
+    "name": "武功山",
+    "districtId": "360302",
+    "lng": 113.8839,
+    "lat": 27.6512,
+    "summary": "高山草甸与云海日出。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-360402-0",
+    "name": "庐山",
+    "districtId": "360402",
+    "lng": 116.0495,
+    "lat": 29.685,
+    "summary": "云雾缭绕的避暑名山。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-360602-0",
+    "name": "龙虎山",
+    "districtId": "360602",
+    "lng": 117.0504,
+    "lat": 28.2609,
+    "summary": "丹霞碧水的道教祖庭。",
+    "tags": [
+      "山水",
+      "寺庙",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-360702-0",
+    "name": "通天岩",
+    "districtId": "360702",
+    "lng": 114.9199,
+    "lat": 25.8347,
+    "summary": "江南第一石窟与宋城。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "寺庙"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-360802-0",
+    "name": "井冈山",
+    "districtId": "360802",
+    "lng": 114.9406,
+    "lat": 27.1707,
+    "summary": "中国革命的摇篮。",
+    "tags": [
+      "历史文化",
+      "山水",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-360902-0",
+    "name": "明月山",
+    "districtId": "360902",
+    "lng": 114.2836,
+    "lat": 27.8539,
+    "summary": "温泉与高山草甸。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-361002-0",
+    "name": "大觉山",
+    "districtId": "361002",
+    "lng": 116.354,
+    "lat": 27.9383,
+    "summary": "峡谷漂流与禅寺。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-361102-0",
+    "name": "三清山",
+    "districtId": "361102",
+    "lng": 118.0523,
+    "lat": 28.5101,
+    "summary": "花岗岩峰林与云海。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-370102-0",
+    "name": "趵突泉",
+    "districtId": "370102",
+    "lng": 117.0972,
+    "lat": 36.6752,
+    "summary": "天下第一泉，三股水腾涌。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-370202-0",
+    "name": "栈桥",
+    "districtId": "370202",
+    "lng": 120.3645,
+    "lat": 36.0857,
+    "summary": "伸入海湾的百年长桥。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "1小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-370302-0",
+    "name": "周村古商城",
+    "districtId": "370302",
+    "lng": 118.0217,
+    "lat": 36.5961,
+    "summary": "旱码头的北方商埠。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-370402-0",
+    "name": "台儿庄古城",
+    "districtId": "370402",
+    "lng": 117.5991,
+    "lat": 34.8845,
+    "summary": "运河边的抗战名镇。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-370602-0",
+    "name": "蓬莱阁",
+    "districtId": "370602",
+    "lng": 121.358,
+    "lat": 37.5439,
+    "summary": "海市蜃楼传说的仙阁。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-370702-0",
+    "name": "青州古城",
+    "districtId": "370702",
+    "lng": 119.0274,
+    "lat": 36.7168,
+    "summary": "明清民居与偶园。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-370811-0",
+    "name": "微山湖",
+    "districtId": "370811",
+    "lng": 116.568,
+    "lat": 35.3962,
+    "summary": "铁道游击队的万亩荷塘。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-370902-0",
+    "name": "泰山",
+    "districtId": "370902",
+    "lng": 117.1767,
+    "lat": 36.2295,
+    "summary": "五岳之首，登顶看日出。",
+    "tags": [
+      "山水",
+      "徒步",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-371002-0",
+    "name": "刘公岛",
+    "districtId": "371002",
+    "lng": 122.1141,
+    "lat": 37.3973,
+    "summary": "北洋海军与甲午故地。",
+    "tags": [
+      "历史文化",
+      "博物馆",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-371102-0",
+    "name": "海滨",
+    "districtId": "371102",
+    "lng": 119.3748,
+    "lat": 35.4713,
+    "summary": "黄海日出与金沙滩。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-371302-0",
+    "name": "蒙山",
+    "districtId": "371302",
+    "lng": 118.2846,
+    "lat": 35.22,
+    "summary": "岱宗之亚的沂蒙主峰。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-410102-0",
+    "name": "少林寺",
+    "districtId": "410102",
+    "lng": 113.5469,
+    "lat": 34.8008,
+    "summary": "禅宗祖庭与少林功夫。",
+    "tags": [
+      "寺庙",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-410202-0",
+    "name": "清明上河园",
+    "districtId": "410202",
+    "lng": 114.2792,
+    "lat": 34.8438,
+    "summary": "按画卷复活的宋韵汴京。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-410302-0",
+    "name": "龙门石窟",
+    "districtId": "410302",
+    "lng": 112.4438,
+    "lat": 34.7346,
+    "summary": "伊河两岸的石窟造像。",
+    "tags": [
+      "历史文化",
+      "博物馆",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-410402-0",
+    "name": "尧山",
+    "districtId": "410402",
+    "lng": 113.1821,
+    "lat": 33.7855,
+    "summary": "中原大佛与温泉。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-410502-0",
+    "name": "殷墟",
+    "districtId": "410502",
+    "lng": 114.4183,
+    "lat": 36.0543,
+    "summary": "商代晚期都城的甲骨文出土地。",
+    "tags": [
+      "历史文化",
+      "博物馆"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-410702-0",
+    "name": "郭亮村",
+    "districtId": "410702",
+    "lng": 113.9651,
+    "lat": 35.2955,
+    "summary": "绝壁上的挂壁公路。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-410802-0",
+    "name": "云台山",
+    "districtId": "410802",
+    "lng": 113.2131,
+    "lat": 35.2556,
+    "summary": "红石峡与瀑布群。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-411202-0",
+    "name": "函谷关",
+    "districtId": "411202",
+    "lng": 111.2751,
+    "lat": 34.786,
+    "summary": "道家之源的雄关古道。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-411302-0",
+    "name": "卧龙岗",
+    "districtId": "411302",
+    "lng": 112.6319,
+    "lat": 32.9253,
+    "summary": "诸葛亮躬耕的武侯祠。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-411402-0",
+    "name": "芒砀山",
+    "districtId": "411402",
+    "lng": 115.598,
+    "lat": 34.4971,
+    "summary": "汉梁王陵与大汉雄风。",
+    "tags": [
+      "历史文化",
+      "博物馆",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-411502-0",
+    "name": "鸡公山",
+    "districtId": "411502",
+    "lng": 113.9616,
+    "lat": 32.0658,
+    "summary": "万国建筑与避暑名山。",
+    "tags": [
+      "山水",
+      "拍照",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-411602-0",
+    "name": "太昊陵",
+    "districtId": "411602",
+    "lng": 114.7199,
+    "lat": 33.6411,
+    "summary": "伏羲故都的人祖祭坛。",
+    "tags": [
+      "历史文化",
+      "寺庙",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-420102-0",
+    "name": "黄鹤楼",
+    "districtId": "420102",
+    "lng": 114.3209,
+    "lat": 30.6627,
+    "summary": "长江之畔的江南名楼。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-420302-0",
+    "name": "武当山",
+    "districtId": "420302",
+    "lng": 110.7873,
+    "lat": 32.5384,
+    "summary": "道教圣地与明代宫观。",
+    "tags": [
+      "寺庙",
+      "历史文化",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-420502-0",
+    "name": "三峡大坝",
+    "districtId": "420502",
+    "lng": 111.3187,
+    "lat": 30.7399,
+    "summary": "世界最大水利枢纽。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-420602-0",
+    "name": "古隆中",
+    "districtId": "420602",
+    "lng": 112.0591,
+    "lat": 31.9671,
+    "summary": "三顾茅庐的卧龙岗。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-420802-0",
+    "name": "明显陵",
+    "districtId": "420802",
+    "lng": 112.099,
+    "lat": 31.1916,
+    "summary": "明代帝陵与显陵。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-420902-0",
+    "name": "双峰山",
+    "districtId": "420902",
+    "lng": 114.0096,
+    "lat": 30.9589,
+    "summary": "孝文化名山与森林。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-421002-0",
+    "name": "荆州古城",
+    "districtId": "421002",
+    "lng": 112.3902,
+    "lat": 30.3397,
+    "summary": "楚文化与三国名城。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "古镇"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-421102-0",
+    "name": "东坡赤壁",
+    "districtId": "421102",
+    "lng": 114.9421,
+    "lat": 30.5299,
+    "summary": "大江东去的怀古之地。",
+    "tags": [
+      "历史文化",
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-421202-0",
+    "name": "九宫山",
+    "districtId": "421202",
+    "lng": 114.3854,
+    "lat": 29.8686,
+    "summary": "云中湖与避暑胜地。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-422801-0",
+    "name": "恩施大峡谷",
+    "districtId": "422801",
+    "lng": 109.5108,
+    "lat": 30.3232,
+    "summary": "喀斯特绝壁与地缝。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-430102-0",
+    "name": "岳麓山",
+    "districtId": "430102",
+    "lng": 113.0493,
+    "lat": 28.2178,
+    "summary": "书院枫红与爱晚亭。",
+    "tags": [
+      "山水",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-430202-0",
+    "name": "炎帝陵",
+    "districtId": "430202",
+    "lng": 113.2195,
+    "lat": 27.921,
+    "summary": "中华民族始祖陵寝。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-430302-0",
+    "name": "韶山",
+    "districtId": "430302",
+    "lng": 112.8509,
+    "lat": 27.9461,
+    "summary": "毛泽东故居与纪念馆。",
+    "tags": [
+      "历史文化",
+      "博物馆"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-430405-0",
+    "name": "南岳衡山",
+    "districtId": "430405",
+    "lng": 112.6711,
+    "lat": 26.8968,
+    "summary": "五岳之秀，香火鼎盛。",
+    "tags": [
+      "山水",
+      "寺庙",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-430502-0",
+    "name": "崀山",
+    "districtId": "430502",
+    "lng": 111.5464,
+    "lat": 27.2618,
+    "summary": "丹霞峰林的八角寨。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-430602-0",
+    "name": "岳阳楼",
+    "districtId": "430602",
+    "lng": 113.2145,
+    "lat": 29.3557,
+    "summary": "洞庭天下水的江南名楼。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-430702-0",
+    "name": "桃花源",
+    "districtId": "430702",
+    "lng": 111.7051,
+    "lat": 29.0348,
+    "summary": "陶渊明笔下的世外桃源。",
+    "tags": [
+      "古镇",
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-430802-0",
+    "name": "武陵源",
+    "districtId": "430802",
+    "lng": 110.4615,
+    "lat": 29.139,
+    "summary": "石英砂岩峰林奇观。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-431002-0",
+    "name": "东江湖",
+    "districtId": "431002",
+    "lng": 112.8899,
+    "lat": 25.6768,
+    "summary": "雾漫小东江的雾景。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-431302-0",
+    "name": "紫鹊界",
+    "districtId": "431302",
+    "lng": 112.0088,
+    "lat": 27.7383,
+    "summary": "梯田与梅山文化。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-433101-0",
+    "name": "凤凰古城",
+    "districtId": "433101",
+    "lng": 109.7625,
+    "lat": 28.33,
+    "summary": "沱江吊脚楼的苗乡古镇。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-440103-0",
+    "name": "广州塔",
+    "districtId": "440103",
+    "lng": 113.2128,
+    "lat": 23.108,
+    "summary": "珠江畔的纤纤小蛮腰。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-440103-1",
+    "name": "陈家祠",
+    "districtId": "440103",
+    "lng": 113.2428,
+    "lat": 23.068,
+    "summary": "岭南建筑装饰三雕两塑。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-440203-0",
+    "name": "丹霞山",
+    "districtId": "440203",
+    "lng": 113.3804,
+    "lat": 24.7295,
+    "summary": "丹霞地貌命名地。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-440303-0",
+    "name": "世界之窗",
+    "districtId": "440303",
+    "lng": 114.1482,
+    "lat": 22.5949,
+    "summary": "微缩世界地标的主题乐园。",
+    "tags": [
+      "亲子",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-440402-0",
+    "name": "情侣路",
+    "districtId": "440402",
+    "lng": 113.5347,
+    "lat": 22.2773,
+    "summary": "滨海观澳的长堤。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-440507-0",
+    "name": "南澳岛",
+    "districtId": "440507",
+    "lng": 116.7606,
+    "lat": 23.4106,
+    "summary": "闽粤之交的海岛风光。",
+    "tags": [
+      "拍照",
+      "亲子",
+      "山水"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-440604-0",
+    "name": "祖庙",
+    "districtId": "440604",
+    "lng": 113.0637,
+    "lat": 23.0179,
+    "summary": "岭南武术与北帝庙。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "寺庙"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-440703-0",
+    "name": "开平碉楼",
+    "districtId": "440703",
+    "lng": 113.0539,
+    "lat": 22.6737,
+    "summary": "世界遗产的华侨楼群。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "古镇"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-440802-0",
+    "name": "湖光岩",
+    "districtId": "440802",
+    "lng": 110.3778,
+    "lat": 21.2978,
+    "summary": "玛珥火山湖。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-441202-0",
+    "name": "七星岩",
+    "districtId": "441202",
+    "lng": 112.4706,
+    "lat": 23.1165,
+    "summary": "湖中七峰的岭南奇观。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-441302-0",
+    "name": "西湖",
+    "districtId": "441302",
+    "lng": 114.48,
+    "lat": 23.1779,
+    "summary": "东坡寓惠的岭南名湖。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-441402-0",
+    "name": "叶剑英故居",
+    "districtId": "441402",
+    "lng": 116.1723,
+    "lat": 24.2818,
+    "summary": "客家围屋与将帅故里。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-441802-0",
+    "name": "古龙峡",
+    "districtId": "441802",
+    "lng": 113.137,
+    "lat": 23.6918,
+    "summary": "漂流与玻璃峡谷。",
+    "tags": [
+      "拍照",
+      "亲子",
+      "山水"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-445102-0",
+    "name": "广济桥",
+    "districtId": "445102",
+    "lng": 116.7115,
+    "lat": 23.6903,
+    "summary": "十八梭船廿四洲。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "古镇"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-450102-0",
+    "name": "青秀山",
+    "districtId": "450102",
+    "lng": 108.5452,
+    "lat": 22.9788,
+    "summary": "城市绿肺与观音禅寺。",
+    "tags": [
+      "山水",
+      "寺庙",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-450202-0",
+    "name": "柳侯公园",
+    "districtId": "450202",
+    "lng": 109.4649,
+    "lat": 24.3831,
+    "summary": "纪念柳宗元的城市园林。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-450302-0",
+    "name": "漓江",
+    "districtId": "450302",
+    "lng": 110.2622,
+    "lat": 25.3016,
+    "summary": "桂林山水甲天下的画卷。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-450403-0",
+    "name": "骑楼城",
+    "districtId": "450403",
+    "lng": 111.3164,
+    "lat": 23.5886,
+    "summary": "岭南骑楼老街。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-450502-0",
+    "name": "银滩",
+    "districtId": "450502",
+    "lng": 109.1459,
+    "lat": 21.5217,
+    "summary": "细白沙滩与北部湾日落。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-450702-0",
+    "name": "三娘湾",
+    "districtId": "450702",
+    "lng": 108.7611,
+    "lat": 21.9124,
+    "summary": "中华白海豚栖息地。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-450902-0",
+    "name": "云天文化城",
+    "districtId": "450902",
+    "lng": 110.1527,
+    "lat": 22.6815,
+    "summary": "巨型木雕文化建筑。",
+    "tags": [
+      "拍照",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-451002-0",
+    "name": "乐业天坑",
+    "districtId": "451002",
+    "lng": 106.4983,
+    "lat": 23.9573,
+    "summary": "世界最大天坑群。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-451102-0",
+    "name": "黄姚古镇",
+    "districtId": "451102",
+    "lng": 111.7769,
+    "lat": 24.3514,
+    "summary": "明清石板巷的千年古镇。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-451202-0",
+    "name": "巴马",
+    "districtId": "451202",
+    "lng": 107.8646,
+    "lat": 24.6739,
+    "summary": "长寿之乡与盘阳河。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-451402-0",
+    "name": "德天瀑布",
+    "districtId": "451402",
+    "lng": 107.4562,
+    "lat": 22.5439,
+    "summary": "跨国飞瀑与明仕田园。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-460105-0",
+    "name": "骑楼老街",
+    "districtId": "460105",
+    "lng": 110.2292,
+    "lat": 19.9273,
+    "summary": "南洋风情的近代商住街区。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-460202-0",
+    "name": "亚龙湾",
+    "districtId": "460202",
+    "lng": 109.7322,
+    "lat": 18.3859,
+    "summary": "椰风海韵的度假沙滩。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-500101-0",
+    "name": "洪崖洞",
+    "districtId": "500101",
+    "lng": 108.3768,
+    "lat": 30.7241,
+    "summary": "魔幻山城的吊脚楼夜景。",
+    "tags": [
+      "拍照",
+      "古镇",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-500101-1",
+    "name": "磁器口古镇",
+    "districtId": "500101",
+    "lng": 108.4068,
+    "lat": 30.6841,
+    "summary": "嘉陵江畔的千年码头镇。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-500101-2",
+    "name": "大足石刻",
+    "districtId": "500101",
+    "lng": 108.4368,
+    "lat": 30.7241,
+    "summary": "唐宋石窟造像群。",
+    "tags": [
+      "历史文化",
+      "博物馆",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-510104-0",
+    "name": "宽窄巷子",
+    "districtId": "510104",
+    "lng": 104.1151,
+    "lat": 30.6212,
+    "summary": "清代古街区里的茶馆与变脸。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-510302-0",
+    "name": "恐龙博物馆",
+    "districtId": "510302",
+    "lng": 104.7023,
+    "lat": 29.2929,
+    "summary": "恐龙化石宝库。",
+    "tags": [
+      "博物馆",
+      "亲子",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-510502-0",
+    "name": "老窖池",
+    "districtId": "510502",
+    "lng": 105.4051,
+    "lat": 28.8726,
+    "summary": "国宝窖池与酒文化。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-510603-0",
+    "name": "三星堆",
+    "districtId": "510603",
+    "lng": 104.4085,
+    "lat": 31.1934,
+    "summary": "青铜神树与古蜀文明。",
+    "tags": [
+      "历史文化",
+      "博物馆",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-510703-0",
+    "name": "北川",
+    "districtId": "510703",
+    "lng": 104.684,
+    "lat": 31.4377,
+    "summary": "羌城与地震遗址纪念。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-510802-0",
+    "name": "剑门关",
+    "districtId": "510802",
+    "lng": 105.7599,
+    "lat": 32.4649,
+    "summary": "一夫当关的蜀道雄关。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-511102-0",
+    "name": "乐山大佛",
+    "districtId": "511102",
+    "lng": 103.7765,
+    "lat": 29.6268,
+    "summary": "依崖凿就的弥勒坐佛。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "寺庙"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-511102-1",
+    "name": "峨眉山",
+    "districtId": "511102",
+    "lng": 103.8065,
+    "lat": 29.5868,
+    "summary": "金顶云海与猴群的佛教名山。",
+    "tags": [
+      "山水",
+      "寺庙",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-511302-0",
+    "name": "阆中古城",
+    "districtId": "511302",
+    "lng": 106.1009,
+    "lat": 30.9644,
+    "summary": "风水格局完整的古城。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-511402-0",
+    "name": "三苏祠",
+    "districtId": "511402",
+    "lng": 103.7422,
+    "lat": 30.07,
+    "summary": "苏洵苏轼苏辙故居。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-511502-0",
+    "name": "蜀南竹海",
+    "districtId": "511502",
+    "lng": 104.6606,
+    "lat": 28.9238,
+    "summary": "万亩翠竹的绿野仙踪。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-511802-0",
+    "name": "碧峰峡",
+    "districtId": "511802",
+    "lng": 103.0316,
+    "lat": 29.9416,
+    "summary": "熊猫基地与峡谷瀑布。",
+    "tags": [
+      "山水",
+      "亲子",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-513201-0",
+    "name": "九寨沟",
+    "districtId": "513201",
+    "lng": 102.0002,
+    "lat": 32.0334,
+    "summary": "彩林海子的童话世界。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-513201-1",
+    "name": "黄龙",
+    "districtId": "513201",
+    "lng": 102.0302,
+    "lat": 31.9934,
+    "summary": "钙化彩池铺陈的雪山秘境。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-513301-0",
+    "name": "稻城亚丁",
+    "districtId": "513301",
+    "lng": 101.7475,
+    "lat": 29.9781,
+    "summary": "三神山的香格里拉。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-513401-0",
+    "name": "邛海",
+    "districtId": "513401",
+    "lng": 102.1364,
+    "lat": 27.8785,
+    "summary": "西昌的高原湖泊。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-520102-0",
+    "name": "黔灵山",
+    "districtId": "520102",
+    "lng": 106.7824,
+    "lat": 26.5639,
+    "summary": "城市公园与放养猕猴。",
+    "tags": [
+      "山水",
+      "亲子",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-520201-0",
+    "name": "乌蒙大草原",
+    "districtId": "520201",
+    "lng": 104.9039,
+    "lat": 26.7329,
+    "summary": "贵州屋脊的高山草甸。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-520302-0",
+    "name": "会议会址",
+    "districtId": "520302",
+    "lng": 107.1033,
+    "lat": 27.732,
+    "summary": "红色转折的历史地标。",
+    "tags": [
+      "历史文化",
+      "博物馆"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-520402-0",
+    "name": "黄果树瀑布",
+    "districtId": "520402",
+    "lng": 106.0476,
+    "lat": 26.2105,
+    "summary": "亚洲第一大瀑布。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-520502-0",
+    "name": "织金洞",
+    "districtId": "520502",
+    "lng": 105.3268,
+    "lat": 27.4226,
+    "summary": "岩溶博物馆的地下宫殿。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-520602-0",
+    "name": "梵净山",
+    "districtId": "520602",
+    "lng": 109.209,
+    "lat": 27.7362,
+    "summary": "云上金顶的佛教名山。",
+    "tags": [
+      "山水",
+      "寺庙",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-522301-0",
+    "name": "万峰林",
+    "districtId": "522301",
+    "lng": 104.8513,
+    "lat": 25.0166,
+    "summary": "锥状喀斯特峰林。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-522601-0",
+    "name": "西江千户苗寨",
+    "districtId": "522601",
+    "lng": 107.9069,
+    "lat": 26.6291,
+    "summary": "依山而建的苗乡吊脚楼群。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-522701-0",
+    "name": "荔波小七孔",
+    "districtId": "522701",
+    "lng": 107.4714,
+    "lat": 26.166,
+    "summary": "地球绿宝石的水上森林。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-530102-0",
+    "name": "石林",
+    "districtId": "530102",
+    "lng": 102.6688,
+    "lat": 25.1849,
+    "summary": "喀斯特剑峰奇观。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-530302-0",
+    "name": "罗平",
+    "districtId": "530302",
+    "lng": 103.9075,
+    "lat": 25.3768,
+    "summary": "油菜花海与九龙瀑。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-530402-0",
+    "name": "抚仙湖",
+    "districtId": "530402",
+    "lng": 102.4932,
+    "lat": 24.3837,
+    "summary": "最深淡水湖的蓝。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-530502-0",
+    "name": "和顺古镇",
+    "districtId": "530502",
+    "lng": 99.0645,
+    "lat": 25.22,
+    "summary": "侨乡与火山热海。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-530702-0",
+    "name": "丽江古城",
+    "districtId": "530702",
+    "lng": 100.3242,
+    "lat": 26.8846,
+    "summary": "小桥流水的纳西古镇。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-532301-0",
+    "name": "彝人古镇",
+    "districtId": "532301",
+    "lng": 101.3219,
+    "lat": 24.8942,
+    "summary": "彝族风情的旅游古镇。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-532501-0",
+    "name": "元阳梯田",
+    "districtId": "532501",
+    "lng": 103.129,
+    "lat": 23.3393,
+    "summary": "云上梯田的镜面水光。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-532601-0",
+    "name": "普者黑",
+    "districtId": "532601",
+    "lng": 104.0838,
+    "lat": 23.4147,
+    "summary": "荷花与喀斯特田园。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-532801-0",
+    "name": "热带植物园",
+    "districtId": "532801",
+    "lng": 100.9192,
+    "lat": 22.1261,
+    "summary": "北回归线上的绿洲。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-532901-0",
+    "name": "洱海",
+    "districtId": "532901",
+    "lng": 100.2107,
+    "lat": 25.7627,
+    "summary": "苍山脚下的高原湖泊。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-533401-0",
+    "name": "玉龙雪山",
+    "districtId": "533401",
+    "lng": 99.8224,
+    "lat": 27.9223,
+    "summary": "终年积雪的纳西神山。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-540102-0",
+    "name": "布达拉宫",
+    "districtId": "540102",
+    "lng": 91.1469,
+    "lat": 29.6806,
+    "summary": "红白宫殿俯瞰高原圣城。",
+    "tags": [
+      "历史文化",
+      "寺庙",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-540102-1",
+    "name": "大昭寺",
+    "districtId": "540102",
+    "lng": 91.1769,
+    "lat": 29.6406,
+    "summary": "藏传佛教信仰中心。",
+    "tags": [
+      "寺庙",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-540202-0",
+    "name": "扎什伦布寺",
+    "districtId": "540202",
+    "lng": 88.9512,
+    "lat": 29.2816,
+    "summary": "班禅驻锡的格鲁派大寺。",
+    "tags": [
+      "寺庙",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-540302-0",
+    "name": "然乌湖",
+    "districtId": "540302",
+    "lng": 97.238,
+    "lat": 31.4626,
+    "summary": "雪山倒映的冰湖。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-540402-0",
+    "name": "雅鲁藏布大峡谷",
+    "districtId": "540402",
+    "lng": 94.3754,
+    "lat": 29.7965,
+    "summary": "南迦巴瓦下的深邃峡谷。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-540502-0",
+    "name": "羊卓雍错",
+    "districtId": "540502",
+    "lng": 91.821,
+    "lat": 29.2313,
+    "summary": "珊瑚般的高原蓝湖。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-540602-0",
+    "name": "纳木错",
+    "districtId": "540602",
+    "lng": 92.0279,
+    "lat": 31.2668,
+    "summary": "天湖与念青唐古拉。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-610102-0",
+    "name": "兵马俑",
+    "districtId": "610102",
+    "lng": 108.9767,
+    "lat": 34.2919,
+    "summary": "秦始皇陵的千军俑阵。",
+    "tags": [
+      "历史文化",
+      "博物馆",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-610102-1",
+    "name": "大雁塔",
+    "districtId": "610102",
+    "lng": 109.0067,
+    "lat": 34.2519,
+    "summary": "玄奘译经的唐代古塔。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "寺庙"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-610302-0",
+    "name": "法门寺",
+    "districtId": "610302",
+    "lng": 107.1116,
+    "lat": 34.3022,
+    "summary": "佛指舍利地宫。",
+    "tags": [
+      "寺庙",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-610402-0",
+    "name": "乾陵",
+    "districtId": "610402",
+    "lng": 108.6694,
+    "lat": 34.3753,
+    "summary": "唐高宗与武则天的合葬陵。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-610502-0",
+    "name": "华山",
+    "districtId": "610502",
+    "lng": 109.5579,
+    "lat": 34.5684,
+    "summary": "奇险天下的西岳。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-610602-0",
+    "name": "宝塔山",
+    "districtId": "610602",
+    "lng": 109.6428,
+    "lat": 36.591,
+    "summary": "革命圣地的地标。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-610702-0",
+    "name": "武侯祠",
+    "districtId": "610702",
+    "lng": 107.0382,
+    "lat": 33.2031,
+    "summary": "诸葛武侯的祭祀之地。",
+    "tags": [
+      "历史文化",
+      "寺庙",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-610802-0",
+    "name": "镇北台",
+    "districtId": "610802",
+    "lng": 109.6425,
+    "lat": 38.404,
+    "summary": "长城第一台与红碱淖。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-610902-0",
+    "name": "南宫山",
+    "districtId": "610902",
+    "lng": 108.8888,
+    "lat": 32.833,
+    "summary": "巴山深处的宗教名山。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-620102-0",
+    "name": "黄河风情线",
+    "districtId": "620102",
+    "lng": 103.8763,
+    "lat": 36.0935,
+    "summary": "穿城而过的黄河与铁桥。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-620502-0",
+    "name": "麦积山",
+    "districtId": "620502",
+    "lng": 105.6267,
+    "lat": 34.4152,
+    "summary": "悬崖上的石窟泥塑。",
+    "tags": [
+      "历史文化",
+      "博物馆",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-620602-0",
+    "name": "雷台汉墓",
+    "districtId": "620602",
+    "lng": 102.7532,
+    "lat": 37.9322,
+    "summary": "马踏飞燕的出土地。",
+    "tags": [
+      "历史文化",
+      "博物馆",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-620702-0",
+    "name": "七彩丹霞",
+    "districtId": "620702",
+    "lng": 100.5073,
+    "lat": 39.0244,
+    "summary": "斑斓如画的彩色丘陵。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-620802-0",
+    "name": "崆峒山",
+    "districtId": "620802",
+    "lng": 106.742,
+    "lat": 35.5306,
+    "summary": "道教名山与丹霞。",
+    "tags": [
+      "山水",
+      "寺庙",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-620902-0",
+    "name": "莫高窟",
+    "districtId": "620902",
+    "lng": 98.7931,
+    "lat": 39.6236,
+    "summary": "丝路壁画的千年宝库。",
+    "tags": [
+      "历史文化",
+      "博物馆",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-621102-0",
+    "name": "贵清山",
+    "districtId": "621102",
+    "lng": 104.632,
+    "lat": 35.6586,
+    "summary": "陇中避暑的森林公园。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-622901-0",
+    "name": "炳灵寺",
+    "districtId": "622901",
+    "lng": 103.1873,
+    "lat": 35.5947,
+    "summary": "黄河岸边的石窟。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-623001-0",
+    "name": "拉卜楞寺",
+    "districtId": "623001",
+    "lng": 103.081,
+    "lat": 35.0125,
+    "summary": "世界藏学府与转经廊。",
+    "tags": [
+      "寺庙",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-630102-0",
+    "name": "塔尔寺",
+    "districtId": "630102",
+    "lng": 101.8409,
+    "lat": 36.6031,
+    "summary": "宗喀巴诞生地的格鲁派大寺。",
+    "tags": [
+      "寺庙",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-630202-0",
+    "name": "互助土族故土园",
+    "districtId": "630202",
+    "lng": 102.4308,
+    "lat": 36.5063,
+    "summary": "土族风情与轮子秋。",
+    "tags": [
+      "历史文化",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-632221-0",
+    "name": "祁连山",
+    "districtId": "632221",
+    "lng": 101.7322,
+    "lat": 37.4752,
+    "summary": "雪峰草甸与卓尔山。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-632301-0",
+    "name": "坎布拉",
+    "districtId": "632301",
+    "lng": 102.0776,
+    "lat": 35.4426,
+    "summary": "丹霞与森林相映。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-632521-0",
+    "name": "青海湖",
+    "districtId": "632521",
+    "lng": 100.0337,
+    "lat": 36.4842,
+    "summary": "中国最大咸水湖与油菜花海。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-632701-0",
+    "name": "三江源",
+    "districtId": "632701",
+    "lng": 96.66,
+    "lat": 32.9342,
+    "summary": "中华水塔与通天河源。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-632801-0",
+    "name": "茶卡盐湖",
+    "districtId": "632801",
+    "lng": 91.2802,
+    "lat": 33.9219,
+    "summary": "天空之镜的盐湖。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-640104-0",
+    "name": "镇北堡西部影城",
+    "districtId": "640104",
+    "lng": 106.4766,
+    "lat": 38.4859,
+    "summary": "大话西游取景的黄土影视城。",
+    "tags": [
+      "拍照",
+      "历史文化",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-640104-1",
+    "name": "西夏王陵",
+    "districtId": "640104",
+    "lng": 106.5066,
+    "lat": 38.4459,
+    "summary": "沉睡贺兰山下的西夏帝陵。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-640202-0",
+    "name": "沙湖",
+    "districtId": "640202",
+    "lng": 106.3303,
+    "lat": 39.1025,
+    "summary": "沙与水相拥的湿地。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-640302-0",
+    "name": "中华黄河楼",
+    "districtId": "640302",
+    "lng": 106.2625,
+    "lat": 37.756,
+    "summary": "黄河岸边的观河楼。",
+    "tags": [
+      "拍照",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-640402-0",
+    "name": "六盘山",
+    "districtId": "640402",
+    "lng": 106.2594,
+    "lat": 36.1464,
+    "summary": "红军翻越的红色高山。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-640502-0",
+    "name": "沙坡头",
+    "districtId": "640502",
+    "lng": 105.1378,
+    "lat": 37.3079,
+    "summary": "黄河与腾格里沙漠相遇处。",
+    "tags": [
+      "山水",
+      "亲子",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-650102-0",
+    "name": "天山天池",
+    "districtId": "650102",
+    "lng": 87.6301,
+    "lat": 43.7326,
+    "summary": "雪峰倒映的高山湖泊。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-650202-0",
+    "name": "魔鬼城",
+    "districtId": "650202",
+    "lng": 84.8926,
+    "lat": 44.3106,
+    "summary": "风蚀雅丹的鬼斧神工。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-650402-0",
+    "name": "火焰山",
+    "districtId": "650402",
+    "lng": 89.2486,
+    "lat": 42.6918,
+    "summary": "西游记里的红色山峦。",
+    "tags": [
+      "拍照",
+      "山水"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-650402-1",
+    "name": "葡萄沟",
+    "districtId": "650402",
+    "lng": 89.2786,
+    "lat": 42.6518,
+    "summary": "火焰山下的绿荫沟谷。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-650502-0",
+    "name": "哈密魔鬼城",
+    "districtId": "650502",
+    "lng": 93.5134,
+    "lat": 42.37,
+    "summary": "雅丹与回王墓。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-652301-0",
+    "name": "天山天池",
+    "districtId": "652301",
+    "lng": 87.0683,
+    "lat": 44.1878,
+    "summary": "博格达峰下的高山湖。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-652801-0",
+    "name": "博斯腾湖",
+    "districtId": "652801",
+    "lng": 85.7253,
+    "lat": 41.593,
+    "summary": "西域最大的内陆淡水湖。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-652901-0",
+    "name": "库车大峡谷",
+    "districtId": "652901",
+    "lng": 80.2629,
+    "lat": 41.1913,
+    "summary": "红层峡谷的神秘通道。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-653101-0",
+    "name": "喀什老城",
+    "districtId": "653101",
+    "lng": 76.1818,
+    "lat": 39.5409,
+    "summary": "生土民居与巴扎的西域古城。",
+    "tags": [
+      "古镇",
+      "拍照",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-653201-0",
+    "name": "玉龙喀什河",
+    "districtId": "653201",
+    "lng": 79.9532,
+    "lat": 37.169,
+    "summary": "采玉人与昆仑古道。",
+    "tags": [
+      "山水",
+      "拍照",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-654002-0",
+    "name": "那拉提草原",
+    "districtId": "654002",
+    "lng": 81.2783,
+    "lat": 44.0286,
+    "summary": "雪山下的空中草原。",
+    "tags": [
+      "山水",
+      "拍照",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-654301-0",
+    "name": "喀纳斯",
+    "districtId": "654301",
+    "lng": 87.9178,
+    "lat": 47.9047,
+    "summary": "湖怪传说的童话湖泊。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-810001-0",
+    "name": "太平山顶",
+    "districtId": "810001",
+    "lng": 114.1223,
+    "lat": 22.2942,
+    "summary": "俯瞰维港的观景台。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-810001-1",
+    "name": "迪士尼乐园",
+    "districtId": "810001",
+    "lng": 114.1523,
+    "lat": 22.2542,
+    "summary": "海边童话主题乐园。",
+    "tags": [
+      "亲子",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-810001-2",
+    "name": "维多利亚港",
+    "districtId": "810001",
+    "lng": 114.1823,
+    "lat": 22.2942,
+    "summary": "两岸霓虹的璀璨海港。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-820001-0",
+    "name": "大三巴牌坊",
+    "districtId": "820001",
+    "lng": 113.5314,
+    "lat": 22.222,
+    "summary": "圣保禄教堂的石砌前壁。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-820001-1",
+    "name": "澳门旅游塔",
+    "districtId": "820001",
+    "lng": 113.5614,
+    "lat": 22.182,
+    "summary": "俯瞰珠江口的观光塔。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "1小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "lm-820001-2",
+    "name": "路环",
+    "districtId": "820001",
+    "lng": 113.5914,
+    "lat": 22.222,
+    "summary": "渔村风情与黑沙海滩。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子",
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
     "id": "bj-gugong",
     "name": "故宫博物院",
     "districtId": "110101",

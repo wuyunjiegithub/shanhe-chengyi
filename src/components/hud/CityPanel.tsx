@@ -3,7 +3,7 @@ import { useNavigation } from '../../stores/navigation';
 import { useUi } from '../../stores/ui';
 import { useCityStatus } from '../../stores/cityStatus';
 import { useData } from '../../stores/data';
-import { updateMarkers } from '../../app/sandbox';
+import { updateMarkers, focusSpotById } from '../../app/sandbox';
 import { BgImage } from '../shared/BgImage';
 import { bgKey } from '../../stores/backgrounds';
 import { WeatherCard } from '../drawer/WeatherCard';
@@ -30,6 +30,24 @@ export function CityPanel() {
   // 城市美食榜只显示城市自己编辑的那份（城市级信息统一在「内容编辑器」里改，
   // 不再聚合下属区县美食 —— 区县美食归区县，各看各的）
   const cityFoods = city?.foods ?? [];
+
+  // 本市景点：聚合下辖所有区县的景点（主城区注入的省代表景点），
+  // 让下钻任意城市都能看到「本市景点」列表，不止主城区抽屉里有
+  const spotsByDistrict = useData((s) => s.spotsByDistrict);
+  const citySpots = useMemo(() => {
+    const name = city?.name;
+    if (!name) return [];
+    const cityDistrictIds = new Set(
+      Object.values(allDistricts)
+        .filter((d) => d.city === name)
+        .map((d) => d.id),
+    );
+    const list = [];
+    for (const [did, sps] of Object.entries(spotsByDistrict)) {
+      if (cityDistrictIds.has(did)) list.push(...sps);
+    }
+    return list.sort((a, b) => Number(Boolean(b.hot)) - Number(Boolean(a.hot)));
+  }, [allDistricts, spotsByDistrict, city]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 });
@@ -159,6 +177,44 @@ export function CityPanel() {
                     <span className="food-card-rec">📍 {food.recommend}</span>
                   </div>
                 </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {citySpots.length > 0 && (
+          <section className="content-block">
+            <h3 className="block-title">
+              <i />城市景点
+              <span className="block-count">{citySpots.length}</span>
+            </h3>
+            <div className="spot-list">
+              {citySpots.map((spot, i) => (
+                <button key={spot.id} className="spot-row" onClick={() => void focusSpotById(spot.id)}>
+                  <span className="spot-thumb">
+                    <BgImage
+                      bgKey={bgKey('spot', spot.id)}
+                      src={spot.image ?? `/assets/spots/${spot.id}.jpg`}
+                      alt={spot.name}
+                      label={spot.name}
+                      tags={spot.tags}
+                    />
+                    {spot.hot && <em className="spot-rank">{i + 1}</em>}
+                  </span>
+                  <span className="spot-main">
+                    <span className="spot-name">
+                      {spot.name}
+                      {spot.hot && <em className="hot-badge">热门</em>}
+                    </span>
+                    <span className="spot-summary">{spot.summary}</span>
+                    <span className="spot-tags">
+                      {spot.tags.map((t) => (
+                        <i key={t}>{t}</i>
+                      ))}
+                      {spot.duration && <i className="is-plain">{spot.duration}</i>}
+                    </span>
+                  </span>
+                </button>
               ))}
             </div>
           </section>
