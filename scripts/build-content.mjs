@@ -40,6 +40,33 @@ for (const file of readdirSync(CONTENT_DIR).sort()) {
   console.log(`· 载入 ${file}：${list.length} 区县`);
 }
 
+/**
+ * 维基补录的景点（scripts/gen-wiki-spots.mjs 生成）。
+ * 按区县 id 并入，与人工录入的景点合并 —— 不做去重覆盖，两边都保留。
+ */
+let wikiSpotAdditions = {};
+try {
+  wikiSpotAdditions =
+    (await import(pathToFileURL(join(CONTENT_DIR, 'wiki-spots.mjs')).href))
+      .WIKI_SPOT_ADDITIONS ?? {};
+} catch {
+  /* 尚未生成 */
+}
+if (Object.keys(wikiSpotAdditions).length > 0) {
+  let added = 0;
+  for (const d of sources) {
+    const extra = wikiSpotAdditions[d.id];
+    if (!extra?.length) continue;
+    const has = new Set((d.spots ?? []).map((s) => s[1]));
+    for (const s of extra) {
+      if (has.has(s[1])) continue; // 同名景点人工已录过，不重复
+      (d.spots ??= []).push(s);
+      added += 1;
+    }
+  }
+  console.log(`· 并入维基补录景点：${added} 个`);
+}
+
 // 自动生成的最小城市元信息：未人工录入的城市也有一条 intro（下辖 N 个区县），
 // 人工录入的 cityMeta 优先覆盖它。
 let autoCityMeta = {};
