@@ -3,6 +3,38 @@
 本项目所有版本变更记录于此。格式参考 [Keep a Changelog](https://keepachangelog.com/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.9.40] - 2026-10-28
+
+> 五个问题一次性处理：ESC 回错地方、省份标签不随远近缩放、地形看不出起伏、视角跳变，以及全国 2519 个区县「人文/历史/景点」全空。
+
+### 视角与交互
+- **ESC / 「返回」回到当前省份**：原先一律回到江浙沪老家视图（`resetView()` → `homeBox`）。
+  新增 `SceneManager.resetViewToProvince(province)`：按该省城市板块包围盒取景；
+  `backToRegion({ toProvince: true })` 在清空 `currentCity` 前先记下省份。
+  ESC、右下「返回」、左侧索引「← 全国」、安卓物理返回键统一走该路径；
+  左下「重置俯视」与指南针仍回江浙沪初始地址（`resetView()` 不变）。
+- **省份名随视角远近自动缩放**：原先是固定 22px 的 CSS2D 标签，33 个省名挤成一团。
+  新增 `updateProvinceLabelSizes()`，每帧按相机距离反比算字号并夹在 12～32px：
+  拉远变小、避免遮挡，拉近变大、更醒目。
+- **地形可见性**：`EXAGGERATION` 26 → 32，坡度明暗对比加大（`0.62 + 0.46·ny`），
+  等高线淡出阈值放宽（0.03～0.11 → 0.02～0.08）——省总览也能一眼看出山地起伏。
+  区县下钻仍由 `reliefForTop()` 自动压扁，山体不会戳穿板块。
+
+### 内容补全（全国 2840 区县）
+- **新增维基百科内容管线**：`scripts/fetch-wiki-content.mjs` 抓取中文维基条目正文（一次 50 个标题、
+  全局 1.4s 限流），`scripts/lib/wiki-enrich.mjs` 把正文解析成
+  history / culture / features / people / tags / spots（只搬运不编造）。
+  `scripts/gen-baseline-content.mjs` 据此把内容并入 `auto-baseline.mjs`。
+- **消歧义页修正**：`scripts/rematch-wiki-content.mjs` 专门修「裸名是消歧义页」的区县
+  （如「和平区」真正条目叫「和平区 (天津市)」），并按「导语须同时含区县名与省/市」择优，避免串到同名外地条目。
+- **覆盖提升**：history 321 → 2704、culture → 1547、features（地标）→ 1771、tags → 2066、
+  含景点区县 614 → 777、景点总数 1520 → 1754（其中 234 个为维基来源，坐标取自景点自己的条目）。
+  仅剩 70 个区县（维基确实无条目）保留行政区划基线，来源标记为「行政区划基线 · 待人工补充」。
+- 区县来源可由 `source` 字段区分：`维基百科条目整理 · 待人工复核` / `公开资料整理 · 待人工复核` / `行政区划基线 · 待人工补充`。
+- 回归：`scripts/verify-province-return.mjs` 5 项全过（同省同落点、跨省不同落点、
+  ESC 只框当前省、相机确实移动、「重置俯视」仍回初始地址）。
+- 版本三处同步（package.json / tauri.conf.json / tauri.properties=9040）。
+
 ## [0.9.39] - 2026-10-28
 
 > 查漏补缺：修复四个直辖市（北京/天津/上海/重庆）在 `cities.geojson` 中几何崩成「中心城区小碎片」导致板块镂空、地形缺失的渲染缺陷。

@@ -80,7 +80,7 @@ export function BottomBar() {
           ✎ 游记{noteCount > 0 ? ` ${noteCount}` : ''}
         </button>
         {level === 'city' && (
-          <button className="ghost-pill" onClick={backToRegion}>
+          <button className="ghost-pill" onClick={() => backToRegion({ toProvince: true })}>
             返回
           </button>
         )}

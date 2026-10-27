@@ -224,7 +224,7 @@ export async function drillIntoCity(cityId: string): Promise<void> {
 }
 
 /** 城市视图 → 区域总览 */
-export function backToRegion(): void {
+export function backToRegion(opts: { toProvince?: boolean } = {}): void {
   const ui = useUi.getState();
   ui.closeDrawer();
   // 返回总览时城市面板会重新出现，全屏态必须清掉，否则一回去就被铺满的面板挡住地图
@@ -232,11 +232,15 @@ export function backToRegion(): void {
   // 复位「城市面板收起」状态，保证回到区域总览后再次下钻能正常显示面板
   ui.setCityPanelDismissed(false);
   ui.setSearchOpen(false);
+  // 必须在 nav.backToRegion() 清空 currentCity 之前记下省份，才能回到「当前省」而非老家
+  const province = useNavigation.getState().currentCity?.province;
   manager?.clearDistrictPlates();
   // 复位取景预留（无面板），让区域总览按整屏取景
   manager?.setPanelExpanded(false);
   manager?.setSidePanel(false);
-  manager?.resetView();
+  // 按 ESC / 返回：回到当前省份总览；顶栏「总览」等明确要求回老家时走 homeBox
+  if (opts.toProvince && province) manager?.resetViewToProvince(province);
+  else manager?.resetView();
   void refreshWeather();
   useNavigation.getState().backToRegion();
   useNavigation.getState().setHovered(null);

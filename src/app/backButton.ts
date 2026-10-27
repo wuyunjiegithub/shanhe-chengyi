@@ -86,7 +86,7 @@ export async function setupBackButton(): Promise<void> {
 
     // 3) 地图层级返回
     if (nav.level === 'city') {
-      backToRegion();
+      backToRegion({ toProvince: true });
       return;
     }
 

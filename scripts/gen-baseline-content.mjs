@@ -6,8 +6,10 @@
  *   - 区县名 / 所属地级市 / 所属省份（来自民政部行政区划，经 DataV 边界数据落地）
  *   - 中心点经纬度（边界数据自带 centroid）
  *   - 面积（由边界多边形按球面公式算出，单位 km²）
- * 人文 / 历史 / 特色 / 美食 / 景点一律留空，等后续按省人工精写补上——
- * 不给 2840 个区县编造简介和标签。
+ *
+ * 若 scripts/.cache/wiki/ 里存有该区县的维基百科条目（由 fetch-wiki-content.mjs 抓取），
+ * 则一并并入**真实可核查**的人文 / 历史 / 景点内容——只搬运不编造。
+ * 没有维基条目的区县，人文 / 历史 / 特色 / 美食 / 景点仍留空，等后续按省人工精写。
  *
  * 产物：
  *   scripts/content/auto-baseline.mjs   （区县基线条目）
@@ -15,7 +17,7 @@
  *
  * 运行：node scripts/gen-baseline-content.mjs
  */
-import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { PROVINCE_FOODS, PROVINCE_LANDMARKS } from './content/seed-travel.mjs';
@@ -23,11 +25,13 @@ import { PROVINCE_LANDMARKS_EXTRA } from './content/seed-landmarks-extra.mjs';
 import { PROVINCE_LANDMARKS_EXTRA2 } from './content/seed-landmarks-extra2.mjs';
 import { PROVINCE_LANDMARKS_EAST } from './content/seed-landmarks-east.mjs';
 import { PROVINCE_LANDMARKS_NORTH_SOUTH } from './content/seed-landmarks-north-south.mjs';
+import { parseWikiDistrict } from './lib/wiki-enrich.mjs';
 
 const ROOT = process.cwd();
 const GEO_DIR = join(ROOT, 'public/geo');
 const CONTENT_DIR = join(ROOT, 'scripts/content');
 const BASELINE_FILE = 'auto-baseline.mjs';
+const WIKI_CACHE_DIR = join(ROOT, 'scripts/.cache/wiki');
 
 const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
 
@@ -123,6 +127,21 @@ for (const list of [
 }
 const round4 = (n) => Math.round(n * 1e4) / 1e4;
 
+/* ---------- 维基百科缓存（可选，缺失就只出行政区基线） ---------- */
+const wikiCache = new Map();
+if (existsSync(WIKI_CACHE_DIR)) {
+  for (const file of readdirSync(WIKI_CACHE_DIR)) {
+    if (!file.endsWith('.json')) continue;
+    try {
+      const rec = JSON.parse(readFileSync(join(WIKI_CACHE_DIR, file), 'utf8'));
+      if (rec?.id && rec.extract) wikiCache.set(String(rec.id), rec);
+    } catch {
+      /* 忽略坏缓存 */
+    }
+  }
+}
+console.log(`· 维基百科缓存 ${wikiCache.size} 条（将并入历史 / 人文 / 景点）`);
+
 /* ---------- 逐市生成 ---------- */
 const out = [];
 const cityMetaExtra = {};
@@ -165,21 +184,47 @@ for (const file of readdirSync(join(GEO_DIR, 'districts')).sort()) {
         return [`lm-${id}-${i}`, lmName, round4(lng), round4(lat), summary, tags, hot, suitableFor, duration];
       });
     }
+
+    // 维基百科条目：并入真实可核查的历史 / 人文 / 地标
+    const wiki = wikiCache.get(id);
+    let oneLiner = `${where}${name}${areaText}。详细人文与景点待补充。`;
+    let history = '';
+    let culture = '';
+    let features = [];
+    let people = [];
+    let tags = [];
+    let source;
+    if (wiki) {
+      const w = parseWikiDistrict(wiki, center, area);
+      if (w.oneLiner) oneLiner = w.oneLiner;
+      history = w.history;
+      culture = w.culture;
+      features = w.features;
+      people = w.people;
+      tags = w.tags;
+      // 维基景点条目格式与人工录入一致：[id, name, lng, lat, summary, tags, hot, suitableFor, duration]
+      for (const s of w.spots) {
+        spots.push([s.id, s.name, s.lng, s.lat, s.summary, s.tags, s.hot, s.suitableFor, s.duration]);
+      }
+      source = '维基百科条目整理 · 待人工复核';
+    }
+
     out.push({
       id,
       name,
       city: city.name,
       province,
-      oneLiner: `${where}${name}${areaText}。详细人文与景点待补充。`,
-      tags: [],
-      history: '',
-      culture: '',
-      people: [],
-      features: [],
+      oneLiner,
+      tags,
+      history,
+      culture,
+      people,
+      features,
       specialties: [],
       foods: [],
       spots,
       baseline: true,
+      ...(source ? { source } : {}),
     });
     added++;
   }

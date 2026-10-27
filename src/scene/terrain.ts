@@ -36,9 +36,11 @@ const RIVER_OFFSET = 0.2;
  * 垂直夸张倍数。
  * 江浙沪皖东西约 900km，映射成 120 世界单位，1 世界单位 ≈ 7.5km；
  * 按真实比例黄山（1864m）只有 0.25 单位，几乎看不见。
- * 夸张 18 倍后主峰约 4.5 单位，明显高出板块（2.6）又不至于失真成尖刺。
+ * 夸张 32 倍后主峰约 5.6 单位，明显高出板块（2.6）又不会失真成尖刺，
+ * 拉远到省总览也能一眼看出山地起伏（用户反馈「肉眼看不出地形」）。
+ * 区县下钻时由 reliefForTop 自动压扁，不会被山体戳穿板块。
  */
-const EXAGGERATION = 26;
+const EXAGGERATION = 32;
 
 /**
  * 光照补偿系数。
@@ -252,11 +254,12 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
 
   // 坡度明暗：俯视时方向光几乎照不出起伏，按法线 Y 分量再压一档，
   // 陡坡转暗、缓坡留亮，山脊与谷地才有「体积感」而不是一张色卡。
+  // 对比度加大（0.62 + 0.46·ny → 坡面明度跨约 0.6～1.08），让山地比平原更立体。
   const nrm = meshGeo.attributes.normal.array as Float32Array;
   for (let idx = 0; idx < total; idx++) {
     if (!land[idx]) continue;
     const ny = Math.min(1, Math.max(0, nrm[idx * 3 + 1]));
-    const k = 0.74 + 0.36 * ny;
+    const k = 0.62 + 0.46 * ny;
     colors[idx * 3] *= k;
     colors[idx * 3 + 1] *= k;
     colors[idx * 3 + 2] *= k;
@@ -298,8 +301,9 @@ export function createTerrain(p: Projection, data: TerrainData): TerrainHandle {
           float f = abs(fract(cb + 0.5) - 0.5);
           float line = 1.0 - smoothstep(0.0, w * 0.9, f);
           // 省视角下每像素跨过的等高带太密，线会连成一片白雾 —— 按屏幕导数淡出，
-          // 只有放大到能看清山形时才显出来。
-          float fade = 1.0 - smoothstep(0.03, 0.11, w);
+          // 只有放大到能看清山形时才显出来。阈值略放宽（0.02～0.08），
+          // 让中等缩放下山形轮廓也能浮现，强化「看得出地形」的观感。
+          float fade = 1.0 - smoothstep(0.02, 0.08, w);
           // 海拔恰好为 0 的格子（苏北平原、湖面、DEM 缺测）会让 fract(cb) 恒为 0，
           // 整片区域都被判成「在线条上」，糊成一层发白的雾。
           // 用海拔把 0～6m 的平坦区直接排除，海边和湖面不再泛白。

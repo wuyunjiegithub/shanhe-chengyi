@@ -127,7 +127,7 @@ export function Shell() {
         clearDistrictSelection();
         return;
       }
-      if (nav.level === 'city') backToRegion();
+      if (nav.level === 'city') backToRegion({ toProvince: true });
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);

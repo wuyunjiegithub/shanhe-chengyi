@@ -751,6 +751,25 @@ export class SceneManager {
     this.frameTo(this.homeBox, 0.7, narrow ? 0.59 : 0.96, 0, view);
   }
 
+  /**
+   * 回到「当前省份」总览：按当前可用视区取景到该省的城市包围盒，而不是江浙沪老家视图。
+   * 从某市下钻后按 ESC / 返回，视角应正好落在该省，而非每次都被拉回江浙沪。
+   * 省份取不到（尚未录入 / 数据缺失）时回退到老家视图，保证不取到空盒。
+   */
+  resetViewToProvince(province?: string): void {
+    const view = this.usableView();
+    const el = this.renderer.domElement;
+    const narrow = Boolean(el) && (el.clientWidth || 0) <= 820;
+    if (province && this.cityShapes.length > 0) {
+      const box = this.boxOfProvinces(this.cityShapes, [province]);
+      if (box && !box.isEmpty()) {
+        this.frameTo(box, 0.7, narrow ? 0.59 : 0.96, 0, view);
+        return;
+      }
+    }
+    this.resetView();
+  }
+
   /** 省视角城市标记：去过 = 小红旗，收藏 = 粉心 */
   setCityMarkers(items: { id: string; kind: MarkerKind }[]): void {
     this.fillMarkers(this.cityMarkerGroup, this.cities, items);
@@ -1176,6 +1195,25 @@ export class SceneManager {
     }
     list.length = 0;
     group.clear();
+  }
+
+  /**
+   * 省份标签随视角远近自动调字号：
+   * 俯视拉远（看整片中国）时标签缩小、避免 33 个省名挤成一团；
+   * 拉近到某一省时标签放大、更醒目。等距圆柱投影下直接按相机距离反比缩放，
+   * 再夹在 [min,max] 之间，保证远不糊、近不大。
+   */
+  private updateProvinceLabelSizes(): void {
+    if (!this.provinceLabelGroup.visible || this.provinceLabels.length === 0) return;
+    const camPos = this.camera.position;
+    const K = 374; // 老家视图 dist≈17 → 约 22px，与原来的固定字号观感一致
+    const MIN = 12;
+    const MAX = 32;
+    for (const obj of this.provinceLabels) {
+      const d = Math.max(0.001, camPos.distanceTo(obj.position));
+      const px = Math.min(MAX, Math.max(MIN, K / d));
+      obj.element.style.fontSize = px.toFixed(1) + 'px';
+    }
   }
 
   private updateProvinceLabels(shapes: ProjectedShape[]): void {
@@ -1861,6 +1899,7 @@ export class SceneManager {
 
     this.updatePinScales();
     this.updateMarkerScales();
+    this.updateProvinceLabelSizes();
     this.terrain?.update(t, dt);
     if (this.weatherOn && this.weatherFX) this.weatherFX.update(dt);
 

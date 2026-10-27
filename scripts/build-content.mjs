@@ -203,7 +203,7 @@ for (const d of sources) {
     spots: spotIds,
     center: [lng, lat],
     baseline: Boolean(d.baseline),
-    source: d.baseline ? '行政区划基线 · 待人工补充' : '公开资料整理 · 待人工复核',
+    source: d.source ?? (d.baseline ? '行政区划基线 · 待人工补充' : '公开资料整理 · 待人工复核'),
     updatedAt: TODAY,
   });
 }
