@@ -30417,6 +30417,704 @@
     "updatedAt": "2026-10-19"
   },
   {
+    "id": "tw-tp-101",
+    "name": "台北101",
+    "districtId": "710001",
+    "lng": 121.56444,
+    "lat": 25.03361,
+    "summary": "508 米高的摩天楼，89 层观景台可俯瞰整个台北盆地，曾是多年世界第一高楼。",
+    "tags": [
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-tp-gugong",
+    "name": "故宫博物院",
+    "districtId": "710001",
+    "lng": 121.54828,
+    "lat": 25.10241,
+    "summary": "清宫旧藏迁台后的落脚处，翠玉白菜、肉形石与历代书画是镇馆之宝。",
+    "tags": [
+      "博物馆",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-tp-beitou",
+    "name": "北投温泉",
+    "districtId": "710001",
+    "lng": 121.50968,
+    "lat": 25.13616,
+    "summary": "大屯火山系下的硫磺泉，地热谷、公共浴场与温泉旅馆连成一片汤区。",
+    "tags": [
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-tp-yangming",
+    "name": "阳明山国家公园",
+    "districtId": "710001",
+    "lng": 121.5475,
+    "lat": 25.1775,
+    "summary": "火山地貌与温泉区，春季樱花、杜鹃接力开，擎天岗是开阔的草原步道。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-nt-jiufen",
+    "name": "九份",
+    "districtId": "710002",
+    "lng": 121.843,
+    "lat": 25.107,
+    "summary": "依山坡而建的矿业老聚落，竖崎路石阶两侧茶楼灯笼层叠，可远望基隆山与海。",
+    "tags": [
+      "古镇",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-nt-wulai",
+    "name": "乌来",
+    "districtId": "710002",
+    "lng": 121.55053,
+    "lat": 24.8653,
+    "summary": "南势溪谷地的温泉与瀑布区，泰雅族部落文化、台车与小火车串起整条峡谷。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-ty-daxi",
+    "name": "大溪老街",
+    "districtId": "710003",
+    "lng": 121.288,
+    "lat": 24.8849,
+    "summary": "大汉溪畔的老商埠，和平路、中山路两侧保留日据时期巴洛克式街屋立面。",
+    "tags": [
+      "古镇",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-ty-lala",
+    "name": "拉拉山",
+    "districtId": "710003",
+    "lng": 121.43417,
+    "lat": 24.73056,
+    "summary": "北部重要的红桧巨木群保护區，千年神木栈道与高山云雾是主要看点。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-tc-fengjia",
+    "name": "逢甲夜市",
+    "districtId": "710004",
+    "lng": 120.64659,
+    "lat": 24.17729,
+    "summary": "台湾规模最大的夜市之一，摊贩沿街与巷弄铺开，小吃、服饰一路逛到底。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-tc-rainbow",
+    "name": "彩虹眷村",
+    "districtId": "710004",
+    "lng": 120.60977,
+    "lat": 24.1336,
+    "summary": "老荣民在眷村墙面与地面上画满童趣彩绘，整座聚落成了一座露天美术馆。",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-tc-gaomei",
+    "name": "高美湿地",
+    "districtId": "710004",
+    "lng": 120.54975,
+    "lat": 24.31113,
+    "summary": "大甲溪出海口的泥滩湿地，木栈道伸进潮间带，是看夕阳与候鸟的地方。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-tn-chikan",
+    "name": "赤崁楼",
+    "districtId": "710005",
+    "lng": 120.20281,
+    "lat": 22.9975,
+    "summary": "原为荷据时期普罗民遮城，清代改建为中式楼阁，是台南最核心的历史地标。",
+    "tags": [
+      "历史文化",
+      "博物馆"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-tn-anping",
+    "name": "安平古堡",
+    "districtId": "710005",
+    "lng": 120.16054,
+    "lat": 23.00111,
+    "summary": "荷兰人所筑热兰遮城旧址，残存城墙与瞭望台俯瞰安平港与台湾海峡。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-kh-xiziwan",
+    "name": "西子湾",
+    "districtId": "710006",
+    "lng": 120.26447,
+    "lat": 22.62828,
+    "summary": "柴山下的海湾，防波堤与夕阳是招牌景，中山大学校园就在山侧。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-kh-liuhe",
+    "name": "六合夜市",
+    "districtId": "710006",
+    "lng": 120.30219,
+    "lat": 22.633,
+    "summary": "高雄历史最久的夜市，海鲜、牛肉面与木瓜牛奶摊连成一整条街。",
+    "tags": [
+      "亲子",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-kl-island",
+    "name": "基隆屿",
+    "districtId": "710007",
+    "lng": 121.78557,
+    "lat": 25.1924,
+    "summary": "基隆外海的火山岛，海蚀洞与断崖陡峭，登岛需搭船并事先申请。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-hc-temple",
+    "name": "新竹都城隍庙",
+    "districtId": "710008",
+    "lng": 120.96607,
+    "lat": 24.80445,
+    "summary": "创建于清乾隆年间的城隍庙，庙埕周边聚集米粉、贡丸与肉圆等老摊。",
+    "tags": [
+      "寺庙",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-ml-longteng",
+    "name": "龙腾断桥",
+    "districtId": "710010",
+    "lng": 120.77383,
+    "lat": 24.35844,
+    "summary": "1907 年建成的砖拱铁路桥，1935 年地震后断成残拱，如今是旧山线最著名的铁道遗迹。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-ml-shengxing",
+    "name": "胜兴车站",
+    "districtId": "710010",
+    "lng": 120.78194,
+    "lat": 24.3875,
+    "summary": "旧山线海拔最高的木造车站，站内无一根铁钉，站旁隧道与老街一并保留。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-ml-taian",
+    "name": "泰安温泉",
+    "districtId": "710010",
+    "lng": 120.97694,
+    "lat": 24.47194,
+    "summary": "汶水溪谷中的碳酸泉，最早由当地泰雅族人发现，温泉区沿溪谷分布。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-ch-lugang",
+    "name": "鹿港天后宫",
+    "districtId": "710011",
+    "lng": 120.43138,
+    "lat": 24.05934,
+    "summary": "创建于清康熙年间的妈祖庙，香火鼎盛，是鹿港老街的信仰与生活中心。",
+    "tags": [
+      "寺庙",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-ch-bagua",
+    "name": "八卦山大佛",
+    "districtId": "710011",
+    "lng": 120.54923,
+    "lat": 24.07851,
+    "summary": "八卦山半山腰的风景区，大佛座下可俯瞰彰化平原，园区步道连接华阳公园。",
+    "tags": [
+      "拍照",
+      "山水"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-nt-xitou",
+    "name": "溪头自然教育园区",
+    "districtId": "710012",
+    "lng": 120.79683,
+    "lat": 23.67478,
+    "summary": "凤凰山山麓的柳杉与桧木人工林，空中走廊与巨石步道是主要路线，林间常年湿润凉爽。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-yl-beigang",
+    "name": "北港朝天宫",
+    "districtId": "710013",
+    "lng": 120.30463,
+    "lat": 23.56772,
+    "summary": "建于清康熙年间的妈祖庙，庙身剪黏与石雕繁复，每年农历三月绕境吸引数十万人。",
+    "tags": [
+      "寺庙",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-yl-xiluo",
+    "name": "西螺大桥",
+    "districtId": "710013",
+    "lng": 120.46064,
+    "lat": 23.8113,
+    "summary": "1953 年建成的钢桁架桥，曾为远东第一长桥，横跨浊水溪连接彰化与云林。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-yl-jianfushan",
+    "name": "剑湖山世界",
+    "districtId": "710013",
+    "lng": 120.57789,
+    "lat": 23.62008,
+    "summary": "依山坡而建的主题乐园与度假园区，游乐设施与夜景是主要卖点。",
+    "tags": [
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-cy-alishan",
+    "name": "阿里山国家森林游乐区",
+    "districtId": "710014",
+    "lng": 120.8,
+    "lat": 23.51667,
+    "summary": "海拔两千余米的森林游乐区，巨木群栈道、祝山日出与小火车是三大看点。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "全天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-cy-fenqihu",
+    "name": "奋起湖",
+    "districtId": "710014",
+    "lng": 120.69483,
+    "lat": 23.50508,
+    "summary": "阿里山铁路中段的山间聚落，老街、便当与杉林栈道是招牌，也是上下山的中继站。",
+    "tags": [
+      "古镇",
+      "山水"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-cy2-park",
+    "name": "嘉义公园",
+    "districtId": "710015",
+    "lng": 120.46361,
+    "lat": 23.48278,
+    "summary": "市区东侧的百年公园，老树成荫，园内有孔庙、忠烈祠与儿童游戏区。",
+    "tags": [
+      "亲子",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-cy2-wenhua",
+    "name": "文化路夜市",
+    "districtId": "710015",
+    "lng": 120.44969,
+    "lat": 23.47922,
+    "summary": "嘉义市中心的夜市街，火鸡肉饭、砂锅鱼头与冰品摊位连成一整条。",
+    "tags": [
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-pt-kenting",
+    "name": "垦丁国家公园",
+    "districtId": "710016",
+    "lng": 120.797,
+    "lat": 21.98,
+    "summary": "台湾最南端的国家公园，涵盖珊瑚礁海岸、砂瀑与热带林，龙磐、鹅銮鼻与南湾是主要景点。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "全天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-il-jiaoxi",
+    "name": "礁溪温泉",
+    "districtId": "710017",
+    "lng": 121.7732,
+    "lat": 24.82967,
+    "summary": "兰阳平原北端的平地温泉区，汤沟与公园泡脚池就在火车站周边。",
+    "tags": [
+      "亲子",
+      "山水"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-il-luodong",
+    "name": "罗东夜市",
+    "districtId": "710017",
+    "lng": 121.76964,
+    "lat": 24.67685,
+    "summary": "宜兰规模最大的夜市，卜肉、糕渣与包心粉圆是排队名店。",
+    "tags": [
+      "亲子",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-hl-taroko",
+    "name": "太鲁阁国家公园",
+    "districtId": "710018",
+    "lng": 121.33333,
+    "lat": 24.16667,
+    "summary": "立雾溪切割大理石形成的峡谷，燕子口、九曲洞与长春祠沿中横公路串起。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "全天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-tt-sanxiantai",
+    "name": "三仙台",
+    "districtId": "710019",
+    "lng": 121.41667,
+    "lat": 23.12472,
+    "summary": "成功镇外海的礁岩小岛，八拱跨海步桥连接本岛，是东海岸最知名的地标之一。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-tt-zhiben",
+    "name": "知本温泉",
+    "districtId": "710019",
+    "lng": 121.02004,
+    "lat": 22.69286,
+    "summary": "知本溪谷的温泉区，泉质属碱性碳酸泉，温泉旅馆沿溪谷与山林分布。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "tw-ph-bridge",
+    "name": "澎湖跨海大桥",
+    "districtId": "710020",
+    "lng": 119.547,
+    "lat": 23.65,
+    "summary": "连接白沙与西屿的县道桥梁，跨越吼门水道，是澎湖最著名的交通地标。",
+    "tags": [
+      "拍照",
+      "山水"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
     "id": "nb-tianyige",
     "name": "天一阁·月湖",
     "districtId": "330203",
