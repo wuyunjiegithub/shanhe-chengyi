@@ -22,6 +22,7 @@ import { PROVINCE_FOODS, PROVINCE_LANDMARKS } from './content/seed-travel.mjs';
 import { PROVINCE_LANDMARKS_EXTRA } from './content/seed-landmarks-extra.mjs';
 import { PROVINCE_LANDMARKS_EXTRA2 } from './content/seed-landmarks-extra2.mjs';
 import { PROVINCE_LANDMARKS_EAST } from './content/seed-landmarks-east.mjs';
+import { PROVINCE_LANDMARKS_NORTH_SOUTH } from './content/seed-landmarks-north-south.mjs';
 
 const ROOT = process.cwd();
 const GEO_DIR = join(ROOT, 'public/geo');
@@ -83,11 +84,21 @@ for (const f of cityGeo.features ?? []) {
 }
 
 /* ---------- 主城区 + 省代表景点索引（用于注入城市级内容） ---------- */
-// 每市 districts geojson 的第一个要素即主城区（市政府所在区/县），景点挂这里
+// 主城区（全市级景点落点）= 该市 districts geojson 的第一个 feature。
+// 对绝大多数地级市/直辖市，首位 feature 即市政府所在区（北京110101/天津120101/上海310101 均验证正确）。
+// 重庆是特例：districts 按 id 排序首位为万州 500101（原万县地区行署），并非主城，
+// 需硬编码为渝中区 500103，否则全市景点堆到万州、主城区反而空的错位。
+const PRIMARY_DISTRICT_OVERRIDE = {
+  '500000': '500103', // 重庆市 → 渝中区
+};
 const capitalOfCity = new Map();
 for (const file of readdirSync(join(GEO_DIR, 'districts')).sort()) {
   if (!file.endsWith('.geojson')) continue;
   const cityId = file.replace('.geojson', '');
+  if (PRIMARY_DISTRICT_OVERRIDE[cityId]) {
+    capitalOfCity.set(cityId, PRIMARY_DISTRICT_OVERRIDE[cityId]);
+    continue;
+  }
   const fc = readJson(join(GEO_DIR, 'districts', file));
   const feats = fc.features ?? [];
   if (feats.length) {
@@ -102,6 +113,7 @@ for (const list of [
   ...Object.values(PROVINCE_LANDMARKS_EXTRA),
   ...Object.values(PROVINCE_LANDMARKS_EXTRA2),
   ...Object.values(PROVINCE_LANDMARKS_EAST),
+  ...Object.values(PROVINCE_LANDMARKS_NORTH_SOUTH),
 ]) {
   for (const lm of list) {
     const cityName = lm[0];
