@@ -20930,5 +20930,20 @@
     "urbanDistricts": [],
     "urbanNote": "",
     "banner": "/assets/cities/820000/banner.jpg"
+  },
+  {
+    "id": "710000",
+    "name": "台湾省",
+    "province": "台湾省",
+    "districts": [],
+    "indexed": false,
+    "intro": "",
+    "featuredDistricts": [],
+    "foods": [],
+    "poem": "",
+    "poemFrom": "",
+    "urbanDistricts": [],
+    "urbanNote": "",
+    "banner": "/assets/cities/710000/banner.jpg"
   }
 ]

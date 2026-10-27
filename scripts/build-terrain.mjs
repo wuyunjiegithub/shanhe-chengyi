@@ -25,8 +25,9 @@ const CACHE = path.join(ROOT, '.cache/terrain');
 const OUT = path.join(ROOT, 'public/geo/terrain');
 const FORCE = process.argv.includes('--force');
 
-/** DEM 瓦片层级：8 级约 550m/px，覆盖江浙沪皖足够，且拼图体积可控 */
-const ZOOM = 8;
+/** DEM 瓦片层级：全国范围用 7 级（约 1.1km/px）兼顾体积与主要山脉起伏；
+ *  旧版仅江浙沪皖时用的 8 级在此范围内瓦片数会膨胀到 1400+，易因网络抖动失败。 */
+const ZOOM = 7;
 /** 网格长边格数（世界坐标等比，短边按 bbox 比例推算） */
 const GRID_LONG = 240;
 /** 面积阈值（km²）：小于此值的池塘/小水库不画，避免几十万个碎面拖垮渲染 */
@@ -38,28 +39,30 @@ const MIN_RIVER_RUN_KM = 6;
 /**
  * 主要水系白名单：OSM 里一条大河被切成几十段 way，
  * 全量渲染会有几百段线（每段一个绘制对象），既乱又拖性能。
- * 这里只留能撑起「地图骨架」的干流。
+ * 这里只留能撑起「全国地图骨架」的干流（覆盖各大流域）。
+ * 同时该名单会被拼成正则，用于约束 Overpass 查询，避免全国 bbox 下一口气拉回所有河流。
  */
 const MAJOR_RIVERS = [
-  '长江',
-  '钱塘江',
-  '富春江',
-  '新安江',
-  '京杭大运河',
-  '淮河',
-  '黄浦江',
-  '瓯江',
-  '青弋江',
-  '甬江',
-  '椒江',
-  '飞云江',
-  '秦淮河',
-  '曹娥江',
-  '金华江',
-  '信江',
-  '赣江',
-  '南淝河',
+  // 长江水系
+  '长江', '钱塘江', '富春江', '新安江', '京杭大运河', '淮河', '黄浦江', '瓯江', '青弋江', '甬江',
+  '椒江', '飞云江', '秦淮河', '曹娥江', '金华江', '信江', '赣江', '南淝河', '荆江', '清江',
+  // 珠江水系
+  '珠江', '西江', '北江', '东江', '柳江', '桂江', '郁江', '邕江', '韩江', '鉴江',
+  '漠阳江', '南渡江', '元江', '红河', '漓江',
+  // 黄河水系
+  '黄河', '渭河', '汾河', '洮河', '沁河', '大黑河', '祖厉河',
+  // 海河 / 辽河 / 黑龙江水系
+  '海河', '辽河', '松花江', '嫩江', '牡丹江', '图们江', '鸭绿江', '乌苏里江', '黑龙江',
+  // 西南 / 青藏高原
+  '雅鲁藏布江', '澜沧江', '怒江', '金沙江', '通天河', '川江', '大渡河', '雅砻江', '岷江',
+  '嘉陵江', '乌江', '沅江', '资水', '澧水', '汉江', '闽江', '汀江',
+  // 西北内流
+  '塔里木河', '额尔齐斯河', '伊犁河', '疏勒河', '黑河', '玛纳斯河',
 ];
+
+/** 湖泊 / 水库白名单正则：只取有名字的大水面（湖/水库/错/淀/潭/泊/池/海子/淖），
+ * 既约束 Overpass 查询规模，也避免把海量无名小池塘拉回来。 */
+const LAKE_RE = '湖|水库|错|淀|潭|泊|池|海子|淖';
 /** 多边形简化容差（度）：约 150m，肉眼无损但顶点数大幅下降 */
 const SIMPLIFY_TOL = 0.0014;
 
@@ -332,16 +335,26 @@ async function overpass(query, cacheName) {
   }
   log(`  Overpass 查询 ${cacheName} …`);
   const body = new URLSearchParams({ data: query });
-  const res = await fetch(OVERPASS, {
-    method: 'POST',
-    headers: {
-      'User-Agent': 'shanhe-chengyi/0.9 (offline terrain builder)',
-      Accept: 'application/json',
-    },
-    body,
-  });
-  if (!res.ok) throw new Error(`Overpass HTTP ${res.status}`);
-  const text = await res.text();
+  let text;
+  for (let attempt = 1; attempt <= 5; attempt++) {
+    try {
+      const res = await fetch(OVERPASS, {
+        method: 'POST',
+        headers: {
+          'User-Agent': 'shanhe-chengyi/0.9 (offline terrain builder)',
+          Accept: 'application/json',
+        },
+        body,
+      });
+      if (!res.ok) throw new Error(`Overpass HTTP ${res.status}`);
+      text = await res.text();
+      break;
+    } catch (e) {
+      if (attempt === 5) throw e;
+      log(`    Overpass 第 ${attempt} 次失败（${e.cause?.code || e.message}），2s 后重试…`);
+      await new Promise((r) => setTimeout(r, 2000 * attempt));
+    }
+  }
   await fs.mkdir(CACHE, { recursive: true });
   await fs.writeFile(file, text);
   log(`  已缓存 ${cacheName}（${(text.length / 1024 / 1024).toFixed(1)} MB）`);
@@ -390,11 +403,12 @@ function stitchRings(lines) {
 
 async function buildWater(bbox, landRings) {
   const b = bboxStr(bbox);
-  // 只取 lake / reservoir / basin：排除海量的小池塘（pond），数量可控且覆盖全部大湖
+  // 只取 lake / reservoir / basin：排除海量的小池塘（pond）。
+  // 全国 bbox 下再叠加名称白名单（LAKE_RE），避免一口气拉回所有命名大水面之外的海量要素。
   const query = `[out:json][timeout:180];
 (
-  way["natural"="water"]["water"~"^(lake|reservoir|basin)$"](${b});
-  relation["natural"="water"]["water"~"^(lake|reservoir|basin)$"](${b});
+  way["natural"="water"]["water"~"^(lake|reservoir|basin)$"]["name"~"${LAKE_RE}"](${b});
+  relation["natural"="water"]["water"~"^(lake|reservoir|basin)$"]["name"~"${LAKE_RE}"](${b});
 );
 out geom;`;
   const data = await overpass(query, 'water.json');
@@ -516,9 +530,12 @@ function clipLineToLand(line, landRings, stepKm = 1.2) {
 
 async function buildRivers(bbox, landRings) {
   const b = bboxStr(bbox);
+  // 全国 bbox 下若不加名称约束，Overpass 会拉回上百万条河流 way，直接爆内存 / 超时。
+  // 这里把 MAJOR_RIVERS 拼成正则，只在查询阶段就只取有名字的干流。
+  const RIVER_RE = MAJOR_RIVERS.join('|');
   const query = `[out:json][timeout:180];
 (
-  way["waterway"="river"](${b});
+  way["waterway"="river"]["name"~"${RIVER_RE}"](${b});
   way["waterway"="canal"]["name"~"运河"](${b});
 );
 out geom;`;

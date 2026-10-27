@@ -27,12 +27,54 @@ import type { MarkerKind, VisitedStyle } from './markerArt';
 import type { ProjectedShape, Province, WeatherKind } from '../data/types';
 import { WeatherFX } from './weatherFX';
 
-const PROVINCE_COLOR: Record<Province, number> = {
-  上海市: 0x00f2fe,
-  江苏省: 0x38bdf8,
-  浙江省: 0x34d399,
-  安徽省: 0xfbbf24,
-};
+/**
+ * 省份语义色：34 个省级行政区各分配一个独立色相（黄金角均匀分布，保证彼此可区分），
+ * 让全国各省份在地图上颜色分明，而不是全部回落成同一个绿。
+ */
+const PROVINCE_NAMES: string[] = [
+  '北京市', '天津市', '河北省', '山西省', '内蒙古自治区', '辽宁省', '吉林省', '黑龙江省',
+  '上海市', '江苏省', '浙江省', '安徽省', '福建省', '江西省', '山东省', '河南省',
+  '湖北省', '湖南省', '广东省', '广西壮族自治区', '海南省', '重庆市', '四川省', '贵州省',
+  '云南省', '西藏自治区', '陕西省', '甘肃省', '青海省', '宁夏回族自治区', '新疆维吾尔自治区',
+  '台湾省', '香港特别行政区', '澳门特别行政区',
+];
+
+/** HSL → 0xRRGGBB（h:0-360, s/l:0-1） */
+function hslToHex(h: number, s: number, l: number): number {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const hp = (((h % 360) + 360) % 360) / 60;
+  const x = c * (1 - Math.abs((hp % 2) - 1));
+  let r = 0, g = 0, b = 0;
+  if (hp < 1) [r, g, b] = [c, x, 0];
+  else if (hp < 2) [r, g, b] = [x, c, 0];
+  else if (hp < 3) [r, g, b] = [0, c, x];
+  else if (hp < 4) [r, g, b] = [0, x, c];
+  else if (hp < 5) [r, g, b] = [x, 0, c];
+  else [r, g, b] = [c, 0, x];
+  const m = l - c / 2;
+  const R = Math.round((r + m) * 255);
+  const G = Math.round((g + m) * 255);
+  const B = Math.round((b + m) * 255);
+  return (R << 16) | (G << 8) | B;
+}
+
+// 黄金角（137.50776°）逐省步进：相邻省份色相相差 137.5°，视觉上绝不会撞色。
+const GOLDEN_ANGLE = 137.50776;
+const PROVINCE_COLOR: Record<string, number> = {};
+PROVINCE_NAMES.forEach((name, i) => {
+  const hue = (i * GOLDEN_ANGLE) % 360;
+  const light = 0.56 + 0.06 * Math.sin(i * 1.9);
+  PROVINCE_COLOR[name] = hslToHex(hue, 0.72, light);
+});
+
+/** 省份取色：命中调色板用调色板，否则按名称哈希兜底（保证任何省份都有独立色，不会落回默认绿） */
+function colorForProvince(province?: string): number {
+  if (province && PROVINCE_COLOR[province] !== undefined) return PROVINCE_COLOR[province];
+  if (!province) return 0x34d399;
+  let h = 0;
+  for (let i = 0; i < province.length; i++) h = (h * 31 + province.charCodeAt(i)) % 360;
+  return hslToHex(h, 0.7, 0.56);
+}
 
 /**
  * 「老家视图」= 江浙沪皖四省。
@@ -1185,7 +1227,7 @@ export class SceneManager {
     height: number,
   ): void {
     const province = s.province as Province | undefined;
-    const provColor = province ? PROVINCE_COLOR[province] : 0x34d399;
+    const provColor = colorForProvince(province);
     const indexed = s.indexed !== false;
     // 区域总览：已录入城市明显亮于待录入城市，形成「可下钻」的视觉引导
     const glowIntensity =

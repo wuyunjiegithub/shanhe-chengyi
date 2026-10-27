@@ -78,6 +78,29 @@ const failed = [];
 
 for (const p of PROVINCES) {
   try {
+    // 台湾省：DataV 的 710000_full.json 返回 404（无区县边界源），
+    // 但 710000.json（省级轮廓）可用。单独用后者取省轮廓，标记为待录入，不再整省跳过。
+    if (p.adcode === '710000') {
+      const tw = await j(`https://geo.datav.aliyun.com/areas_v3/bound/${p.adcode}.json`);
+      const outline = (tw.features ?? []).find((f) => f.properties?.level === 'province') ?? tw.features?.[0];
+      if (outline) {
+        cityFeatures.push({
+          type: 'Feature',
+          properties: {
+            id: p.adcode,
+            name: p.name,
+            province: p.name,
+            short: p.short,
+            indexed: false,
+            center: outline?.properties?.centroid ?? outline?.properties?.center ?? null,
+          },
+          geometry: outline.geometry,
+        });
+        console.log(`· 台湾省（省级轮廓，待录入）已加入`);
+      }
+      continue;
+    }
+
     const data = await j(`https://geo.datav.aliyun.com/areas_v3/bound/${p.adcode}_full.json`);
     const feats = data.features ?? [];
     await sleep(60);

@@ -20,6 +20,8 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { PROVINCE_FOODS, PROVINCE_LANDMARKS } from './content/seed-travel.mjs';
 import { PROVINCE_LANDMARKS_EXTRA } from './content/seed-landmarks-extra.mjs';
+import { PROVINCE_LANDMARKS_EXTRA2 } from './content/seed-landmarks-extra2.mjs';
+import { PROVINCE_LANDMARKS_EAST } from './content/seed-landmarks-east.mjs';
 
 const ROOT = process.cwd();
 const GEO_DIR = join(ROOT, 'public/geo');
@@ -95,7 +97,12 @@ for (const file of readdirSync(join(GEO_DIR, 'districts')).sort()) {
 }
 // 城市名 → 省代表景点（PROVINCE_LANDMARKS + EXTRA 按省组织，展开成「城市名」索引便于匹配）
 const landmarksByCity = new Map();
-for (const list of [...Object.values(PROVINCE_LANDMARKS), ...Object.values(PROVINCE_LANDMARKS_EXTRA)]) {
+for (const list of [
+  ...Object.values(PROVINCE_LANDMARKS),
+  ...Object.values(PROVINCE_LANDMARKS_EXTRA),
+  ...Object.values(PROVINCE_LANDMARKS_EXTRA2),
+  ...Object.values(PROVINCE_LANDMARKS_EAST),
+]) {
   for (const lm of list) {
     const cityName = lm[0];
     if (!landmarksByCity.has(cityName)) landmarksByCity.set(cityName, []);
