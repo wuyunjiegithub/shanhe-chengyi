@@ -75,7 +75,7 @@ export function TopBar({ ready }: { ready: boolean }) {
           type="button"
           className="data-pill top-reset-btn"
           onClick={goToOverview}
-          title="重置视角"
+          title="重置视角（回到全国地图）"
           aria-label="重置视角"
         >
           <span className="data-pill-icon">⌂</span>

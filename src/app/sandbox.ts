@@ -223,8 +223,13 @@ export async function drillIntoCity(cityId: string): Promise<void> {
   }
 }
 
-/** 城市视图 → 区域总览 */
-export function backToRegion(opts: { toProvince?: boolean } = {}): void {
+/**
+ * 城市视图 → 区域总览。
+ * - 默认（无参）：回江浙沪老家视图 homeBox（顶栏「总览」之外的显式调用方）
+ * - `toProvince`：回**当前省份**（ESC / 右下「返回」/ 左侧「← 当前省」/ 安卓返回键）
+ * - `toNation`：回**全国地图**（「重置视角」= 最高层总览，用户明确要求）
+ */
+export function backToRegion(opts: { toProvince?: boolean; toNation?: boolean } = {}): void {
   const ui = useUi.getState();
   ui.closeDrawer();
   // 返回总览时城市面板会重新出现，全屏态必须清掉，否则一回去就被铺满的面板挡住地图
@@ -238,21 +243,37 @@ export function backToRegion(opts: { toProvince?: boolean } = {}): void {
   // 复位取景预留（无面板），让区域总览按整屏取景
   manager?.setPanelExpanded(false);
   manager?.setSidePanel(false);
-  // 按 ESC / 返回：回到当前省份总览；顶栏「总览」等明确要求回老家时走 homeBox
-  if (opts.toProvince && province) manager?.resetViewToProvince(province);
+  // 三级取景目标：全国地图 > 当前省份 > 江浙沪老家视图
+  if (opts.toNation) manager?.resetViewToNation();
+  else if (opts.toProvince && province) manager?.resetViewToProvince(province);
   else manager?.resetView();
   void refreshWeather();
   useNavigation.getState().backToRegion();
   useNavigation.getState().setHovered(null);
 }
 
+/**
+ * 「重置视角」= 回到**全国地图**（用户明确要求）。
+ *
+ * 注意与另外两个按钮区分：
+ * - 指南针 ⌖ / 顶栏「总览」（aria-label 均为「重置视角」）→ 本函数 → 全国地图
+ * - 左下「重置俯视 50°」→ `resetHomeView()` → 江浙沪老家视图（v0.9.40 起沿用的语义）
+ */
 export function resetCamera(): void {
+  backToRegion({ toNation: true });
+}
+
+/**
+ * 左下「重置俯视 50°」：回到江浙沪老家视图（俯视 50°）。
+ * 只动相机、不动层级（v0.9.40 起沿用的语义，与「重置视角」→全国 区分开）。
+ */
+export function resetHomeView(): void {
   manager?.resetView();
 }
 
-/** 顶栏「总览」：收起所有详情与浮层，回到区域总览 */
+/** 顶栏「总览」：收起所有详情与浮层，回到全国地图总览 */
 export function goToOverview(): void {
-  backToRegion();
+  backToRegion({ toNation: true });
   const ui = useUi.getState();
   ui.toggleFavoritesPanel(false);
   ui.toggleTimelinePanel(false);
@@ -623,14 +644,28 @@ if (typeof window !== 'undefined') {
     focusSpotById,
     focusCityById,
     backToRegion,
-    resetCamera: () => manager?.resetView(),
+    resetCamera: () => manager?.resetViewToNation(),
+    resetHomeView: () => manager?.resetView(),
+    goToOverview,
     /** 最近一次取景的尺寸 / 距离，供回归脚本核对「地图是否完整进屏」 */
     lastFrame: () => manager?.lastFrame ?? null,
     /** 当前相机下区域包围盒在屏幕上的像素范围，核对取景是否落在可用区里 */
     screenExtent: () => manager?.screenExtent() ?? null,
+    /** 某市下的区县 id 列表，供回归脚本挑一个区县做「点市 → 点区县」的缩放断言 */
+    districtsOf: (cityId: string) =>
+      useData.getState().cities.find((c) => c.id === cityId)?.districts ?? [],
     debugCamera: () => manager?.debugCamera() ?? null,
     /** 每个标记底边与脚下地表的屏幕间距（px），诊断「旗子 / 爱心悬空」 */
     markerProbe: () => manager?.markerProbe() ?? [],
+    /** 按屏幕坐标拾取，诊断「画面上这块东西是什么」 */
+    pickAt: (x: number, y: number) => manager?.pickAt(x, y) ?? null,
+    /** 沿视线列出全部命中（顶盖/侧壁/基座柱/地形），诊断近景遮挡 */
+    pickStack: (x: number, y: number) => manager?.pickStack(x, y) ?? [],
+    /** 临时调参：点区县的俯角 / 抬升比例 / 取景系数 */
+    tuneDistrictFocus: (opts: { elev?: number; lift?: number; factor?: number; minRatio?: number; districtId?: string }) =>
+      manager?.tuneDistrictFocus(opts),
+    /** 某区县在屏幕上的像素范围 */
+    districtScreenExtent: (id: string) => manager?.districtScreenExtent(id) ?? null,
     openPhotoWall: (arg: { scope: 'city' | 'district'; id: string; title: string }) =>
       useUi.getState().openPhotoWall(arg),
     /** 打开游记编辑器（带预置地点），供回归脚本核对富文本工具栏是否被正文滚动带走 */

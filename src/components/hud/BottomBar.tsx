@@ -2,7 +2,7 @@ import { useCityStatus } from '../../stores/cityStatus';
 import { useNavigation } from '../../stores/navigation';
 import { useUi } from '../../stores/ui';
 import { useTravelNotes } from '../../stores/travelNotes';
-import { backToRegion, resetCamera } from '../../app/sandbox';
+import { backToRegion, resetCamera, resetHomeView } from '../../app/sandbox';
 import { HeartMark } from '../shared/HeartMark';
 import { VisitedMark } from '../shared/VisitedMark';
 
@@ -22,7 +22,11 @@ export function BottomBar() {
   return (
     <footer className="hud hud-bottom">
       <div className="bottom-left">
-        <button className="ghost-pill" onClick={resetCamera}>
+        <button
+          className="ghost-pill"
+          onClick={resetHomeView}
+          title="回到江浙沪初始地址（俯视 50°）"
+        >
           <span className="ghost-pill-icon">⌖</span>
           重置俯视 <b>50°</b>
         </button>
@@ -84,7 +88,7 @@ export function BottomBar() {
             返回
           </button>
         )}
-        <button className="compass" onClick={resetCamera} aria-label="重置视角">
+        <button className="compass" onClick={resetCamera} aria-label="重置视角" title="重置视角（回到全国地图）">
           <span>N</span>
         </button>
       </div>

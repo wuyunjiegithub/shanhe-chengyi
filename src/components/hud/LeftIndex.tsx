@@ -21,8 +21,12 @@ export function LeftIndex() {
     return (
       <aside className="hud left-index">
         <div className="index-head">
-          <button className="index-back" onClick={() => backToRegion({ toProvince: true })}>
-            ← 全国
+          <button
+            className="index-back"
+            onClick={() => backToRegion({ toProvince: true })}
+            title="退出城市，回到当前省份总览"
+          >
+            ← 当前省
           </button>
           <span className="index-count">{currentCity.districts.length} 区县</span>
         </div>

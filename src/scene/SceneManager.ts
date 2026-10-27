@@ -77,11 +77,80 @@ function colorForProvince(province?: string): number {
 }
 
 /**
+ * 投影平面上的多边形面积（鞋带公式）。
+ * 用来给省份标签排「避让优先级」：面积大的省在全国视图下更该保留标签。
+ */
+function polygonArea(ring: [number, number][]): number {
+  let a = 0;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    a += ring[j][0] * ring[i][1] - ring[i][0] * ring[j][1];
+  }
+  return Math.abs(a) / 2;
+}
+
+/**
  * 「老家视图」= 江浙沪皖四省。
  * 全国化之后底图是 369 城，若按整幅中国取景，江浙沪皖只占中间一小块、观感很空。
  * 首屏与「重置视角」都按这四省取景（与全国化之前完全一致），其余省份靠拖动 / 缩放去看。
  */
 const HOME_PROVINCES: readonly string[] = ['江苏省', '浙江省', '上海市', '安徽省'];
+/**
+ * 「全国视图」取景时要剔除的城市：南海诸岛（三沙市）的辖区从 lat 19.5 一直伸到 lat 3.84，
+ * 会把全国包围盒向南拉 15 个纬度（约 1650km），整幅中国因此被压成南北狭长的一条。
+ * 取全国视图时跳过它，地图才是正常的横宽比例。
+ */
+const NATION_EXCLUDE_NAMES: readonly string[] = ['三沙市'];
+
+/**
+ * 「点市 → 点区县」的距离上限系数：区县取景距离最多是城市取景距离的这个倍数。
+ * 取 0.95 是为了给「区县比整个市还大」（少数市辖区）留一点余量，
+ * 同时保证绝大多数情况下点区县一定比点市更近。
+ */
+const DISTRICT_FOCUS_MAX_RATIO = 0.95;
+
+/**
+ * 「点市 → 点区县」的距离下限系数：区县取景距离至少是城市取景距离的这个倍数。
+ * 没有下限的话，超级大城市里的一个小区县会被拉到几十米外，
+ * 屏幕上只剩一堵板块侧壁（挤出体有 1 单位 ≈ 50km 高），完全读不出地形。
+ *
+ * 0.14 是实测值（见 scripts/scan-district-focus2.mjs）：杭州城市层级 6.54 单位，
+ * 0.14 → 区县 0.92 单位，选中区在屏幕上占 333×423px，形状完整可读。
+ */
+const DISTRICT_FOCUS_MIN_RATIO = 0.14;
+
+/**
+ * 区县取景的收紧系数（> 1 = 留余量）。
+ *
+ * 为什么不能贴着顶面取景：区县板块被挤出 1 个世界单位（≈50km 的假高度），
+ * 而俯视 50° 时近端的**侧壁**会挡住顶面 —— 近到一定程度，屏幕上看到的是
+ * 一堵紫黑色的墙（上城区就是这么大一块），而不是地图。
+ * 拉远一点，侧壁在画面里的占比就按比例降下来，顶面才露出来。
+ */
+const DISTRICT_FOCUS_FACTOR = 1.3;
+
+/**
+ * 点区县时的俯视角度（度）。默认 50°，区县近景改用 70°。
+ *
+ * 为什么：区县板有 1 单位（≈50km）高，而上城区这种小地块只有 0.31×0.45 单位 ——
+ * 50° 俯角下侧壁在画面上的投影高 0.64 单位、顶面只有 0.35，**墙比地块还高**，
+ * 近景里就是一堵紫黑色的高墙，把邻近区县的顶盖全挡住（实测侧壁占画面 15.9%）。
+ *
+ * 俯角抬到 70° 后侧壁投影被压扁，侧壁占比降到 3.7%、顶盖升到 67.7%，
+ * 周边区县（拱墅 / 西湖 / 滨江 / 临平）全部可读。
+ *
+ * 上限 70°：OrbitControls 的 minPolarAngle=20°，极角与俯角互补，
+ * 超过 70° 会被控制器顶回来（实测 76° 与 70° 数据几乎一致）。
+ */
+const DISTRICT_FOCUS_ELEV = 70;
+
+/**
+ * 选中区县时板块的抬升比例（相对 rec.lift，默认 0.78）。
+ *
+ * 抬升会在板块下方露出一圈侧壁。区县板有 1 单位高，小地块抬 0.55 后
+ * 露出的墙比地块本身还高。降到 0.35 后：侧壁占比 3.7% → 2.6%，
+ * 选中态仍读得出「这块被挑起来了」，但不再遮挡邻区。
+ */
+const SELECTED_LIFT_RATIO = 0.35;
 
 const ACTIVE_EMISSIVE = 0x22d3ee;
 const SELECTED_FACE = 0x2b3e59;
@@ -98,8 +167,14 @@ const CITY_HEIGHT = 2.6;
  */
 const DISTRICT_BASE_Y = CITY_HEIGHT + 0.03;
 /** 区县板块基础高度：城市视图里区县是细节层。压得很低，让群岛（如舟山 200+ 离岛）
- *  读作「铺开在海面上的低地块」而不是一根根柱子；同时远低于城市板块，层次分明。 */
-const DISTRICT_HEIGHT = 1.0;
+ *  读作「铺开在海面上的低地块」而不是一根根柱子；同时远低于城市板块，层次分明。
+ *
+ *  0.45 是实测值（见 scripts/shot-plate-height.mjs）：原来是 1.0（≈50km 的假高度），
+ *  而上城区这种小地块只有 0.31×0.45 单位 —— **墙比地块还高**。
+ *  近景下（手机端尤其明显）朝相机那一侧的侧壁会形成一大片暗紫近黑的色块，
+ *  把邻近区县的顶盖全挡住：实测手机端侧壁占画面 17.2%。
+ *  压到 0.45 后侧壁占比 10.5%，且城市视图的区县分界与立体层次都还保留。 */
+const DISTRICT_HEIGHT = 0.45;
 const ELEV_DEG = 50;
 /** 景点 pin 的目标屏幕直径（px），由相机距离反算世界缩放 */
 const PIN_SCREEN_PX = 12.5;
@@ -168,10 +243,38 @@ export class SceneManager {
   private regionBox = new THREE.Box3();
   /**
    * 「老家视图」包围盒：全国化之后 regionBox 是整个中国（369 城），
-   * 照它取景会把地图缩成一小条、观感很空。首屏 / 重置视角都按江浙沪皖这块
+   * 照它取景会把地图缩成一小条、观感很空。首屏 / 重置俯视都按江浙沪皖这块
    * 取景（与全国化之前的四省视图一致），用户拖动或缩放即可去看其他省份。
    */
   private homeBox = new THREE.Box3();
+  /**
+   * 「全国视图」包围盒：全国 369 城的陆域范围，**剔除南海诸岛（三沙市）**。
+   * 三沙市辖区从 lat 19.5 一直到 lat 3.84，会把包围盒向南拉 15 个纬度（约 1650km），
+   * 整幅中国因此被压成南北狭长的一条。剔除后是 120×79 单位的横向比例，
+   * 正好匹配桌面/手机的可用视区。
+   */
+  private nationBox = new THREE.Box3();
+  /**
+   * 选中区县时板块的抬升比例（相对 rec.lift）。
+   * 抬升会在板块下方露出一圈**侧壁** —— 而区县板有 1 单位（≈50km）高，
+   * 上城区这种小地块（0.31×0.45 单位）抬 0.55 后，露出的墙比地块本身还高，
+   * 近景里就是一堵近黑色的高墙，把邻近区县的顶盖全挡住。
+   * 这个比例是可调的，用 diag 脚本实测「侧壁占画面比例」后定的值。
+   */
+  private selectedLiftRatio = SELECTED_LIFT_RATIO;
+  /** 点区县时的俯视角度（度）。越陡则侧壁越被压缩、顶面越完整。 */
+  private districtFocusElev = DISTRICT_FOCUS_ELEV;
+  /** 点区县时的取景收紧系数（> 1 = 留余量）。 */
+  private districtFocusFactor = DISTRICT_FOCUS_FACTOR;
+  /** 点区县时的距离下限系数（相对城市层级距离）。 */
+  private districtFocusMinRatio = DISTRICT_FOCUS_MIN_RATIO;
+  /**
+   * 最近一次「城市层级」取景的距离（下钻到某个市时记录）。
+   * 区县取景要以此为基准做**相对**比较，才能保证「点市放大 → 点区县继续拉近」：
+   * 旧实现用的是绝对世界单位下限（12），而一个市的取景距离只有 6.5 左右，
+   * 两者一比就必然反向拉远。
+   */
+  private cityFrameDist = 0;
   private stars: THREE.Points | null = null;
   private ground: THREE.Mesh | null = null;
   private grid: THREE.GridHelper | null = null;
@@ -181,6 +284,11 @@ export class SceneManager {
   private provinceLabelGroup = new THREE.Group();
   private districtLabelGroup = new THREE.Group();
   private provinceLabels: CSS2DObject[] = [];
+  /** 省份标签的避让优先级：该省下辖的市数量（越多越优先保留标签） */
+  private provinceLabelPrio = new Map<CSS2DObject, number>();
+  /** 标签避让计算用的临时向量（每帧复用，避免 GC） */
+  private _labelWorld = new THREE.Vector3();
+  private _labelNdc = new THREE.Vector3();
   private districtLabels: CSS2DObject[] = [];
   private districtLabelById = new Map<string, CSS2DObject>();
   private anchorGroup = new THREE.Group();
@@ -569,6 +677,9 @@ export class SceneManager {
     // 老家视图（江浙沪皖）：从城市板块里挑出这四省求包围盒。
     // 取不到（比如内容被裁掉）就退回整幅中国，保证不会取到空盒导致首屏不取景。
     this.homeBox = this.boxOfProvinces(shapes, HOME_PROVINCES) ?? this.regionBox.clone();
+    // 全国视图（重置视角）：全部城市，但剔除南海诸岛（三沙市）。
+    // 三沙辖区把包围盒向南拉 15 个纬度，整幅中国会被压成南北狭长一条。
+    this.nationBox = this.boxOfNation(shapes) ?? this.regionBox.clone();
     this.fitGroundToRegion(this.regionBox);
     this.updateProvinceLabels(shapes);
     // 窄屏（手机）首屏取景：用户要求「地图撑满屏幕、不需要全部看见」。
@@ -590,10 +701,25 @@ export class SceneManager {
   /** 求「指定省份」那批城市板块的包围盒；一个都没有时返回 null */
   private boxOfProvinces(shapes: ProjectedShape[], provinces: readonly string[]): THREE.Box3 | null {
     const want = new Set(provinces);
+    return this.boxOfShapes(shapes, (s) => Boolean(s.province) && want.has(s.province!));
+  }
+
+  /**
+   * 求「全国」包围盒：全部城市板块，但剔除南海诸岛（三沙市）。
+   * 三沙市辖区横跨 lat 3.84~19.53（南沙群岛），把它算进来会让包围盒
+   * 向南多出 15 个纬度（约 1650km），整幅中国被压成一条竖窄的带子。
+   */
+  private boxOfNation(shapes: ProjectedShape[]): THREE.Box3 | null {
+    const skip = new Set(NATION_EXCLUDE_NAMES);
+    return this.boxOfShapes(shapes, (s) => !skip.has(s.name));
+  }
+
+  /** 按谓词筛选城市板块求并集包围盒 */
+  private boxOfShapes(shapes: ProjectedShape[], accept: (s: ProjectedShape) => boolean): THREE.Box3 | null {
     const box = new THREE.Box3();
     let hit = 0;
     for (const s of shapes) {
-      if (!s.province || !want.has(s.province)) continue;
+      if (!accept(s)) continue;
       const rec = this.cities.get(s.id);
       if (!rec) continue;
       for (const mesh of rec.meshes) box.expandByObject(mesh);
@@ -617,9 +743,17 @@ export class SceneManager {
     this.layer = 'district';
     this.provinceLabelGroup.visible = false;
     this.districtLabelGroup.visible = true;
-    this.fitGroundToRegion(new THREE.Box3().setFromObject(this.districtGroup));
+    const cityBox = new THREE.Box3().setFromObject(this.districtGroup);
+    this.fitGroundToRegion(cityBox);
+    // 缩放下限按**城市尺度**重设：全国尺度算出来的下限（约 6 单位 = 300km）
+    // 会让相机进不到市/区县级，手动放大与「点区县聚焦」都会被控制器顶回去。
+    const citySize = cityBox.getSize(new THREE.Vector3());
+    this.controls.minDistance = Math.max(0.05, Math.max(citySize.x, citySize.z) * 0.05);
     // 按「可用视区」取景：城市整座带余量落在面板之间的空档里，而不是怼满整屏
-    this.frameTo(new THREE.Box3().setFromObject(this.districtGroup), 0.7, 1.06, 0, this.usableView());
+    this.frameTo(cityBox, 0.7, 1.06, 0, this.usableView());
+    // 记下城市层级的取景距离：区县取景以它为基准做相对比较，
+    // 保证「点市放大 → 点区县继续拉近」在任何城市里都成立。
+    this.cityFrameDist = this.lastFrame?.dist ?? 0;
     this.hoveredKey = null;
     this.setHover(null);
     this.refreshStyles();
@@ -733,9 +867,35 @@ export class SceneManager {
     // 多环区县（如淳安）要取所有碎岛的合集，否则只会框住其中一块
     const box = new THREE.Box3();
     for (const mesh of rec.meshes) box.expandByObject(mesh);
-    if (!box.isEmpty())
-      // 带「可用视区」取景：手机上底部有半屏面板时，区县会被框进上半部分，不被盖住
-      this.frameTo(box, 0.6, 1.45, 12, this.usableView());
+    if (box.isEmpty()) return;
+    // 「点市放大 → 点区县继续拉近」：距离必须相对**城市层级**来算，不能用绝对值。
+    // 全国化后 1 世界单位 ≈ 50km，旧实现的绝对下限 minDist=12 相当于 600km，
+    // 比整个市（杭州取景距离 6.5 单位 ≈ 330km）还远 —— 于是点区县必然反向拉远。
+    //
+    // 取景对象用「区县顶面平板盒」而不是板块整个包围盒（含 1 单位厚的挤出体）：
+    // 区县板块在 DISTRICT_BASE_Y=2.63 之上又挤出 1 单位（≈50km 的假高度），
+    // 整盒取景会让相机为看清顶面退到 600km 外。
+    //
+    // 但也不能贴着顶面取景（factor≈1）：那么相机离板块顶面只有 0.4 个单位，
+    // 而板块侧壁有 1 个单位高 —— 屏幕上看到的是**一堵墙**（上城区就是这么大一块紫），
+    // 顶面反而看不见。所以留足余量：factor 2.0 让区县只占可用区约一半，
+    // 周围区县（拱墅 / 滨江 / 西湖）都还在，读得出方位。
+    const top = box.max.y;
+    const face = new THREE.Box3(
+      new THREE.Vector3(box.min.x, top, box.min.z),
+      new THREE.Vector3(box.max.x, top, box.max.z),
+    );
+    // 以城市层级距离为上限，保证任何城市里「点区县」都比「点市」更近；
+    // 同时不低于「城市距离的一半」，免得某些超大城市里的区县反而拉得太远。
+    const cap = this.cityFrameDist > 0 ? this.cityFrameDist * DISTRICT_FOCUS_MAX_RATIO : 0;
+    const floor = this.cityFrameDist > 0 ? this.cityFrameDist * this.districtFocusMinRatio : 0;
+    const size = face.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.z);
+    // OrbitControls 的 minDistance 是按全国尺度设的（约 6 单位 = 300km），
+    // 不放开的话相机根本进不到区县尺度，会被控制器顶回城市视角。
+    this.controls.minDistance = Math.max(0.05, maxDim * 0.35);
+    // 带「可用视区」取景：手机上底部有半屏面板时，区县会被框进上半部分，不被盖住
+    this.frameTo(face, 0.6, this.districtFocusFactor, floor, this.usableView(), cap, this.districtFocusElev);
   }
 
   /** 回到全省总览：按当前可用视区取景，保证整幅地图完整进屏（手机竖屏尤其明显） */
@@ -749,6 +909,27 @@ export class SceneManager {
     // 老家视图 = 江浙沪皖（不是整幅中国）：全国化后 regionBox 是 369 城，
     // 按它取景地图会缩成一小条；四省范围才是用户熟悉的总览视角，其他省份拖动去看。
     this.frameTo(this.homeBox, 0.7, narrow ? 0.59 : 0.96, 0, view);
+  }
+
+  /**
+   * 回到**全国地图**：按剔除南海诸岛后的全国陆域包围盒取景。
+   * 用户诉求「重置视角应该恢复到全国地图」——「重置视角」= 回到全国总览，
+   * 看 369 城的全国分布，而不是回到江浙沪老家那块。
+   *
+   * 全国陆域是横向长条（≈120 × 79 单位，宽高比 1.5）：
+   * 桌面端可用视区宽高比也接近 1.5，按 0.96 收紧即可铺满；
+   * 手机竖屏可用区是竖长条（宽高比约 0.5），若也收紧会把新疆/黑龙江裁掉，
+   * 因此手机端用 1.0 保持「整幅中国都在屏内」，宁可上下留白也不丢省份。
+   */
+  resetViewToNation(): void {
+    const view = this.usableView();
+    const el = this.renderer.domElement;
+    const narrow = Boolean(el) && (el.clientWidth || 0) <= 820;
+    const box = this.nationBox.isEmpty() ? this.regionBox : this.nationBox;
+    // 回到全国尺度后，相机缩放下限也要跟着放开（否则手动放大被控制器顶住）
+    const regionSize = this.regionBox.getSize(new THREE.Vector3());
+    this.controls.minDistance = Math.max(0.05, Math.max(regionSize.x, regionSize.z) * 0.05);
+    this.frameTo(box, 0.7, narrow ? 1.0 : 0.96, 0, view);
   }
 
   /**
@@ -1202,6 +1383,11 @@ export class SceneManager {
    * 俯视拉远（看整片中国）时标签缩小、避免 33 个省名挤成一团；
    * 拉近到某一省时标签放大、更醒目。等距圆柱投影下直接按相机距离反比缩放，
    * 再夹在 [min,max] 之间，保证远不糊、近不大。
+   *
+   * 只缩字号还不够：全国视图下华东/华北的十几个省挤在同一条纬度上，
+   * 再小的字也会叠成一团黑糊（手机端尤其明显）。所以这里再做一道
+   * **屏幕空间去重叠**：把标签投影到屏幕，按「省下辖市数量」从多到少贪心占位，
+   * 与已占位的标签相交的直接隐藏 —— 相当于给地图做一次标注避让。
    */
   private updateProvinceLabelSizes(): void {
     if (!this.provinceLabelGroup.visible || this.provinceLabels.length === 0) return;
@@ -1209,22 +1395,82 @@ export class SceneManager {
     const K = 374; // 老家视图 dist≈17 → 约 22px，与原来的固定字号观感一致
     const MIN = 12;
     const MAX = 32;
+    const el = this.renderer.domElement;
+    const W = el?.clientWidth || 1;
+    const H = el?.clientHeight || 1;
+
+    // ① 先算每个标签的字号与屏幕位置
+    type Slot = { obj: CSS2DObject; px: number; py: number; w: number; h: number; prio: number };
+    const slots: Slot[] = [];
+    // 相机矩阵在 flyTo 插值期间还没被 render 更新，直接投影会算出一帧前的位置。
+    // 这里先手动刷新一次，标签避让才不会慢半拍。
+    this.camera.updateMatrixWorld();
+    this.provinceLabelGroup.updateWorldMatrix(true, true);
     for (const obj of this.provinceLabels) {
       const d = Math.max(0.001, camPos.distanceTo(obj.position));
       const px = Math.min(MAX, Math.max(MIN, K / d));
       obj.element.style.fontSize = px.toFixed(1) + 'px';
+      // 投影到屏幕：CSS2DRenderer 用 translate(-50%,-50%) 把元素中心对齐到投影点
+      const world = this._labelWorld.setFromMatrixPosition(obj.matrixWorld);
+      const ndc = this._labelNdc.copy(world).project(this.camera);
+      const sx = (ndc.x * 0.5 + 0.5) * W;
+      const sy = (-ndc.y * 0.5 + 0.5) * H;
+      // 标签在相机背面（ndc.z > 1）时不参与占位，直接藏起来
+      if (ndc.z > 1) {
+        obj.element.style.visibility = 'hidden';
+        continue;
+      }
+      const text = obj.element.textContent ?? '';
+      let cjk = 0;
+      let other = 0;
+      for (const ch of text) {
+        if (ch.charCodeAt(0) > 0x2e80) cjk++;
+        else other++;
+      }
+      // 字宽估算：CJK 约 1em、其余 0.55em，再乘字距 1.24，加左右内边距 32
+      const w = (cjk * 1 + other * 0.55) * px * 1.24 + 32;
+      const h = px * 1.45 + 6;
+      const prio = this.provinceLabelPrio.get(obj) ?? 0;
+      slots.push({ obj, px: sx, py: sy, w, h, prio });
+    }
+
+    // ② 贪心占位：城市多的省优先保留（面积大、更重要），
+    //    与已保留标签相交的直接隐藏。
+    slots.sort((a, b) => b.prio - a.prio);
+    const placed: Slot[] = [];
+    for (const s of slots) {
+      let hit = false;
+      for (const p of placed) {
+        if (
+          Math.abs(s.px - p.px) < (s.w + p.w) / 2 - 2 &&
+          Math.abs(s.py - p.py) < (s.h + p.h) / 2 - 2
+        ) {
+          hit = true;
+          break;
+        }
+      }
+      if (hit) s.obj.element.style.visibility = 'hidden';
+      else {
+        s.obj.element.style.visibility = '';
+        placed.push(s);
+      }
     }
   }
 
   private updateProvinceLabels(shapes: ProjectedShape[]): void {
     this.clearLabels(this.provinceLabels, this.provinceLabelGroup);
-    const sums = new Map<string, { x: number; z: number; n: number }>();
+    this.provinceLabelPrio.clear();
+    const sums = new Map<string, { x: number; z: number; n: number; area: number }>();
     for (const s of shapes) {
       if (!s.province) continue;
-      const acc = sums.get(s.province) ?? { x: 0, z: 0, n: 0 };
+      const acc = sums.get(s.province) ?? { x: 0, z: 0, n: 0, area: 0 };
       acc.x += s.centroid[0];
       acc.z -= s.centroid[1];
       acc.n += 1;
+      // 用「该省下辖市的投影多边形总面积」当标签优先级：地理面积大的省
+      // （内蒙 118 万 km²、西藏 120 万）比面积小的直辖市更重要，
+      // 全国视图下应该优先保留它们的标签。
+      acc.area += polygonArea(s.outline);
       sums.set(s.province, acc);
     }
     for (const [name, acc] of sums) {
@@ -1239,6 +1485,7 @@ export class SceneManager {
       obj.position.set(acc.x / acc.n, CITY_HEIGHT + 0.05, acc.z / acc.n);
       this.provinceLabelGroup.add(obj);
       this.provinceLabels.push(obj);
+      this.provinceLabelPrio.set(obj, acc.area);
     }
   }
 
@@ -1379,6 +1626,8 @@ export class SceneManager {
       new THREE.LineBasicMaterial({ color: glow, transparent: true, opacity: 0.6 }),
     );
     mesh.add(edges);
+    // 标记这是「基座柱」而非板块本体：近景诊断靠它区分两者
+    mesh.userData = { part: 'pedestal' };
     return mesh;
   }
 
@@ -1436,6 +1685,8 @@ export class SceneManager {
     factor = 1.3,
     minDist = 0,
     view?: { x: number; y: number; w: number; h: number },
+    maxDist = 0,
+    elevDeg = ELEV_DEG,
   ): void {
     if (box.isEmpty()) return;
     this.framedBox = box.clone();
@@ -1455,6 +1706,8 @@ export class SceneManager {
     }
 
     let offset: THREE.Vector3 | null = null;
+    // 距离被上限压回时要用它重新居中（定义在下面的可视区分支里，这里先占位）
+    let recenterFn: ((d: number, o: THREE.Vector3) => THREE.Vector3) | null = null;
     if (view && this.renderer.domElement) {
       const W = this.renderer.domElement.clientWidth || 1;
       const H = this.renderer.domElement.clientHeight || 1;
@@ -1466,7 +1719,7 @@ export class SceneManager {
       // 透视修正：上式按「包围盒在目标平面上的投影」估算，但俯视（50°）时
       // 地块近端离相机更近、投影被放大，实际会怼出可用区、被左右面板压住。
       // 这里用一台探针相机真实投影一次包围盒 8 个角，按超出比例回退距离。
-      const elev = (ELEV_DEG * Math.PI) / 180;
+      const elev = (elevDeg * Math.PI) / 180;
       const probe = this.camera.clone() as THREE.PerspectiveCamera;
       probe.aspect = aspect;
       // 只用「地面高度」的 4 个角：板块挤出高度只有几米，但 50° 斜视下远端顶角
@@ -1541,6 +1794,7 @@ export class SceneManager {
         }
         return cur;
       };
+      recenterFn = recenter;
 
       // 距离与居中要一起迭代：居中后近端会再被放大一圈，距离又得重新收一次。
       for (let i = 0; i < 8; i++) {
@@ -1576,10 +1830,18 @@ export class SceneManager {
       offset = off;
     }
 
+    // 距离上限（如「点区县必须不比点市更远」）：超了就压回来。
+    // 这是**保底**约束，正常情况下由上面的取景算出的距离远小于上限。
+    if (maxDist > 0 && dist > maxDist) {
+      dist = maxDist;
+      // 距离变了，之前按旧距离算的居中平移量就不再对得准，重新居中一次。
+      if (offset && recenterFn) offset = recenterFn(dist, offset);
+    }
+
     // 调试用：记录最近一次取景的尺寸与距离，便于回归脚本定位取景问题
     this.lastFrame = { sx: +size.x.toFixed(2), sz: +size.z.toFixed(2), dist: +dist.toFixed(2) };
 
-    const elev = (ELEV_DEG * Math.PI) / 180;
+    const elev = (elevDeg * Math.PI) / 180;
     const target = center.clone();
     const pos = new THREE.Vector3(center.x, center.y + Math.sin(elev) * dist, center.z + Math.cos(elev) * dist);
     if (offset) {
@@ -1694,7 +1956,7 @@ export class SceneManager {
         e.color.setHex(ACTIVE_EMISSIVE);
         e.opacity = 1;
       }
-      rec.targetY = rec.lift * 0.78;
+      rec.targetY = rec.lift * this.selectedLiftRatio;
       return;
     }
     if (state.hovered) {
@@ -1782,6 +2044,137 @@ export class SceneManager {
       pin.ringMaterial.color.setHex(focused ? 0x22d3ee : pin.dotMaterial.color.getHex());
       pin.dotMaterial.emissiveIntensity = focused ? 2.2 : pin.hot ? 1.6 : 1.1;
     }
+  }
+
+  /** 调试：按屏幕坐标拾取，看那块深紫色到底是什么物体 */
+  pickAt(x: number, y: number): { name?: string; id?: string; kind?: string; y?: number } | null {
+    const el = this.renderer.domElement;
+    if (!el) return null;
+    const rect = el.getBoundingClientRect();
+    const nx = ((x - rect.left) / rect.width) * 2 - 1;
+    const ny = -((y - rect.top) / rect.height) * 2 + 1;
+    this.pointer.set(nx, ny);
+    this.raycaster.setFromCamera(this.pointer, this.camera);
+    const objects: THREE.Object3D[] = [];
+    for (const rec of this.cities.values()) objects.push(...rec.meshes);
+    for (const rec of this.districts.values()) objects.push(...rec.meshes);
+    const hit = this.raycaster.intersectObjects(objects, false)[0];
+    if (!hit) return null;
+    const ud = hit.object.userData as { name?: string; id?: string; kind?: string };
+    return { name: ud.name, id: ud.id, kind: ud.kind, y: +hit.point.y.toFixed(2) };
+  }
+
+  /**
+   * 临时诊断：调整「点区县」的取景参数并重新取景。
+   * 用于实测「俯角 / 抬升比例 / 收紧系数」三者的最优组合 ——
+   * 侧壁占画面的比例只能靠投影命中栈统计，不能靠肉眼估。
+   */
+  tuneDistrictFocus(opts: {
+    elev?: number;
+    lift?: number;
+    factor?: number;
+    minRatio?: number;
+    districtId?: string;
+  }): void {
+    if (typeof opts.elev === 'number') this.districtFocusElev = opts.elev;
+    if (typeof opts.lift === 'number') {
+      this.selectedLiftRatio = opts.lift;
+      this.refreshStyles();
+    }
+    if (typeof opts.factor === 'number') this.districtFocusFactor = opts.factor;
+    if (typeof opts.minRatio === 'number') this.districtFocusMinRatio = opts.minRatio;
+    const id = opts.districtId ?? this.selectedDistrictId;
+    if (id) this.focusDistrict(id);
+  }
+
+  /** 临时诊断：某区县板块在屏幕上的像素范围（近景是否读得出形状） */
+  districtScreenExtent(id: string): { x0: number; y0: number; x1: number; y1: number } | null {
+    const rec = this.districts.get(id);
+    if (!rec) return null;
+    const el = this.renderer.domElement;
+    if (!el) return null;
+    const box = new THREE.Box3();
+    for (const m of rec.meshes) box.expandByObject(m);
+    if (box.isEmpty()) return null;
+    const W = el.clientWidth || 1;
+    const H = el.clientHeight || 1;
+    const cam = this.camera.clone() as THREE.PerspectiveCamera;
+    cam.aspect = W / H;
+    cam.updateMatrixWorld(true);
+    cam.updateProjectionMatrix();
+    let x0 = Infinity;
+    let y0 = Infinity;
+    let x1 = -Infinity;
+    let y1 = -Infinity;
+    for (const cx of [box.min.x, box.max.x])
+      for (const cz of [box.min.z, box.max.z]) {
+        const q = new THREE.Vector3(cx, box.max.y, cz).project(cam);
+        const px = (q.x * 0.5 + 0.5) * W;
+        const py = (-q.y * 0.5 + 0.5) * H;
+        x0 = Math.min(x0, px);
+        x1 = Math.max(x1, px);
+        y0 = Math.min(y0, py);
+        y1 = Math.max(y1, py);
+      }
+    return { x0: +x0.toFixed(1), y0: +y0.toFixed(1), x1: +x1.toFixed(1), y1: +y1.toFixed(1) };
+  }
+
+  /**
+   * 射线拾取栈：沿视线依次命中的所有对象（最多 8 个）。
+   *
+   * 单看第一个命中分不清「顶盖 / 侧壁 / 基座柱 / 地形」——近景里挡住大片画面的
+   * 那块东西到底是哪一种，只有把整条射线上的命中顺序打出来才能定论。
+   * part 取值：cap（顶盖）/ side（侧壁）/ pedestal（基座柱）/ terrain（地形）。
+   */
+  pickStack(x: number, y: number): {
+    name?: string;
+    id?: string;
+    kind?: string;
+    part: string;
+    y: number;
+    d: number;
+  }[] {
+    const el = this.renderer.domElement;
+    if (!el) return [];
+    const rect = el.getBoundingClientRect();
+    const nx = ((x - rect.left) / rect.width) * 2 - 1;
+    const ny = -((y - rect.top) / rect.height) * 2 + 1;
+    this.pointer.set(nx, ny);
+    this.raycaster.setFromCamera(this.pointer, this.camera);
+    const objects: THREE.Object3D[] = [];
+    for (const rec of this.cities.values()) {
+      objects.push(...rec.meshes);
+      objects.push(...rec.pedestals);
+    }
+    for (const rec of this.districts.values()) {
+      objects.push(...rec.meshes);
+      objects.push(...rec.pedestals);
+    }
+    const terrainMeshes: THREE.Object3D[] = [];
+    if (this.terrain) {
+      this.terrain.group.traverse((o) => {
+        if ((o as THREE.Mesh).isMesh) terrainMeshes.push(o);
+      });
+    }
+    objects.push(...terrainMeshes);
+    const hits = this.raycaster.intersectObjects(objects, false).slice(0, 8);
+    return hits.map((h) => {
+      const ud = h.object.userData as { name?: string; id?: string; kind?: string; part?: string };
+      const mi = h.face?.materialIndex ?? -1;
+      let part = 'unknown';
+      if (terrainMeshes.includes(h.object)) part = 'terrain';
+      else if (ud.part === 'pedestal') part = 'pedestal';
+      else if (mi === 0) part = 'cap';
+      else if (mi === 1) part = 'side';
+      return {
+        name: ud.name,
+        id: ud.id,
+        kind: ud.kind,
+        part,
+        y: +h.point.y.toFixed(2),
+        d: +h.distance.toFixed(2),
+      };
+    });
   }
 
   private pick(nx: number, ny: number): THREE.Intersection | null {
