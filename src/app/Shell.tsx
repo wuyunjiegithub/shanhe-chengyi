@@ -18,10 +18,10 @@ import { useUi } from '../stores/ui';
 import { useCityStatus } from '../stores/cityStatus';
 import { useBackgrounds } from '../stores/backgrounds';
 import {
-  backToRegion,
   clearDistrictSelection,
   clearSpotFocus,
   initSandbox,
+  stepBack,
   teardownSandbox,
   updateMarkers,
 } from './sandbox';
@@ -88,7 +88,6 @@ export function Shell() {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       const ui = useUi.getState();
-      const nav = useNavigation.getState();
       // 任一模态 / 面板开启时，ESC 只关闭最上层，绝不继续作用于地图：
       // 否则关闭弹框的同时还会触发 backToRegion / 取消选中，
       // 用户会感知为「有弹框时地图被按键影响了」。每个分支都必须 return。
@@ -127,7 +126,8 @@ export function Shell() {
         clearDistrictSelection();
         return;
       }
-      if (nav.level === 'city') backToRegion({ toProvince: true });
+      // 逐级回退一级：区县 → 大市 → 省 → 全国
+      stepBack();
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);

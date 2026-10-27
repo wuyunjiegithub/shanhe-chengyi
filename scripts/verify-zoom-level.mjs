@@ -43,9 +43,13 @@ async function drill(cityId) {
   return { cityDist, districtDist: d.dist, pick, frame: d.lastFrame };
 }
 
-/* 首屏（江浙沪老家视图）基准 */
+/* 江浙沪老家视图基准。
+   注意：启动会直接落在「家乡」（默认北京市）的城市视图里，首屏**不等于**老家视图，
+   所以基准必须先点一次左下「重置俯视」退到区域级老家视图再读。 */
+await pc.click('.bottom-left button.ghost-pill');
+await pc.waitForTimeout(2200);
 const home = await frame();
-console.log('首屏 lastFrame:', JSON.stringify(home));
+console.log('老家视图 lastFrame:', JSON.stringify(home));
 
 /* ① 点市 → 点区县，距离必须变小 */
 const hz = await drill('330100');

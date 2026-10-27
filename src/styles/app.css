@@ -1438,6 +1438,19 @@ button.is-disabled {
   line-height: 1.6;
 }
 
+/* 回退内容的来源说明：如「本区县暂无独立录入，以下展示 成都市 的美食」 */
+.block-note {
+  margin: 0 0 8px;
+  font-size: 11.5px;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
+.block-note b {
+  color: var(--text-2);
+  font-weight: 600;
+}
+
 /* spot list */
 .spot-list {
   display: flex;
@@ -7383,4 +7396,72 @@ button.wall-stage-img {
     flex: 1 1 auto;
     max-width: 360px;
   }
+}
+
+/* ---------- 家乡（主市）选择器 ----------
+   与「去过标记样式」并排出现在设置面板 / 足迹面板，视觉语言保持一致。 */
+.hometown-pick {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 13px 14px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.hometown-pick-head {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hometown-pick-head b {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.hometown-pick-current {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--accent, #22d3ee);
+  white-space: nowrap;
+}
+
+.hometown-select {
+  width: 100%;
+  padding: 9px 10px;
+  font-size: 12.5px;
+  font-family: inherit;
+  color: var(--text-1);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  /* 手机上必须够高，否则系统选择器点不准 */
+  min-height: 40px;
+}
+
+.hometown-select:focus-visible {
+  border-color: var(--accent, #22d3ee);
+}
+
+.hometown-select optgroup {
+  color: var(--text-2);
+  font-style: normal;
+}
+
+.hometown-select option {
+  color: #111;
+  background: #fff;
+}
+
+.hometown-pick-note {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--text-3);
 }

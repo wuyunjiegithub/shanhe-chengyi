@@ -14,6 +14,7 @@ import { useCityStatus } from '../stores/cityStatus';
 import { liveWeatherKind } from '../components/shared/meta';
 import type { WeatherKind } from '../data/types';
 import { usePhotoLib } from '../stores/photoLib';
+import { readHometownCityId, useHometown } from '../stores/hometown';
 
 let manager: SceneManager | null = null;
 /** 各 store 的订阅句柄，teardownSandbox 时统一解绑（否则重复 initSandbox 会叠加订阅） */
@@ -144,6 +145,9 @@ export async function initSandbox(container: HTMLElement): Promise<void> {
   // 标记样式要在第一批标记建出来之前就位，否则首屏会先闪一下默认旗子
   scene.setVisitedStyle(useUi.getState().visitedStyle);
   scene.setCityPlates(projectFeatures(cityGeo, proj));
+  // 启动落在「家乡」：默认北京市，用户改过就以用户选的为准。
+  // 放在 setCityPlates 之后 —— 首屏取景必须先完成，才有可飞的起点。
+  void goHometownOnBoot();
   // 天气图层：省视角默认展示各城市天气（按需联网，命中缓存立即返回）
   void refreshWeather();
   // 地形图层（真实高程 / 湖岸线 / 河道）：与板块共用同一投影，精确落在对应陆/水之上。
@@ -248,8 +252,65 @@ export function backToRegion(opts: { toProvince?: boolean; toNation?: boolean } 
   else if (opts.toProvince && province) manager?.resetViewToProvince(province);
   else manager?.resetView();
   void refreshWeather();
-  useNavigation.getState().backToRegion();
+  // 把落点记进导航状态：ESC 要能接着从「省」再退一级到「全国」
+  useNavigation.getState().backToRegion(
+    opts.toNation ? 'nation' : opts.toProvince && province ? 'province' : 'home',
+  );
   useNavigation.getState().setHovered(null);
+}
+
+/**
+ * 启动落到「家乡」。
+ *
+ * 家乡是用户自己标的主城市（默认北京市）。已录入的城市直接下钻进去看区县；
+ * 没录入的（无区县边界，全国共 35 个）退而把相机对准这座城市的板块，
+ * 至少让「一打开就是家乡」这件事成立。
+ *
+ * 失败一律静默：启动路径上任何一步炸了都不能挡住地图，最坏情况就是停在首屏总览。
+ */
+async function goHometownOnBoot(): Promise<void> {
+  try {
+    const cityId = readHometownCityId();
+    if (!cityId) return;
+    const city = useData.getState().cities.find((c) => c.id === cityId);
+    if (!city) return;
+    if (city.indexed) {
+      await drillIntoCity(cityId);
+      return;
+    }
+    if (!manager) return;
+    manager.resetViewToCity(cityId);
+    useNavigation.getState().setRegionScope('home');
+  } catch (err) {
+    console.warn('[hometown] 启动定位失败，停在首屏总览', err);
+  }
+}
+
+/**
+ * 逐级回退一级（ESC / 安卓返回键的地图层级分支）。
+ *
+ * 完整链条是「区县 → 大市 → 省 → 全国」，返回 true 表示已消费这次回退：
+ * - 区县被选中：只取消选中，留在大市（不连跳）
+ * - 大市：退到当前省
+ * - 省：退到全国
+ * - 全国：无更上层，交给调用方（安卓双击退出）
+ */
+export function stepBack(): boolean {
+  const nav = useNavigation.getState();
+  if (nav.level === 'city') {
+    if (nav.activeDistrictId) {
+      clearDistrictSelection();
+      return true;
+    }
+    backToRegion({ toProvince: true });
+    return true;
+  }
+  // 区域级：省 / 老家视图 → 全国；已经在全国就不动
+  if (nav.regionScope !== 'nation') {
+    backToRegion({ toNation: true });
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -268,7 +329,11 @@ export function resetCamera(): void {
  * 只动相机、不动层级（v0.9.40 起沿用的语义，与「重置视角」→全国 区分开）。
  */
 export function resetHomeView(): void {
-  manager?.resetView();
+  // 必须整层回到区域级，不能只动相机：
+  // 只飞相机的话会出现「城市面板还挂着北京市，镜头却已经飞到江浙沪」的错位状态。
+  // 走 backToRegion() 顺带清掉区县板块、收起面板，并把回退层级记成「老家」，
+  // 这样接着按 ESC 才会退到全国，而不是被当成还在省视图再跳一次。
+  backToRegion();
 }
 
 /** 顶栏「总览」：收起所有详情与浮层，回到全国地图总览 */
@@ -673,5 +738,29 @@ if (typeof window !== 'undefined') {
       useUi.getState().openTravelWithPlace(prefill),
     /** 只打开游记列表（不带预置地点），供回归脚本核对列表封面与标题口径 */
     openTravelList: () => useUi.getState().toggleTravelPanel(true),
+    /** 导航状态快照：层级 / 当前城市 / 区域取景范围 / 选中区县，回归脚本判回退链路用 */
+    navState: () => {
+      const n = useNavigation.getState();
+      const h = useHometown.getState();
+      return {
+        level: n.level,
+        regionScope: n.regionScope,
+        currentCityId: n.currentCity?.id ?? null,
+        currentCityName: n.currentCity?.name ?? null,
+        activeDistrictId: n.activeDistrictId,
+        hometownCityId: h.cityId,
+        hometownCustomized: h.customized,
+      };
+    },
+    /** 设置家乡（走与 UI 完全相同的入口，保证回归测的是真实链路） */
+    setHometown: (id: string) => useHometown.getState().setCityId(id),
+    /** 相机位置 + 到目标距离，判「省 → 全国是否真的拉远」 */
+    cameraInfo: () => {
+      const d = manager?.debugCamera() as
+        | { pos: number[]; target: number[]; dist: number }
+        | undefined;
+      if (!d) return null;
+      return { x: d.pos[0], y: d.pos[1], z: d.pos[2], dist: d.dist };
+    },
   };
 }

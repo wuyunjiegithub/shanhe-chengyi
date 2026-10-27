@@ -5,6 +5,7 @@ import { clearSpotFocus, focusSpotById, selectDistrictById } from '../../app/san
 import { TAG_COLOR, thumbColor } from '../shared/meta';
 import { BgImage } from '../shared/BgImage';
 import { bgKey } from '../../stores/backgrounds';
+import { effectiveFoods } from '../../data/foods';
 
 export function LeafCard() {
   const leaf = useUi((s) => s.leafCard);
@@ -14,6 +15,7 @@ export function LeafCard() {
   const districts = useData((s) => s.districts);
   const spots = useData((s) => s.spots);
   const spotsByDistrict = useData((s) => s.spotsByDistrict);
+  const cities = useData((s) => s.cities);
 
   if (!leaf) return null;
 
@@ -150,9 +152,11 @@ export function LeafCard() {
   }
 
   const district = districts[leaf.districtId];
-  const food = district?.foods?.find((f) => f.name === leaf.name);
+  // 必须与抽屉列表走同一套回退：区县没录美食时点开的「城市美食」卡片要能打开
+  const foodView = effectiveFoods(district, cities);
+  const food = foodView.foods.find((f) => f.name === leaf.name);
   if (!district || !food) return null;
-  const otherFoods = (district.foods ?? []).filter((f) => f.name !== food.name).slice(0, 3);
+  const otherFoods = foodView.foods.filter((f) => f.name !== food.name).slice(0, 3);
 
   return (
     <div className="leaf-backdrop" onPointerDown={close}>
@@ -207,7 +211,9 @@ export function LeafCard() {
 
           {otherFoods.length > 0 && (
             <div className="leaf-related">
-              <div className="leaf-related-head">同区县还有</div>
+              <div className="leaf-related-head">
+                {foodView.source === 'city' ? '同城还有' : '同区县还有'}
+              </div>
               <div className="leaf-related-list">
                 {otherFoods.map((f) => (
                   <button

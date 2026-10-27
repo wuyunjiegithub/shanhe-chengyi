@@ -951,6 +951,31 @@ export class SceneManager {
     this.resetView();
   }
 
+  /**
+   * 把相机对准某一座城市的板块（不进入城市视图）。
+   *
+   * 用于「家乡」这座城市尚未录入区县边界时（全国共 35 个，多为省直辖县级市）：
+   * 进不去城市视图，但至少要让启动时看到的是家乡而不是江浙沪。
+   */
+  resetViewToCity(cityId: string): void {
+    const rec = this.cities.get(cityId);
+    if (!rec || rec.meshes.length === 0) {
+      this.resetView();
+      return;
+    }
+    const box = new THREE.Box3();
+    for (const mesh of rec.meshes) box.expandByObject(mesh);
+    if (box.isEmpty()) {
+      this.resetView();
+      return;
+    }
+    const view = this.usableView();
+    const el = this.renderer.domElement;
+    const narrow = Boolean(el) && (el.clientWidth || 0) <= 820;
+    // 单座城市比一个省小得多，留白系数放宽到 1.35，别把城市顶到画面边缘
+    this.frameTo(box, 0.7, narrow ? 1.35 : 1.2, 0, view);
+  }
+
   /** 省视角城市标记：去过 = 小红旗，收藏 = 粉心 */
   setCityMarkers(items: { id: string; kind: MarkerKind }[]): void {
     this.fillMarkers(this.cityMarkerGroup, this.cities, items);

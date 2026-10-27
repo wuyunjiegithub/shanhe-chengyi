@@ -12,6 +12,7 @@ import {
 import { VisitedMark } from '../shared/VisitedMark';
 import { HeartMark } from '../shared/HeartMark';
 import { MarkerStylePicker } from '../shared/MarkerStylePicker';
+import { HometownPicker } from '../shared/HometownPicker';
 
 interface Row {
   key: string;
@@ -213,6 +214,8 @@ export function FavoritesPanel() {
           {/* 「去过」标记样式：手机端顶栏藏了设置入口，这里必须能改，
               否则真机上根本找不到小旗子 / 图钉的切换（用户反馈过）。 */}
           <MarkerStylePicker compact className="fav-marker-style" />
+          {/* 家乡同理：手机端没有「设置」入口，只能在改得到的地方挂一份 */}
+          <HometownPicker className="fav-hometown" />
 
           {sections.map((sec) => (
             <div className="fav-section" key={sec.title}>

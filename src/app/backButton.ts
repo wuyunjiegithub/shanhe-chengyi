@@ -1,7 +1,6 @@
 import { exit, onBackButtonPress } from '@tauri-apps/api/app';
-import { useNavigation } from '../stores/navigation';
 import { useUi } from '../stores/ui';
-import { backToRegion, clearDistrictSelection, clearSpotFocus } from './sandbox';
+import { clearDistrictSelection, clearSpotFocus, stepBack } from './sandbox';
 
 /**
  * Android 物理返回键 / 返回手势接管。
@@ -31,7 +30,6 @@ export async function setupBackButton(): Promise<void> {
 
   await onBackButtonPress(() => {
     const ui = useUi.getState();
-    const nav = useNavigation.getState();
 
     // 1) 更深的两层（它们在照片墙内，各有自己的 Esc 监听与关闭钮）
     if (clickIfPresent('.pv-backdrop .pv-close')) return;
@@ -84,11 +82,8 @@ export async function setupBackButton(): Promise<void> {
       return;
     }
 
-    // 3) 地图层级返回
-    if (nav.level === 'city') {
-      backToRegion({ toProvince: true });
-      return;
-    }
+    // 3) 地图层级返回：逐级退一级（区县 → 大市 → 省 → 全国）
+    if (stepBack()) return;
 
     // 4) 根级：双击退出
     const now = Date.now();

@@ -31,6 +31,11 @@ await pc.waitForTimeout(9000);
 const cam = () => pc.evaluate(() => window.__sandboxApp.debugCamera());
 const frame = () => pc.evaluate(() => window.__sandboxApp.lastFrame());
 
+// 启动会直接落在「家乡」（默认北京市）的城市视图里，所以**首屏不等于老家视图**。
+// 基准必须显式建立：先点左下「重置俯视」退到区域级老家视图，再读取景尺寸。
+await pc.click('.bottom-left button.ghost-pill');
+await pc.waitForTimeout(2200);
+
 /** 下钻某市 → 按 ESC → 读回相机落点 */
 async function escTo(cityId) {
   await pc.evaluate((id) => window.__sandboxApp.focusCityById(id), cityId);
@@ -42,13 +47,15 @@ async function escTo(cityId) {
   return { inCity, after, frame: await frame() };
 }
 
-// 首屏（江浙沪皖老家视图）的取景尺寸，作为「初始地址」的基准
+// 江浙沪皖老家视图的取景尺寸，作为「初始地址」的基准
 const home = await frame();
-console.log('首屏 lastFrame:', JSON.stringify(home));
+console.log('老家视图 lastFrame:', JSON.stringify(home));
 
-/* ① 同省两个市（杭州 / 宁波，均属浙江） */
+/* ① 同省两个市（杭州 330100 / 宁波 330200，均属浙江）
+   注意：宁波市是 330200；330203 是它的市辖区（江北），不是城市 id，
+   用它下钻会静默失败 —— 那样 ESC 就作用在「区域级」而不是「城市级」，测的就不是这回事了。 */
 const hz = await escTo('330100');
-const nb = await escTo('330203');
+const nb = await escTo('330200');
 const t1 = hz.after.target;
 const t2 = nb.after.target;
 console.log('杭州→ESC 落点:', t1, '框:', JSON.stringify(hz.frame));

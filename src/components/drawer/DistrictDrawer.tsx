@@ -11,6 +11,7 @@ import { bgKey } from '../../stores/backgrounds';
 import { WeatherCard } from './WeatherCard';
 import { PlaceHeader, PhotoWallBlock, VisitLogSection, WriteNoteBar } from '../shared/PlaceBlocks';
 import { useBottomSheet } from '../shared/useBottomSheet';
+import { effectiveFoods } from '../../data/foods';
 
 export function DistrictDrawer() {
   const open = useUi((s) => s.drawerOpen);
@@ -22,6 +23,7 @@ export function DistrictDrawer() {
   const openLeaf = useUi((s) => s.openLeaf);
   const activeDistrictId = useNavigation((s) => s.activeDistrictId);
   const districts = useData((s) => s.districts);
+  const cities = useData((s) => s.cities);
   const spotsByDistrict = useData((s) => s.spotsByDistrict);
   const visitedDistricts = useCityStatus((s) => s.visitedDistricts);
   const toggleVisitedDistrict = useCityStatus((s) => s.toggleVisitedDistrict);
@@ -33,7 +35,9 @@ export function DistrictDrawer() {
   }, [activeDistrictId]);
 
   const allSpots = district ? (spotsByDistrict[district.id] ?? []) : [];
-  const districtFoods = district?.foods ?? [];
+  // 区县没单独录美食时回退到所属城市的美食（全国 2519 个区县靠这条才有内容可读）
+  const foodView = effectiveFoods(district, cities);
+  const districtFoods = foodView.foods;
   const specialties = district?.specialties ?? [];
   // 必须浅拷贝后再排：allSpots 就是 store 里的数组本身，就地 sort 会绕开 set() 改写状态，
   // DataPanel 的 dirty 比较会把「只是排了个序」误判成有未保存改动。
@@ -193,32 +197,40 @@ export function DistrictDrawer() {
               {districtFoods.length === 0 ? (
                 <p className="block-empty">本区县美食待录入，可到「数据」面板补充。</p>
               ) : (
-                <div className="food-grid">
-                  {districtFoods.map((food) => (
-                    <button
-                      key={food.name}
-                      className="food-card"
-                      data-food={food.name}
-                      onClick={() => openLeaf({ kind: 'food', districtId: district.id, name: food.name })}
-                    >
-                      <BgImage
-                        bgKey={bgKey('food', 'district', district.id, food.name)}
-                        src={food.image}
-                        alt={food.name}
-                        label={food.name}
-                        className="food-card-img"
-                        editable
-                        size="sm"
-                      />
-                      <div className="food-card-body">
-                        <span className="food-card-name">{food.name}</span>
-                        <span className="food-card-cat">{food.category}</span>
-                        <span className="food-card-note">{food.note}</span>
-                        <span className="food-card-rec">📍 {food.recommend}</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
+                <>
+                  {/* 回退来的城市美食必须标明粒度，否则用户会以为是本区县独有的 */}
+                  {foodView.source === 'city' && foodView.cityName && (
+                    <p className="block-note">
+                      本区县暂无独立录入，以下展示 <b>{foodView.cityName}</b> 的美食
+                    </p>
+                  )}
+                  <div className="food-grid">
+                    {districtFoods.map((food) => (
+                      <button
+                        key={food.name}
+                        className="food-card"
+                        data-food={food.name}
+                        onClick={() => openLeaf({ kind: 'food', districtId: district.id, name: food.name })}
+                      >
+                        <BgImage
+                          bgKey={bgKey('food', 'district', district.id, food.name)}
+                          src={food.image}
+                          alt={food.name}
+                          label={food.name}
+                          className="food-card-img"
+                          editable
+                          size="sm"
+                        />
+                        <div className="food-card-body">
+                          <span className="food-card-name">{food.name}</span>
+                          <span className="food-card-cat">{food.category}</span>
+                          <span className="food-card-note">{food.note}</span>
+                          <span className="food-card-rec">📍 {food.recommend}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </>
               )}
             </section>
 

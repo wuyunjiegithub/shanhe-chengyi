@@ -6,6 +6,7 @@ import type { PhotoEntry } from '../../data/photoLibrary';
 import { clearLegacyUploads, readLegacyUploads } from '../../data/legacyUploads';
 import type { LegacyUpload } from '../../data/legacyUploads';
 import { MarkerStylePicker } from '../shared/MarkerStylePicker';
+import { HometownPicker } from '../shared/HometownPicker';
 
 const TREE = `照片根目录/
 ├─ 浙江省/
@@ -279,6 +280,9 @@ function Panel({ onClose }: { onClose: () => void }) {
           </div>
 
           <MarkerStylePicker />
+
+          {/* 家乡（主市）：决定每次启动落在哪座城市，默认北京市 */}
+          <HometownPicker />
 
           {bound && (
             <div className="photo-lib-stats">
