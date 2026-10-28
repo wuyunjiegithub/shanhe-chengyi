@@ -208,7 +208,7 @@ for (const d of sources) {
       hot: Boolean(hot),
       suitableFor,
       duration,
-      source: '公开资料整理 · 待人工复核',
+      source: id.startsWith('osm-') ? '© OpenStreetMap 贡献者（ODbL）' : '公开资料整理 · 待人工复核',
       updatedAt: TODAY,
     });
   }

@@ -3,6 +3,23 @@
 本项目所有版本变更记录于此。格式参考 [Keep a Changelog](https://keepachangelog.com/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.9.44] - 2026-10-28
+
+> 突破"景点天花板"：接入 OpenStreetMap（ODbL）真实带坐标 POI，补足维基覆盖不到的区县。
+
+### 数据
+- **新增 OSM 景点管线**：此前景点只来自中文维基县级条目 + 维基景点条目坐标，绝大多数景点名不是独立词条 → 拿不到坐标 → 被丢弃，
+  导致 2509 个基线条目里 2058 个（82%）完全没有景点。新增 `scripts/fetch-osm-spots.mjs`：
+  按"市"bbox 抓 Overpass 的 `tourism`/`historic`/`natural`/`leisure` 带名 POI，用射线法归到具体区县，
+  每市缓存到 `scripts/.cache/osm-spots/<cityId>.json`（断点续传、多端点容错、原子写入）。
+- **并入内容**：`gen-baseline-content.mjs` 把 OSM 景点按区县并入基线（与维基/地标按名称去重、每区县上限 12、合计上限 16），
+  标签严格落在 8 白名单内；`build-content.mjs` 对 `osm-` 前缀景点标注 **© OpenStreetMap 贡献者（ODbL）** 来源。
+- 全站景点数 **1981 → 21043**（约 **10.6 倍**）；OSM 覆盖 **2651 个区县**（约占全国 2876 区县的 92%），
+  此前"82% 区县 0 景点"的空白被大幅填平。原 12 个景区地标注入与维基景点全部保留，OSM 仅作补足（去重后按区县上限截断）。
+
+### 说明
+- OSM 数据授权 ODbL，已在景点 `source` 字段与既有地形署名一致地标注"© OpenStreetMap 贡献者"。
+
 ## [0.9.43] - 2026-10-28
 
 > 海南岛数据从无到有（19 市 26 区县 / 96 景点）、修复省直辖县级市的城市归并、核实 ESC「省→全国」。

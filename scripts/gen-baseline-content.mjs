@@ -142,6 +142,33 @@ if (existsSync(WIKI_CACHE_DIR)) {
 }
 console.log(`· 维基百科缓存 ${wikiCache.size} 条（将并入历史 / 人文 / 景点）`);
 
+/* ---------- OSM 景点缓存（OpenStreetMap，ODbL；补足维基覆盖不到的区县） ---------- */
+const OSM_CACHE_DIR = join(ROOT, 'scripts/.cache/osm-spots');
+const osmCache = new Map(); // cityId -> { districtId: [poi] }
+if (existsSync(OSM_CACHE_DIR)) {
+  for (const file of readdirSync(OSM_CACHE_DIR)) {
+    if (!file.endsWith('.json')) continue;
+    try {
+      const cityId = file.replace('.json', '');
+      const rec = JSON.parse(readFileSync(join(OSM_CACHE_DIR, file), 'utf8'));
+      osmCache.set(cityId, rec);
+    } catch {
+      /* 忽略坏缓存 */
+    }
+  }
+}
+console.log(`· OSM 景点缓存 ${osmCache.size} 市（ODbL，补足无景点区县）`);
+
+/* OSM 标签 → 中文摘要词（仅作摘要展示，真实标签仍是白名单 8 类） */
+const TAG_CN = {
+  博物馆: '博物馆', 寺庙: '寺庙', 拍照: '观景/取景地', 历史文化: '历史遗迹',
+  山水: '自然山水', 徒步: '徒步去处', 古镇: '古镇', 亲子: '亲子去处',
+};
+/** 单区县 OSM 景点上限（与维基/地标合计后截断） */
+const OSM_PER_DISTRICT = 12;
+/** 单区县景点合计上限 */
+const SPOTS_PER_DISTRICT = 16;
+
 /* ---------- 逐市生成 ---------- */
 const out = [];
 const cityMetaExtra = {};
@@ -207,6 +234,43 @@ for (const file of readdirSync(join(GEO_DIR, 'districts')).sort()) {
         spots.push([s.id, s.name, s.lng, s.lat, s.summary, s.tags, s.hot, s.suitableFor, s.duration]);
       }
       source = '维基百科条目整理 · 待人工复核';
+    }
+
+    // OSM 景点（OpenStreetMap，ODbL）：补足维基覆盖不到的区县。
+    // 与已有景点（维基/地标）按名称去重，避免同名重复落点。
+    const osmForCity = osmCache.get(cityId);
+    let hasOsm = false;
+    if (osmForCity) {
+      const osmPois = osmForCity[id];
+      if (osmPois && osmPois.length) {
+        const existingNames = new Set(spots.map((s) => String(s[1]).toLowerCase()));
+        let n = 0;
+        for (const p of osmPois) {
+          if (spots.length >= SPOTS_PER_DISTRICT) break;
+          const nm = p.name.trim();
+          if (!nm) continue;
+          if (existingNames.has(nm.toLowerCase())) continue;
+          existingNames.add(nm.toLowerCase());
+          const tagCN = TAG_CN[p.tags?.[0]] ?? '景点';
+          spots.push([
+            `osm-${id}-${spots.length}`,
+            p.name,
+            p.lng,
+            p.lat,
+            `${p.name}（${tagCN}）`,
+            p.tags,
+            0,
+            ['全部'],
+            '1-2小时',
+          ]);
+          hasOsm = true;
+          n++;
+          if (n >= OSM_PER_DISTRICT) break;
+        }
+      }
+    }
+    if (hasOsm) {
+      source = source ? `${source} · OpenStreetMap (ODbL)` : 'OpenStreetMap (ODbL)';
     }
 
     out.push({
