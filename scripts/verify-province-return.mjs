@@ -97,6 +97,29 @@ rec(
   `reset sx=${reset.sx} sz=${reset.sz} vs home sx=${home.sx} sz=${home.sz}`,
 );
 
+/* ⑤ 省视角再按 ESC → 进入全国地图（取景框应显著变大，并确实动了相机）
+   链路：城市 →（ESC）省 →（ESC）全国，对应 stepBack 的「区县→大市→省→全国」末一级。 */
+await pc.evaluate((id) => window.__sandboxApp.focusCityById(id), '330100');
+await pc.waitForTimeout(2200);
+await pc.keyboard.press('Escape'); // 城市 → 省
+await pc.waitForTimeout(2200);
+const provFrame = await frame();
+const provCam = await cam();
+await pc.keyboard.press('Escape'); // 省 → 全国
+await pc.waitForTimeout(2200);
+const natFrame = await frame();
+const natCam = await cam();
+console.log('省 lastFrame:', JSON.stringify(provFrame), '全国 lastFrame:', JSON.stringify(natFrame));
+rec(
+  '省视角按 ESC 进入全国（取景框变大）',
+  natFrame.sx > provFrame.sx + 1 && natFrame.sz > provFrame.sz + 1,
+  `省 sx=${provFrame.sx} sz=${provFrame.sz} vs 全国 sx=${natFrame.sx} sz=${natFrame.sz}`,
+);
+rec(
+  '全国视角确实动了相机（不是原地不动）',
+  !(near(provCam.target[0], natCam.target[0]) && near(provCam.target[2], natCam.target[2])),
+);
+
 await browser.close();
 console.log(`\n通过 ${pass} / 失败 ${fail}`);
 process.exit(fail === 0 ? 0 : 1);

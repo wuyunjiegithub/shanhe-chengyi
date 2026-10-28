@@ -14294,42 +14294,13 @@
       "460108"
     ],
     "indexed": true,
-    "intro": "海南省海口市下辖 4 个区县。",
+    "intro": "",
     "featuredDistricts": [
       "460105",
       "460106",
       "460107"
     ],
-    "foods": [
-      {
-        "name": "文昌鸡",
-        "category": "琼菜",
-        "recommend": "白切嫩鸡",
-        "note": "海南四大名菜之首",
-        "image": "/assets/cities/460100/food-文昌鸡.jpg"
-      },
-      {
-        "name": "清补凉",
-        "category": "甜品",
-        "recommend": "椰奶杂果冰",
-        "note": "海南消暑甜品",
-        "image": "/assets/cities/460100/food-清补凉.jpg"
-      },
-      {
-        "name": "海南粉",
-        "category": "小吃",
-        "recommend": "腌拌米粉",
-        "note": "海口风味",
-        "image": "/assets/cities/460100/food-海南粉.jpg"
-      },
-      {
-        "name": "和乐蟹",
-        "category": "海鲜",
-        "recommend": "膏满肉鲜",
-        "note": "万宁名产",
-        "image": "/assets/cities/460100/food-和乐蟹.jpg"
-      }
-    ],
+    "foods": [],
     "poem": "",
     "poemFrom": "",
     "urbanDistricts": [],
@@ -14347,42 +14318,13 @@
       "460205"
     ],
     "indexed": true,
-    "intro": "海南省三亚市下辖 4 个区县。",
+    "intro": "",
     "featuredDistricts": [
       "460202",
       "460203",
       "460204"
     ],
-    "foods": [
-      {
-        "name": "文昌鸡",
-        "category": "琼菜",
-        "recommend": "白切嫩鸡",
-        "note": "海南四大名菜之首",
-        "image": "/assets/cities/460200/food-文昌鸡.jpg"
-      },
-      {
-        "name": "清补凉",
-        "category": "甜品",
-        "recommend": "椰奶杂果冰",
-        "note": "海南消暑甜品",
-        "image": "/assets/cities/460200/food-清补凉.jpg"
-      },
-      {
-        "name": "海南粉",
-        "category": "小吃",
-        "recommend": "腌拌米粉",
-        "note": "海口风味",
-        "image": "/assets/cities/460200/food-海南粉.jpg"
-      },
-      {
-        "name": "和乐蟹",
-        "category": "海鲜",
-        "recommend": "膏满肉鲜",
-        "note": "万宁名产",
-        "image": "/assets/cities/460200/food-和乐蟹.jpg"
-      }
-    ],
+    "foods": [],
     "poem": "",
     "poemFrom": "",
     "urbanDistricts": [],
@@ -14398,41 +14340,12 @@
       "460302"
     ],
     "indexed": true,
-    "intro": "海南省三沙市下辖 2 个区县。",
+    "intro": "",
     "featuredDistricts": [
       "460301",
       "460302"
     ],
-    "foods": [
-      {
-        "name": "文昌鸡",
-        "category": "琼菜",
-        "recommend": "白切嫩鸡",
-        "note": "海南四大名菜之首",
-        "image": "/assets/cities/460300/food-文昌鸡.jpg"
-      },
-      {
-        "name": "清补凉",
-        "category": "甜品",
-        "recommend": "椰奶杂果冰",
-        "note": "海南消暑甜品",
-        "image": "/assets/cities/460300/food-清补凉.jpg"
-      },
-      {
-        "name": "海南粉",
-        "category": "小吃",
-        "recommend": "腌拌米粉",
-        "note": "海口风味",
-        "image": "/assets/cities/460300/food-海南粉.jpg"
-      },
-      {
-        "name": "和乐蟹",
-        "category": "海鲜",
-        "recommend": "膏满肉鲜",
-        "note": "万宁名产",
-        "image": "/assets/cities/460300/food-和乐蟹.jpg"
-      }
-    ],
+    "foods": [],
     "poem": "",
     "poemFrom": "",
     "urbanDistricts": [],
@@ -14443,10 +14356,14 @@
     "id": "460400",
     "name": "儋州市",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "460400"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "460400"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14458,10 +14375,14 @@
     "id": "469001",
     "name": "五指山市",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469001"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469001"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14473,10 +14394,14 @@
     "id": "469002",
     "name": "琼海市",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469002"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469002"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14488,10 +14413,14 @@
     "id": "469005",
     "name": "文昌市",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469005"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469005"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14503,10 +14432,14 @@
     "id": "469006",
     "name": "万宁市",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469006"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469006"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14518,10 +14451,14 @@
     "id": "469007",
     "name": "东方市",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469007"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469007"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14533,10 +14470,14 @@
     "id": "469021",
     "name": "定安县",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469021"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469021"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14548,10 +14489,14 @@
     "id": "469022",
     "name": "屯昌县",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469022"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469022"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14563,10 +14508,14 @@
     "id": "469023",
     "name": "澄迈县",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469023"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469023"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14578,10 +14527,14 @@
     "id": "469024",
     "name": "临高县",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469024"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469024"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14593,10 +14546,14 @@
     "id": "469025",
     "name": "白沙黎族自治县",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469025"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469025"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14608,10 +14565,14 @@
     "id": "469026",
     "name": "昌江黎族自治县",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469026"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469026"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14623,10 +14584,14 @@
     "id": "469027",
     "name": "乐东黎族自治县",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469027"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469027"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14638,10 +14603,14 @@
     "id": "469028",
     "name": "陵水黎族自治县",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469028"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469028"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14653,10 +14622,14 @@
     "id": "469029",
     "name": "保亭黎族苗族自治县",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469029"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469029"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",
@@ -14668,10 +14641,14 @@
     "id": "469030",
     "name": "琼中黎族苗族自治县",
     "province": "海南省",
-    "districts": [],
-    "indexed": false,
+    "districts": [
+      "469030"
+    ],
+    "indexed": true,
     "intro": "",
-    "featuredDistricts": [],
+    "featuredDistricts": [
+      "469030"
+    ],
     "foods": [],
     "poem": "",
     "poemFrom": "",

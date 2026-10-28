@@ -53266,283 +53266,6 @@
     "updatedAt": "2026-10-19"
   },
   {
-    "id": "460105",
-    "name": "秀英区",
-    "city": "海口市",
-    "province": "海南省",
-    "oneLiner": "秀英区是中国海南省海口市最西部的市辖区，也是海口行政中心所在地，面积约 559 平方公里。",
-    "tags": [
-      "山水"
-    ],
-    "history": "",
-    "culture": "",
-    "people": [],
-    "features": [
-      "秀英炮台",
-      "海口石山火山群國家地質公園"
-    ],
-    "specialties": [],
-    "foods": [],
-    "spots": [
-      "lm-460105-0",
-      "lm-460105-1",
-      "lm-460105-2",
-      "lm-460105-3",
-      "wk-460105-0"
-    ],
-    "center": [
-      110.229218,
-      19.907335
-    ],
-    "baseline": true,
-    "source": "维基百科条目整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "460106",
-    "name": "龙华区",
-    "city": "海口市",
-    "province": "海南省",
-    "oneLiner": "龍華區可以指以下位於中華人民共和國的市辖区：，面积约 309 平方公里。",
-    "tags": [],
-    "history": "龍華區可以指以下位於中華人民共和國的市辖区：龙华区 (深圳市)，广东省深圳市下辖的市辖区龙华区 (海口市)，海南省海口市下辖的市辖区龙华区 (上海市)，上海市在1945年至1956年间设置的市辖区，核心地区位于今龙华街道標題包含繁體字「-{龍華區}-」的頁面,* 標題包含簡體字「-{龙华区}-」的頁。",
-    "culture": "",
-    "people": [],
-    "features": [
-      "龙华区"
-    ],
-    "specialties": [],
-    "foods": [],
-    "spots": [],
-    "center": [
-      110.335887,
-      19.868373
-    ],
-    "baseline": true,
-    "source": "维基百科条目整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "460107",
-    "name": "琼山区",
-    "city": "海口市",
-    "province": "海南省",
-    "oneLiner": "琼山区位于中华人民共和国海南省海口市東南部，是海口市唯一一个不沿海的市辖区，面积约 930 平方公里。",
-    "tags": [
-      "博物馆",
-      "寺庙",
-      "山水"
-    ],
-    "history": "汉元封元年（公元前110年），今琼山县地属珠崖郡曋都、玳瑁两县。初元三年（公元前46年），属合浦郡朱庐县。建武十九年（43年）四月，改朱庐县为珠崖县，琼山县地时属合浦郡珠崖县。三国东吴赤乌二年（239年），改珠崖县为朱庐县，隶属珠崖郡，琼山县地时属朱庐县。",
-    "culture": "琼山市曾被评选为中国历史文化名城，琼山并入海口市成为市辖区后，海口市继承了这一称号。2025年，海南省人民政府正式批复了《海口市历史文化名城保护规划（2021—2035年）》，这一《保护规划》的颁布对保护海口城市文化，指导城市建设具有重大且。",
-    "people": [],
-    "features": [
-      "琼州府城",
-      "府城鼓楼 又名谯楼",
-      "府城东门 位于琼山滨江街道东门里",
-      "琼台书院 位於瓊山府城中山北路",
-      "丘濬故居 位于琼山府城金花村",
-      "海瑞故居 位于琼山府城红城湖路"
-    ],
-    "specialties": [],
-    "foods": [],
-    "spots": [],
-    "center": [
-      110.497764,
-      19.733299
-    ],
-    "baseline": true,
-    "source": "维基百科条目整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "460108",
-    "name": "美兰区",
-    "city": "海口市",
-    "province": "海南省",
-    "oneLiner": "美兰区是中国海南省海口市所辖的一个市辖区，面积约 697 平方公里。",
-    "tags": [],
-    "history": "根據第七次全国人口普查2020年11月1日，美蘭區常住人口853013人，與2010年第六次全國人口普查的623653人相比，十年共增加229360人，增長36.78%，年平均增長率為3.18%。",
-    "culture": "",
-    "people": [],
-    "features": [
-      "白沙門公園",
-      "海甸岛"
-    ],
-    "specialties": [],
-    "foods": [],
-    "spots": [
-      "w-460108-0"
-    ],
-    "center": [
-      110.517382,
-      19.958531
-    ],
-    "baseline": true,
-    "source": "维基百科条目整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "460202",
-    "name": "海棠区",
-    "city": "三亚市",
-    "province": "海南省",
-    "oneLiner": "海棠区是中华人民共和国海南省三亚市的一个市辖区，辖原三亚市海棠湾镇的行政区域，面积约 328 平方公里。",
-    "tags": [],
-    "history": "2014年2月11日，国务院批复三亚市撤六镇新设四区，分别为吉阳区（撤销原河东区、吉阳镇、亚龙湾管委会）、崖州区（撤销原崖城镇）、天涯区（撤销原河西区、凤凰镇、天涯镇、三亚湾管委会，保留育才镇）、海棠区（撤销原海棠湾镇、海棠湾管委会）。",
-    "culture": "",
-    "people": [],
-    "features": [],
-    "specialties": [],
-    "foods": [],
-    "spots": [
-      "lm-460202-0",
-      "lm-460202-1",
-      "lm-460202-2",
-      "lm-460202-3",
-      "lm-460202-4"
-    ],
-    "center": [
-      109.732219,
-      18.365887
-    ],
-    "baseline": true,
-    "source": "维基百科条目整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "460203",
-    "name": "吉阳区",
-    "city": "三亚市",
-    "province": "海南省",
-    "oneLiner": "吉阳区是中华人民共和国海南省三亚市的一个市辖区，总面积372平方公里，总人口约45万人。",
-    "tags": [],
-    "history": "原为三亚市河东区街道办事处、吉阳镇；2014年2月11日，国务院批复三亚市撤六镇新设四区，分别为吉阳区（撤销原河东区、吉阳镇、亚龙湾管委会）、崖州区（撤销原崖城镇）、天涯区（撤销原河西区、凤凰镇、天涯镇、三亚湾管委会，保留育才镇）、海棠区（撤销原海棠湾镇、海棠湾管委会）。",
-    "culture": "",
-    "people": [],
-    "features": [
-      "大東海"
-    ],
-    "specialties": [],
-    "foods": [],
-    "spots": [],
-    "center": [
-      109.58973,
-      18.268052
-    ],
-    "baseline": true,
-    "source": "维基百科条目整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "460204",
-    "name": "天涯区",
-    "city": "三亚市",
-    "province": "海南省",
-    "oneLiner": "天涯区是中华人民共和国海南省三亚市的一个市辖区，辖原三亚市河西区街道办事处、育才镇的行政区域，面积约 1114 平方公里。",
-    "tags": [],
-    "history": "2014年2月11日，国务院批复三亚市撤六镇新设四区，分别为吉阳区（撤销原河东区、吉阳镇、亚龙湾管委会）、崖州区（撤销原崖城镇）、天涯区（撤销原河西区、凤凰镇、天涯镇、三亚湾管委会，保留育才镇）、海棠区（撤销原海棠湾镇、海棠湾管委会）。",
-    "culture": "天涯区得名于原天涯镇，但主城区却位于原凤凰镇羊栏村一带。羊栏村一带是回辉人聚落回辉、回新等村（今回辉、回新社区）的所在地，是中国唯一的族群、唯一的南岛系穆斯林族群，由于人数较少，民族识别时与信仰哈乃斐派的回族统划为回民族。",
-    "people": [],
-    "features": [
-      "天涯海角",
-      "西瑁洲",
-      "三亚湾",
-      "亚市河西区街道办事处",
-      "育才镇的行政区域"
-    ],
-    "specialties": [],
-    "foods": [],
-    "spots": [
-      "wk-460204-0",
-      "wk-460204-1"
-    ],
-    "center": [
-      109.374656,
-      18.405343
-    ],
-    "baseline": true,
-    "source": "维基百科条目整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "460205",
-    "name": "崖州区",
-    "city": "三亚市",
-    "province": "海南省",
-    "oneLiner": "崖州区（）是中华人民共和国海南省三亚市的一个市辖区，位于海南省三亚市西部，原名崖城镇（），为宋代以来崖州的治所，面积约 481 平方公里。",
-    "tags": [
-      "山水",
-      "历史文化"
-    ],
-    "history": "2014年2月11日，国务院批复三亚市撤六镇新设四区，分别为吉阳区（撤销原河东区、吉阳镇、亚龙湾管委会）、崖州区（撤销原崖城镇）、天涯区（撤销原河西区、凤凰镇、天涯镇、三亚湾管委会，保留育才镇）、海棠区（撤销原海棠湾镇、海棠湾管委会）。2019年3月，崖城镇位列第一批革命文物保护利用片区分县名单。",
-    "culture": "崖州民歌",
-    "people": [],
-    "features": [
-      "南山寺",
-      "大小洞天"
-    ],
-    "specialties": [],
-    "foods": [],
-    "spots": [
-      "wk-460205-0"
-    ],
-    "center": [
-      109.125084,
-      18.368426
-    ],
-    "baseline": true,
-    "source": "维基百科条目整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "460301",
-    "name": "西沙区",
-    "city": "三沙市",
-    "province": "海南省",
-    "oneLiner": "西沙区是海南省三沙市的市辖区，管辖西沙群岛的岛礁及其海域，代管中沙群岛的岛礁及其海域，西沙区人民政府驻永兴岛，面积约 688 平方公里。",
-    "tags": [],
-    "history": "2020年4月18日，中华人民共和国民政部公告称国务院批准海南省三沙市设立西沙区、南沙区。",
-    "culture": "",
-    "people": [],
-    "features": [],
-    "specialties": [],
-    "foods": [],
-    "spots": [
-      "lm-460301-0",
-      "lm-460301-1"
-    ],
-    "center": [
-      112.3386402,
-      16.8310066
-    ],
-    "baseline": true,
-    "source": "维基百科条目整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "460302",
-    "name": "南沙区",
-    "city": "三沙市",
-    "province": "海南省",
-    "oneLiner": "南沙区是海南省三沙市的市辖区，管辖南沙群岛的岛礁及其海域，南沙区人民政府驻永暑礁，面积约 3998 平方公里。",
-    "tags": [],
-    "history": "2020年4月18日，中华人民共和国民政部公告称国务院批准海南省三沙市设立西沙区、南沙区。",
-    "culture": "",
-    "people": [],
-    "features": [],
-    "specialties": [],
-    "foods": [],
-    "spots": [],
-    "center": [
-      113.343872,
-      8.21455
-    ],
-    "baseline": true,
-    "source": "维基百科条目整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
     "id": "500101",
     "name": "万州区",
     "city": "重庆市",
@@ -78662,6 +78385,1550 @@
     "center": [
       116.164004,
       40.540013
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "460105",
+    "name": "秀英区",
+    "city": "海口市",
+    "province": "海南省",
+    "oneLiner": "火山口边的海口西门户，海与礁同在",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "history": "清代属琼山县，地处琼北火山熔岩台地边缘；近现代随港口与工业布局成为海口的西向门户，石山火山群一带保留了完整的火山地貌。",
+    "culture": "石山地区的羊山文化与火山岩民居独具特色，假日海滩、西秀海滩是市民亲海去处，热带野生动植物园融科普与游览于一体。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "石山黑豆",
+        "kind": "特产",
+        "note": "火山熔岩土种植的黑豆，粒小皮黑，常用来打豆浆或炖汤。"
+      },
+      {
+        "name": "石山羊肉",
+        "kind": "特产",
+        "note": "羊山地区放养的黑山羊，肉质紧实，本地多以白切或打边炉。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "石山羊肉",
+        "category": "特色菜",
+        "recommend": "推荐白切或火锅",
+        "note": "羊山黑山羊本地做法，蘸什锦酱，鲜而不膻。",
+        "image": "/assets/cities/460100/food-石山羊肉.jpg"
+      },
+      {
+        "name": "火山荔枝",
+        "category": "甜品",
+        "recommend": "夏季限定",
+        "note": "石山火山土所产荔枝，果肉厚、甜度高。",
+        "image": "/assets/cities/460100/food-火山荔枝.jpg"
+      },
+      {
+        "name": "椰子糕",
+        "category": "小吃",
+        "recommend": "街头常见",
+        "note": "椰浆蒸制的软糕，清甜弹润。",
+        "image": "/assets/cities/460100/food-椰子糕.jpg"
+      }
+    ],
+    "spots": [
+      "hn-xy-huoshan",
+      "hn-xy-jiari",
+      "hn-xy-xixiu",
+      "hn-xy-zoo"
+    ],
+    "center": [
+      110.229218,
+      19.907335
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "460106",
+    "name": "龙华区",
+    "city": "海口市",
+    "province": "海南省",
+    "oneLiner": "骑楼老街与万绿园，海口的旧与新",
+    "tags": [
+      "历史文化",
+      "古镇"
+    ],
+    "history": "原为海口埠的核心地带，民国时期骑楼街区随商贸兴盛而建成；现代成为海口的中心城区，万绿园一带由填海地转为城市绿地。",
+    "culture": "中山路、博爱路一带的骑楼是南洋风与琼北民居的混合，冯小刚电影公社复刻了多条年代街景，城市生活围绕绿地与老街展开。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "海南粉（腌粉）",
+        "kind": "特产",
+        "note": "海口代表性小吃，腌粉配花生、芝麻与卤汁。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "海南粉",
+        "category": "小吃",
+        "recommend": "早餐必尝",
+        "note": "细米粉拌卤汁、花生、酸菜与牛肉干，咸香开胃。",
+        "image": "/assets/cities/460100/food-海南粉.jpg"
+      },
+      {
+        "name": "辣汤饭",
+        "category": "主食",
+        "recommend": "老海口味道",
+        "note": "猪杂辣汤配米饭，胡椒味浓，常见于老街区。",
+        "image": "/assets/cities/460100/food-辣汤饭.jpg"
+      },
+      {
+        "name": "椰子鸡",
+        "category": "特色菜",
+        "recommend": "清淡鲜美",
+        "note": "椰青水做汤底涮文昌鸡，清甜不腻。",
+        "image": "/assets/cities/460100/food-椰子鸡.jpg"
+      }
+    ],
+    "spots": [
+      "hn-lh-qilou",
+      "hn-lh-dianying",
+      "hn-lh-wanlv",
+      "hn-lh-zhonglou"
+    ],
+    "center": [
+      110.335887,
+      19.868373
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "460107",
+    "name": "琼山区",
+    "city": "海口市",
+    "province": "海南省",
+    "oneLiner": "府城故地，琼台书院与五公祠的文脉",
+    "tags": [
+      "历史文化",
+      "博物馆"
+    ],
+    "history": "自汉代设县、历代为琼州治所，府城长期是海南的行政与文化中心；城区保留多处祠庙与书院，是琼北人文积淀最厚之地。",
+    "culture": "五公祠纪念历代贬琼名臣，琼台书院是清代儒学殿堂，府城元宵换花节等民俗延续至今。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "琼山豆腐",
+        "kind": "特产",
+        "note": "以鸡蛋蒸制的「豆腐」，实为琼山传统宴席菜，嫩滑如豆腐。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "甲子粉",
+        "category": "小吃",
+        "recommend": "本地粉食",
+        "note": "琼山甲子镇手工粉，汤清料足，常配猪杂与酸菜。",
+        "image": "/assets/cities/460100/food-甲子粉.jpg"
+      },
+      {
+        "name": "椰子鸡",
+        "category": "特色菜",
+        "recommend": "家常清鲜",
+        "note": "椰青汤底涮鸡，琼北家常做法。",
+        "image": "/assets/cities/460100/food-椰子鸡.jpg"
+      },
+      {
+        "name": "甜薯奶",
+        "category": "甜品",
+        "recommend": "街头小吃",
+        "note": "薯泥煮成的甜羹，温润饱腹。",
+        "image": "/assets/cities/460100/food-甜薯奶.jpg"
+      }
+    ],
+    "spots": [
+      "hn-qs-wugong",
+      "hn-qs-qiongtai",
+      "hn-qs-fengxiang"
+    ],
+    "center": [
+      110.497764,
+      19.733299
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "460108",
+    "name": "美兰区",
+    "city": "海口市",
+    "province": "海南省",
+    "oneLiner": "东寨港红树林与海甸岛的日常",
+    "tags": [
+      "亲子",
+      "山水"
+    ],
+    "history": "地处南渡江入海口东侧，明代琼北地震曾在此形成东寨港海底村庄遗址；现代是海口江东与空港所在，海甸岛经桥梁连入市区。",
+    "culture": "东寨港红树林是候鸟与蟹类的家园，白沙门一带是市民亲海亲绿地的生活区，琼北渔家与疍家文化在此留有痕迹。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "曲口海鲜",
+        "kind": "特产",
+        "note": "东寨港出产的膏蟹、对虾与贝类，近港即食最鲜。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "海南鸡饭",
+        "category": "主食",
+        "recommend": "南洋风味",
+        "note": "文昌鸡油饭配白切鸡，海口常见快餐与宴席菜。",
+        "image": "/assets/cities/460100/food-海南鸡饭.jpg"
+      },
+      {
+        "name": "后安粉（海口版）",
+        "category": "小吃",
+        "recommend": "暖胃汤粉",
+        "note": "猪骨汤细粉配猪杂，胡椒提味。",
+        "image": "/assets/cities/460100/food-后安粉-海口版.jpg"
+      },
+      {
+        "name": "清补凉",
+        "category": "甜品",
+        "recommend": "消暑首选",
+        "note": "椰奶配绿豆、通粉与水果，冰镇清甜。",
+        "image": "/assets/cities/460100/food-清补凉.jpg"
+      }
+    ],
+    "spots": [
+      "hn-ml-dongzhai",
+      "hn-ml-baisha",
+      "hn-ml-renmin",
+      "w-460108-0"
+    ],
+    "center": [
+      110.517382,
+      19.958531
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "460202",
+    "name": "海棠区",
+    "city": "三亚市",
+    "province": "海南省",
+    "oneLiner": "国家海岸，亚龙湾与蜈支洲岛",
+    "tags": [
+      "拍照",
+      "亲子",
+      "山水"
+    ],
+    "history": "原为三亚东北部沿海的藤桥、林旺等地，2014 年设海棠区；海棠湾被规划为「国家海岸」，高端度假与免税购物沿湾布局。",
+    "culture": "藤桥老街与疍家渔俗留存，黎苗文化与滨海度假在此交汇；水稻国家公园以稻田大地艺术与恐龙科普见长。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "藤桥排骨",
+        "kind": "特产",
+        "note": "海棠藤桥一带的糖醋炸排骨，外酥里嫩，是本地名菜。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "藤桥排骨",
+        "category": "特色菜",
+        "recommend": "必点",
+        "note": "糖醋炸排骨，酸甜酥香。",
+        "image": "/assets/cities/460200/food-藤桥排骨.jpg"
+      },
+      {
+        "name": "椰子鸡",
+        "category": "特色菜",
+        "recommend": "清淡",
+        "note": "椰青汤底涮鸡，海棠湾餐厅常见。",
+        "image": "/assets/cities/460200/food-椰子鸡.jpg"
+      },
+      {
+        "name": "海鲜火锅",
+        "category": "海鲜",
+        "recommend": "鲜活",
+        "note": "亚龙湾、海棠湾渔获现捞现涮。",
+        "image": "/assets/cities/460200/food-海鲜火锅.jpg"
+      }
+    ],
+    "spots": [
+      "hn-ht-yalong",
+      "hn-ht-wuzhi",
+      "hn-ht-haitang",
+      "hn-ht-shuidao"
+    ],
+    "center": [
+      109.732219,
+      18.365887
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "460203",
+    "name": "吉阳区",
+    "city": "三亚市",
+    "province": "海南省",
+    "oneLiner": "大东海与鹿回头，城市与海湾之间",
+    "tags": [
+      "拍照",
+      "山水",
+      "亲子"
+    ],
+    "history": "地处三亚主城东侧，大东海自开放旅游起便是老牌海湾；鹿回头半岛以黎族传说得名，现为城市观景地标。",
+    "culture": "黎族「鹿回头」传说、港门粉等市井小吃与滨海度假交织，亚龙湾热带天堂森林公园是山地雨林观海的去处。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "港门粉",
+        "kind": "特产",
+        "note": "三亚传统汤粉，猪杂清汤配细粉，街边老店常见。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "港门粉",
+        "category": "小吃",
+        "recommend": "早餐",
+        "note": "猪骨清汤细粉配猪杂，鲜爽不腻。",
+        "image": "/assets/cities/460200/food-港门粉.jpg"
+      },
+      {
+        "name": "清补凉",
+        "category": "甜品",
+        "recommend": "消暑",
+        "note": "椰奶配杂粮与水果，冰镇清甜。",
+        "image": "/assets/cities/460200/food-清补凉.jpg"
+      },
+      {
+        "name": "海南鸡饭",
+        "category": "主食",
+        "recommend": "日常",
+        "note": "鸡油饭配白切鸡，机场与市区皆可见。",
+        "image": "/assets/cities/460200/food-海南鸡饭.jpg"
+      }
+    ],
+    "spots": [
+      "hn-jy-dadonghai",
+      "hn-jy-luhuitou",
+      "hn-jy-senlin",
+      "hn-jy-fenghuang"
+    ],
+    "center": [
+      109.58973,
+      18.268052
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "460204",
+    "name": "天涯区",
+    "city": "三亚市",
+    "province": "海南省",
+    "oneLiner": "天涯海角与南山，最南端的地标",
+    "tags": [
+      "拍照",
+      "历史文化",
+      "山水"
+    ],
+    "history": "三亚主城与最南端海岸所在，天涯海角自清代题刻成为「天之涯」的象征；南山一带自唐代起便是海上交通与佛教驻锡地。",
+    "culture": "天涯海角的摩崖石刻、南山的佛教文化园与西岛渔村疍家文化，构成三亚最具标识度的文旅名片。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "三亚海鲜干品",
+        "kind": "特产",
+        "note": "鱼干、虾米与螺贝干货，天涯海角周边市集常见。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "南山素斋",
+        "category": "特色菜",
+        "recommend": "清雅",
+        "note": "南山寺素斋以素仿荤，清淡养生。",
+        "image": "/assets/cities/460200/food-南山素斋.jpg"
+      },
+      {
+        "name": "椰子饭",
+        "category": "主食",
+        "recommend": "椰香",
+        "note": "糯米填入椰盅蒸熟，椰香软糯。",
+        "image": "/assets/cities/460200/food-椰子饭.jpg"
+      },
+      {
+        "name": "清补凉",
+        "category": "甜品",
+        "recommend": "消暑",
+        "note": "椰奶杂粮冰，三亚街头标配。",
+        "image": "/assets/cities/460200/food-清补凉.jpg"
+      }
+    ],
+    "spots": [
+      "hn-ty-tianya",
+      "hn-ty-nanshan",
+      "hn-ty-dongtian",
+      "hn-ty-xidao"
+    ],
+    "center": [
+      109.374656,
+      18.405343
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "460205",
+    "name": "崖州区",
+    "city": "三亚市",
+    "province": "海南省",
+    "oneLiner": "崖州古城，三亚的州治故地",
+    "tags": [
+      "历史文化",
+      "山水"
+    ],
+    "history": "历代为崖州州治，是海南岛西南部长期的行政、军事与文化中心；宁远河三角洲农耕与渔盐并举，留下古城与学宫遗存。",
+    "culture": "崖州学宫（孔庙）、古城墙与传承的「崖州酸粉」「扁豆酱」饮食，是琼南汉黎交融的活样本；崖州湾今为科技城新区。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "崖州酸粉",
+        "kind": "特产",
+        "note": "崖州传统腌粉，卤汁酸甜，配料丰富，是本地招牌小吃。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "崖州酸粉",
+        "category": "小吃",
+        "recommend": "必尝",
+        "note": "酸甜卤汁拌细粉，配花生、牛肉干与炸面。",
+        "image": "/assets/cities/460200/food-崖州酸粉.jpg"
+      },
+      {
+        "name": "三亚港门粉",
+        "category": "小吃",
+        "recommend": "汤鲜",
+        "note": "猪杂清汤粉，近港风味。",
+        "image": "/assets/cities/460200/food-三亚港门粉.jpg"
+      },
+      {
+        "name": "扁豆酱焖鱼",
+        "category": "特色菜",
+        "recommend": "家常",
+        "note": "崖州扁豆酱焖海鱼，咸鲜下饭。",
+        "image": "/assets/cities/460200/food-扁豆酱焖鱼.jpg"
+      }
+    ],
+    "spots": [
+      "hn-yz-dxt",
+      "hn-yz-yazhou",
+      "hn-yz-yazhouwan"
+    ],
+    "center": [
+      109.125084,
+      18.368426
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "460301",
+    "name": "西沙区",
+    "city": "三沙市",
+    "province": "海南省",
+    "oneLiner": "永兴岛与七连屿，珊瑚礁上的群岛",
+    "tags": [
+      "山水"
+    ],
+    "history": "西沙群岛自古以来为我国南海渔场与传统海域，永兴岛为西沙主要驻地与交通枢纽；现代设区管理永乐、宣德等群岛。",
+    "culture": "岛礁以珊瑚礁生态系统为主，海域是重要渔场与洄游通道；岛上植被稀疏、以热带海岸林与礁盘生物为代表。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "西沙海产干货",
+        "kind": "特产",
+        "note": "海参、鱼干与螺贝类干货，为岛礁渔获加工品。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "西沙海藻",
+        "category": "海鲜",
+        "recommend": "清爽",
+        "note": "礁盘采集的海藻，凉拌或做汤。",
+        "image": "/assets/cities/460300/food-西沙海藻.jpg"
+      },
+      {
+        "name": "西沙鱼干",
+        "category": "海鲜",
+        "recommend": "咸鲜",
+        "note": "渔获晒制的鱼干，下饭佳品。",
+        "image": "/assets/cities/460300/food-西沙鱼干.jpg"
+      }
+    ],
+    "spots": [
+      "hn-xs-yongxing",
+      "hn-xs-shi",
+      "hn-xs-qilian"
+    ],
+    "center": [
+      112.3386402,
+      16.8310066
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "460302",
+    "name": "南沙区",
+    "city": "三沙市",
+    "province": "海南省",
+    "oneLiner": "南沙群岛海域，辽阔的珊瑚礁渔场",
+    "tags": [
+      "山水"
+    ],
+    "history": "南沙群岛由星罗棋布的环礁、暗礁与岛礁组成，是南海重要的传统渔场与海上通道；现代设区实施海域管理。",
+    "culture": "海域以珊瑚礁生态系统为主，渔场资源丰富，周边为海洋保护区与生态观测的重点区域，人类活动以科考与渔业为主。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "南沙海参",
+        "kind": "特产",
+        "note": "热带礁盘出产的海参，为名贵海产干货。"
+      },
+      {
+        "name": "南沙渔获",
+        "kind": "特产",
+        "note": "海域渔场出产的底栖与洄游鱼类，远海风味。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "南沙海鲜",
+        "category": "海鲜",
+        "recommend": "远海",
+        "note": "礁盘与渔场出产的螺贝、鱼类，鲜甜紧实。",
+        "image": "/assets/cities/460300/food-南沙海鲜.jpg"
+      },
+      {
+        "name": "海参羹",
+        "category": "海鲜",
+        "recommend": "滋补",
+        "note": "南沙海参发制后入羹，清淡鲜美。",
+        "image": "/assets/cities/460300/food-海参羹.jpg"
+      }
+    ],
+    "spots": [
+      "hn-ns-meiji",
+      "hn-ns-yongshu"
+    ],
+    "center": [
+      113.343872,
+      8.21455
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "460400",
+    "name": "儋州市",
+    "city": "儋州市",
+    "province": "海南省",
+    "oneLiner": "东坡谪居地，松涛水库与千年盐田",
+    "tags": [
+      "历史文化",
+      "山水"
+    ],
+    "history": "汉代属儋耳郡，北宋苏东坡曾贬居于此，讲学造墨留下文脉；现代为海南西部的中心城市，松涛水库是岛上最大的人工湖。",
+    "culture": "东坡书院承载贬官文化，洋浦千年古盐田保留日晒制盐古法，调声民歌与客家、黎苗文化交织。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "儋州米烂",
+        "kind": "特产",
+        "note": "儋州传统米粉小吃，配料丰富，是本地早餐与宴席常见。"
+      },
+      {
+        "name": "光村沙虫",
+        "kind": "特产",
+        "note": "近海滩涂出产的沙虫，鲜脆，多爆炒或煮粥。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "儋州米烂",
+        "category": "小吃",
+        "recommend": "必尝",
+        "note": "细米粉拌花生、肉丝与卤汁，咸香爽口。",
+        "image": "/assets/cities/460400/food-儋州米烂.jpg"
+      },
+      {
+        "name": "东坡肘子",
+        "category": "特色菜",
+        "recommend": "典故菜",
+        "note": "借东坡之名的一道炖肘子，软糯入味。",
+        "image": "/assets/cities/460400/food-东坡肘子.jpg"
+      },
+      {
+        "name": "儋州粽子",
+        "category": "主食",
+        "recommend": "节令",
+        "note": "咸肉蛋黄粽，儋州端午名点。",
+        "image": "/assets/cities/460400/food-儋州粽子.jpg"
+      }
+    ],
+    "spots": [
+      "hn-dz-dongpo",
+      "hn-dz-songtao",
+      "hn-dz-yantian",
+      "hn-dz-haihua",
+      "hn-dz-shihua"
+    ],
+    "center": [
+      109.390059,
+      19.579264
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469001",
+    "name": "五指山市",
+    "city": "五指山市",
+    "province": "海南省",
+    "oneLiner": "五指山下，黎苗山城与热带雨林",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "history": "原为海南黎族苗族自治州首府（通什），2001 年改今名；地处五指山腹地，是黎苗聚居与热带雨林保护的核心。",
+    "culture": "黎族织锦、苗舞与山兰酒等非遗鲜活，水满茶产于高山云雾间，五指山革命根据地是琼崖纵队重要纪念地。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "水满茶",
+        "kind": "特产",
+        "note": "五指山高山云雾茶，汤色清亮，回甘明显。"
+      },
+      {
+        "name": "五指山野菜",
+        "kind": "特产",
+        "note": "野生苋、雷公根等山野菜，清炒或上汤皆宜。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "五指山野菜",
+        "category": "蔬菜",
+        "recommend": "山野",
+        "note": "高山野菜清炒，清爽去火。",
+        "image": "/assets/cities/469001/food-五指山野菜.jpg"
+      },
+      {
+        "name": "黎家竹筒饭",
+        "category": "主食",
+        "recommend": "特色",
+        "note": "山兰米装竹筒烤制，带竹香。",
+        "image": "/assets/cities/469001/food-黎家竹筒饭.jpg"
+      },
+      {
+        "name": "五脚猪",
+        "category": "特色菜",
+        "recommend": "本地",
+        "note": "山里放养小黑猪，肉质紧实，多白切或爆炒。",
+        "image": "/assets/cities/469001/food-五脚猪.jpg"
+      }
+    ],
+    "spots": [
+      "hn-wzs-wuzhi",
+      "hn-wzs-rain",
+      "hn-wzs-taiping",
+      "hn-wzs-shuiman"
+    ],
+    "center": [
+      109.511892,
+      18.824035
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469002",
+    "name": "琼海市",
+    "city": "琼海市",
+    "province": "海南省",
+    "oneLiner": "博鳌与万泉河，论坛之都",
+    "tags": [
+      "亲子",
+      "历史文化",
+      "拍照"
+    ],
+    "history": "因万泉河冲积平原而兴，嘉积镇历史上是琼东商贸重镇；2001 年起博鳌成为亚洲论坛永久会址所在地。",
+    "culture": "万泉河红色文化与嘉积老街并存，潭门渔港是南海渔业与远洋捕捞的传统母港，疍家与渔俗浓厚。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "加积鸭",
+        "kind": "特产",
+        "note": "琼海名鸭，皮薄肉嫩，以白切最能体现原味。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "加积鸭",
+        "category": "特色菜",
+        "recommend": "必尝",
+        "note": "白切加积鸭配鸭汁酱，皮爽肉嫩。",
+        "image": "/assets/cities/469002/food-加积鸭.jpg"
+      },
+      {
+        "name": "万泉河鱼",
+        "category": "海鲜",
+        "recommend": "鲜",
+        "note": "万泉河淡水鱼清蒸或煮汤，肉质细嫩。",
+        "image": "/assets/cities/469002/food-万泉河鱼.jpg"
+      },
+      {
+        "name": "潭门海鲜",
+        "category": "海鲜",
+        "recommend": "现捞",
+        "note": "渔港直供的海鱼、虾蟹，简单烹制最鲜。",
+        "image": "/assets/cities/469002/food-潭门海鲜.jpg"
+      }
+    ],
+    "spots": [
+      "hn-qh-boao",
+      "hn-qh-wanquan",
+      "hn-qh-yudai",
+      "hn-qh-tanmen"
+    ],
+    "center": [
+      110.421962,
+      19.210377
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469005",
+    "name": "文昌市",
+    "city": "文昌市",
+    "province": "海南省",
+    "oneLiner": "椰乡与航天城，文昌鸡的故乡",
+    "tags": [
+      "拍照",
+      "历史文化",
+      "亲子"
+    ],
+    "history": "海南侨乡与文化重镇，明清文昌阁与孔庙延续文脉；现代龙楼镇建起航天发射场，椰林海岸与侨乡老宅并存。",
+    "culture": "文昌鸡是琼菜代表，东郊椰林绵延成海，宋氏祖居、铺前骑楼承载侨乡与近代人物记忆，航天旅游是新名片。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "文昌鸡",
+        "kind": "特产",
+        "note": "海南四大名菜之首，皮脆肉嫩，白切最见功夫。"
+      },
+      {
+        "name": "抱罗粉",
+        "kind": "特产",
+        "note": "文昌抱罗镇传统汤粉，牛肉清汤配粗粉，鲜香。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "文昌鸡",
+        "category": "特色菜",
+        "recommend": "必尝",
+        "note": "白切文昌鸡配蒜蓉酱，皮爽骨软。",
+        "image": "/assets/cities/469005/food-文昌鸡.jpg"
+      },
+      {
+        "name": "抱罗粉",
+        "category": "小吃",
+        "recommend": "早餐",
+        "note": "粗米粉配牛肉汤与花生，咸鲜。",
+        "image": "/assets/cities/469005/food-抱罗粉.jpg"
+      },
+      {
+        "name": "铺前糟粕醋",
+        "category": "小吃",
+        "recommend": "酸辣",
+        "note": "以酿酒糟粕醋为汤底的海鲜火锅，开胃。",
+        "image": "/assets/cities/469005/food-铺前糟粕醋.jpg"
+      }
+    ],
+    "spots": [
+      "hn-wc-fashe",
+      "hn-wc-dongjiao",
+      "hn-wc-tonggu",
+      "hn-wc-songshi",
+      "hn-wc-kongmiao"
+    ],
+    "center": [
+      110.788535,
+      19.747363
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469006",
+    "name": "万宁市",
+    "city": "万宁市",
+    "province": "海南省",
+    "oneLiner": "日月湾冲浪与兴隆咖啡",
+    "tags": [
+      "拍照",
+      "山水",
+      "亲子"
+    ],
+    "history": "地处琼东南沿海，兴隆自上世纪起安置归国华侨，发展热带作物与咖啡种植；现代以冲浪与温泉度假闻名。",
+    "culture": "日月湾是国内外知名的冲浪点，兴隆热带植物园集科研与游览，东山岭被誉为「海南第一山」，侨乡饮食丰富。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "兴隆咖啡",
+        "kind": "特产",
+        "note": "归侨引种的咖啡，焙炒香浓，是海南代表性饮品。"
+      },
+      {
+        "name": "东山羊",
+        "kind": "特产",
+        "note": "东山岭放养黑山羊，皮嫩无膻，为海南四大名菜之一。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "和乐蟹",
+        "category": "海鲜",
+        "recommend": "必尝",
+        "note": "和乐镇膏蟹，清蒸最能吃出蟹膏鲜甜。",
+        "image": "/assets/cities/469006/food-和乐蟹.jpg"
+      },
+      {
+        "name": "后安粉",
+        "category": "小吃",
+        "recommend": "早餐",
+        "note": "后安镇猪骨汤细粉，胡椒提味，暖胃。",
+        "image": "/assets/cities/469006/food-后安粉.jpg"
+      },
+      {
+        "name": "兴隆咖啡",
+        "category": "饮品",
+        "recommend": "下午茶",
+        "note": "炭焙咖啡配炼乳，香浓回甘。",
+        "image": "/assets/cities/469006/food-兴隆咖啡.jpg"
+      }
+    ],
+    "spots": [
+      "hn-wn-riyue",
+      "hn-wn-xinglong",
+      "hn-wn-shimei",
+      "hn-wn-dongshan",
+      "hn-wn-shenzhou"
+    ],
+    "center": [
+      110.324496,
+      18.830445
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469007",
+    "name": "东方市",
+    "city": "东方市",
+    "province": "海南省",
+    "oneLiner": "昌化江口，鱼鳞洲与俄贤岭",
+    "tags": [
+      "山水"
+    ],
+    "history": "地处海南西南沿海、昌化江入海口，原为黎汉杂居的垦区；现代以工业港口与热带农业为主，内陆俄贤岭保留喀斯特地貌。",
+    "culture": "黎族村落与黑脸琵鹭越冬湿地并存，四更、感城的烤乳猪与酸瓜是地方风味，俄贤岭有黎族「俄娘」传说。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "东方烤乳猪",
+        "kind": "特产",
+        "note": "皮脆肉嫩的烤乳猪，是东方宴席招牌。"
+      },
+      {
+        "name": "东方酸瓜",
+        "kind": "特产",
+        "note": "本地酸渍瓜类，开胃下饭，常配烤肉。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "东方烤乳猪",
+        "category": "特色菜",
+        "recommend": "必尝",
+        "note": "炭烤乳猪皮脆，蘸白糖或酸瓜解腻。",
+        "image": "/assets/cities/469007/food-东方烤乳猪.jpg"
+      },
+      {
+        "name": "四更烤乳猪",
+        "category": "特色菜",
+        "recommend": "名品",
+        "note": "四更镇烤乳猪尤为出名，肥而不腻。",
+        "image": "/assets/cities/469007/food-四更烤乳猪.jpg"
+      },
+      {
+        "name": "黎族竹筒饭",
+        "category": "主食",
+        "recommend": "特色",
+        "note": "山兰米装竹筒烤制，带竹香。",
+        "image": "/assets/cities/469007/food-黎族竹筒饭.jpg"
+      }
+    ],
+    "spots": [
+      "hn-df-yulin",
+      "hn-df-exian",
+      "hn-df-daguangba",
+      "hn-df-sigeng"
+    ],
+    "center": [
+      108.818801,
+      18.996184
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469021",
+    "name": "定安县",
+    "city": "定安县",
+    "province": "海南省",
+    "oneLiner": "定城古城与南丽湖的慢县",
+    "tags": [
+      "历史文化",
+      "山水"
+    ],
+    "history": "明代定安县城（定城）是琼北文风厚重的古城，曾出多位进士；南丽湖一带为火山堰塞形成的水乡。",
+    "culture": "定安古城墙、文笔峰与张岳崧故居承载科举与书院文化，母瑞山是琼崖革命根据地，粽子与腌粉是地方名片。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "定安粽子",
+        "kind": "特产",
+        "note": "咸肉蛋黄粽，定安端午名点，糯香入味。"
+      },
+      {
+        "name": "定安黑猪",
+        "kind": "特产",
+        "note": "本地土猪，肉质紧实，多做白切或红烧。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "定安粽子",
+        "category": "主食",
+        "recommend": "节令",
+        "note": "咸蛋黄五花粽，油润香糯。",
+        "image": "/assets/cities/469021/food-定安粽子.jpg"
+      },
+      {
+        "name": "仙沟腌粉",
+        "category": "小吃",
+        "recommend": "早餐",
+        "note": "仙沟镇腌粉，卤汁花生配细粉。",
+        "image": "/assets/cities/469021/food-仙沟腌粉.jpg"
+      },
+      {
+        "name": "定安黑猪",
+        "category": "特色菜",
+        "recommend": "家常",
+        "note": "土猪白切，蘸什锦酱鲜甜。",
+        "image": "/assets/cities/469021/food-定安黑猪.jpg"
+      }
+    ],
+    "spots": [
+      "hn-da-wenbi",
+      "hn-da-nanli",
+      "hn-da-gucheng",
+      "hn-da-murui"
+    ],
+    "center": [
+      110.312936,
+      19.483405
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469022",
+    "name": "屯昌县",
+    "city": "屯昌县",
+    "province": "海南省",
+    "oneLiner": "木色湖与枫木鹿场，中部山乡",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "history": "地处海南中部盆地区，历来为黎汉杂居的农耕县；丘陵与水库相间，是琼中通往沿海的交通节点之一。",
+    "culture": "木色湖、枫木鹿场等田园景点突出亲子游，香草与南药种植渐成规模，山兰米与土鸡是地方物产。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "屯昌香草鸭",
+        "kind": "特产",
+        "note": "以香草饲喂的鸭子，肉质清香，多白切或炖汤。"
+      },
+      {
+        "name": "枫木苦瓜",
+        "kind": "特产",
+        "note": "中部冷凉气候所产苦瓜，肉厚苦味淡。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "屯昌阉鸡",
+        "category": "特色菜",
+        "recommend": "本地",
+        "note": "土阉鸡白切，皮爽肉实。",
+        "image": "/assets/cities/469022/food-屯昌阉鸡.jpg"
+      },
+      {
+        "name": "枫木苦瓜",
+        "category": "蔬菜",
+        "recommend": "清炒",
+        "note": "苦瓜炒蛋或上汤，清爽。",
+        "image": "/assets/cities/469022/food-枫木苦瓜.jpg"
+      },
+      {
+        "name": "木色湖鱼",
+        "category": "海鲜",
+        "recommend": "鲜",
+        "note": "水库淡水鱼，清蒸或煮汤。",
+        "image": "/assets/cities/469022/food-木色湖鱼.jpg"
+      }
+    ],
+    "spots": [
+      "hn-tc-muse",
+      "hn-tc-fengmu",
+      "hn-tc-wolong"
+    ],
+    "center": [
+      110.055723,
+      19.342208
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469023",
+    "name": "澄迈县",
+    "city": "澄迈县",
+    "province": "海南省",
+    "oneLiner": "福山咖啡与美榔双塔",
+    "tags": [
+      "历史文化",
+      "山水"
+    ],
+    "history": "汉代属珠崖郡，是琼北古老的农业县；福山自近代引种咖啡，罗驿、美榔等地留存古村与石塔。",
+    "culture": "福山咖啡风情镇是海南咖啡文化的代表，美榔双塔为元代石塔，罗驿古村以火山岩老屋与驿道闻名。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "福山咖啡",
+        "kind": "特产",
+        "note": "澄迈福山焙炒咖啡，香浓微酸，是海南代表性饮品。"
+      },
+      {
+        "name": "桥头地瓜",
+        "kind": "特产",
+        "note": "桥头镇沙土地瓜，粉糯香甜，远近有名。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "福山咖啡",
+        "category": "饮品",
+        "recommend": "下午茶",
+        "note": "炭焙咖啡配炼乳，香浓。",
+        "image": "/assets/cities/469023/food-福山咖啡.jpg"
+      },
+      {
+        "name": "澄迈白莲鹅",
+        "category": "特色菜",
+        "recommend": "本地",
+        "note": "白莲镇鹅肉紧实，白切或红烧皆宜。",
+        "image": "/assets/cities/469023/food-澄迈白莲鹅.jpg"
+      },
+      {
+        "name": "瑞溪牛肉干",
+        "category": "小吃",
+        "recommend": "伴手",
+        "note": "瑞溪镇风干牛肉，咸香耐嚼。",
+        "image": "/assets/cities/469023/food-瑞溪牛肉干.jpg"
+      }
+    ],
+    "spots": [
+      "hn-cm-fushan",
+      "hn-cm-luoyi",
+      "hn-cm-meilang",
+      "hn-cm-yongqing"
+    ],
+    "center": [
+      109.990417,
+      19.700201
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469024",
+    "name": "临高县",
+    "city": "临高县",
+    "province": "海南省",
+    "oneLiner": "临高角与渔歌，琼北海防要地",
+    "tags": [
+      "历史文化",
+      "山水"
+    ],
+    "history": "汉代属儋耳，明代筑临高城；临高角是琼北重要的海岸登陆与渔港，历史上为海防要冲。",
+    "culture": "临高渔歌「哩哩美」、人偶戏等非遗鲜活，烤乳猪与韭菜饼是地方名吃，文澜江穿城入海。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "临高烤乳猪",
+        "kind": "特产",
+        "note": "皮脆肉嫩的烤乳猪，是临高宴席与节庆招牌。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "临高烤乳猪",
+        "category": "特色菜",
+        "recommend": "必尝",
+        "note": "炭烤乳猪皮脆，蘸白糖解腻。",
+        "image": "/assets/cities/469024/food-临高烤乳猪.jpg"
+      },
+      {
+        "name": "临高韭菜饼",
+        "category": "小吃",
+        "recommend": "街头",
+        "note": "韭菜海米煎饼，外脆里软。",
+        "image": "/assets/cities/469024/food-临高韭菜饼.jpg"
+      },
+      {
+        "name": "多文空心菜",
+        "category": "蔬菜",
+        "recommend": "清炒",
+        "note": "多文镇空心菜茎粗脆嫩，远近有名。",
+        "image": "/assets/cities/469024/food-多文空心菜.jpg"
+      }
+    ],
+    "spots": [
+      "hn-lg-lingaojiao",
+      "hn-lg-gaoshan",
+      "hn-lg-wenlan"
+    ],
+    "center": [
+      109.71548,
+      19.809704
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469025",
+    "name": "白沙黎族自治县",
+    "city": "白沙黎族自治县",
+    "province": "海南省",
+    "oneLiner": "陨石坑与鹦哥岭，黎乡茶山",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "history": "海南中部黎族聚居县，境内有罕见的白沙陨石坑；鹦哥岭为热带雨林保护区，是岛上重要的水源林。",
+    "culture": "黎族制陶、织锦与老古舞等非遗鲜活，陨石坑茶（白沙绿茶）产于火山岩土，邦溪是坡鹿保护区。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "白沙绿茶",
+        "kind": "特产",
+        "note": "陨石坑周边火山岩茶，香气清雅，回甘明显。"
+      },
+      {
+        "name": "黎族竹筒饭",
+        "kind": "特产",
+        "note": "山兰米装竹筒烤制，带竹香。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "白沙绿茶",
+        "category": "饮品",
+        "recommend": "下午茶",
+        "note": "陨石坑茶清亮回甘。",
+        "image": "/assets/cities/469025/food-白沙绿茶.jpg"
+      },
+      {
+        "name": "黎族竹筒饭",
+        "category": "主食",
+        "recommend": "特色",
+        "note": "山兰米烤竹筒，竹香米软。",
+        "image": "/assets/cities/469025/food-黎族竹筒饭.jpg"
+      },
+      {
+        "name": "白沙蜂蜜",
+        "category": "甜品",
+        "recommend": "土产",
+        "note": "山区百花蜜，浓稠清甜。",
+        "image": "/assets/cities/469025/food-白沙蜂蜜.jpg"
+      }
+    ],
+    "spots": [
+      "hn-bs-yingge",
+      "hn-bs-yunshi",
+      "hn-bs-bangxi"
+    ],
+    "center": [
+      109.351743,
+      19.20989
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469026",
+    "name": "昌江黎族自治县",
+    "city": "昌江黎族自治县",
+    "province": "海南省",
+    "oneLiner": "棋子湾与霸王岭，山海之间",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "history": "地处海南西南，昌化江下游；棋子湾为罕见的沙漠化海湾，霸王岭是长臂猿等珍稀物种的栖息地。",
+    "culture": "黎族制陶与苗绣流传，昌江芒果、乌烈乳羊是地方名产，昌化古城与海岸岩画留存历史痕迹。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "昌江芒果",
+        "kind": "特产",
+        "note": "昌江光照足，芒果肉厚香甜，是海南主要产区。"
+      },
+      {
+        "name": "乌烈乳羊",
+        "kind": "特产",
+        "note": "乌烈镇放养乳羊，皮嫩无膻，多白切。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "乌烈乳羊",
+        "category": "特色菜",
+        "recommend": "必尝",
+        "note": "白切乳羊配酱，鲜嫩不膻。",
+        "image": "/assets/cities/469026/food-乌烈乳羊.jpg"
+      },
+      {
+        "name": "昌江芒果",
+        "category": "甜品",
+        "recommend": "夏季",
+        "note": "生吃或做甜品，香气浓。",
+        "image": "/assets/cities/469026/food-昌江芒果.jpg"
+      },
+      {
+        "name": "棋子湾海鲜",
+        "category": "海鲜",
+        "recommend": "现捞",
+        "note": "近岸渔获简单烹制最鲜。",
+        "image": "/assets/cities/469026/food-棋子湾海鲜.jpg"
+      }
+    ],
+    "spots": [
+      "hn-cj-qizi",
+      "hn-cj-bawang",
+      "hn-cj-changhua"
+    ],
+    "center": [
+      108.993675,
+      19.226048
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469027",
+    "name": "乐东黎族自治县",
+    "city": "乐东黎族自治县",
+    "province": "海南省",
+    "oneLiner": "尖峰岭与莺歌海，西南山海",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "history": "海南西南部黎族聚居县，尖峰岭为古老热带雨林，莺歌海是历史悠久的盐场与渔港。",
+    "culture": "黎族文化与盐场、渔港并存，尖峰岭野菜、乐东腰果与黄流老鸭是地方风味，龙沐湾度假渐兴。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "乐东腰果",
+        "kind": "特产",
+        "note": "热带经济作物，果仁香脆，乐东为主要产区。"
+      },
+      {
+        "name": "黄流老鸭",
+        "kind": "特产",
+        "note": "黄流镇白切老鸭，皮紧肉香，是琼西南名菜。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "黄流老鸭",
+        "category": "特色菜",
+        "recommend": "必尝",
+        "note": "白切老鸭配鸭汁，皮香肉实。",
+        "image": "/assets/cities/469027/food-黄流老鸭.jpg"
+      },
+      {
+        "name": "尖峰岭野菜",
+        "category": "蔬菜",
+        "recommend": "山野",
+        "note": "雨林野菜清炒，清爽。",
+        "image": "/assets/cities/469027/food-尖峰岭野菜.jpg"
+      },
+      {
+        "name": "乐东香蕉",
+        "category": "甜品",
+        "recommend": "日常",
+        "note": "温热气候所产香蕉，软糯香甜。",
+        "image": "/assets/cities/469027/food-乐东香蕉.jpg"
+      }
+    ],
+    "spots": [
+      "hn-ld-jianfeng",
+      "hn-ld-yinggehai",
+      "hn-ld-longmu"
+    ],
+    "center": [
+      109.029671,
+      18.639822
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469028",
+    "name": "陵水黎族自治县",
+    "city": "陵水黎族自治县",
+    "province": "海南省",
+    "oneLiner": "分界洲岛与南湾猴岛",
+    "tags": [
+      "拍照",
+      "山水",
+      "亲子"
+    ],
+    "history": "海南东南沿海黎族聚居县，新村港是疍家渔村所在地；分界洲岛为气候与地貌的分界点，旅游开发较早。",
+    "culture": "疍家咸水歌、渔排文化与黎苗民俗并存，陵水酸粉是本地名吃，香水湾、清水湾串联起度假海岸。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "陵水酸粉",
+        "kind": "特产",
+        "note": "陵水传统腌粉，卤汁酸甜，配料丰富，是海南名小吃。"
+      },
+      {
+        "name": "光坡圣女果",
+        "kind": "特产",
+        "note": "光坡镇小番茄，皮薄味甜，秋冬盛产。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "陵水酸粉",
+        "category": "小吃",
+        "recommend": "必尝",
+        "note": "酸甜卤汁拌细粉，配花生与牛肉干。",
+        "image": "/assets/cities/469028/food-陵水酸粉.jpg"
+      },
+      {
+        "name": "新村海鲜",
+        "category": "海鲜",
+        "recommend": "现捞",
+        "note": "新村港渔排直供，清蒸最鲜。",
+        "image": "/assets/cities/469028/food-新村海鲜.jpg"
+      },
+      {
+        "name": "疍家鱼粥",
+        "category": "主食",
+        "recommend": "暖胃",
+        "note": "渔港鱼粥，米烂鱼鲜。",
+        "image": "/assets/cities/469028/food-疍家鱼粥.jpg"
+      }
+    ],
+    "spots": [
+      "hn-ls-fenjie",
+      "hn-ls-houdao",
+      "hn-ls-xiangshui",
+      "hn-ls-qing",
+      "hn-ls-diaoluo"
+    ],
+    "center": [
+      109.951436,
+      18.549546
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469029",
+    "name": "保亭黎族苗族自治县",
+    "city": "保亭黎族苗族自治县",
+    "province": "海南省",
+    "oneLiner": "呀诺达与槟榔谷，雨林黎苗",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "history": "海南中部黎苗聚居县，地处三亚以北的雨林山地；七仙岭温泉与呀诺达雨林构成琼南康养与旅游带。",
+    "culture": "黎族织锦、苗舞与槟榔谷的黎苗村寨活态展示，红毛丹等热带水果盛产，温泉资源突出。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "保亭红毛丹",
+        "kind": "特产",
+        "note": "保亭特产热带果，果肉晶莹，清甜多汁。"
+      },
+      {
+        "name": "黎苗竹筒饭",
+        "kind": "特产",
+        "note": "山兰米装竹筒烤制，带竹香。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "保亭红毛丹",
+        "category": "甜品",
+        "recommend": "夏季",
+        "note": "鲜食清甜，汁多核小。",
+        "image": "/assets/cities/469029/food-保亭红毛丹.jpg"
+      },
+      {
+        "name": "七仙岭温泉鸡",
+        "category": "特色菜",
+        "recommend": "本地",
+        "note": "山地放养鸡，清补做法。",
+        "image": "/assets/cities/469029/food-七仙岭温泉鸡.jpg"
+      },
+      {
+        "name": "黎苗竹筒饭",
+        "category": "主食",
+        "recommend": "特色",
+        "note": "竹筒烤米，竹香软糯。",
+        "image": "/assets/cities/469029/food-黎苗竹筒饭.jpg"
+      }
+    ],
+    "spots": [
+      "hn-bt-yanuoda",
+      "hn-bt-binglang",
+      "hn-bt-qixian"
+    ],
+    "center": [
+      109.650759,
+      18.589686
+    ],
+    "baseline": false,
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "469030",
+    "name": "琼中黎族自治县",
+    "city": "琼中黎族苗族自治县",
+    "province": "海南省",
+    "oneLiner": "黎母山与绿橙，中部山城",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "history": "地处海南岛中部五指山腹地，历来为黎族聚居与琼崖革命根据地；黎母山被视为黎族始祖文化之山。",
+    "culture": "黎族织锦、竹筒饭与山兰酒流传，琼中绿橙是地理标志水果，白沙起义纪念园承载黎族革命史。",
+    "people": [],
+    "specialties": [
+      {
+        "name": "琼中绿橙",
+        "kind": "特产",
+        "note": "琼中高山药橙，皮绿肉红，酸甜多汁。"
+      },
+      {
+        "name": "琼中蜂蜜",
+        "kind": "特产",
+        "note": "山区百花蜜，浓稠清甜。"
+      }
+    ],
+    "foods": [
+      {
+        "name": "琼中绿橙",
+        "category": "甜品",
+        "recommend": "秋冬",
+        "note": "鲜食酸甜，汁多。",
+        "image": "/assets/cities/469030/food-琼中绿橙.jpg"
+      },
+      {
+        "name": "黎族竹筒饭",
+        "category": "主食",
+        "recommend": "特色",
+        "note": "山兰米烤竹筒，竹香。",
+        "image": "/assets/cities/469030/food-黎族竹筒饭.jpg"
+      },
+      {
+        "name": "琼中淡水鱼",
+        "category": "海鲜",
+        "recommend": "鲜",
+        "note": "山溪水库鱼，清蒸或煮汤。",
+        "image": "/assets/cities/469030/food-琼中淡水鱼.jpg"
+      }
+    ],
+    "spots": [
+      "hn-qz-limu",
+      "hn-qz-baihua",
+      "hn-qz-baimao"
+    ],
+    "center": [
+      109.854584,
+      19.033919
     ],
     "baseline": false,
     "source": "公开资料整理 · 待人工复核",

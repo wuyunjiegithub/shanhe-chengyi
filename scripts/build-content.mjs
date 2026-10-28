@@ -17,12 +17,16 @@ const slug = (s) =>
     .replace(/^-+|-+$/g, '')
     .toLowerCase();
 
-// 区县码前 4 位即所属地级市；4 个直辖市（京11/津12/沪31/渝50）前 2 位即市本级
+// 区县码前 4 位即所属地级市；4 个直辖市（京11/津12/沪31/渝50）前 2 位即市本级；
+// 省直辖县级市 / 县（如五指山 469001）的区县码本身就是城市码，直接归属该城市。
 const MUNI_PREFIX = new Set(['11', '12', '31', '50']);
-const cityIdOfDistrict = (districtId, province) =>
-  MUNI_PREFIX.has(districtId.slice(0, 2))
-    ? districtId.slice(0, 2) + '0000'
-    : districtId.slice(0, 4) + '00';
+let _cityIds = null;
+const cityIdOfDistrict = (districtId) => {
+  if (MUNI_PREFIX.has(districtId.slice(0, 2))) return districtId.slice(0, 2) + '0000';
+  if (_cityIds === null) _cityIds = new Set(cityGeo.features.map((f) => String(f.properties.id)));
+  if (_cityIds.has(districtId)) return districtId;
+  return districtId.slice(0, 4) + '00';
+};
 
 const ROOT = process.cwd();
 const GEO_DIR = join(ROOT, 'public/geo');

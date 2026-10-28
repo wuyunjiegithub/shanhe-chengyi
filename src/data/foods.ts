@@ -27,11 +27,14 @@ export interface EffectiveFoods {
  * - 4 个直辖市（京 11 / 津 12 / 沪 31 / 渝 50）没有地级市这一层，
  *   区县码前 2 位即市本级：110101（东城）→ 110000（北京）
  */
-export function cityIdOfDistrictId(districtId: string): string {
+export function cityIdOfDistrictId(districtId: string, cities?: City[]): string {
   const prefix = districtId.slice(0, 2);
   if (prefix === '11' || prefix === '12' || prefix === '31' || prefix === '50') {
     return prefix + '0000';
   }
+  // 省直辖县级市 / 县：区县码本身就是城市码（如五指山 469001），直接归属该城市，
+  // 否则 slice(0,4)+'00' 落到不存在的 469000，美食回退找不到城市。
+  if (cities?.some((c) => c.id === districtId)) return districtId;
   return districtId.slice(0, 4) + '00';
 }
 
@@ -51,7 +54,7 @@ export function effectiveFoods(
   }
   if (!district) return { foods: [], source: 'district', cityName: null };
 
-  const cityId = cityIdOfDistrictId(district.id);
+  const cityId = cityIdOfDistrictId(district.id, cities);
   const city = cities.find((c) => c.id === cityId) ?? cities.find((c) => c.districts.includes(district.id));
   if (!city?.foods?.length) {
     return { foods: [], source: 'district', cityName: null };

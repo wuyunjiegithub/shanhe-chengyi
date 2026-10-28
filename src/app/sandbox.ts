@@ -580,7 +580,7 @@ export function updateMarkers(): void {
   ]);
 }
 
-export function cityIdOfDistrict(districtId: string, province: string): string {
+export function cityIdOfDistrict(districtId: string, _province?: string): string {
   // 区县码前 4 位即所属地级市：330127（淳安）→ 330100（杭州）
   // 4 个直辖市（京 11 / 津 12 / 沪 31 / 渝 50）没有地级市这一层，
   // 区县码前 2 位即市本级：110101（东城）→ 110000（北京）、310101（黄浦）→ 310000
@@ -588,7 +588,11 @@ export function cityIdOfDistrict(districtId: string, province: string): string {
   if (prefix === '11' || prefix === '12' || prefix === '31' || prefix === '50') {
     return prefix + '0000';
   }
-  if (province === '上海市' || districtId.startsWith('31')) return '310000'; // 兼容旧逻辑
+  // 省直辖县级市 / 县（如海南省五指山市 469001、济源市 419001）：区县码本身就是城市码，
+  // 直接归属该城市；否则 slice(0,4)+'00' 会落到不存在的 469000，导致点击无法下钻、
+  // 「去过」城市标记丢失。
+  const cityIds = new Set(useData.getState().cities.map((c) => c.id));
+  if (cityIds.has(districtId)) return districtId;
   return districtId.slice(0, 4) + '00';
 }
 

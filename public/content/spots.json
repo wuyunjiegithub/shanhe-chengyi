@@ -19758,310 +19758,6 @@
     "updatedAt": "2026-10-19"
   },
   {
-    "id": "lm-460105-0",
-    "name": "骑楼老街",
-    "districtId": "460105",
-    "lng": 110.1842,
-    "lat": 19.9273,
-    "summary": "南洋风情的近代商住街区。",
-    "tags": [
-      "古镇",
-      "拍照",
-      "历史文化"
-    ],
-    "hot": false,
-    "suitableFor": [
-      "拍照"
-    ],
-    "duration": "2小时",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "lm-460105-1",
-    "name": "骑楼老街",
-    "districtId": "460105",
-    "lng": 110.2142,
-    "lat": 19.8873,
-    "summary": "南洋风情的海口发源地百年街区。",
-    "tags": [
-      "古镇",
-      "历史文化"
-    ],
-    "hot": true,
-    "suitableFor": [
-      "拍照",
-      "亲子"
-    ],
-    "duration": "2小时",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "lm-460105-2",
-    "name": "火山口地质公园",
-    "districtId": "460105",
-    "lng": 110.2442,
-    "lat": 19.9273,
-    "summary": "雷琼世界地质公园的休眠火山口。",
-    "tags": [
-      "山水",
-      "亲子"
-    ],
-    "hot": false,
-    "suitableFor": [
-      "亲子"
-    ],
-    "duration": "2小时",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "lm-460105-3",
-    "name": "五公祠",
-    "districtId": "460105",
-    "lng": 110.2742,
-    "lat": 19.8873,
-    "summary": "奉祀唐宋贬琼名臣的海南第一楼。",
-    "tags": [
-      "历史文化"
-    ],
-    "hot": false,
-    "suitableFor": [
-      "亲子"
-    ],
-    "duration": "1小时",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "wk-460105-0",
-    "name": "秀英炮台",
-    "districtId": "460105",
-    "lng": 110.3025,
-    "lat": 20.0232,
-    "summary": "秀英炮台位于海南省海口市秀英区，是当地对外展示的地标之一。",
-    "tags": [
-      "历史文化"
-    ],
-    "hot": false,
-    "suitableFor": [
-      "拍照"
-    ],
-    "duration": "1-2小时",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "w-460108-0",
-    "name": "海甸岛",
-    "districtId": "460108",
-    "lng": 110.34167,
-    "lat": 20.04278,
-    "summary": "海甸岛是中华人民共和国海口市美兰区的一个岛屿，不属于海南岛本岛，岛上有人民路街道和海甸街道两个街道",
-    "tags": [
-      "山水",
-      "拍照"
-    ],
-    "hot": false,
-    "suitableFor": [
-      "徒步",
-      "拍照"
-    ],
-    "duration": "半天",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "lm-460202-0",
-    "name": "亚龙湾",
-    "districtId": "460202",
-    "lng": 109.6722,
-    "lat": 18.3859,
-    "summary": "椰风海韵的度假沙滩。",
-    "tags": [
-      "拍照",
-      "亲子"
-    ],
-    "hot": true,
-    "suitableFor": [
-      "亲子",
-      "拍照"
-    ],
-    "duration": "半天",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "lm-460202-1",
-    "name": "亚龙湾",
-    "districtId": "460202",
-    "lng": 109.7022,
-    "lat": 18.3459,
-    "summary": "「天下第一湾」的银白沙滩。",
-    "tags": [
-      "亲子",
-      "拍照"
-    ],
-    "hot": true,
-    "suitableFor": [
-      "情侣",
-      "亲子"
-    ],
-    "duration": "半天",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "lm-460202-2",
-    "name": "南山寺",
-    "districtId": "460202",
-    "lng": 109.7322,
-    "lat": 18.3859,
-    "summary": "108 米海上观音的佛教文化苑。",
-    "tags": [
-      "寺庙",
-      "亲子"
-    ],
-    "hot": true,
-    "suitableFor": [
-      "亲子"
-    ],
-    "duration": "半天",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "lm-460202-3",
-    "name": "蜈支洲岛",
-    "districtId": "460202",
-    "lng": 109.7622,
-    "lat": 18.3459,
-    "summary": "潜水与珊瑚礁的热带海岛。",
-    "tags": [
-      "山水",
-      "拍照"
-    ],
-    "hot": true,
-    "suitableFor": [
-      "情侣"
-    ],
-    "duration": "1天",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "lm-460202-4",
-    "name": "天涯海角",
-    "districtId": "460202",
-    "lng": 109.7922,
-    "lat": 18.3859,
-    "summary": "海滨巨石刻字的浪漫地标。",
-    "tags": [
-      "拍照",
-      "亲子"
-    ],
-    "hot": false,
-    "suitableFor": [
-      "情侣"
-    ],
-    "duration": "2小时",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "wk-460204-0",
-    "name": "天涯海角",
-    "districtId": "460204",
-    "lng": 109.3454,
-    "lat": 18.293,
-    "summary": "天涯海角位于海南省三亚市天涯区，是当地对外展示的地标之一。",
-    "tags": [
-      "历史文化"
-    ],
-    "hot": false,
-    "suitableFor": [
-      "拍照"
-    ],
-    "duration": "1-2小时",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "wk-460204-1",
-    "name": "西瑁洲",
-    "districtId": "460204",
-    "lng": 109.3697,
-    "lat": 18.2408,
-    "summary": "西瑁洲位于海南省三亚市天涯区，是当地对外展示的地标之一。",
-    "tags": [
-      "历史文化"
-    ],
-    "hot": false,
-    "suitableFor": [
-      "拍照"
-    ],
-    "duration": "1-2小时",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "wk-460205-0",
-    "name": "大小洞天",
-    "districtId": "460205",
-    "lng": 109.1516,
-    "lat": 18.305,
-    "summary": "大小洞天位于海南省三亚市崖州区，是当地对外展示的地标之一。",
-    "tags": [
-      "历史文化"
-    ],
-    "hot": false,
-    "suitableFor": [
-      "拍照"
-    ],
-    "duration": "1-2小时",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "lm-460301-0",
-    "name": "永兴岛",
-    "districtId": "460301",
-    "lng": 112.3236,
-    "lat": 16.851,
-    "summary": "南海诸岛的行政与海防中心。",
-    "tags": [
-      "拍照",
-      "山水"
-    ],
-    "hot": false,
-    "suitableFor": [
-      "拍照"
-    ],
-    "duration": "2小时",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
-    "id": "lm-460301-1",
-    "name": "永兴岛",
-    "districtId": "460301",
-    "lng": 112.3536,
-    "lat": 16.811,
-    "summary": "西沙群岛最大岛，三沙市政府驻地。",
-    "tags": [
-      "山水",
-      "拍照"
-    ],
-    "hot": false,
-    "suitableFor": [
-      "拍照"
-    ],
-    "duration": "半天",
-    "source": "公开资料整理 · 待人工复核",
-    "updatedAt": "2026-10-19"
-  },
-  {
     "id": "lm-500103-0",
     "name": "洪崖洞",
     "districtId": "500103",
@@ -25529,6 +25225,1840 @@
     "hot": false,
     "suitableFor": [
       "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-xy-huoshan",
+    "name": "海口石山火山群世界地质公园",
+    "districtId": "460105",
+    "lng": 110.255,
+    "lat": 19.887,
+    "summary": "雷琼世界地质公园海口园区，火山口、熔岩隧道与植被保存完好，可登风炉岭火口俯瞰。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-xy-jiari",
+    "name": "假日海滩",
+    "districtId": "460105",
+    "lng": 110.205,
+    "lat": 19.982,
+    "summary": "西海岸带状海滨浴场，沙滩与防风林相连，是看海上日落的热门地。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-xy-xixiu",
+    "name": "西秀海滩",
+    "districtId": "460105",
+    "lng": 110.18,
+    "lat": 19.96,
+    "summary": "紧邻假日海滩的公共海滩，可游泳、玩沙与海上运动。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-xy-zoo",
+    "name": "海南热带野生动植物园",
+    "districtId": "460105",
+    "lng": 110.31,
+    "lat": 19.85,
+    "summary": "集热带植物与野生动物展示为一体的园区，亲子科普游常见目的地。",
+    "tags": [
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-lh-qilou",
+    "name": "海口骑楼老街",
+    "districtId": "460106",
+    "lng": 110.338,
+    "lat": 20.044,
+    "summary": "中山路、博爱路一带的南洋风骑楼群，连廊立柱与老商号招牌串联成步行街区。",
+    "tags": [
+      "古镇",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-lh-dianying",
+    "name": "观澜湖华谊冯小刚电影公社",
+    "districtId": "460106",
+    "lng": 110.2,
+    "lat": 19.82,
+    "summary": "以电影场景复刻的街区群，民国风街景适合拍照与街区漫游。",
+    "tags": [
+      "拍照",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-lh-wanlv",
+    "name": "万绿园",
+    "districtId": "460106",
+    "lng": 110.33,
+    "lat": 20.03,
+    "summary": "填海而成的城市滨海绿地，椰林草地开阔，是海口最大的开放公园之一。",
+    "tags": [
+      "亲子",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-lh-zhonglou",
+    "name": "海口钟楼",
+    "districtId": "460106",
+    "lng": 110.34,
+    "lat": 20.04,
+    "summary": "南渡江畔的老地标钟楼，与骑楼老街相邻，是老海口的城市记忆点。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-qs-wugong",
+    "name": "五公祠",
+    "districtId": "460107",
+    "lng": 110.355,
+    "lat": 19.988,
+    "summary": "一组纪念李德裕等历代名臣的祠宇建筑群，楼阁与古木相映，被称为「海南第一楼」。",
+    "tags": [
+      "历史文化",
+      "博物馆"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-qs-qiongtai",
+    "name": "琼台书院",
+    "districtId": "460107",
+    "lng": 110.357,
+    "lat": 19.985,
+    "summary": "清代儒学书院，院落规整，是府城文脉的代表性古迹。",
+    "tags": [
+      "历史文化",
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-qs-fengxiang",
+    "name": "凤翔湿地公园",
+    "districtId": "460107",
+    "lng": 110.4,
+    "lat": 19.78,
+    "summary": "美舍河上的城市湿地，栈道与湖面相连，是观鸟与散步的绿地。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ml-dongzhai",
+    "name": "东寨港红树林自然保护区",
+    "districtId": "460108",
+    "lng": 110.58,
+    "lat": 19.98,
+    "summary": "我国重要的红树林保护区，木栈道伸入潮间带，可观招潮蟹、鹭鸟与海上村庄遗址。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ml-baisha",
+    "name": "白沙门公园",
+    "districtId": "460108",
+    "lng": 110.34,
+    "lat": 20.07,
+    "summary": "海甸岛上的滨海公园，沙滩、摩天轮与湿地连成一片，适合亲子游。",
+    "tags": [
+      "亲子",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ml-renmin",
+    "name": "海口人民公园",
+    "districtId": "460108",
+    "lng": 110.33,
+    "lat": 20.03,
+    "summary": "市区中心的老公园，椰林与湖面相间，是市民晨练与休闲地。",
+    "tags": [
+      "亲子",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "w-460108-0",
+    "name": "海甸岛",
+    "districtId": "460108",
+    "lng": 110.34167,
+    "lat": 20.04278,
+    "summary": "海甸岛是中华人民共和国海口市美兰区的一个岛屿，不属于海南岛本岛，岛上有人民路街道和海甸街道两个街道",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步",
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ht-yalong",
+    "name": "亚龙湾",
+    "districtId": "460202",
+    "lng": 109.62,
+    "lat": 18.22,
+    "summary": "月牙形海湾，沙细水清，被誉为「天下第一湾」，度假酒店与滨海浴场集中。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ht-wuzhi",
+    "name": "蜈支洲岛",
+    "districtId": "460202",
+    "lng": 109.76,
+    "lat": 18.31,
+    "summary": "近岸珊瑚岛，环岛潜水、摩托艇与拖曳伞等水上项目密集，是三亚热门离岛。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ht-haitang",
+    "name": "海棠湾",
+    "districtId": "460202",
+    "lng": 109.68,
+    "lat": 18.39,
+    "summary": "「国家海岸」段，免税城与度假酒店沿湾铺开，人工河与沙滩相连。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ht-shuidao",
+    "name": "三亚水稻国家公园",
+    "districtId": "460202",
+    "lng": 109.75,
+    "lat": 18.34,
+    "summary": "以稻田大地艺术与恐龙科普展示为特色的田园园区，亲子游常见。",
+    "tags": [
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-jy-dadonghai",
+    "name": "大东海",
+    "districtId": "460203",
+    "lng": 109.51,
+    "lat": 18.23,
+    "summary": "三面环山的月牙形海湾，开发早、配套成熟，是市区最近的海滨浴场。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-jy-luhuitou",
+    "name": "鹿回头风景区",
+    "districtId": "460203",
+    "lng": 109.49,
+    "lat": 18.23,
+    "summary": "半岛山顶的黎族传说主题公园，可俯瞰三亚湾与城市夜景。",
+    "tags": [
+      "拍照",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-jy-senlin",
+    "name": "亚龙湾热带天堂森林公园",
+    "districtId": "460203",
+    "lng": 109.64,
+    "lat": 18.27,
+    "summary": "滨海山地雨林，过江龙索桥与玻璃栈道可观亚龙湾全景。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-jy-fenghuang",
+    "name": "凤凰岭海誓山盟景区",
+    "districtId": "460203",
+    "lng": 109.53,
+    "lat": 18.26,
+    "summary": "城市近郊山岭，索道登顶可环视三亚湾、大东海与榆林湾。",
+    "tags": [
+      "拍照",
+      "山水"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ty-tianya",
+    "name": "天涯海角",
+    "districtId": "460204",
+    "lng": 109.32,
+    "lat": 18.3,
+    "summary": "海滨巨石刻「天涯」「海角」，是三亚最著名的地标性景区。",
+    "tags": [
+      "拍照",
+      "历史文化",
+      "山水"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ty-nanshan",
+    "name": "南山文化旅游区",
+    "districtId": "460204",
+    "lng": 109.2,
+    "lat": 18.3,
+    "summary": "滨海佛教文化园，108 米海上观音与南山寺是核心景观。",
+    "tags": [
+      "寺庙",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ty-dongtian",
+    "name": "大小洞天",
+    "districtId": "460204",
+    "lng": 109.13,
+    "lat": 18.37,
+    "summary": "崖州湾畔的滨海道教文化风景区，海蚀礁岩与摩崖题刻自古有名。",
+    "tags": [
+      "山水",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ty-xidao",
+    "name": "西岛",
+    "districtId": "460204",
+    "lng": 109.3,
+    "lat": 18.3,
+    "summary": "近岸渔村岛，珊瑚礁与渔家民宿并存，可潜水、骑行与赶海。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-yz-dxt",
+    "name": "大小洞天（崖州段）",
+    "districtId": "460205",
+    "lng": 109.13,
+    "lat": 18.36,
+    "summary": "与天涯区相连的滨海礁岩景区，崖州湾海蚀地貌与摩崖题刻并存。",
+    "tags": [
+      "山水",
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-yz-yazhou",
+    "name": "崖州学宫（崖城学宫）",
+    "districtId": "460205",
+    "lng": 109.12,
+    "lat": 18.38,
+    "summary": "海南保存较好的孔庙建筑群，院落规整，是崖州文脉的核心。",
+    "tags": [
+      "历史文化",
+      "寺庙"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-yz-yazhouwan",
+    "name": "崖州湾科技城",
+    "districtId": "460205",
+    "lng": 109.1,
+    "lat": 18.38,
+    "summary": "宁远河入海口的新城片区，滨海岸线与科研园区相连，城市新貌可观。",
+    "tags": [
+      "拍照",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-xs-yongxing",
+    "name": "永兴岛",
+    "districtId": "460301",
+    "lng": 112.34,
+    "lat": 16.83,
+    "summary": "西沙群岛主要岛屿，珊瑚礁上的热带海岛，椰林、白沙与礁盘相连，是西沙枢纽。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-xs-shi",
+    "name": "石岛",
+    "districtId": "460301",
+    "lng": 112.35,
+    "lat": 16.84,
+    "summary": "紧邻永兴岛的岩石岛，礁岩海蚀地貌与观海栈道是主要看点。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-xs-qilian",
+    "name": "七连屿",
+    "districtId": "460301",
+    "lng": 112.33,
+    "lat": 16.95,
+    "summary": "永兴岛以北的岛礁群，珊瑚礁盘连续、海水清澈，是潜水和生态观察区。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ns-meiji",
+    "name": "美济礁",
+    "districtId": "460302",
+    "lng": 113.4,
+    "lat": 8.3,
+    "summary": "南沙群岛东北部的大型环礁，潟湖开阔，周边海域为重要渔场与珊瑚生态区。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ns-yongshu",
+    "name": "永暑礁",
+    "districtId": "460302",
+    "lng": 112.9,
+    "lat": 8.7,
+    "summary": "南沙群岛中部的环礁，海域生态观测与珊瑚礁保护的重点区域。",
+    "tags": [
+      "山水"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "历史文化"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-dz-dongpo",
+    "name": "东坡书院",
+    "districtId": "460400",
+    "lng": 109.59,
+    "lat": 19.52,
+    "summary": "苏东坡贬儋时讲学的载酒堂旧址，院落古雅，是海南重要的贬官文化遗迹。",
+    "tags": [
+      "历史文化",
+      "博物馆"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-dz-songtao",
+    "name": "松涛水库",
+    "districtId": "460400",
+    "lng": 109.49,
+    "lat": 19.5,
+    "summary": "海南最大的人工水库，湖汊蜿蜒、群山环抱，可乘船游湖。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-dz-yantian",
+    "name": "洋浦千年古盐田",
+    "districtId": "460400",
+    "lng": 109.2,
+    "lat": 19.73,
+    "summary": "海边礁石上凿槽晒盐的古法盐田，是罕见的海盐文化遗产。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-dz-haihua",
+    "name": "海花岛",
+    "districtId": "460400",
+    "lng": 109.22,
+    "lat": 19.7,
+    "summary": "儋州湾外的填海人工岛群，主题乐园、酒店与会展场馆集中。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-dz-shihua",
+    "name": "石花水洞",
+    "districtId": "460400",
+    "lng": 109.19,
+    "lat": 19.52,
+    "summary": "火山岩溶洞，钟乳石与地下河并存，洞内常年清凉。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wzs-wuzhi",
+    "name": "五指山（主峰）",
+    "districtId": "469001",
+    "lng": 109.66,
+    "lat": 18.89,
+    "summary": "海南第一高山，五峰并列如手指，登山可穿热带雨林、看云海与峡谷。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "全天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wzs-rain",
+    "name": "海南热带雨林国家公园（五指山片区）",
+    "districtId": "469001",
+    "lng": 109.6,
+    "lat": 18.86,
+    "summary": "原始热带雨林，栈道穿行于板根、巨树与溪谷之间。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wzs-taiping",
+    "name": "太平山瀑布",
+    "districtId": "469001",
+    "lng": 109.5,
+    "lat": 18.78,
+    "summary": "山间多级瀑布与深潭，雨林步道相连，是亲水徒步的去处。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wzs-shuiman",
+    "name": "水满乡",
+    "districtId": "469001",
+    "lng": 109.66,
+    "lat": 18.89,
+    "summary": "五指山脚的高山茶乡，茶园与黎寨风光相间，可品水满茶。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-qh-boao",
+    "name": "博鳌亚洲论坛永久会址",
+    "districtId": "469002",
+    "lng": 110.58,
+    "lat": 19.17,
+    "summary": "万泉河入海口处的论坛会址，现代建筑群与河海交汇景观并存。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-qh-wanquan",
+    "name": "万泉河（博鳌段）",
+    "districtId": "469002",
+    "lng": 110.58,
+    "lat": 19.21,
+    "summary": "琼海母亲河，竹排漂流与河口风光是经典项目。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-qh-yudai",
+    "name": "玉带滩",
+    "districtId": "469002",
+    "lng": 110.59,
+    "lat": 19.2,
+    "summary": "分隔河与海的狭长沙滩，一侧万泉河、一侧南海，地形独特。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-qh-tanmen",
+    "name": "潭门渔港",
+    "districtId": "469002",
+    "lng": 110.6,
+    "lat": 19.21,
+    "summary": "南海渔业传统母港，渔船与海鲜市集相连，可看远洋渔获与更路簿文化。",
+    "tags": [
+      "亲子",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wc-fashe",
+    "name": "文昌航天发射场",
+    "districtId": "469005",
+    "lng": 110.95,
+    "lat": 19.61,
+    "summary": "我国新一代航天发射场，椰林海岸间可远观发射塔与火箭转运轨道。",
+    "tags": [
+      "拍照",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wc-dongjiao",
+    "name": "东郊椰林",
+    "districtId": "469005",
+    "lng": 110.81,
+    "lat": 19.58,
+    "summary": "绵延数十里的椰林海岸，椰影沙滩相连，是文昌「椰乡」的代表。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wc-tonggu",
+    "name": "铜鼓岭",
+    "districtId": "469005",
+    "lng": 110.9,
+    "lat": 19.58,
+    "summary": "琼东岬角，山海相接，山顶可俯瞰月亮湾与礁岩海岸。",
+    "tags": [
+      "山水",
+      "徒步",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wc-songshi",
+    "name": "宋氏祖居",
+    "districtId": "469005",
+    "lng": 110.69,
+    "lat": 19.8,
+    "summary": "宋氏家族故居与陈列馆，院落朴素，承载近代侨乡人物记忆。",
+    "tags": [
+      "历史文化",
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wc-kongmiao",
+    "name": "文昌孔庙",
+    "districtId": "469005",
+    "lng": 110.78,
+    "lat": 19.76,
+    "summary": "海南保存较好的文庙，院落规整，是文昌崇文传统的象征。",
+    "tags": [
+      "历史文化",
+      "寺庙"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wn-riyue",
+    "name": "日月湾",
+    "districtId": "469006",
+    "lng": 110.27,
+    "lat": 18.7,
+    "summary": "国内知名冲浪海湾，浪况稳定，冲浪俱乐部与海岸市集聚集。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wn-xinglong",
+    "name": "兴隆热带植物园",
+    "districtId": "469006",
+    "lng": 110.4,
+    "lat": 18.74,
+    "summary": "归侨建起的热带作物园，咖啡、胡椒与热带果树成片，科普游览兼备。",
+    "tags": [
+      "亲子",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wn-shimei",
+    "name": "石梅湾",
+    "districtId": "469006",
+    "lng": 110.31,
+    "lat": 18.71,
+    "summary": "月牙形海湾，青皮林与白沙相连，度假酒店沿湾分布。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wn-dongshan",
+    "name": "东山岭",
+    "districtId": "469006",
+    "lng": 110.37,
+    "lat": 18.79,
+    "summary": "滨海孤峰，怪石摩崖与寺庙并存，素有「海南第一山」之称。",
+    "tags": [
+      "山水",
+      "历史文化",
+      "寺庙"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-wn-shenzhou",
+    "name": "神州半岛",
+    "districtId": "469006",
+    "lng": 110.42,
+    "lat": 18.74,
+    "summary": "半岛型度假区，灯塔、沙滩与泻湖相连，滨海骑行方便。",
+    "tags": [
+      "拍照",
+      "山水"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-df-yulin",
+    "name": "鱼鳞洲",
+    "districtId": "469007",
+    "lng": 108.62,
+    "lat": 19.1,
+    "summary": "昌化江口的海蚀礁岸，风车群与怪石沙滩相连，是看落日的地标。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-df-exian",
+    "name": "俄贤岭",
+    "districtId": "469007",
+    "lng": 108.95,
+    "lat": 19.13,
+    "summary": "海南罕见的喀斯特石灰岩山地，溶洞与雨林并存，黎族传说深厚。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-df-daguangba",
+    "name": "大广坝水库",
+    "districtId": "469007",
+    "lng": 109.05,
+    "lat": 19.05,
+    "summary": "昌化江上的大水库，湖面开阔、群山环抱，可游湖看坝。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-df-sigeng",
+    "name": "四更黑脸琵鹭湿地",
+    "districtId": "469007",
+    "lng": 108.7,
+    "lat": 19,
+    "summary": "冬季候鸟栖息地，黑脸琵鹭等珍稀水鸟在此越冬，宜观鸟。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-da-wenbi",
+    "name": "文笔峰",
+    "districtId": "469021",
+    "lng": 110.3,
+    "lat": 19.4,
+    "summary": "火山岩孤峰，道家文化园依山而建，是定安的文脉象征与休闲地。",
+    "tags": [
+      "山水",
+      "历史文化"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-da-nanli",
+    "name": "南丽湖",
+    "districtId": "469021",
+    "lng": 110.45,
+    "lat": 19.58,
+    "summary": "火山堰塞湖，湖汊曲折、岛屿点点，可游船垂钓。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-da-gucheng",
+    "name": "定安古城（定城）",
+    "districtId": "469021",
+    "lng": 110.31,
+    "lat": 19.68,
+    "summary": "明代县城旧址，古城墙与老街巷留存，可循科举与书院遗迹步行。",
+    "tags": [
+      "古镇",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "历史文化"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-da-murui",
+    "name": "母瑞山革命根据地",
+    "districtId": "469021",
+    "lng": 110.1,
+    "lat": 19.3,
+    "summary": "琼崖纵队重要根据地，纪念园与山地步道相连，红色研学去处。",
+    "tags": [
+      "历史文化",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "历史文化"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-tc-muse",
+    "name": "木色湖",
+    "districtId": "469022",
+    "lng": 109.95,
+    "lat": 19.3,
+    "summary": "中部丘陵水库，湖光山色平静，可垂钓与环湖骑行。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-tc-fengmu",
+    "name": "枫木鹿场",
+    "districtId": "469022",
+    "lng": 109.98,
+    "lat": 19.3,
+    "summary": "人工鹿场，可观鹿、喂鹿并了解鹿产品加工，亲子游常见。",
+    "tags": [
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-tc-wolong",
+    "name": "卧龙山",
+    "districtId": "469022",
+    "lng": 110.05,
+    "lat": 19.36,
+    "summary": "形似卧龙的低山，登顶可俯瞰屯昌盆地与田园。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-cm-fushan",
+    "name": "福山咖啡文化风情镇",
+    "districtId": "469023",
+    "lng": 109.95,
+    "lat": 19.57,
+    "summary": "以咖啡为主题的风情小镇，咖啡园、烘焙坊与市集相连，可品福山咖啡。",
+    "tags": [
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-cm-luoyi",
+    "name": "罗驿古村",
+    "districtId": "469023",
+    "lng": 109.95,
+    "lat": 19.78,
+    "summary": "火山岩老屋与古驿道保存较好的村落，是琼北古村样本。",
+    "tags": [
+      "古镇",
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "历史文化"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-cm-meilang",
+    "name": "美榔双塔",
+    "districtId": "469023",
+    "lng": 110.05,
+    "lat": 19.78,
+    "summary": "元代石雕双塔，造型秀美，是海南少有的古代石塔遗存。",
+    "tags": [
+      "历史文化",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-cm-yongqing",
+    "name": "永庆寺",
+    "districtId": "469023",
+    "lng": 109.95,
+    "lat": 19.9,
+    "summary": "盈滨半岛的滨海禅寺，建筑宏阔，可看海听钟。",
+    "tags": [
+      "寺庙",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-lg-lingaojiao",
+    "name": "临高角解放公园",
+    "districtId": "469024",
+    "lng": 109.68,
+    "lat": 20,
+    "summary": "琼北海角，岸边灯塔与纪念园区相连，是观海与红色研学地。",
+    "tags": [
+      "历史文化",
+      "山水"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-lg-gaoshan",
+    "name": "高山岭",
+    "districtId": "469024",
+    "lng": 109.69,
+    "lat": 19.8,
+    "summary": "临城近郊孤峰，登顶可俯瞰文澜江入海口与田园海岸。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-lg-wenlan",
+    "name": "文澜文化公园",
+    "districtId": "469024",
+    "lng": 109.71,
+    "lat": 19.81,
+    "summary": "沿文澜江的开放式文化公园，牌坊长廊与绿地相连，适合散步。",
+    "tags": [
+      "亲子",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "1.5小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-bs-yingge",
+    "name": "鹦哥岭自然保护区",
+    "districtId": "469025",
+    "lng": 109.55,
+    "lat": 19.15,
+    "summary": "中部热带雨林保护区，溪谷、瀑布与珍稀动植物丰富，适合徒步。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "全天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-bs-yunshi",
+    "name": "白沙陨石坑",
+    "districtId": "469025",
+    "lng": 109.45,
+    "lat": 19.35,
+    "summary": "我国少见的陨石撞击坑，周边茶园环绕，可看坑体与茶山。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-bs-bangxi",
+    "name": "邦溪坡鹿保护区",
+    "districtId": "469025",
+    "lng": 109.3,
+    "lat": 19.35,
+    "summary": "海南坡鹿栖息地，半野生鹿群可见，是观鹿与科普去处。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-cj-qizi",
+    "name": "棋子湾",
+    "districtId": "469026",
+    "lng": 108.55,
+    "lat": 19.28,
+    "summary": "遍布圆润卵石的湾岸，沙细石奇、人少静谧，是看落日的冷门海湾。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-cj-bawang",
+    "name": "霸王岭国家森林公园",
+    "districtId": "469026",
+    "lng": 109.05,
+    "lat": 19.1,
+    "summary": "热带雨林保护区，长臂猿栖息地，雨林步道与瀑布相连。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "全天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-cj-changhua",
+    "name": "昌化古城",
+    "districtId": "469026",
+    "lng": 108.6,
+    "lat": 19.3,
+    "summary": "昌化江口的老城旧址，残墙与古井留存，可感琼西海防旧貌。",
+    "tags": [
+      "历史文化",
+      "古镇"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "历史文化"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ld-jianfeng",
+    "name": "尖峰岭国家森林公园",
+    "districtId": "469027",
+    "lng": 108.82,
+    "lat": 18.74,
+    "summary": "我国保存较好的热带原始雨林，主峰云雾缭绕，溪谷与天池相连。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "全天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ld-yinggehai",
+    "name": "莺歌海盐场",
+    "districtId": "469027",
+    "lng": 108.7,
+    "lat": 18.53,
+    "summary": "西南岸的大型海盐场，盐田棋盘般铺向海边，是工业景观与落日取景点。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "拍照"
+    ],
+    "duration": "2小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ld-longmu",
+    "name": "龙沐湾",
+    "districtId": "469027",
+    "lng": 108.75,
+    "lat": 18.7,
+    "summary": "尖峰岭下的弧形海湾，沙滩与落日景观宜人，度假酒店渐成规模。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ls-fenjie",
+    "name": "分界洲岛",
+    "districtId": "469028",
+    "lng": 110.2,
+    "lat": 18.3,
+    "summary": "近岸珊瑚岛，是海南气候与海岸地貌的分界点，潜水与海洋馆兼具。",
+    "tags": [
+      "山水",
+      "拍照",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ls-houdao",
+    "name": "南湾猴岛",
+    "districtId": "469028",
+    "lng": 110,
+    "lat": 18.44,
+    "summary": "半岛型猕猴保护区，跨海索道俯瞰渔港，岛上猴群可见。",
+    "tags": [
+      "亲子",
+      "拍照"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ls-xiangshui",
+    "name": "香水湾",
+    "districtId": "469028",
+    "lng": 109.95,
+    "lat": 18.42,
+    "summary": "幽静的弧形海湾，椰林沙滩相连，度假酒店分布其间。",
+    "tags": [
+      "山水",
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ls-qing",
+    "name": "清水湾",
+    "districtId": "469028",
+    "lng": 110.05,
+    "lat": 18.42,
+    "summary": "「会唱歌的沙滩」之一，沙质细软、坡度平缓，适合亲海。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-ls-diaoluo",
+    "name": "吊罗山森林公园",
+    "districtId": "469028",
+    "lng": 109.85,
+    "lat": 18.65,
+    "summary": "热带雨林山地，瀑布与溪流密集，是避暑与徒步去处。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "全天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-bt-yanuoda",
+    "name": "呀诺达雨林文化旅游区",
+    "districtId": "469029",
+    "lng": 109.68,
+    "lat": 18.62,
+    "summary": "热带雨林景区，栈道穿行于巨树、瀑布与峡谷之间，活化展示黎苗文化。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-bt-binglang",
+    "name": "槟榔谷黎苗文化旅游村",
+    "districtId": "469029",
+    "lng": 109.7,
+    "lat": 18.65,
+    "summary": "以黎苗传统村寨、船型屋与织锦展示为主的活态文化园区。",
+    "tags": [
+      "历史文化",
+      "亲子"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-bt-qixian",
+    "name": "七仙岭温泉森林公园",
+    "districtId": "469029",
+    "lng": 109.68,
+    "lat": 18.67,
+    "summary": "七峰并列的山岭，雨林步道与温泉泉眼并存，可登山泡汤。",
+    "tags": [
+      "山水",
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "半天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-qz-limu",
+    "name": "黎母山森林公园",
+    "districtId": "469030",
+    "lng": 109.75,
+    "lat": 19.05,
+    "summary": "中部热带雨林，黎族始祖文化之山，溪谷与原始林相连，适合徒步。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "徒步"
+    ],
+    "duration": "全天",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-qz-baihua",
+    "name": "百花岭瀑布",
+    "districtId": "469030",
+    "lng": 109.85,
+    "lat": 19.03,
+    "summary": "山间多级瀑布，雨林步道通往观瀑台，是琼中标志性景观。",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": true,
+    "suitableFor": [
+      "亲子"
+    ],
+    "duration": "3小时",
+    "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "hn-qz-baimao",
+    "name": "白沙起义纪念园",
+    "districtId": "469030",
+    "lng": 109.83,
+    "lat": 19.05,
+    "summary": "纪念黎族人民起义的园区，纪念碑与陈列馆相连，红色研学地。",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "历史文化"
     ],
     "duration": "2小时",
     "source": "公开资料整理 · 待人工复核",
