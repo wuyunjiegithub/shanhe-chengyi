@@ -22,6 +22,10 @@ const ROOT = process.cwd();
 const GEO_DIR = join(ROOT, 'public/geo');
 const CACHE_DIR = join(ROOT, 'scripts/.cache/osm-spots');
 const ENDPOINTS = [
+  // 按实测健康度排序：openstreetmap.fr 快且含全量中国数据；
+  // 注意 overpass.osm.ch 是瑞士专用镜像，对中国 bbox 恒返回空，切勿加入。
+  'https://overpass.openstreetmap.fr/api/interpreter',
+  'https://z.overpass-api.de/api/interpreter',
   'https://overpass-api.de/api/interpreter',
   'https://overpass.kumi.systems/api/interpreter',
   'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
@@ -166,17 +170,24 @@ async function overpass(query) {
     lastCall = Date.now();
     calls++;
     let res;
+    // 单请求超时：某些镜像（如 kumi）会接受连接但永不响应，
+    // 不设 AbortController 会让整个进程卡在一个请求上十几分钟。
+    const ac = new AbortController();
+    const to = setTimeout(() => ac.abort(), 150000);
     try {
       res = await fetch(ep, {
         method: 'POST',
         headers: { 'User-Agent': UA, 'Content-Type': 'application/x-www-form-urlencoded' },
         body: 'data=' + encodeURIComponent(query),
+        signal: ac.signal,
       });
     } catch (err) {
+      clearTimeout(to);
       lastErr = err;
       await sleep(Math.min(30000, 2000 * 2 ** attempt));
       continue;
     }
+    clearTimeout(to);
     if (res.status === 429 || res.status === 504 || res.status >= 500) {
       lastErr = new Error(`HTTP ${res.status}`);
       await sleep(Math.min(90000, 5000 * 2 ** attempt));

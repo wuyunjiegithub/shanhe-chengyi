@@ -273428,6 +273428,573 @@
     "updatedAt": "2026-10-19"
   },
   {
+    "id": "osm-512002-1",
+    "name": "青年林湿地公园",
+    "districtId": "512002",
+    "lng": 104.66708,
+    "lat": 30.13036,
+    "summary": "青年林湿地公园（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512002-2",
+    "name": "蜀人原乡广场",
+    "districtId": "512002",
+    "lng": 104.6637,
+    "lat": 30.11516,
+    "summary": "蜀人原乡广场（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512002-3",
+    "name": "市民广场",
+    "districtId": "512002",
+    "lng": 104.67336,
+    "lat": 30.10934,
+    "summary": "市民广场（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512002-4",
+    "name": "站前广场",
+    "districtId": "512002",
+    "lng": 104.67887,
+    "lat": 30.12768,
+    "summary": "站前广场（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512002-5",
+    "name": "苌弘广场",
+    "districtId": "512002",
+    "lng": 104.64571,
+    "lat": 30.11053,
+    "summary": "苌弘广场（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512002-6",
+    "name": "资阳市博物馆",
+    "districtId": "512002",
+    "lng": 104.63199,
+    "lat": 30.14017,
+    "summary": "资阳市博物馆（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512002-7",
+    "name": "资阳方特国色春秋",
+    "districtId": "512002",
+    "lng": 104.57374,
+    "lat": 30.1929,
+    "summary": "资阳方特国色春秋（亲子去处）",
+    "tags": [
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512002-8",
+    "name": "资阳方特水世界",
+    "districtId": "512002",
+    "lng": 104.57074,
+    "lat": 30.19122,
+    "summary": "资阳方特水世界（亲子去处）",
+    "tags": [
+      "亲子"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512002-9",
+    "name": "濛溪河遗址",
+    "districtId": "512002",
+    "lng": 105.04518,
+    "lat": 30.06235,
+    "summary": "濛溪河遗址（博物馆）",
+    "tags": [
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512002-10",
+    "name": "资阳天府花溪",
+    "districtId": "512002",
+    "lng": 104.78953,
+    "lat": 30.23663,
+    "summary": "资阳天府花溪（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512021-0",
+    "name": "小青山",
+    "districtId": "512021",
+    "lng": 105.55591,
+    "lat": 30.18835,
+    "summary": "小青山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512021-1",
+    "name": "毗卢洞石刻造像",
+    "districtId": "512021",
+    "lng": 105.62131,
+    "lat": 29.92672,
+    "summary": "毗卢洞石刻造像（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512021-2",
+    "name": "孔雀洞",
+    "districtId": "512021",
+    "lng": 105.65583,
+    "lat": 29.86359,
+    "summary": "孔雀洞（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512021-3",
+    "name": "松树坡",
+    "districtId": "512021",
+    "lng": 105.62342,
+    "lat": 29.90637,
+    "summary": "松树坡（历史遗迹）",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512021-4",
+    "name": "黑山",
+    "districtId": "512021",
+    "lng": 105.70527,
+    "lat": 29.90689,
+    "summary": "黑山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512021-5",
+    "name": "罗坪山",
+    "districtId": "512021",
+    "lng": 105.69769,
+    "lat": 29.90553,
+    "summary": "罗坪山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512021-6",
+    "name": "茅草坡",
+    "districtId": "512021",
+    "lng": 105.70266,
+    "lat": 29.91164,
+    "summary": "茅草坡（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512021-7",
+    "name": "庵堂山",
+    "districtId": "512021",
+    "lng": 105.68437,
+    "lat": 29.9109,
+    "summary": "庵堂山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512021-8",
+    "name": "南天门",
+    "districtId": "512021",
+    "lng": 105.65347,
+    "lat": 29.9277,
+    "summary": "南天门（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512021-9",
+    "name": "朝天马",
+    "districtId": "512021",
+    "lng": 105.6561,
+    "lat": 29.93886,
+    "summary": "朝天马（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512021-10",
+    "name": "戴家坡",
+    "districtId": "512021",
+    "lng": 105.69914,
+    "lat": 29.85185,
+    "summary": "戴家坡（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512021-11",
+    "name": "太平寨",
+    "districtId": "512021",
+    "lng": 105.71349,
+    "lat": 29.88884,
+    "summary": "太平寨（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512022-0",
+    "name": "陈毅故居",
+    "districtId": "512022",
+    "lng": 104.95181,
+    "lat": 30.37967,
+    "summary": "陈毅故居（博物馆）",
+    "tags": [
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512022-1",
+    "name": "陈毅纪念馆",
+    "districtId": "512022",
+    "lng": 105.02743,
+    "lat": 30.28275,
+    "summary": "陈毅纪念馆（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512022-2",
+    "name": "陈毅广场",
+    "districtId": "512022",
+    "lng": 105.01516,
+    "lat": 30.28632,
+    "summary": "陈毅广场（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512022-3",
+    "name": "无量广场",
+    "districtId": "512022",
+    "lng": 104.99702,
+    "lat": 30.29864,
+    "summary": "无量广场（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512022-4",
+    "name": "南湖公园",
+    "districtId": "512022",
+    "lng": 105.02131,
+    "lat": 30.26609,
+    "summary": "南湖公园（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512022-5",
+    "name": "资阳花香休闲度假村",
+    "districtId": "512022",
+    "lng": 105.06136,
+    "lat": 30.22229,
+    "summary": "资阳花香休闲度假村（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512022-6",
+    "name": "望城公园",
+    "districtId": "512022",
+    "lng": 105.00361,
+    "lat": 30.27752,
+    "summary": "望城公园（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512022-7",
+    "name": "婆婆山公园",
+    "districtId": "512022",
+    "lng": 105.02171,
+    "lat": 30.29868,
+    "summary": "婆婆山公园（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-512022-8",
+    "name": "陈毅元帅像",
+    "districtId": "512022",
+    "lng": 105.01426,
+    "lat": 30.28668,
+    "summary": "陈毅元帅像（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
     "id": "lm-513201-0",
     "name": "九寨沟",
     "districtId": "513201",
@@ -336221,6 +336788,851 @@
     ],
     "duration": "半天",
     "source": "公开资料整理 · 待人工复核",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620402-1",
+    "name": "铜城开拓者纪念碑",
+    "districtId": "620402",
+    "lng": 104.17804,
+    "lat": 36.54583,
+    "summary": "铜城开拓者纪念碑（历史遗迹）",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620402-2",
+    "name": "能·源",
+    "districtId": "620402",
+    "lng": 104.19392,
+    "lat": 36.5514,
+    "summary": "能·源（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620402-3",
+    "name": "大爆炸",
+    "districtId": "620402",
+    "lng": 104.19278,
+    "lat": 36.55077,
+    "summary": "大爆炸（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620402-4",
+    "name": "下孤山",
+    "districtId": "620402",
+    "lng": 104.11029,
+    "lat": 36.53227,
+    "summary": "下孤山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620402-5",
+    "name": "上孤山",
+    "districtId": "620402",
+    "lng": 104.1055,
+    "lat": 36.53859,
+    "summary": "上孤山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620402-6",
+    "name": "瞭高山",
+    "districtId": "620402",
+    "lng": 104.11568,
+    "lat": 36.57637,
+    "summary": "瞭高山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620402-7",
+    "name": "驴耳朵山",
+    "districtId": "620402",
+    "lng": 104.11142,
+    "lat": 36.58574,
+    "summary": "驴耳朵山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620402-8",
+    "name": "营盘山",
+    "districtId": "620402",
+    "lng": 104.14367,
+    "lat": 36.48675,
+    "summary": "营盘山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620402-9",
+    "name": "何家屲",
+    "districtId": "620402",
+    "lng": 104.11903,
+    "lat": 36.45778,
+    "summary": "何家屲（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620402-10",
+    "name": "八扎圪垯",
+    "districtId": "620402",
+    "lng": 104.09973,
+    "lat": 36.45659,
+    "summary": "八扎圪垯（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620402-11",
+    "name": "石峡梁",
+    "districtId": "620402",
+    "lng": 104.07201,
+    "lat": 36.51624,
+    "summary": "石峡梁（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620402-12",
+    "name": "北武当山",
+    "districtId": "620402",
+    "lng": 104.19911,
+    "lat": 36.34365,
+    "summary": "北武当山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620403-0",
+    "name": "鹯阴口",
+    "districtId": "620403",
+    "lng": 104.5965,
+    "lat": 36.79446,
+    "summary": "鹯阴口（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620403-1",
+    "name": "水泉尖山",
+    "districtId": "620403",
+    "lng": 104.69345,
+    "lat": 36.8554,
+    "summary": "水泉尖山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620403-2",
+    "name": "柳州城遗址",
+    "districtId": "620403",
+    "lng": 104.69906,
+    "lat": 36.74611,
+    "summary": "柳州城遗址（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620403-3",
+    "name": "人民广场",
+    "districtId": "620403",
+    "lng": 104.80789,
+    "lat": 36.72902,
+    "summary": "人民广场（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620403-4",
+    "name": "屈吴山红色教育纪念馆",
+    "districtId": "620403",
+    "lng": 105.11386,
+    "lat": 36.5711,
+    "summary": "屈吴山红色教育纪念馆（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620403-5",
+    "name": "缠州城遗址",
+    "districtId": "620403",
+    "lng": 104.70788,
+    "lat": 36.7498,
+    "summary": "缠州城遗址（历史遗迹）",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620403-6",
+    "name": "恒山公园",
+    "districtId": "620403",
+    "lng": 104.8027,
+    "lat": 36.72744,
+    "summary": "恒山公园（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620403-7",
+    "name": "平川公园",
+    "districtId": "620403",
+    "lng": 104.8087,
+    "lat": 36.73286,
+    "summary": "平川公园（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620403-8",
+    "name": "马饮水城",
+    "districtId": "620403",
+    "lng": 105.08173,
+    "lat": 36.62245,
+    "summary": "马饮水城（历史遗迹）",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620421-0",
+    "name": "南沟大顶",
+    "districtId": "620421",
+    "lng": 105.11181,
+    "lat": 36.54021,
+    "summary": "南沟大顶（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620421-1",
+    "name": "虎豹口",
+    "districtId": "620421",
+    "lng": 104.60322,
+    "lat": 36.51822,
+    "summary": "虎豹口（历史遗迹）",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620421-2",
+    "name": "大峁槐山",
+    "districtId": "620421",
+    "lng": 104.5492,
+    "lat": 36.99752,
+    "summary": "大峁槐山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620421-3",
+    "name": "北城滩城堡遗址",
+    "districtId": "620421",
+    "lng": 104.30055,
+    "lat": 37.16408,
+    "summary": "北城滩城堡遗址（历史遗迹）",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620421-4",
+    "name": "撞水崖",
+    "districtId": "620421",
+    "lng": 104.40621,
+    "lat": 37.19713,
+    "summary": "撞水崖（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620421-5",
+    "name": "北嶂山",
+    "districtId": "620421",
+    "lng": 105.00813,
+    "lat": 36.77802,
+    "summary": "北嶂山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620421-6",
+    "name": "贺家山",
+    "districtId": "620421",
+    "lng": 104.97257,
+    "lat": 36.82897,
+    "summary": "贺家山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620421-7",
+    "name": "法泉寺",
+    "districtId": "620421",
+    "lng": 104.75269,
+    "lat": 36.60955,
+    "summary": "法泉寺（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620421-8",
+    "name": "磨子沟三角城遗址",
+    "districtId": "620421",
+    "lng": 105.03857,
+    "lat": 36.77954,
+    "summary": "磨子沟三角城遗址（历史遗迹）",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620421-9",
+    "name": "会州广场",
+    "districtId": "620421",
+    "lng": 104.67405,
+    "lat": 36.56986,
+    "summary": "会州广场（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620422-0",
+    "name": "大墩梁红军战斗遗址",
+    "districtId": "620422",
+    "lng": 105.0378,
+    "lat": 35.46947,
+    "summary": "大墩梁红军战斗遗址（历史遗迹）",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620422-1",
+    "name": "土高山",
+    "districtId": "620422",
+    "lng": 105.11983,
+    "lat": 36.29717,
+    "summary": "土高山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620422-2",
+    "name": "铁木山",
+    "districtId": "620422",
+    "lng": 104.77557,
+    "lat": 35.97082,
+    "summary": "铁木山（自然山水）",
+    "tags": [
+      "山水",
+      "徒步"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620422-3",
+    "name": "牛门洞遗址",
+    "districtId": "620422",
+    "lng": 104.75186,
+    "lat": 35.93518,
+    "summary": "牛门洞遗址（历史遗迹）",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620422-4",
+    "name": "会师纪念馆",
+    "districtId": "620422",
+    "lng": 105.04957,
+    "lat": 35.69035,
+    "summary": "会师纪念馆（博物馆）",
+    "tags": [
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620422-5",
+    "name": "红军长征胜利景园",
+    "districtId": "620422",
+    "lng": 105.06695,
+    "lat": 35.68615,
+    "summary": "红军长征胜利景园（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620422-6",
+    "name": "会宁红军会师旧址",
+    "districtId": "620422",
+    "lng": 105.04899,
+    "lat": 35.69117,
+    "summary": "会宁红军会师旧址（历史遗迹）",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620422-7",
+    "name": "郭虾蟆古城",
+    "districtId": "620422",
+    "lng": 104.87331,
+    "lat": 36.2376,
+    "summary": "郭虾蟆古城（历史遗迹）",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620423-0",
+    "name": "大敦煌影视城",
+    "districtId": "620423",
+    "lng": 104.04167,
+    "lat": 36.99683,
+    "summary": "大敦煌影视城（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620423-1",
+    "name": "驴的",
+    "districtId": "620423",
+    "lng": 104.30219,
+    "lat": 36.9117,
+    "summary": "驴的（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620423-2",
+    "name": "郭家窑",
+    "districtId": "620423",
+    "lng": 104.23101,
+    "lat": 36.99911,
+    "summary": "郭家窑（历史遗迹）",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620423-3",
+    "name": "永泰城烽火台旧址",
+    "districtId": "620423",
+    "lng": 103.84795,
+    "lat": 37.13815,
+    "summary": "永泰城烽火台旧址（历史遗迹）",
+    "tags": [
+      "历史文化"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620423-4",
+    "name": "龙湾古水车",
+    "districtId": "620423",
+    "lng": 104.32263,
+    "lat": 36.89735,
+    "summary": "龙湾古水车（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620423-5",
+    "name": "黄河石林博物馆",
+    "districtId": "620423",
+    "lng": 104.31043,
+    "lat": 36.8852,
+    "summary": "黄河石林博物馆（博物馆）",
+    "tags": [
+      "博物馆"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
+    "updatedAt": "2026-10-19"
+  },
+  {
+    "id": "osm-620423-6",
+    "name": "人民公园",
+    "districtId": "620423",
+    "lng": 104.06822,
+    "lat": 37.18889,
+    "summary": "人民公园（观景/取景地）",
+    "tags": [
+      "拍照"
+    ],
+    "hot": false,
+    "suitableFor": [
+      "全部"
+    ],
+    "duration": "1-2小时",
+    "source": "© OpenStreetMap 贡献者（ODbL）",
     "updatedAt": "2026-10-19"
   },
   {

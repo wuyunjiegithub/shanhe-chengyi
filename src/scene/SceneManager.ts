@@ -1036,6 +1036,11 @@ export class SceneManager {
         for (const m of rec.meshes) box.expandByObject(m);
         const size = box.getSize(new THREE.Vector3());
         const radius = Math.max(size.x, size.z) * 0.55;
+        // 雨柱高度必须随板块尺寸缩放：世界尺度 1 单位≈50km，城市板块(~5 单位)用 9 单位
+        // 高的柱刚好合理；但区县板块只有 ~0.3 单位宽，若仍给 9 单位高，粒子会被摊到
+        // 视锥之外（屏幕只看到柱底一小截），放大到区县时就"看不到下雨"。
+        // 这里按半径比例给高：小区县压到 ~1.4，城市压顶 9（保持原有观感）。
+        const height = Math.min(Math.max(radius * 4, 1.4), 9);
         return {
           id: it.id,
           kind: it.kind,
@@ -1043,7 +1048,7 @@ export class SceneManager {
           z: -rec.centroid[1],
           radius,
           topY: baseY + rec.height + 0.2,
-          height: 9,
+          height,
         };
       })
       .filter(Boolean) as {

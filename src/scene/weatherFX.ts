@@ -17,8 +17,14 @@ export interface WeatherRegion {
   height: number;
 }
 
-const RAIN_COUNT = 300;
-const SNOW_COUNT = 240;
+const RAIN_COUNT = 420;
+const SNOW_COUNT = 300;
+
+/** 雨柱高度→下落速度缩放：区县雨柱被压到 ~1.4 单位，若仍按城市速度(7~11)下落，
+ * 一颗粒子 0.2 秒就穿完，看起来像抽搐的急雨。按柱高比例收敛速度（下限 0.25）。 */
+function speedScaleFor(height: number): number {
+  return Math.min(1, Math.max(0.25, height / 9));
+}
 
 /** 圆形粒子贴图（缓存复用，避免雨/雪放大后变成方块、像马赛克）。
  * 关键：PointsMaterial 配 sizeAttenuation:false 后，粒子尺寸以屏幕像素计，
@@ -111,11 +117,13 @@ export class WeatherFX {
     const positions = new Float32Array(count * 3);
     const speeds = new Float32Array(count);
     const drift = new Float32Array(count);
+    const spdScale = speedScaleFor(r.height);
     for (let i = 0; i < count; i++) {
       positions[i * 3] = r.x + (Math.random() * 2 - 1) * r.radius;
       positions[i * 3 + 1] = r.topY + Math.random() * r.height;
       positions[i * 3 + 2] = r.z + (Math.random() * 2 - 1) * r.radius;
-      speeds[i] = (isSnow ? 1.8 : 7) + Math.random() * (isSnow ? 1.5 : 4);
+      speeds[i] =
+        ((isSnow ? 1.8 : 7) + Math.random() * (isSnow ? 1.5 : 4)) * spdScale;
       drift[i] = (Math.random() * 2 - 1) * (isSnow ? 0.6 : 0.25);
     }
     const geo = new THREE.BufferGeometry();
@@ -135,12 +143,12 @@ export class WeatherFX {
       color: isSnow ? 0xffffff : 0xacd2ff,
       // 关键修复：sizeAttenuation:false → 尺寸以屏幕像素计，不随镜头拉近放大；
       // 圆形贴图 → 雨/雪是圆点而非方块。
-      size: isSnow ? 3.2 : 2.2,
+      size: isSnow ? 3.4 : 2.5,
       map: circleTexture(),
       alphaTest: 0.04,
       sizeAttenuation: false,
       transparent: true,
-      opacity: isSnow ? 0.92 : 0.55,
+      opacity: isSnow ? 0.94 : 0.62,
       depthWrite: false,
     });
     const pts = new THREE.Points(geo, mat);
@@ -160,11 +168,13 @@ export class WeatherFX {
     user.height = r.height;
     user.x = r.x;
     user.z = r.z;
+    const spdScale = speedScaleFor(r.height);
     for (let i = 0; i < count; i++) {
       pos[i * 3] = r.x + (Math.random() * 2 - 1) * r.radius;
       pos[i * 3 + 1] = r.topY + Math.random() * r.height;
       pos[i * 3 + 2] = r.z + (Math.random() * 2 - 1) * r.radius;
-      user.speeds[i] = (user.isSnow ? 1.8 : 7) + Math.random() * (user.isSnow ? 1.5 : 4);
+      user.speeds[i] =
+        ((user.isSnow ? 1.8 : 7) + Math.random() * (user.isSnow ? 1.5 : 4)) * spdScale;
       user.drift[i] = (Math.random() * 2 - 1) * (user.isSnow ? 0.6 : 0.25);
     }
     geo.getAttribute('position').needsUpdate = true;
