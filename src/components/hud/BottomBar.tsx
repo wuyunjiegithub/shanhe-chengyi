@@ -2,12 +2,13 @@ import { useCityStatus } from '../../stores/cityStatus';
 import { useNavigation } from '../../stores/navigation';
 import { useUi } from '../../stores/ui';
 import { useTravelNotes } from '../../stores/travelNotes';
-import { backToRegion, resetCamera, resetHomeView } from '../../app/sandbox';
+import { backToRegion, resetCamera, resetHomeView, isMunicipality } from '../../app/sandbox';
 import { HeartMark } from '../shared/HeartMark';
 import { VisitedMark } from '../shared/VisitedMark';
 
 export function BottomBar() {
   const level = useNavigation((s) => s.level);
+  const currentCity = useNavigation((s) => s.currentCity);
   const favorites = useUi((s) => s.favorites);
   const toggleFavoritesPanel = useUi((s) => s.toggleFavoritesPanel);
   const toggleTimelinePanel = useUi((s) => s.toggleTimelinePanel);
@@ -84,7 +85,10 @@ export function BottomBar() {
           ✎ 游记{noteCount > 0 ? ` ${noteCount}` : ''}
         </button>
         {level === 'city' && (
-          <button className="ghost-pill" onClick={() => backToRegion({ toProvince: true })}>
+          <button
+            className="ghost-pill"
+            onClick={() => backToRegion(isMunicipality(currentCity?.id) ? { toNation: true } : { toProvince: true })}
+          >
             返回
           </button>
         )}

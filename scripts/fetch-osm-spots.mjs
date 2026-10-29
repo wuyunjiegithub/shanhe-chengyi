@@ -41,6 +41,20 @@ const OFFSET = Number(getArg('offset') ?? 0);
 const CITY_ARG = getArg('city');
 
 mkdirSync(CACHE_DIR, { recursive: true });
+
+/**
+ * 取 POI 展示名：优先中文别名（name:zh 等），回退本地名 name。
+ * 纯拉丁（英文 / 拼音）名称直接返回 null —— 中文产品不展示「16th Bridge」这类英文名，
+ * 这类 POI 会被丢弃（维基 / 地标仍能保证覆盖）。
+ */
+function pickName(tags) {
+  const zh = tags['name:zh'] || tags['name:zh-Hans'] || tags['name:zh-Hant'];
+  if (zh) return zh.trim();
+  const nm = tags['name'] || tags['official_name'] || tags['name:en'];
+  if (!nm) return null;
+  if (!/[㐀-鿿぀-ヿ가-힯]/.test(nm)) return null;
+  return nm.trim();
+}
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
 
@@ -234,7 +248,8 @@ for (const cityId of targets) {
   let poiCount = 0;
   for (const el of data.elements ?? []) {
     const tags = el.tags ?? {};
-    if (!tags.name) continue;
+    const name = pickName(tags);
+    if (!name) continue;
     const tags_mapped = mapTags(tags);
     if (!tags_mapped) continue; // 不在白名单
     let lng, lat;
@@ -247,7 +262,7 @@ for (const cityId of targets) {
     for (const [did, info] of distGeom) {
       if (pointInPolygon([lng, lat], info.geom)) {
         (collected[did] ??= []).push({
-          name: tags.name,
+          name,
           lng: Math.round(lng * 1e5) / 1e5,
           lat: Math.round(lat * 1e5) / 1e5,
           kind: kindLabel(tags),

@@ -20,6 +20,30 @@ export interface WeatherRegion {
 const RAIN_COUNT = 300;
 const SNOW_COUNT = 240;
 
+/** 圆形粒子贴图（缓存复用，避免雨/雪放大后变成方块、像马赛克）。
+ * 关键：PointsMaterial 配 sizeAttenuation:false 后，粒子尺寸以屏幕像素计，
+ * 无论镜头贴近到哪一级（区县/城市/省）都不会被放大。 */
+let _circleTex: THREE.Texture | null = null;
+function circleTexture(): THREE.Texture {
+  if (_circleTex) return _circleTex;
+  const s = 64;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = s;
+  const ctx = cv.getContext('2d')!;
+  const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.65, 'rgba(255,255,255,0.95)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(s / 2, s / 2, s / 2, 0, Math.PI * 2);
+  ctx.fill();
+  const tex = new THREE.CanvasTexture(cv);
+  tex.needsUpdate = true;
+  _circleTex = tex;
+  return tex;
+}
+
 interface RegionUser {
   radius: number;
   topY: number;
@@ -109,9 +133,14 @@ export class WeatherFX {
     geo.userData = user;
     const mat = new THREE.PointsMaterial({
       color: isSnow ? 0xffffff : 0xacd2ff,
-      size: isSnow ? 0.14 : 0.09,
+      // 关键修复：sizeAttenuation:false → 尺寸以屏幕像素计，不随镜头拉近放大；
+      // 圆形贴图 → 雨/雪是圆点而非方块。
+      size: isSnow ? 3.2 : 2.2,
+      map: circleTexture(),
+      alphaTest: 0.04,
+      sizeAttenuation: false,
       transparent: true,
-      opacity: isSnow ? 0.92 : 0.5,
+      opacity: isSnow ? 0.92 : 0.55,
       depthWrite: false,
     });
     const pts = new THREE.Points(geo, mat);

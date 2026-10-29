@@ -295,11 +295,26 @@ async function goHometownOnBoot(): Promise<void> {
  * - 省：退到全国
  * - 全国：无更上层，交给调用方（安卓双击退出）
  */
+/** 直辖市 / 特别行政区：省份即自身，回退链里没有「省」这一层，ESC 应直接回全国地图 */
+export function isMunicipality(cityId?: string | number): boolean {
+  if (cityId == null) return false;
+  return ['11', '12', '31', '50'].includes(String(cityId).slice(0, 2));
+}
+
+/**
+ * 逐级回退一级（ESC / 安卓返回键的地图层级分支）。
+ *
+ * 完整链条是「区县 → 大市 → 省 → 全国」，返回 true 表示已消费这次回退：
+ * - 直辖市 / 特别行政区（北京、天津、上海、重庆）：省份即自身，没有「省」这一层，
+ *   不管在区县还是城市视图，ESC 都直接回**全国地图**（用户明确要求）。
+ * - 普通省份：在区县或城市视图按 ESC 都回**当前省**（并清除区县选中），由省视图取景居中。
+ * - 全国：无更上层，交给调用方（安卓双击退出）。
+ */
 export function stepBack(): boolean {
   const nav = useNavigation.getState();
   if (nav.level === 'city') {
-    if (nav.activeDistrictId) {
-      clearDistrictSelection();
+    if (isMunicipality(nav.currentCity?.id)) {
+      backToRegion({ toNation: true });
       return true;
     }
     backToRegion({ toProvince: true });

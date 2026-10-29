@@ -249,6 +249,10 @@ for (const file of readdirSync(join(GEO_DIR, 'districts')).sort()) {
           if (spots.length >= SPOTS_PER_DISTRICT) break;
           const nm = p.name.trim();
           if (!nm) continue;
+          // 丢弃纯拉丁（英文 / 拼音）名称：OpenStreetMap 部分 POI 只有英文 name 且无中文别名，
+          // 中文产品里展示「16th Bridge」「Baiyang dian」这类英文名观感差，直接丢弃
+          // （维基 / 地标已能保证覆盖）。只保留含中日韩文字的名称。
+          if (!/[㐀-鿿぀-ヿ가-힯]/.test(nm)) continue;
           if (existingNames.has(nm.toLowerCase())) continue;
           existingNames.add(nm.toLowerCase());
           const tagCN = TAG_CN[p.tags?.[0]] ?? '景点';

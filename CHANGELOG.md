@@ -3,6 +3,30 @@
 本项目所有版本变更记录于此。格式参考 [Keep a Changelog](https://keepachangelog.com/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.9.45] - 2026-10-29
+
+> 一批交互/视觉修复：家乡级联选择、ESC 回退层级、英文景区名、雨点渲染。
+
+### UI / 交互
+- **家乡选择器改级联下拉**：原生 `<select>`（浅色/深色下弹出白色系统层、样式不统一）改为受控的
+  **省 → 市 两级级联面板**，配色完全走 tokens 主题变量（`--surface-raised`/`--border`/`--accent`），
+  支持点击外部关闭；「设置」与「足迹与收藏」两处复用（`HometownPicker.tsx` + `app.css`）。
+- **ESC 回退层级修正**：
+  - 直辖市 / 特别行政区（北京、天津、上海、重庆）在区县或城市视图按 ESC **直接回全国地图**
+    （不再退回一个"很大的区域"），`stepBack()` 新增 `isMunicipality()` 判断，左侧「← 全国」与底部「返回」同步。
+  - 普通省份的区县 / 城市视图按 ESC 回**当前省**（由省包围盒居中取景，省视图落在视野中心）。
+- **雨点 / 雪点渲染修复**（`weatherFX.ts`）：原 `PointsMaterial` 默认 `sizeAttenuation:true`（世界单位），
+  放大到区县时镜头贴近 → 雨点被放大成方块、像马赛克。改为 `sizeAttenuation:false`（恒定屏幕像素）
+  + 圆形渐变贴图 + 缩小尺寸（雨 2.2px / 雪 3.2px），任何缩放下都是小而圆的点。
+
+### 数据
+- **过滤英文 / 拼音景区名**：OSM 部分 POI 只有英文 `name` 无中文别名，中文产品里出现「16th Bridge」类英文名观感差。
+  `fetch-osm-spots.mjs` 改优先 `name:zh`（回退本地名），纯拉丁名称直接丢弃；
+  `gen-baseline-content.mjs` 合并时再兜底过滤一次。全站景点 21627 → **20945**（剔除 + 去重），英文景点归零。
+
+### 构建
+- 版本 0.9.45；`validate-content` / `tsc` / `verify-android-so` 全过。
+
 ## [0.9.44] - 2026-10-28
 
 > 突破"景点天花板"：接入 OpenStreetMap（ODbL）真实带坐标 POI，补足维基覆盖不到的区县。

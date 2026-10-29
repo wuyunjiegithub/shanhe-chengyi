@@ -1,7 +1,7 @@
 import { useData } from '../../stores/data';
 import { useNavigation } from '../../stores/navigation';
 import { useUi } from '../../stores/ui';
-import { backToRegion, focusCityById, selectDistrictById } from '../../app/sandbox';
+import { backToRegion, focusCityById, selectDistrictById, isMunicipality } from '../../app/sandbox';
 import type { GeoFeature } from '../../data/types';
 import { provColor, provBg, NATIONAL_PROVINCE_ORDER } from '../../components/shared/meta';
 
@@ -23,10 +23,10 @@ export function LeftIndex() {
         <div className="index-head">
           <button
             className="index-back"
-            onClick={() => backToRegion({ toProvince: true })}
-            title="退出城市，回到当前省份总览"
+            onClick={() => backToRegion(isMunicipality(currentCity!.id) ? { toNation: true } : { toProvince: true })}
+            title={isMunicipality(currentCity!.id) ? '退出城市，回到全国地图' : '退出城市，回到当前省份总览'}
           >
-            ← 当前省
+            {isMunicipality(currentCity!.id) ? '← 全国' : '← 当前省'}
           </button>
           <span className="index-count">{currentCity.districts.length} 区县</span>
         </div>
